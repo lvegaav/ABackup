@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_gravity="center_vertical"
+    android:background="@color/colorPrimary">
+
+
+        <TextView
+            android:id="@+id/tv_hello"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/confirmation.hello"
+            android:textSize="30sp"
+            android:layout_marginTop="60dp"
+            android:textColor="@color/white"/>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_below="@id/tv_hello"
+            android:layout_margin="40dp">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_wand">
+
+            </ImageView>
+
+            <EditText
+                android:id="@+id/et_confirmation_code"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:textColorHint="@color/white"
+                android:textColor="@color/white"
+                android:inputType="number"
+                android:imeOptions="actionDone"
+                android:background="@drawable/button_border"/>
+        </LinearLayout>
+
+</RelativeLayout>

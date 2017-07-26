@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Backup</string>
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+    <string name="loading">Loading</string>
+    <string name="main_title">Backup Options</string>
+    <string name="login.hello">Hello What\'s \nYour Number?</string>
+
+    <string name="login.phonePlaceHolder">Phone Number</string>
+    <string name="login.validationPhoneNumberRequired">Phone number required.</string>
+    <string name="login.validationPhoneNumberInvalid">Invalid phone number.</string>
+
+    <string name="confirmation.codePlaceHolder">Confirmation Code</string>
+    <string name="confirmation.hello">Confirmation Code</string>
+
+    <string name="main.hello">Backup Options</string>
+
+    <string name="upload_folder_path">to_upload</string>
+    <string name="download_folder_path">downloaded</string>
+</resources>
