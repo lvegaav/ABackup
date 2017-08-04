@@ -137,8 +137,7 @@ public class MainActivity extends BaseActivity implements HasComponent<AppCompon
 
     @Override
     public void onFolderClicked(String path) {
-        if (path == null)
-        {
+        if (path == null) {
             replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
         } else {
             replaceFragment(R.id.fl_fragment, FileListFragment.newInstance(path), true, true);

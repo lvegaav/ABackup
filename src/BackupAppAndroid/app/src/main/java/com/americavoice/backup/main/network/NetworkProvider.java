@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
@@ -16,7 +17,6 @@ import net.servicestack.client.AsyncResult;
 import java.security.KeyManagementException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
 import java.security.SecureRandom;
 
 import javax.inject.Inject;
@@ -37,8 +37,8 @@ public class NetworkProvider {
     private OwnCloudClient mCloudClient;
 
     private final String mDeviceId;
-    private static final String baseUrl = "http://192.168.1.9:52239";
-    private static final String baseUrlOwnCloud = "http://192.168.1.9:8080";
+    private static final String baseUrl = "http://192.168.90.200:52239";
+    private static final String baseUrlOwnCloud = "http://192.168.90.80:8080";
 
     @Inject
     public NetworkProvider(Context context) {
@@ -72,8 +72,7 @@ public class NetworkProvider {
 
     public OwnCloudClient getCloudClient(String phoneNumber)
     {
-        if (mCloudClient == null)
-        {
+        if (mCloudClient == null) {
             Uri serverUri = Uri.parse(baseUrlOwnCloud);
             mCloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
             mCloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(getUserName(phoneNumber), mDeviceId));
@@ -101,6 +100,8 @@ public class NetworkProvider {
                 .setProvider("credentials")
                 .setUserName(getUserName(phoneNumber))
                 .setPassword(mDeviceId), result);
+
+        Log.w(NetworkProvider.class.getName(), mDeviceId);
     }
 
     public void getUser(AsyncResult<dtos.GetFullUserResponse> result) {
@@ -119,13 +120,13 @@ public class NetworkProvider {
     private String md5(final String s) {
         final String MD5 = "MD5";
         try {
-// Create MD5 Hash
+            // Create MD5 Hash
             MessageDigest digest = java.security.MessageDigest
                     .getInstance(MD5);
             digest.update(s.getBytes());
             byte messageDigest[] = digest.digest();
 
-// Create Hex String
+            // Create Hex String
             StringBuilder hexString = new StringBuilder();
             for (byte aMessageDigest : messageDigest) {
                 String h = Integer.toHexString(0xFF & aMessageDigest);

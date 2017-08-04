@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.explorer.Const;
+import com.americavoice.backup.explorer.helper.FilesHelper;
 import com.americavoice.backup.explorer.presenter.FileListPresenter;
 import com.americavoice.backup.explorer.ui.adapter.FileAdapter;
 import com.americavoice.backup.explorer.ui.adapter.FileLayoutManager;
@@ -253,26 +254,18 @@ public class FileListFragment extends BaseFragment implements FileListView {
             startActivityForResult(i, SELECT_VIDEO);
         } else if (mPath.startsWith(Const.Documents)) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("file/*");
+            intent.setType("application/*|text/*");
             startActivityForResult(intent,SELECT_DOCUMENT);
         }
     }
     @ Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String selectedPath = null;
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_PHOTO || requestCode == SELECT_VIDEO) {
-                String selectedPath = getPath(data.getData());
-                if(selectedPath != null) {
-                    if (mPresenter != null) mPresenter.onFileUpload(getContext(), selectedPath);
-                }
-            }
-            if (requestCode == SELECT_DOCUMENT)
-            {
-                String selectedPath = data.getData().getPath();
-                if(selectedPath != null) {
-                    if (mPresenter != null) mPresenter.onFileUpload(getContext(), selectedPath);
-                }
-            }
+            if (requestCode == SELECT_PHOTO || requestCode == SELECT_VIDEO || requestCode == SELECT_DOCUMENT)
+                selectedPath = FilesHelper.getPath(getContext(), data.getData());
+            if(selectedPath != null)
+                if (mPresenter != null) mPresenter.onFileUpload(selectedPath);
         }
     }
 

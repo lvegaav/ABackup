@@ -31,27 +31,6 @@ import butterknife.Unbinder;
  * Fragment that shows details of a certain political party.
  */
 public class LoginFragment extends BaseFragment implements LoginView {
-    @Override
-    public void viewHome() {
-        if (mListener != null) mListener.viewHome();
-    }
-
-    @Override
-    public void viewValidation() {
-        if (mListener != null) mListener.viewValidation();
-    }
-
-    @Override
-    public void showPhoneNumberRequired() {
-        etPhoneNumber.requestFocus();
-        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberRequired));
-    }
-
-    @Override
-    public void showPhoneNumberInvalid() {
-        etPhoneNumber.requestFocus();
-        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberInvalid));
-    }
 
     /**
      * Interface for listening submit button.
@@ -194,6 +173,28 @@ public class LoginFragment extends BaseFragment implements LoginView {
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
         if (this.mListener != null) this.mListener.onBackLoginClicked();
+    }
+
+    @Override
+    public void viewHome() {
+        if (mListener != null) mListener.viewHome();
+    }
+
+    @Override
+    public void viewValidation() {
+        if (mListener != null) mListener.viewValidation();
+    }
+
+    @Override
+    public void showPhoneNumberRequired() {
+        etPhoneNumber.requestFocus();
+        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberRequired));
+    }
+
+    @Override
+    public void showPhoneNumberInvalid() {
+        etPhoneNumber.requestFocus();
+        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberInvalid));
     }
 }
 

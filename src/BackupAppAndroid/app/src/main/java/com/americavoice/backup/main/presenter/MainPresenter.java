@@ -29,7 +29,7 @@ import javax.inject.Inject;
 public class MainPresenter extends BasePresenter implements IPresenter {
 
     private MainView mView;
-            ;
+
     @Inject
     public MainPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);

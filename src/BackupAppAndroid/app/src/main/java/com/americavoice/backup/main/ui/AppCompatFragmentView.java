@@ -1,9 +1,8 @@
 package com.americavoice.backup.main.ui;
 
 /**
- * Created by angelchanquin on 4/02/17.
+ * Interface representing a View in a model view presenter (MVP) pattern.
  */
-
 public interface AppCompatFragmentView {
 
     /**
