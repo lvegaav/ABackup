@@ -14,7 +14,18 @@
     <string name="confirmation.hello">Confirmation Code</string>
 
     <string name="main.hello">Backup Options</string>
+    <string name="main.photos">Photos</string>
+    <string name="main.videos">Videos</string>
+    <string name="main.contacts">Contacts</string>
+    <string name="main.documents">Documents</string>
 
     <string name="upload_folder_path">to_upload</string>
     <string name="download_folder_path">downloaded</string>
+
+    <string name="files.no_files">No files in here. \n Upload some content or sync with your devices!</string>
+
+    <string name="permission_storage_access">Additional permissions required to upload and download files.</string>
+
+    <string name="common_ok">OK</string>
+    <string name="retry">Retry</string>
 </resources>

@@ -158,15 +158,16 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
     private void onSuccessfulRefresh(ReadRemoteFolderOperation operation, RemoteOperationResult result) {
         List<RemoteFile> files = new ArrayList<>();
-        if (result.getData() == null) {
-            mView.renderEmpty("No hay informacion");
-            return;
-        }
         for(Object obj: result.getData()) {
             RemoteFile remoteFile = (RemoteFile) obj;
-            if (mPath.equals(remoteFile.getRemotePath())) continue;
+            if (mPath.equals(remoteFile.getRemotePath()))
+                continue;
             files.add(remoteFile);
         }
-        mView.renderList(files);
+        if (files.size() > 0) {
+            mView.renderList(files);
+        } else {
+            mView.renderEmpty();
+        }
     }
 }

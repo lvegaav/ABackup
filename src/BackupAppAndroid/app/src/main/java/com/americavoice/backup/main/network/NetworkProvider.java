@@ -37,7 +37,7 @@ public class NetworkProvider {
     private OwnCloudClient mCloudClient;
 
     private final String mDeviceId;
-    private static final String baseUrl = "http://192.168.90.200:52239";
+    private static final String baseUrl = "http://192.168.90.85:52239";
     private static final String baseUrlOwnCloud = "http://192.168.90.80:8080";
 
     @Inject

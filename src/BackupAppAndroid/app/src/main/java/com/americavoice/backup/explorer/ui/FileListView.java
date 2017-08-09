@@ -13,5 +13,5 @@ public interface FileListView extends ILoadDataView {
     void renderList(List<RemoteFile> collection);
     void viewDetail(RemoteFile remoteFile);
     void viewFolder(String path);
-    void renderEmpty(String message);
+    void renderEmpty();
 }

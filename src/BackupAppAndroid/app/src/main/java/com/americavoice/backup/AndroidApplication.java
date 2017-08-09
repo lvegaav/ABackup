@@ -2,6 +2,7 @@
 package com.americavoice.backup;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.americavoice.backup.di.components.ApplicationComponent;
 import com.americavoice.backup.di.components.DaggerApplicationComponent;
@@ -19,7 +20,6 @@ public class AndroidApplication extends Application {
         super.onCreate();
 //        Fabric.with(this, new Crashlytics());
         //Debug Fabric.with(this, new Crashlytics.Builder().core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()).build());
-
 
         this.initializeInjector();
     }

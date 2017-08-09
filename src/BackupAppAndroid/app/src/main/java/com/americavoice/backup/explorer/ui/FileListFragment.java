@@ -25,12 +25,10 @@ import com.americavoice.backup.explorer.ui.adapter.FileLayoutManager;
 import com.americavoice.backup.explorer.ui.adapter.SimpleDividerItemDecoration;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
-import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,16 +39,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-/**
- * Fragment that shows details of a certain political party.
- */
+
 public class FileListFragment extends BaseFragment implements FileListView {
     private static final String ARGUMENT_KEY_PATH = "com.americavoice.backup.ARGUMENT_KEY_PATH";
     private static final int SELECT_VIDEO = 1000;
     private static final int SELECT_PHOTO = 1001;
     private static final int SELECT_DOCUMENT = 1002;
+
     /**
-     * Interface for listening transaction list events.
+     * Interface for listening file list events.
      */
     public interface Listener {
         void onFileClicked(final RemoteFile remoteFile);
@@ -81,11 +78,9 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     public static FileListFragment newInstance(String path) {
         FileListFragment fragment = new FileListFragment();
-
         Bundle argumentsBundle = new Bundle();
         argumentsBundle.putString(ARGUMENT_KEY_PATH, path);
         fragment.setArguments(argumentsBundle);
-
         return fragment;
     }
 
@@ -104,7 +99,6 @@ public class FileListFragment extends BaseFragment implements FileListView {
         View fragmentView = inflater.inflate(R.layout.fragment_file_list, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
         setupUI();
-
         return fragmentView;
     }
 
@@ -154,13 +148,13 @@ public class FileListFragment extends BaseFragment implements FileListView {
     @Override
     public void showLoading() {
         this.rlProgress.setVisibility(View.VISIBLE);
-        this.rvFiles.setVisibility(View.GONE);
+//        this.rvFiles.setVisibility(View.GONE);
     }
 
     @Override
     public void hideLoading() {
-        if (this.rlProgress != null) this.rlProgress.setVisibility(View.GONE);
-        if (this.rvFiles != null) this.rvFiles.setVisibility(View.VISIBLE);
+        this.rlProgress.setVisibility(View.GONE);
+//        this.rvFiles.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -199,10 +193,9 @@ public class FileListFragment extends BaseFragment implements FileListView {
     }
 
     @Override
-    public void renderEmpty(String message) {
-        if (tvEmpty == null) return;
+    public void renderEmpty() {
         tvEmpty.setVisibility(View.VISIBLE);
-        tvEmpty.setText("No hay archivos.");
+        tvEmpty.setText(getString(R.string.files_no_files));
     }
 
     @Override
@@ -215,12 +208,10 @@ public class FileListFragment extends BaseFragment implements FileListView {
         return this.getActivity().getApplicationContext();
     }
 
-    /**
-     * Loads all political parties.
-     */
+
     private void loadPoliticalPartyList() {
         mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");
-        tvTitle.setText(mPath);
+        tvTitle.setText(mPath.replace("/", ""));
         this.mPresenter.initialize(mPath);
     }
 
@@ -267,17 +258,6 @@ public class FileListFragment extends BaseFragment implements FileListView {
             if(selectedPath != null)
                 if (mPresenter != null) mPresenter.onFileUpload(selectedPath);
         }
-    }
-
-    public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor =getActivity().managedQuery(uri, projection, null, null, null);
-        if(cursor!=null) {
-            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }
-        else return null;
     }
 
     private FileAdapter.OnItemClickListener onItemClickListener =

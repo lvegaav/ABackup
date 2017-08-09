@@ -1,7 +1,6 @@
 
 package com.americavoice.backup.main.presenter;
 
-import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.americavoice.backup.di.PerActivity;
@@ -9,14 +8,8 @@ import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.MainView;
-import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.FileUtils;
-import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
 
 import net.servicestack.client.AsyncResult;
-import net.servicestack.client.WebServiceException;
 
 import javax.inject.Inject;
 
