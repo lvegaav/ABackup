@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Backup</string>
-    <string name="navigation_drawer_open">Open</string>
-    <string name="navigation_drawer_close">Close</string>
-    <string name="loading">Loading</string>
-    <string name="main_title">Backup Options</string>
-    <string name="login.hello">Hello What\'s \nYour Number?</string>
+    <string name="common.loading">Loading</string>
+    <string name="common.ok">OK</string>
+    <string name="common.retry">Retry</string>
 
+
+    <string name="login.hello">Hello What\'s \nYour Number?</string>
     <string name="login.phonePlaceHolder">Phone Number</string>
     <string name="login.validationPhoneNumberRequired">Phone number required.</string>
     <string name="login.validationPhoneNumberInvalid">Invalid phone number.</string>
@@ -13,19 +13,20 @@
     <string name="confirmation.codePlaceHolder">Confirmation Code</string>
     <string name="confirmation.hello">Confirmation Code</string>
 
+    <string name="main.title">Backup Options</string>
     <string name="main.hello">Backup Options</string>
     <string name="main.photos">Photos</string>
     <string name="main.videos">Videos</string>
     <string name="main.contacts">Contacts</string>
     <string name="main.documents">Documents</string>
 
-    <string name="upload_folder_path">to_upload</string>
-    <string name="download_folder_path">downloaded</string>
-
+    <string name="files.upload_folder_path">to_upload</string>
+    <string name="files.download_folder_path">downloaded</string>
     <string name="files.no_files">No files in here. \n Upload some content or sync with your devices!</string>
+    <string name="files.permission_storage_access">Additional permissions required to upload and download files.</string>
 
-    <string name="permission_storage_access">Additional permissions required to upload and download files.</string>
-
-    <string name="common_ok">OK</string>
-    <string name="retry">Retry</string>
+    <string name="contacts.automatic_backup">Automatic Backup</string>
+    <string name="contacts.last_backup">Last Backup</string>
+    <string name="contacts.preference_backup_never">never</string>
+    <string name="contacts.backup_button">Backup Now</string>
 </resources>

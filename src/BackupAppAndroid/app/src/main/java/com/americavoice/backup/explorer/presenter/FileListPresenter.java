@@ -106,7 +106,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
             mView.viewFolder(remoteFile.getRemotePath());
         } else {
             //Check cache
-            File downFile = new File(context.getExternalCacheDir(), context.getString(R.string.download_folder_path) + "/" + remoteFile.getRemotePath());
+            File downFile = new File(context.getExternalCacheDir(), context.getString(R.string.files_download_folder_path) + "/" + remoteFile.getRemotePath());
             if (downFile.exists()) {
                 mView.viewDetail(remoteFile);
                 return;
@@ -114,7 +114,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
             mRemoteFile = remoteFile;
             mView.showLoading();
-            File downFolder = new File(context.getExternalCacheDir(), context.getString(R.string.download_folder_path));
+            File downFolder = new File(context.getExternalCacheDir(), context.getString(R.string.files_download_folder_path));
             if (!downFolder.exists()) {
                 downFolder.mkdir();
             }

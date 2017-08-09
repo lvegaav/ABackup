@@ -135,7 +135,7 @@ public class LoginFragment extends BaseFragment implements LoginView {
         }
         mProgress = ProgressDialog.show(getActivity(),
                 getResources().getString(R.string.app_name),
-                getResources().getString(R.string.loading),
+                getResources().getString(R.string.common_loading),
                 true,
                 false);
     }

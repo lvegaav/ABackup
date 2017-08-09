@@ -117,7 +117,7 @@ public class MainFragment extends BaseFragment implements MainView {
         }
         mProgress = ProgressDialog.show(getActivity(),
                 getResources().getString(R.string.app_name),
-                getResources().getString(R.string.loading),
+                getResources().getString(R.string.common_loading),
                 true,
                 false);
     }
@@ -142,8 +142,7 @@ public class MainFragment extends BaseFragment implements MainView {
     }
 
     @OnClick(R.id.ll_contacts)
-    public void onContacts(View view)
-    {
+    public void onContacts(View view) {
         if (mListener != null) mListener.viewContacts();
     }
 

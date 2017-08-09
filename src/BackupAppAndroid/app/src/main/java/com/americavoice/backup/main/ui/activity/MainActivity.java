@@ -13,6 +13,7 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.contacts.ContactsBackupFragment;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
@@ -61,7 +62,7 @@ public class MainActivity extends BaseActivity implements HasComponent<AppCompon
             if (PermissionUtil.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 // Show explanation to the user and then request permission
-                Snackbar snackbar = Snackbar.make(findViewById(R.id.fl_fragment), R.string.permission_storage_access,
+                Snackbar snackbar = Snackbar.make(findViewById(R.id.fl_fragment), R.string.files_permission_storage_access,
                         Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.common_ok, new View.OnClickListener() {
                             @Override
@@ -148,7 +149,7 @@ public class MainActivity extends BaseActivity implements HasComponent<AppCompon
 
     @Override
     public void viewContacts() {
-        replaceFragment(R.id.fl_fragment, FileListFragment.newInstance(Const.Contacts), true, true);
+        replaceFragment(R.id.fl_fragment, ContactsBackupFragment.newInstance(), true, true);
     }
 
     @Override
@@ -169,7 +170,7 @@ public class MainActivity extends BaseActivity implements HasComponent<AppCompon
     @Override
     public void onFileClicked(RemoteFile remoteFile) {
         //File downFolder = new File(getExternalCacheDir(), getString(R.string.download_folder_path) + "/" + mTempRemoteFile.getRemotePath().substring(0, mTempRemoteFile.getRemotePath().lastIndexOf('/') - 1));
-        File downFolder = new File(getExternalCacheDir(), getString(R.string.download_folder_path) + "/" + remoteFile.getRemotePath());
+        File downFolder = new File(getExternalCacheDir(), getString(R.string.files_download_folder_path) + "/" + remoteFile.getRemotePath());
         //Get file extension and mime type
         Uri selectedUri = Uri.fromFile(downFolder.getAbsoluteFile());
         String fileExtension =  MimeTypeMap.getFileExtensionFromUrl(selectedUri.toString());
