@@ -15,8 +15,7 @@ public abstract class BasePresenter {
         this.mSharedPrefsUtils = sharedPrefsUtils;
     }
 
-    public String getPhoneNumber()
-    {
+    protected String getPhoneNumber() {
         return mSharedPrefsUtils.getStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
     }
 }

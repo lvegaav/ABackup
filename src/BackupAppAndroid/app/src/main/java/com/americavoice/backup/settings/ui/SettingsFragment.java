@@ -33,6 +33,7 @@ import butterknife.Unbinder;
  * Fragment that shows details of a certain political party.
  */
 public class SettingsFragment extends BaseFragment implements SettingsView {
+
     /**
      * Interface for listening submit button.
      */
@@ -40,14 +41,13 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         void onBackSettingsClicked();
     }
 
-
     @Inject
     SettingsPresenter mPresenter;
     private Listener mListener;
     private Unbinder mUnBind;
     @BindView(R.id.tv_title)
     TextView tvTitle;
-    @BindString(R.string.main_hello)
+    @BindString(R.string.main_title)
     String title;
 
     public SettingsFragment() {

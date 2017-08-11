@@ -7,6 +7,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.americavoice.backup.authentication.AccountUtils;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
@@ -76,6 +77,7 @@ public class NetworkProvider {
             Uri serverUri = Uri.parse(baseUrlOwnCloud);
             mCloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
             mCloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(getUserName(phoneNumber), mDeviceId));
+            AccountUtils.setCurrentOwnCloudAccount(mContext, phoneNumber);
         }
         return mCloudClient;
     }

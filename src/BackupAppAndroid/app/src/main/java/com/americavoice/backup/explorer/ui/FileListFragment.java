@@ -104,7 +104,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
         super.onActivityCreated(savedInstanceState);
         showKeyboard(false);
         this.initialize();
-        this.loadPoliticalPartyList();
+        this.loadList();
     }
 
     @Override
@@ -206,7 +206,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
     }
 
 
-    private void loadPoliticalPartyList() {
+    private void loadList() {
         mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");
         tvTitle.setText(mPath.replace("/", ""));
         this.mPresenter.initialize(mPath);
@@ -214,12 +214,11 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     @OnClick(R.id.bt_retry)
     void onButtonRetryClick() {
-        loadPoliticalPartyList();
+        loadList();
     }
 
     @OnClick(R.id.btn_back)
-    void onButtonBack()
-    {
+    void onButtonBack() {
         String path = null;
         String subPath = mPath.substring(1, mPath.length() -1);
         String[] splits = subPath.split("/");
@@ -232,8 +231,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
     }
 
     @OnClick(R.id.fab_upload)
-    void onFabUpload()
-    {
+    void onFabUpload() {
         if (mPath.startsWith(Const.Photos)) {
             Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(i, SELECT_PHOTO);

@@ -15,12 +15,12 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "com.americavoice.backup"
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -39,6 +39,10 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+    }
 }
 
 dependencies {
@@ -46,11 +50,11 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:26.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:design:26.+'
 
     //dagger
     apt 'com.squareup:javapoet:1.7.0'
@@ -65,4 +69,7 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'net.servicestack:android:1.0.31'
     compile 'com.github.nextcloud:android-library:-SNAPSHOT'
+    compile 'com.github.evernote:android-job:v1.1.9'
+    compile 'com.googlecode.ez-vcard:ez-vcard:0.10.2'
+    compile 'com.jakewharton:disklrucache:2.0.2'
 }

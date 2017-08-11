@@ -36,7 +36,8 @@ import butterknife.ButterKnife;
 public class MainActivity extends BaseActivity implements HasComponent<AppComponent>,
         MainFragment.Listener,
         FileListFragment.Listener,
-        SettingsFragment.Listener {
+        SettingsFragment.Listener,
+        ContactsBackupFragment.Listener {
 
     private AppComponent mAppComponent;
     private  RemoteFile mTempRemoteFile;
@@ -197,6 +198,11 @@ public class MainActivity extends BaseActivity implements HasComponent<AppCompon
 
     @Override
     public void onBackSettingsClicked() {
+        replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
+    }
+
+    @Override
+    public void onContactsBackPressed() {
         replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
     }
 }

@@ -1,7 +1,7 @@
 package com.americavoice.backup.main.ui.activity;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -33,7 +33,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param fragment The fragment to be added.
      */
     protected void addFragment(int containerViewId, Fragment fragment) {
-        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = this.getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(containerViewId, fragment);
         fragmentTransaction.commit();
     }
@@ -47,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void replaceFragment(int containerViewId, Fragment fragment, boolean forward, boolean addToBackStack) {
         if(isFinishing()) return;
 
-        FragmentTransaction fragmentTransaction = this.getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = this.getSupportFragmentManager().beginTransaction();
 
         if (forward) {
             fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

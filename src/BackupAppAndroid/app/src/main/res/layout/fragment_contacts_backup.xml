@@ -19,7 +19,6 @@
             <include
                 layout="@layout/view_header"/>
         </RelativeLayout>
-
         <LinearLayout
             android:id="@+id/contacts_linear_layout"
             android:layout_width="match_parent"
