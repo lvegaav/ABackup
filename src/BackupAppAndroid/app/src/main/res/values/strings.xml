@@ -75,5 +75,8 @@
     <string name="contacts.read_permission">Permission to read contact list needed</string>
     <string name="contacts.preferences_backup_scheduled">Backup scheduled and will start shortly</string>
 
+    <string name="auth.unsupported_multiaccount">%1$s does not support multiple accounts</string>
+    <string name="auth.account_does_not_exist">Account does not exist on the device yet</string>
+    <string name="account_type">americavoice.backup</string>
 
 </resources>

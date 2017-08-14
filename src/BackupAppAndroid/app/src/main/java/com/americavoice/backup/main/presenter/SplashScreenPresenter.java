@@ -1,9 +1,11 @@
 
 package com.americavoice.backup.main.presenter;
 
+import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
@@ -48,36 +50,37 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
     /**
      * Initializes the presenter
      */
-    public void initialize() {
-        final String phoneNumber = mSharedPrefsUtils.getStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
-        if (phoneNumber == null)
-        {
-            mView.viewPhoneNumber();
-            return;
-        }
-
-        mNetworkProvider.login(phoneNumber, new AsyncResult<dtos.AuthenticateResponse>() {
-            @Override
-            public void success(dtos.AuthenticateResponse response) {
-                mView.viewHome();
-            }
-
-            @Override
-            public void error(Exception ex) {
-                dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
-                request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumber));
-                mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
-                    @Override
-                    public void success(dtos.SendResetPasswordSmsResponse response) {
-                        mView.viewValidation();
-                    }
-
-                    @Override
-                    public void error(Exception ex) {
-                        mView.viewPhoneNumber();
-                    }
-                });
-            }
-        });
+    public void initialize(final Context context) {
+//        final String phoneNumber = mSharedPrefsUtils.getStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
+//        if (phoneNumber == null) {
+//            mView.viewPhoneNumber();
+//            return;
+//        }
+//
+//        mNetworkProvider.login(phoneNumber, new AsyncResult<dtos.AuthenticateResponse>() {
+//            @Override
+//            public void success(dtos.AuthenticateResponse response) {
+//                AccountUtils.setCurrentOwnCloudAccount(context, phoneNumber);
+//                mView.viewHome();
+//            }
+//
+//            @Override
+//            public void error(Exception ex) {
+//                dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
+//                request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumber));
+//                mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
+//                    @Override
+//                    public void success(dtos.SendResetPasswordSmsResponse response) {
+//                        mView.viewValidation();
+//                    }
+//
+//                    @Override
+//                    public void error(Exception ex) {
+//                        mView.viewPhoneNumber();
+//                    }
+//                });
+//            }
+//        });
+        mView.viewHome();
     }
 }

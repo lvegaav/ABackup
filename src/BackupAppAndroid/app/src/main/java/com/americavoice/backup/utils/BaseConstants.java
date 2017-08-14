@@ -13,6 +13,7 @@ public class BaseConstants {
     public static final Integer CONTACTS_BACKUP_EXPLIRE = -1;
 
     public static final String EXTRA_ACCOUNT = "EXTRA_ACCOUNT";
+    public static final String EXTRA_ACTION = "EXTRA_ACTION";
 
     public static class PreferenceKeys {
         public static final String STORAGE_PATH = "storage_path";

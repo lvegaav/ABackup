@@ -69,7 +69,7 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
             @Override
             public void success(dtos.AuthenticateResponse response) {
                 mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumber);
-                mView.viewHome();
+                mView.loginWithCredentials(mNetworkProvider.getCloudClient(phoneNumber).getCredentials());
             }
 
             @Override
@@ -99,6 +99,18 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
         String errorMessage = ErrorMessageFactory.create(this.mView.getContext(),
                 errorBundle.getException());
         this.mView.showError(errorMessage);
+    }
+
+    public String getDeviceId() {
+        return mNetworkProvider.getDeviceId();
+    }
+
+    public String getUsername() {
+        return getPhoneNumber();
+    }
+
+    public void setDefaultAccountName(String accountName) {
+        mSharedPrefsUtils.setStringPreference("select_oc_account", accountName);
     }
 
 }

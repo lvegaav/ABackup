@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.authentication.AccountAuthenticatorActivity;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
@@ -12,8 +13,13 @@ import com.americavoice.backup.login.ui.LoginFragment;
 
 import butterknife.ButterKnife;
 
-public class LoginActivity extends BaseActivity implements HasComponent<AppComponent>,
-        LoginFragment.Listener {
+public class LoginActivity extends AccountAuthenticatorActivity implements HasComponent<AppComponent>, LoginFragment.Listener {
+
+
+
+    public static final byte ACTION_CREATE = 0;
+    public static final byte ACTION_UPDATE_TOKEN = 1;               // requested by the user
+    public static final byte ACTION_UPDATE_EXPIRED_TOKEN = 2;       // detected by the app
 
     private AppComponent mAppComponent;
 

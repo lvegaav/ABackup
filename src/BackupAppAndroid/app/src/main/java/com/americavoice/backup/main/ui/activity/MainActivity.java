@@ -33,7 +33,7 @@ import java.io.File;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends BaseActivity implements HasComponent<AppComponent>,
+public class MainActivity extends BaseOwncloudActivity implements HasComponent<AppComponent>,
         MainFragment.Listener,
         FileListFragment.Listener,
         SettingsFragment.Listener,

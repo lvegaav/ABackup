@@ -41,6 +41,10 @@ public class NetworkProvider {
     private static final String baseUrl = "http://192.168.90.85:52239";
     private static final String baseUrlOwnCloud = "http://192.168.90.80:8080";
 
+    public static String getBaseUrlOwnCloud() {
+        return NetworkProvider.baseUrlOwnCloud;
+    }
+
     @Inject
     public NetworkProvider(Context context) {
         mPref = context.getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
@@ -77,7 +81,6 @@ public class NetworkProvider {
             Uri serverUri = Uri.parse(baseUrlOwnCloud);
             mCloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
             mCloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(getUserName(phoneNumber), mDeviceId));
-            AccountUtils.setCurrentOwnCloudAccount(mContext, phoneNumber);
         }
         return mCloudClient;
     }

@@ -115,7 +115,7 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
-        this.mPresenter.initialize();
+        this.mPresenter.initialize(getContext());
     }
 
     @Override

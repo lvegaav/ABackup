@@ -1,11 +1,13 @@
 package com.americavoice.backup.main.ui.activity;
 
+import android.accounts.Account;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.americavoice.backup.AndroidApplication;
+import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.components.ApplicationComponent;
 import com.americavoice.backup.di.modules.ActivityModule;
 import com.americavoice.backup.main.navigation.Navigator;
@@ -18,7 +20,7 @@ import javax.inject.Inject;
 public abstract class BaseActivity extends AppCompatActivity {
 
     @Inject
-    Navigator navigator;
+    protected Navigator navigator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
