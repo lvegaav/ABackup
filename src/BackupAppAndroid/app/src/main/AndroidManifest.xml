@@ -59,7 +59,13 @@
             android:name=".main.ui.activity.ConfirmationActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
+        <provider
+            android:name=".providers.FileContentProvider"
+            android:authorities="@string/authority"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/sync_string_files"
+            android:syncable="true" />
         <service
             android:name=".authentication.AccountAuthenticatorService"
             android:exported="true" >

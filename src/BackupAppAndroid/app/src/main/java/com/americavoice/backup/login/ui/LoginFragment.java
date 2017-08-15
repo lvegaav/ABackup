@@ -369,7 +369,7 @@ public class LoginFragment extends BaseFragment implements LoginView, Authentica
             intent.putExtra(AccountManager.KEY_USERDATA, username);
 
             mAccountMgr.setUserData(
-                    mAccount, com.owncloud.android.lib.common.accounts.AccountUtils.Constants.KEY_OC_VERSION, mServerInfo.mVersion.getVersion()
+                    mAccount, com.owncloud.android.lib.common.accounts.AccountUtils.Constants.KEY_OC_VERSION, "11.0.3"
             );
             mAccountMgr.setUserData(
                     mAccount, com.owncloud.android.lib.common.accounts.AccountUtils.Constants.KEY_OC_BASE_URL, mServerInfo.mBaseUrl

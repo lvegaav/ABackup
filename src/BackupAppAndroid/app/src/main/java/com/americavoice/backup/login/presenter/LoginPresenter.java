@@ -106,7 +106,7 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
     }
 
     public String getUsername() {
-        return getPhoneNumber();
+        return NetworkProvider.COMPANY_ID + "_" + getPhoneNumber();
     }
 
     public void setDefaultAccountName(String accountName) {
