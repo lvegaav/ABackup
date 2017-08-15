@@ -29,7 +29,8 @@
     <string name="files.download_folder_path">downloaded</string>
     <string name="files.no_files">No files in here. \n Upload some content or sync with your devices!</string>
     <string name="files.permission_storage_access">Additional permissions required to upload and download files.</string>
-    <string name="files.instant_upload_path">/InstantUpload</string>
+    <string name="files.instant_upload_photo_path">/Photos</string>
+    <string name="files.instant_upload_video_path">/Videos</string>
 
     <string name="files.uploader_upload_in_progress_ticker"><![CDATA[Uploading &#8230;]]></string>
     <string name="files.uploader_upload_in_progress_content">%1$d%% Uploading %2$s</string>

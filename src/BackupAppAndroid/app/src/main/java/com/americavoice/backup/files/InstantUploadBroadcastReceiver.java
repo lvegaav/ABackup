@@ -140,9 +140,7 @@ public class InstantUploadBroadcastReceiver extends BroadcastReceiver {
 
         int behaviour = getUploadBehaviour(context);
         Boolean subfolderByDate = PreferenceManager.instantPictureUploadPathUseSubfolders(context);
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        String uploadPathdef = context.getString(R.string.files_instant_upload_path);
-        String uploadPath = pref.getString("instant_upload_path", uploadPathdef);
+        String uploadPath = context.getString(R.string.files_instant_upload_photo_path);
 
         FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
         requester.uploadNewFile(
