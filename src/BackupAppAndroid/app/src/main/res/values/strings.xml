@@ -81,5 +81,6 @@
     <string name="account_type">americavoice.backup</string>
     <string name="sync_string_files">Files</string>
     <string name="authority">com.americavoice.backup</string>
+    <string name="file_list_seconds_ago">seconds ago.</string>
 
 </resources>

@@ -24,6 +24,7 @@ import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
+import com.americavoice.backup.utils.DisplayUtils;
 import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.ThemeUtils;
 import com.evernote.android.job.JobManager;
@@ -153,6 +154,15 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         };
 
         backupSwitch.setOnCheckedChangeListener(onCheckedChangeListener);
+
+        // display last backup
+        Long lastBackupTimestamp = arbitraryDataProvider.getLongValue(account, PREFERENCE_CONTACTS_LAST_BACKUP);
+
+        if (lastBackupTimestamp == -1) {
+            lastBackup.setText(R.string.contacts_preference_backup_never);
+        } else {
+            lastBackup.setText(DisplayUtils.getRelativeTimestamp(getActivity(), lastBackupTimestamp));
+        }
 
     }
 
