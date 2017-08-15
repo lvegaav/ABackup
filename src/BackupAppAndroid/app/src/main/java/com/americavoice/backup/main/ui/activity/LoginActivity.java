@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountAuthenticatorActivity;
+import com.americavoice.backup.confirmation.ui.ConfirmationFragment;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
@@ -13,7 +14,8 @@ import com.americavoice.backup.login.ui.LoginFragment;
 
 import butterknife.ButterKnife;
 
-public class LoginActivity extends AccountAuthenticatorActivity implements HasComponent<AppComponent>, LoginFragment.Listener {
+public class LoginActivity extends AccountAuthenticatorActivity implements HasComponent<AppComponent>,
+        LoginFragment.Listener, ConfirmationFragment.Listener {
 
 
 
@@ -79,9 +81,13 @@ public class LoginActivity extends AccountAuthenticatorActivity implements HasCo
     }
 
     @Override
-    public void viewValidation() {
-        navigator.navigateToConfirmationActivity(this);
+    public void onBackConfirmationClicked() {
         finish();
+    }
+
+    @Override
+    public void viewValidation() {
+        replaceFragment(R.id.fl_fragment, ConfirmationFragment.newInstance(), true, true);
     }
 
     @Override

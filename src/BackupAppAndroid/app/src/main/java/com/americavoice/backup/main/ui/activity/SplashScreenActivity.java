@@ -69,7 +69,7 @@ public class SplashScreenActivity extends BaseActivity implements HasComponent<A
 
     @Override
     public void showValidation() {
-        navigator.navigateToConfirmationActivity(this);
+        navigator.navigateToLoginActivity(this);
         finish();
     }
 

@@ -10,7 +10,8 @@ public interface LoginView extends ILoadDataView {
     void viewHome();
     void viewValidation();
     void loginWithCredentials(OwnCloudCredentials credentials);
-
+    void showGettingServerInfo();
+    void hideGettingServerInfo();
     void showPhoneNumberRequired();
     void showPhoneNumberInvalid();
 }

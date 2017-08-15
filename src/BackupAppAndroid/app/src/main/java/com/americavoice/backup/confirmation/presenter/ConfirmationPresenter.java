@@ -30,7 +30,7 @@ public class ConfirmationPresenter extends BasePresenter implements IPresenter {
     private ConfirmationView mView;
 
     @Inject
-    public ConfirmationPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
+    ConfirmationPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
     }
 
@@ -65,21 +65,26 @@ public class ConfirmationPresenter extends BasePresenter implements IPresenter {
             mView.showConfirmationCodeInvalid();
         }
         if (hasError) return;
-        String phoneNumber = mSharedPrefsUtils.getStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
+
+        final String phoneNumber = mSharedPrefsUtils.getStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
 
         dtos.PerformResetPassword request = new dtos.PerformResetPassword();
         request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumber));
         request.setNewPassword(mNetworkProvider.getDeviceId());
         request.setResetPasswordCode(code);
-
+        mView.showLoading();
         mNetworkProvider.PerformResetPassword(request, new AsyncResult<dtos.PerformResetPasswordResponse>() {
             @Override
             public void success(dtos.PerformResetPasswordResponse response) {
+                mView.hideLoading();
+                mView.showGettingServerInfo();
+                mView.loginWithCredentials(mNetworkProvider.getCloudClient(phoneNumber).getCredentials());
                 mView.viewHome();
             }
 
             @Override
             public void error(Exception ex) {
+                mView.hideLoading();
                 mView.showConfirmationCodeInvalid();
             }
         });

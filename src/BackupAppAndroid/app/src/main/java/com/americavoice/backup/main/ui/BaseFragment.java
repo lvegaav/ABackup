@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.main.ui.dialog.DialogError;
 
@@ -89,6 +90,23 @@ public abstract class BaseFragment extends Fragment {
         final ActionBar toolBar = activity.getSupportActionBar();
         if (null != toolBar) {
             toolBar.setTitle(title);
+        }
+    }
+
+    protected void showDialog(String message) {
+        hideDialog();
+        mProgress = ProgressDialog.show(getActivity(),
+                getResources().getString(R.string.app_name),
+                message,
+                true,
+                false);
+    }
+
+    protected void hideDialog() {
+        if (mProgress != null) {
+            mProgress.hide();
+            mProgress.dismiss();
+            mProgress = null;
         }
     }
 }

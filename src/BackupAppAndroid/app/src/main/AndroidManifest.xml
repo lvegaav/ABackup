@@ -55,10 +55,7 @@
             android:name=".main.ui.activity.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".main.ui.activity.ConfirmationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+
         <provider
             android:name=".providers.FileContentProvider"
             android:authorities="@string/authority"

@@ -144,14 +144,16 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     @Override
     public void showLoading() {
-        this.rlProgress.setVisibility(View.VISIBLE);
-//        this.rvFiles.setVisibility(View.GONE);
+        if (this.rlProgress != null) {
+            this.rlProgress.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void hideLoading() {
-        this.rlProgress.setVisibility(View.GONE);
-//        this.rvFiles.setVisibility(View.VISIBLE);
+        if (this.rlProgress != null) {
+            this.rlProgress.setVisibility(View.GONE);
+        }
     }
 
     @Override

@@ -2,7 +2,6 @@
 package com.americavoice.backup.confirmation.ui;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -14,12 +13,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.authentication.AuthenticatorAsyncTask;
 import com.americavoice.backup.confirmation.presenter.ConfirmationPresenter;
 import com.americavoice.backup.di.components.AppComponent;
-import com.americavoice.backup.login.presenter.LoginPresenter;
-import com.americavoice.backup.login.ui.LoginView;
 import com.americavoice.backup.main.event.OnBackPress;
-import com.americavoice.backup.main.ui.BaseFragment;
+import com.americavoice.backup.main.network.NetworkProvider;
+import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
+import com.americavoice.backup.main.ui.activity.LoginActivity;
+import com.owncloud.android.lib.common.OwnCloudCredentials;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -32,7 +35,7 @@ import butterknife.Unbinder;
 /**
  * Fragment that shows details of a certain political party.
  */
-public class ConfirmationFragment extends BaseFragment implements ConfirmationView {
+public class ConfirmationFragment extends BaseAuthenticatorFragment implements ConfirmationView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
     @Override
     public void viewHome() {
         if (mListener != null) mListener.viewHome();
@@ -102,7 +105,7 @@ public class ConfirmationFragment extends BaseFragment implements ConfirmationVi
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.initialize();
+        this.initialize(savedInstanceState);
     }
 
     @Override
@@ -129,44 +132,45 @@ public class ConfirmationFragment extends BaseFragment implements ConfirmationVi
         this.mPresenter.destroy();
     }
 
-
-    private void initialize() {
+    private void initialize(Bundle savedInstanceState) {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
         this.mPresenter.initialize();
+        super.initialize();
+
+        if (savedInstanceState != null) {
+            //TODO:Init Values
+        }
     }
 
     @Override
     public void showLoading() {
-        if (mProgress != null) {
-            mProgress.hide();
-            mProgress.dismiss();
-            mProgress = null;
-        }
-        mProgress = ProgressDialog.show(getActivity(),
-                getResources().getString(R.string.app_name),
-                getResources().getString(R.string.common_loading),
-                true,
-                false);
+        showDialog(getString(R.string.common_loading));
     }
 
     @Override
     public void hideLoading() {
-        if (mProgress != null) {
-            mProgress.hide();
-            mProgress.dismiss();
-            mProgress = null;
-        }
+        hideDialog();
     }
 
     @Override
     public void showRetry() {
-
+        showDialog(getString(R.string.common_sending));
     }
 
     @Override
     public void hideRetry() {
+        hideDialog();
+    }
 
+    @Override
+    public void showGettingServerInfo() {
+        showDialog(getString(R.string.common_getting_server_info));
+    }
+
+    @Override
+    public void hideGettingServerInfo() {
+        hideDialog();
     }
 
     @Override
@@ -183,6 +187,50 @@ public class ConfirmationFragment extends BaseFragment implements ConfirmationVi
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
         if (this.mListener != null) this.mListener.onBackConfirmationClicked();
+    }
+
+    @Override
+    public void onAuthenticatorTaskCallback(RemoteOperationResult result) {
+        hideGettingServerInfo();
+        if (result.isSuccess()) {
+            Log_OC.d(TAG, "Successful access - time to save the account");
+
+            boolean success = false;
+
+            if (mAction == LoginActivity.ACTION_CREATE) {
+                success = createAccount(result, mPresenter.getUsername(), mPresenter.getDeviceId());
+
+            } else {
+                try {
+                    updateAccountAuthentication(mPresenter.getDeviceId());
+                    success = true;
+
+                } catch (com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException e) {
+                    Log_OC.e(TAG, "Account " + mAccount + " was removed!", e);
+                    showToastMessage(getContext().getString(R.string.auth_account_does_not_exist));
+                    getActivity().finish();
+                }
+            }
+
+            if (success) {
+                viewHome();
+            } else {
+                showToastMessage("Couldn't create the account, please try again");
+            }
+
+        } else if (result.isServerFail() || result.isException()) {
+            showToastMessage(result.getLogMessage());
+
+        } else {    // authorization fail due to client side - probably wrong credentials
+            showToastMessage("Check credentials, please try again");
+        }
+    }
+
+    @Override
+    public void loginWithCredentials(OwnCloudCredentials credentials) {
+        AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
+        Object[] params = {NetworkProvider.getBaseUrlOwnCloud(), credentials};
+        loginAsyncTask.execute(params);
     }
 }
 

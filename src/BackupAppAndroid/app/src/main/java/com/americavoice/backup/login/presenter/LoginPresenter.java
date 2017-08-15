@@ -64,19 +64,22 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
             mView.showPhoneNumberRequired();
         }
         if (hasError) return;
-
+        mView.showLoading();
         mNetworkProvider.login(phoneNumber, new AsyncResult<dtos.AuthenticateResponse>() {
             @Override
             public void success(dtos.AuthenticateResponse response) {
+                mView.hideLoading();
+                mView.showGettingServerInfo();
                 mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumber);
                 mView.loginWithCredentials(mNetworkProvider.getCloudClient(phoneNumber).getCredentials());
             }
 
             @Override
             public void error(Exception ex) {
+                mView.hideLoading();
                 dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
                 request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumber));
-
+                mView.showRetry();
                 mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
                     @Override
                     public void success(dtos.SendResetPasswordSmsResponse response) {
@@ -87,6 +90,11 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                     @Override
                     public void error(Exception ex) {
                         mView.showPhoneNumberInvalid();
+                    }
+
+                    @Override
+                    public void complete() {
+                        mView.hideRetry();
                     }
                 });
             }
@@ -99,18 +107,6 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
         String errorMessage = ErrorMessageFactory.create(this.mView.getContext(),
                 errorBundle.getException());
         this.mView.showError(errorMessage);
-    }
-
-    public String getDeviceId() {
-        return mNetworkProvider.getDeviceId();
-    }
-
-    public String getUsername() {
-        return NetworkProvider.COMPANY_ID + "_" + getPhoneNumber();
-    }
-
-    public void setDefaultAccountName(String accountName) {
-        mSharedPrefsUtils.setStringPreference("select_oc_account", accountName);
     }
 
 }

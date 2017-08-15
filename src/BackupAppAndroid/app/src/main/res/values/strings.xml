@@ -2,6 +2,7 @@
     <string name="app_name">Backup</string>
 
     <string name="common.loading">Loading</string>
+    <string name="common.sending">Sending verification code</string>
     <string name="common.ok">OK</string>
     <string name="common.retry">Retry</string>
 
@@ -81,5 +82,6 @@
     <string name="sync_string_files">Files</string>
     <string name="authority">com.americavoice.backup</string>
     <string name="file_list_seconds_ago">seconds ago.</string>
+    <string name="common_getting_server_info">Getting server information</string>
 
 </resources>

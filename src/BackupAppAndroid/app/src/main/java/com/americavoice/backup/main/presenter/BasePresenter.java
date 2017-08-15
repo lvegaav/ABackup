@@ -18,4 +18,12 @@ public abstract class BasePresenter {
     protected String getPhoneNumber() {
         return mSharedPrefsUtils.getStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
     }
+
+    public String getDeviceId() {
+        return mNetworkProvider.getDeviceId();
+    }
+
+    public String getUsername() {
+        return NetworkProvider.COMPANY_ID + "_" + getPhoneNumber();
+    }
 }
