@@ -8,5 +8,4 @@ import com.americavoice.backup.main.ui.ILoadDataView;
 
 public interface ContactsBackupView extends ILoadDataView {
     void setTitle(String title);
-    void setBackupSwitchChecked(Boolean checked);
 }

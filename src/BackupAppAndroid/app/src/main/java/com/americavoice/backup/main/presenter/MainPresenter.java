@@ -2,6 +2,7 @@
 package com.americavoice.backup.main.presenter;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
@@ -51,16 +52,18 @@ public class MainPresenter extends BasePresenter implements IPresenter {
 
         mView.setTitle(title);
 
-        mNetworkProvider.getUser(new AsyncResult<dtos.GetFullUserResponse>() {
-            @Override
-            public void success(dtos.GetFullUserResponse response) {
+        Log.i("Login: ", mNetworkProvider.getDeviceId());
 
-            }
-
-            @Override
-            public void error(Exception ex) {
-            }
-        });
+//        mNetworkProvider.getUser(new AsyncResult<dtos.GetFullUserResponse>() {
+//            @Override
+//            public void success(dtos.GetFullUserResponse response) {
+//
+//            }
+//
+//            @Override
+//            public void error(Exception ex) {
+//            }
+//        });
 
     }
 }

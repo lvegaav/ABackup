@@ -105,8 +105,6 @@ public class NetworkProvider {
                 .setProvider("credentials")
                 .setUserName(getUserName(phoneNumber))
                 .setPassword(mDeviceId), result);
-
-        Log.w(NetworkProvider.class.getName(), mDeviceId);
     }
 
     public void getUser(AsyncResult<dtos.GetFullUserResponse> result) {

@@ -136,6 +136,9 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
         this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
 
+        final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+        backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP));
+
         onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -163,11 +166,6 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     @Override
     public void setTitle(String title) {
         tvTitle.setText(title);
-    }
-
-    @Override
-    public void setBackupSwitchChecked(Boolean checked) {
-        backupSwitch.setChecked(checked);
     }
 
     @Override

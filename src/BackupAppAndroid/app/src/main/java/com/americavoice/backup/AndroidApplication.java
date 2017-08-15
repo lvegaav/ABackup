@@ -13,7 +13,9 @@ import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.ApplicationComponent;
 import com.americavoice.backup.di.components.DaggerApplicationComponent;
 import com.americavoice.backup.di.modules.ApplicationModule;
+import com.americavoice.backup.service.NCJobCreator;
 import com.americavoice.backup.utils.BaseConstants;
+import com.evernote.android.job.JobManager;
 
 /**
  * Android Main Application
@@ -27,6 +29,7 @@ public class AndroidApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        JobManager.create(this).addJobCreator(new NCJobCreator());
 //        Fabric.with(this, new Crashlytics());
         //Debug Fabric.with(this, new Crashlytics.Builder().core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()).build());
 

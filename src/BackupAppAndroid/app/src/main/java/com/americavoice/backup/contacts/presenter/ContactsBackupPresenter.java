@@ -56,7 +56,6 @@ public class ContactsBackupPresenter extends BasePresenter implements IPresenter
     public void initialize(String title) {
         if (this.mView != null) {
             mView.setTitle(title);
-            mView.setBackupSwitchChecked(mSharedPrefsUtils.getBooleanPreference(ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, false));
         }
 
     }
