@@ -138,8 +138,10 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     private void setupUI() {
         FileLayoutManager layoutManager = new FileLayoutManager(getContext());
-        this.rvFiles.setLayoutManager(layoutManager);
-        this.rvFiles.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
+        if (this.rvFiles != null) {
+            this.rvFiles.setLayoutManager(layoutManager);
+            this.rvFiles.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
+        }
     }
 
     @Override
@@ -158,12 +160,16 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     @Override
     public void showRetry() {
-        this.rlRetry.setVisibility(View.VISIBLE);
+        if (this.rlRetry != null) {
+            this.rlRetry.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void hideRetry() {
-        this.rlRetry.setVisibility(View.GONE);
+        if (this.rlRetry != null) {
+            this.rlRetry.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -216,6 +222,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     @OnClick(R.id.bt_retry)
     void onButtonRetryClick() {
+        hideRetry();
         loadList();
     }
 
@@ -224,8 +231,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
         String path = null;
         String subPath = mPath.substring(1, mPath.length() -1);
         String[] splits = subPath.split("/");
-        if (splits.length > 1)
-        {
+        if (splits.length > 1) {
             path = splits[splits.length - 2];
         }
 

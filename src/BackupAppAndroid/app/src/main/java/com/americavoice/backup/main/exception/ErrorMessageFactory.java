@@ -3,6 +3,8 @@ package com.americavoice.backup.main.exception;
 
 import android.content.Context;
 
+import com.americavoice.backup.R;
+
 /**
  * Factory used to create error messages from an Exception as a condition.
  */
@@ -19,6 +21,7 @@ public class ErrorMessageFactory {
      * @return {@link String} an error message.
      */
     public static String create(Context context, Exception exception) {
-        return "Error desconocido...";
+        String message = context.getString(R.string.exception_message_generic);
+        return message;
     }
 }

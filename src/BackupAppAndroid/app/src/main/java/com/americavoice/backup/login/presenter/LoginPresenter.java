@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.login.ui.LoginView;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
+import com.americavoice.backup.main.exception.DefaultErrorBundle;
 import com.americavoice.backup.main.exception.ErrorBundle;
 import com.americavoice.backup.main.exception.ErrorMessageFactory;
 import com.americavoice.backup.main.network.NetworkProvider;
@@ -15,6 +16,7 @@ import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 
 import net.servicestack.client.AsyncResult;
+import net.servicestack.client.WebServiceException;
 
 import javax.inject.Inject;
 
@@ -76,31 +78,35 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
 
             @Override
             public void error(Exception ex) {
-                mView.hideLoading();
-                dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
-                request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumber));
-                mView.showRetry();
-                mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
-                    @Override
-                    public void success(dtos.SendResetPasswordSmsResponse response) {
-                        mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumber);
-                        mView.viewValidation();
-                    }
+                if (ex instanceof WebServiceException){
+                    WebServiceException webEx = (WebServiceException) ex;
+                    if (webEx.getStatusCode() == 401) {
+                        dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
+                        request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumber));
+                        mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
+                            @Override
+                            public void success(dtos.SendResetPasswordSmsResponse response) {
+                                mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumber);
+                                mView.viewValidation();
+                            }
+                            @Override
+                            public void error(Exception ex) {
+                                mView.showPhoneNumberInvalid();
+                            }
 
-                    @Override
-                    public void error(Exception ex) {
-                        mView.showPhoneNumberInvalid();
+                            @Override
+                            public void complete() {
+                                mView.hideLoading();
+                            }
+                        });
+                    } else {
+                        showErrorMessage(new DefaultErrorBundle(ex));
                     }
-
-                    @Override
-                    public void complete() {
-                        mView.hideRetry();
-                    }
-                });
+                } else {
+                    showErrorMessage(new DefaultErrorBundle(ex));
+                }
             }
         });
-
-
     }
 
     private void showErrorMessage(ErrorBundle errorBundle) {

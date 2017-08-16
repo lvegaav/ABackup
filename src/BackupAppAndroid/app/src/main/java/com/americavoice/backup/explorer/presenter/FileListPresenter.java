@@ -66,6 +66,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
     public void onFileUpload(String path) {
 
+        mView.hideRetry();
         mView.showLoading();
 
         File upFile = new File(path);
@@ -134,7 +135,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
         mView.hideLoading();
         if (!result.isSuccess()) {
-
+            mView.showRetry();
         } else if (operation instanceof ReadRemoteFolderOperation) {
             onSuccessfulRefresh((ReadRemoteFolderOperation)operation, result);
 

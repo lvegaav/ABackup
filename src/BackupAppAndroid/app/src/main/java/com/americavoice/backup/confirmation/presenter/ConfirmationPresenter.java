@@ -79,7 +79,6 @@ public class ConfirmationPresenter extends BasePresenter implements IPresenter {
                 mView.hideLoading();
                 mView.showGettingServerInfo();
                 mView.loginWithCredentials(mNetworkProvider.getCloudClient(phoneNumber).getCredentials());
-                mView.viewHome();
             }
 
             @Override
