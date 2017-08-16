@@ -59,11 +59,11 @@ public abstract class PreferenceManager {
     }
 
     public static boolean instantPictureUploadEnabled(Context context) {
-        return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_UPLOADING, false);
+        return true;
     }
 
     public static boolean instantVideoUploadEnabled(Context context) {
-        return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_VIDEO_UPLOADING, false);
+        return true;
     }
 
     public static boolean instantPictureUploadPathUseSubfolders(Context context) {
@@ -71,7 +71,7 @@ public abstract class PreferenceManager {
     }
 
     public static boolean instantPictureUploadViaWiFiOnly(Context context) {
-        return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_UPLOAD_ON_WIFI, false);
+        return false;
     }
 
     public static boolean instantVideoUploadPathUseSubfolders(Context context) {
@@ -79,15 +79,15 @@ public abstract class PreferenceManager {
     }
 
     public static boolean instantVideoUploadViaWiFiOnly(Context context) {
-        return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_VIDEO_UPLOAD_ON_WIFI, false);
+        return false;
     }
 
     public static boolean instantPictureUploadWhenChargingOnly(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("instant_upload_on_charging", false);
+        return false;
     }
 
     public static boolean instantVideoUploadWhenChargingOnly(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("instant_video_upload_on_charging", false);
+        return false;
     }
 
     public static boolean showHiddenFilesEnabled(Context context) {

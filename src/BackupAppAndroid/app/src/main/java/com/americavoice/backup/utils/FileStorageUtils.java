@@ -190,9 +190,7 @@ public class FileStorageUtils {
      * @return String: video file path composed
      */
     public static String getInstantVideoUploadFilePath(Context context, String fileName, long dateTaken) {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-        String uploadVideoPathdef = context.getString(R.string.files_instant_upload_path);
-        String uploadVideoPath = pref.getString("instant_video_upload_path", uploadVideoPathdef);
+        String uploadVideoPath = context.getString(R.string.files_instant_upload_video_path);
         String subPath = "";
         if (com.americavoice.backup.db.PreferenceManager.instantVideoUploadPathUseSubfolders(context)) {
             subPath = getSubpathFromDate(dateTaken);
