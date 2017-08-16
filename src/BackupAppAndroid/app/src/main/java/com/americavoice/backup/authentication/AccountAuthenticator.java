@@ -192,7 +192,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         }
         
         /// if not stored, return Intent to access the AuthenticatorActivity and UPDATE the token for the account
-        Intent intent = new Intent(mContext, MainActivity.class);
+        Intent intent = new Intent(mContext, LoginActivity.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(KEY_AUTH_TOKEN_TYPE, authTokenType);
         intent.putExtra(KEY_LOGIN_OPTIONS, options);
@@ -223,7 +223,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                                     Account account, String authTokenType, Bundle options)
             throws NetworkErrorException {
 
-        Intent intent = new Intent(mContext, MainActivity.class);
+        Intent intent = new Intent(mContext, LoginActivity.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         intent.putExtra(KEY_ACCOUNT, account);
         intent.putExtra(KEY_AUTH_TOKEN_TYPE, authTokenType);

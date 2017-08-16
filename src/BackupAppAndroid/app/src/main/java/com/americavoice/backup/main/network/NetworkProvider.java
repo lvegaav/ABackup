@@ -38,8 +38,8 @@ public class NetworkProvider {
     private OwnCloudClient mCloudClient;
 
     private final String mDeviceId;
-    private static final String baseUrl = "https://backup.secureip.io";
-    private static final String baseUrlOwnCloud = "https://cloud.secureip.io";
+    private static final String baseUrl = "http://192.168.1.72:52239";
+    private static final String baseUrlOwnCloud = "http://192.168.1.68:8080";
 
     public static String getBaseUrlOwnCloud() {
         return NetworkProvider.baseUrlOwnCloud;
@@ -85,18 +85,15 @@ public class NetworkProvider {
         return mCloudClient;
     }
 
-    public String getDeviceId()
-    {
+    public String getDeviceId() {
         return mDeviceId;
     }
 
-    public String getUserName(String phoneNumber)
-    {
+    public String getUserName(String phoneNumber) {
         return COMPANY_ID + "_" + phoneNumber;
     }
 
-    public void logout()
-    {
+    public void logout() {
         mClient.clearCookies();    //Logout server
     }
 

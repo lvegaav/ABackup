@@ -213,7 +213,7 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
             }
 
             if (success) {
-                viewHome();
+                getActivity().finish();
             } else {
                 showToastMessage("Couldn't create the account, please try again");
             }

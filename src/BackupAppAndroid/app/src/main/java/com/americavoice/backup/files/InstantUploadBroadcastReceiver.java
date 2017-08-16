@@ -93,11 +93,6 @@ public class InstantUploadBroadcastReceiver extends BroadcastReceiver {
 
         Log_OC.i(TAG, "New photo received");
 
-        if (!PreferenceManager.instantPictureUploadEnabled(context)) {
-            Log_OC.d(TAG, "Instant picture upload disabled, ignoring new picture");
-            return;
-        }
-
         Account account = AccountUtils.getCurrentOwnCloudAccount(context);
         if (account == null) {
             Log_OC.w(TAG, "No account found for instant upload, aborting");
@@ -118,16 +113,19 @@ public class InstantUploadBroadcastReceiver extends BroadcastReceiver {
         }
 
         c = context.getContentResolver().query(intent.getData(), CONTENT_PROJECTION, null, null, null);
-        if (!c.moveToFirst()) {
-            Log_OC.e(TAG, "Couldn't resolve given uri: " + intent.getDataString());
+        if (c != null) {
+            if (!c.moveToFirst()) {
+                Log_OC.e(TAG, "Couldn't resolve given uri: " + intent.getDataString());
+                return;
+            }
+            file_path = c.getString(c.getColumnIndex(Images.Media.DATA));
+            file_name = c.getString(c.getColumnIndex(Images.Media.DISPLAY_NAME));
+            mime_type = c.getString(c.getColumnIndex(Images.Media.MIME_TYPE));
+            date_taken = System.currentTimeMillis();
+            c.close();
+        } else {
             return;
         }
-        file_path = c.getString(c.getColumnIndex(Images.Media.DATA));
-        file_name = c.getString(c.getColumnIndex(Images.Media.DISPLAY_NAME));
-        mime_type = c.getString(c.getColumnIndex(Images.Media.MIME_TYPE));
-        date_taken = System.currentTimeMillis();
-        c.close();
-
         if (file_path.equals(lastUploadedPhotoPath)) {
             Log_OC.d(TAG, "Duplicate detected: " + file_path + ". Ignore.");
             return;
@@ -181,11 +179,6 @@ public class InstantUploadBroadcastReceiver extends BroadcastReceiver {
 
         Log_OC.i(TAG, "New video received");
 
-        if (!PreferenceManager.instantVideoUploadEnabled(context)) {
-            Log_OC.d(TAG, "Instant video upload disabled, ignoring new video");
-            return;
-        }
-
         Account account = AccountUtils.getCurrentOwnCloudAccount(context);
         if (account == null) {
             Log_OC.w(TAG, "No account found for instant upload, aborting");
@@ -195,14 +188,18 @@ public class InstantUploadBroadcastReceiver extends BroadcastReceiver {
         String[] CONTENT_PROJECTION = {Video.Media.DATA, Video.Media.DISPLAY_NAME, Video.Media.MIME_TYPE,
                 Video.Media.SIZE};
         c = context.getContentResolver().query(intent.getData(), CONTENT_PROJECTION, null, null, null);
-        if (!c.moveToFirst()) {
-            Log_OC.e(TAG, "Couldn't resolve given uri: " + intent.getDataString());
+        if (c != null) {
+            if (!c.moveToFirst()) {
+                Log_OC.e(TAG, "Couldn't resolve given uri: " + intent.getDataString());
+                return;
+            }
+            file_path = c.getString(c.getColumnIndex(Video.Media.DATA));
+            file_name = c.getString(c.getColumnIndex(Video.Media.DISPLAY_NAME));
+            mime_type = c.getString(c.getColumnIndex(Video.Media.MIME_TYPE));
+            c.close();
+        } else {
             return;
         }
-        file_path = c.getString(c.getColumnIndex(Video.Media.DATA));
-        file_name = c.getString(c.getColumnIndex(Video.Media.DISPLAY_NAME));
-        mime_type = c.getString(c.getColumnIndex(Video.Media.MIME_TYPE));
-        c.close();
         date_taken = System.currentTimeMillis();
         Log_OC.d(TAG, file_path + "");
 
