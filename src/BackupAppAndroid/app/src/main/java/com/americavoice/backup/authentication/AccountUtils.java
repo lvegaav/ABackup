@@ -100,7 +100,12 @@ public class AccountUtils {
         return defaultAccount;
     }
 
-    public static Account[] getAccounts(Context context) {
+    public static void removeAccount(Context context, Account account) {
+        AccountManager accountManager = AccountManager.get(context);
+        accountManager.removeAccount(account, null, null);
+    }
+
+    private static Account[] getAccounts(Context context) {
         AccountManager accountManager = AccountManager.get(context);
         return accountManager.getAccountsByType(BaseConstants.ACCOUNT_TYPE);
     }

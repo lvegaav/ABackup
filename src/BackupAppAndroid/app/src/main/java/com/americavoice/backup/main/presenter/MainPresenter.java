@@ -49,21 +49,7 @@ public class MainPresenter extends BasePresenter implements IPresenter {
      * Initializes the presenter
      */
     public void initialize(String title) {
-
         mView.setTitle(title);
-
         Log.i("Login: ", mNetworkProvider.getDeviceId());
-
-//        mNetworkProvider.getUser(new AsyncResult<dtos.GetFullUserResponse>() {
-//            @Override
-//            public void success(dtos.GetFullUserResponse response) {
-//
-//            }
-//
-//            @Override
-//            public void error(Exception ex) {
-//            }
-//        });
-
     }
 }

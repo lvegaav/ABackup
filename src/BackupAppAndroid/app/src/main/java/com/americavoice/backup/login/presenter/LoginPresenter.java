@@ -59,21 +59,22 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
         mNetworkProvider.logout();    //Logout server
     }
 
-    public void submit(final String phoneNumber) {
+    public void submit(final String countryCode, final String phoneNumber) {
         boolean hasError = false;
         if (TextUtils.isEmpty(phoneNumber)) {
             hasError = true;
             mView.showPhoneNumberRequired();
         }
+        final String phoneNumberWithCode = countryCode + phoneNumber;
         if (hasError) return;
         mView.showLoading();
-        mNetworkProvider.login(phoneNumber, new AsyncResult<dtos.AuthenticateResponse>() {
+        mNetworkProvider.login(phoneNumberWithCode, new AsyncResult<dtos.AuthenticateResponse>() {
             @Override
             public void success(dtos.AuthenticateResponse response) {
                 mView.hideLoading();
                 mView.showGettingServerInfo();
-                mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumber);
-                mView.loginWithCredentials(mNetworkProvider.getCloudClient(phoneNumber).getCredentials());
+                mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
+                mView.loginWithCredentials(mNetworkProvider.getCloudClient(phoneNumberWithCode).getCredentials());
             }
 
             @Override
@@ -82,11 +83,11 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                     WebServiceException webEx = (WebServiceException) ex;
                     if (webEx.getStatusCode() == 401) {
                         dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
-                        request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumber));
+                        request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumberWithCode));
                         mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
                             @Override
                             public void success(dtos.SendResetPasswordSmsResponse response) {
-                                mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumber);
+                                mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
                                 mView.viewValidation();
                             }
                             @Override
@@ -103,6 +104,7 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                         showErrorMessage(new DefaultErrorBundle(ex));
                     }
                 } else {
+                    mView.hideLoading();
                     showErrorMessage(new DefaultErrorBundle(ex));
                 }
             }

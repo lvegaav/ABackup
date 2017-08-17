@@ -20,6 +20,8 @@
 
     <string name="confirmation.codePlaceHolder">Confirmation Code</string>
     <string name="confirmation.hello">Confirmation Code</string>
+    <string name="confirmation.verification_code_invalid">Invalid verification code.</string>
+    <string name="confirmation.verification_message">A text message with a verification code was just sent to your number </string>
 
     <string name="main.title">Backup Options</string>
     <string name="main.photos">Photos</string>
@@ -86,5 +88,6 @@
     <string name="sync_string_files">Files</string>
 
     <string name="exception.message_generic">Something went wrong, please try again.</string>
+    <string name="settings.sync_files">Sync Files</string>
 
 </resources>

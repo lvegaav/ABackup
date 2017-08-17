@@ -91,8 +91,18 @@ public class LoginActivity extends AccountAuthenticatorActivity implements HasCo
     }
 
     @Override
+    public void onBackPressed() {
+        Intent result = new Intent();
+        Bundle b = new Bundle();
+        result.putExtras(b);
+        setAccountAuthenticatorResult(null); // null means the user cancelled the authorization processs
+        setResult(RESULT_OK, result);
+        finish();
+    }
+
+    @Override
     public void onBackLoginClicked() {
-        this.finish();
+
     }
 
 }

@@ -1,6 +1,7 @@
 
 package com.americavoice.backup.settings.ui;
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
@@ -77,7 +79,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
         View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
-        tvTitle.setText(title);
+        tvTitle.setText("");
         return fragmentView;
     }
 
@@ -172,5 +174,14 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     public void onEvent(OnBackPress onBackPress) {
         if (this.mListener != null) this.mListener.onBackSettingsClicked();
     }
+
+    @OnClick(R.id.btn_logout)
+    public void logout(){
+        Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+        AccountUtils.removeAccount(getContext(), account);
+        mPresenter.logout();
+        //getActivity().finishAffinity();
+    }
+
 }
 

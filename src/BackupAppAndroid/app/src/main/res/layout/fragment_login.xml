@@ -1,47 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/main_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:layout_gravity="center_vertical"
-    android:background="@color/colorPrimary">
-
-    <TextView
-        android:id="@+id/tv_hello"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login.hello"
-        android:textSize="30sp"
-        android:layout_marginTop="60dp"
-        android:textColor="@color/white"/>
-
-    <LinearLayout
-        android:orientation="horizontal"
+    android:fitsSystemWindows="true">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_below="@id/tv_hello"
-        android:layout_margin="40dp">
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="@color/colorPrimary">
 
         <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:srcCompat="@drawable/ic_corner_oval"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            app:srcCompat="@drawable/ic_sip_v_logo"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:id="@+id/tv_hello"
+            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_glove">
+            android:textAlignment="center"
+            android:text="@string/login.hello"
+            android:textSize="24sp"
+            android:layout_marginTop="51dp"
+            android:textColor="@color/white"/>
 
-        </ImageView>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center_vertical"
+            android:layout_below="@id/tv_hello"
+            android:layout_margin="40dp">
 
-        <EditText
-            android:id="@+id/et_phone_number"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginLeft="10dp"
-            android:hint="@string/login.phonePlaceHolder"
-            android:textColorHint="@color/white"
-            android:textColor="@color/white"
-            android:inputType="phone"
-            android:imeOptions="actionDone"
-            android:background="@drawable/button_border"/>
-    </LinearLayout>
+            <TextView
+                android:id="@+id/et_country_code"
+                android:layout_width="100dp"
+                android:layout_height="57dp"
+                android:textColorHint="@color/white"
+                android:textColor="@color/white"
+                android:inputType="none"
+                android:paddingRight="5dp"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:text="502"
+                android:maxLength="3"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/button_border"
+                android:drawableLeft="@drawable/ic_glove"
+                android:drawableRight="@drawable/ic_arrow_down"/>
 
-</RelativeLayout>
+            <EditText
+                android:id="@+id/et_phone_number"
+                android:layout_width="190dp"
+                android:layout_height="57dp"
+                android:background="@drawable/button_border"
+                android:hint="@string/login.phonePlaceHolder"
+                android:imeOptions="actionDone"
+                android:inputType="phone"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
