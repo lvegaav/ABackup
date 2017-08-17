@@ -44,8 +44,11 @@ public class BaseAuthenticatorFragment extends BaseFragment {
         mAccountMgr = AccountManager.get(getContext());
         /// get input values
         mAction = getActivity().getIntent().getByteExtra(BaseConstants.EXTRA_ACTION, LoginActivity.ACTION_CREATE);
-        mAccount = getActivity().getIntent().getExtras().getParcelable(BaseConstants.EXTRA_ACCOUNT);
+        if (getActivity().getIntent().hasExtra(BaseConstants.EXTRA_ACCOUNT)) {
+            mAccount = getActivity().getIntent().getParcelableExtra(BaseConstants.EXTRA_ACCOUNT);
+        }
         mServerInfo.mBaseUrl = NetworkProvider.getBaseUrlOwnCloud();
+
     }
 
     /**

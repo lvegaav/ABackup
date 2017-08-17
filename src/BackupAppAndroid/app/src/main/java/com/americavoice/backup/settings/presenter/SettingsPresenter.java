@@ -4,6 +4,7 @@ package com.americavoice.backup.settings.presenter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.exception.ErrorBundle;
@@ -65,4 +66,8 @@ public class SettingsPresenter extends BasePresenter implements IPresenter {
         this.mView.showError(errorMessage);
     }
 
+    public void logout() {
+        mNetworkProvider.logout();
+        mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
+    }
 }

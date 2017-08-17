@@ -44,7 +44,7 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
     @Override
     public void showConfirmationCodeInvalid() {
         etConfirmationCode.requestFocus();
-        etConfirmationCode.setError(getString(R.string.login_validationPhoneNumberRequired));
+        etConfirmationCode.setError(getString(R.string.confirmation_verification_code_invalid));
     }
     /**
      * Interface for listening submit button.

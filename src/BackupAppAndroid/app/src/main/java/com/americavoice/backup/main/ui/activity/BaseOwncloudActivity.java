@@ -270,6 +270,7 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
 
                     onAccountCreationSuccessful(future);
                 } catch (OperationCanceledException e) {
+                    finishAffinity();
                     Log_OC.d(TAG, "Account creation canceled");
 
                 } catch (Exception e) {

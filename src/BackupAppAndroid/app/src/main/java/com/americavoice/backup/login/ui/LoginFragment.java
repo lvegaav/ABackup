@@ -86,8 +86,8 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
         etPhoneNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId== EditorInfo.IME_ACTION_DONE){
-                    mPresenter.submit(etPhoneNumber.getText().toString());
+                if(actionId== EditorInfo.IME_ACTION_DONE) {
+                    mPresenter.submit("502", etPhoneNumber.getText().toString());
                 }
                 return false;
             }
@@ -250,5 +250,6 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
         Object[] params = {NetworkProvider.getBaseUrlOwnCloud(), credentials};
         loginAsyncTask.execute(params);
     }
+
 }
 

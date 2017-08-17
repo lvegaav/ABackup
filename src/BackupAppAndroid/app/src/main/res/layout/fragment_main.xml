@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.design.widget.CoordinatorLayout
     android:id="@+id/main_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -19,145 +18,152 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/main.title"
-            android:textSize="30sp"
-            android:layout_marginTop="30dp"
+            android:textSize="24sp"
+            android:layout_marginTop="51dp"
             android:textColor="@color/white"/>
 
         <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:srcCompat="@drawable/ic_corner_oval"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            app:srcCompat="@drawable/ic_sip_v_logo"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+
+        <ImageView
             android:id="@+id/btn_settings"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:src="@drawable/ic_settings"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginBottom="30dp"
+            app:srcCompat="@drawable/ic_settings"
             android:layout_alignParentBottom="true"/>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_below="@id/tv_hello"
-            android:layout_above="@id/btn_settings"
-            android:padding="20dp"
-            android:weightSum="2">
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:weightSum="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:clickable="true"
+                android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/ll_photos"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_width="144dp"
+                    android:layout_height="144dp"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
                     <ImageView
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:src="@drawable/ic_photos"
-                        android:padding="10dp"
-                        />
+                        android:layout_height="72dp"
+                        app:srcCompat="@drawable/ic_photos" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/main.photos"
                         android:gravity="center"
-                        android:textSize="20sp"
-                        android:textColor="#88ffffff"/>
-
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
                 </LinearLayout>
-
                 <LinearLayout
                     android:id="@+id/ll_videos"
-                    android:clickable="true"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-
+                    android:layout_width="144dp"
+                    android:layout_height="144dp"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
                     <ImageView
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:src="@drawable/ic_videos"
-                        android:padding="10dp"
-                        />
+                        android:layout_height="72dp"
+                        app:srcCompat="@drawable/ic_videos" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/main.videos"
                         android:gravity="center"
-                        android:textSize="20sp"
-                        android:textColor="#88ffffff"/>
-
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
                 </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:weightSum="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/ll_contacts"
-                    android:clickable="true"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_width="144dp"
+                    android:layout_height="144dp"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
                     <ImageView
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:src="@drawable/ic_contacts"
-                        android:padding="10dp"
-                        />
+                        android:layout_height="72dp"
+                        app:srcCompat="@drawable/ic_contacts" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/main.contacts"
                         android:gravity="center"
-                        android:textSize="20sp"
-                        android:textColor="#88ffffff"/>
-
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
                 </LinearLayout>
-
                 <LinearLayout
                     android:id="@+id/ll_documents"
-                    android:clickable="true"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_width="144dp"
+                    android:layout_height="144dp"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
                     <ImageView
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:src="@drawable/ic_documents"
-                        android:padding="10dp"
-                        />
+                        android:layout_height="72dp"
+                        app:srcCompat="@drawable/ic_documents" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/main.documents"
                         android:gravity="center"
-                        android:textSize="20sp"
-                        android:textColor="#88ffffff"/>
-
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
                 </LinearLayout>
 
             </LinearLayout>
+
         </LinearLayout>
 
     </RelativeLayout>
