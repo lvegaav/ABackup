@@ -1,10 +1,15 @@
 buildscript {
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+
     repositories {
         maven { url "https://jitpack.io" }
         maven { url 'https://maven.fabric.io/public' }
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 
 repositories {
     maven { url "https://jitpack.io" }
@@ -25,6 +30,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     aaptOptions {
         additionalParameters "--no-version-vectors"
@@ -74,4 +80,9 @@ dependencies {
     compile 'com.jakewharton:disklrucache:2.0.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.caverock:androidsvg:1.2.1'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
+    compile 'com.android.support:multidex:1.0.1'
+
 }

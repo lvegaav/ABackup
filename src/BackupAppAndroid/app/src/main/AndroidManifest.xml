@@ -103,5 +103,8 @@
         <service android:name=".service.OperationsService" />
         <service android:name=".files.service.FileDownloader" />
         <service android:name=".files.service.FileUploader" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d208c603728e0042d11bfb219b3189b34c74a75b" />
     </application>
 </manifest>

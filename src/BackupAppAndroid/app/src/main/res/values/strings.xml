@@ -83,7 +83,7 @@
 
     <string name="account_type">americavoice.backup</string>
     <string name="authority">com.americavoice.backup</string>
-    <string name="sync.string_files">Files</string>
+    <string name="sync_string_files">Files</string>
 
     <string name="exception.message_generic">Something went wrong, please try again.</string>
 

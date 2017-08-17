@@ -8,6 +8,8 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.os.IBinder;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.ApplicationComponent;
@@ -16,19 +18,28 @@ import com.americavoice.backup.di.modules.ApplicationModule;
 import com.americavoice.backup.service.NCJobCreator;
 import com.americavoice.backup.utils.BaseConstants;
 import com.evernote.android.job.JobManager;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Android Main Application
  */
-public class AndroidApplication extends Application {
+public class AndroidApplication extends MultiDexApplication {
 
     private ApplicationComponent applicationComponent;
 
     private static String mStoragePath;
 
     @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
+    @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         JobManager.create(this).addJobCreator(new NCJobCreator());
 //        Fabric.with(this, new Crashlytics());
         //Debug Fabric.with(this, new Crashlytics.Builder().core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()).build());
