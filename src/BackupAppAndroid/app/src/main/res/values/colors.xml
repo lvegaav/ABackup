@@ -5,4 +5,5 @@
     <color name="colorAccent">#F37236</color>
     <color name="white">#FFF</color>
     <color name="blackOpacity">#0D000000</color>
+    <color name="filelist_icon_backgorund">#DDDDDD</color>
 </resources>

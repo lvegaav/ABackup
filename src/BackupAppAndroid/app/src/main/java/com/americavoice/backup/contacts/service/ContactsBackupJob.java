@@ -34,7 +34,7 @@ import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
 
 import com.americavoice.backup.authentication.AccountUtils;
-import com.americavoice.backup.contacts.ContactsBackupFragment;
+import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;

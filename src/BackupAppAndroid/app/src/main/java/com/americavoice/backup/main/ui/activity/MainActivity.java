@@ -13,14 +13,20 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 
 import com.americavoice.backup.R;
-import com.americavoice.backup.contacts.ContactsBackupFragment;
+import com.americavoice.backup.contacts.ui.ContactListFragment;
+import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
+import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.explorer.ui.FileListFragment;
+import com.americavoice.backup.files.service.FileDownloader;
+import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.main.event.OnBackPress;
+import com.americavoice.backup.main.ui.FileFragment;
 import com.americavoice.backup.main.ui.MainFragment;
+import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.ThemeUtils;
@@ -33,11 +39,13 @@ import java.io.File;
 import butterknife.ButterKnife;
 
 
-public class MainActivity extends BaseOwncloudActivity implements HasComponent<AppComponent>,
+public class MainActivity extends FileActivity implements HasComponent<AppComponent>,
         MainFragment.Listener,
         FileListFragment.Listener,
         SettingsFragment.Listener,
-        ContactsBackupFragment.Listener {
+        ContactsBackupFragment.Listener,
+        ContactListFragment.Listener,
+        FileFragment.ContainerActivity {
 
     private AppComponent mAppComponent;
     private  RemoteFile mTempRemoteFile;
@@ -204,5 +212,40 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     @Override
     public void onContactsBackPressed() {
         replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
+    }
+
+    @Override
+    public FileDownloader.FileDownloaderBinder getFileDownloaderBinder() {
+        return null;
+    }
+
+    @Override
+    public FileUploader.FileUploaderBinder getFileUploaderBinder() {
+        return null;
+    }
+
+    @Override
+    public OperationsService.OperationsServiceBinder getOperationsServiceBinder() {
+        return null;
+    }
+
+    @Override
+    public void showDetails(OCFile file) {
+
+    }
+
+    @Override
+    public void onBrowsedDownTo(OCFile folder) {
+
+    }
+
+    @Override
+    public void onTransferStateChanged(OCFile file, boolean downloading, boolean uploading) {
+
+    }
+
+    @Override
+    public void onContactsListBackPressed() {
+        replaceFragment(R.id.fl_fragment, ContactsBackupFragment.newInstance(), false, false);
     }
 }

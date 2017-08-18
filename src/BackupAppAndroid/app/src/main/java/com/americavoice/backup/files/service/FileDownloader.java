@@ -508,7 +508,7 @@ public class FileDownloader extends Service
         mNotificationBuilder =
                 NotificationUtils.newNotificationBuilder(this);
         mNotificationBuilder
-//                .setSmallIcon(R.drawable.notification_icon)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker(getString(R.string.files_downloader_download_in_progress_ticker))
                 .setContentTitle(getString(R.string.files_downloader_download_in_progress_ticker))
                 .setOngoing(true)
