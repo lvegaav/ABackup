@@ -1,6 +1,10 @@
 package com.americavoice.backup.explorer.ui.adapter;
 
+import android.accounts.Account;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.datamodel.FileDataStorageManager;
+import com.americavoice.backup.datamodel.ThumbnailsCacheManager;
+import com.americavoice.backup.main.network.NetworkProvider;
+import com.americavoice.backup.utils.MimeTypeUtil;
+import com.bumptech.glide.Glide;
+import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 
 import java.util.Collection;
@@ -25,12 +36,16 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
     private List<RemoteFile> mCollection;
     private final LayoutInflater mLayoutInflater;
     private OnItemClickListener mOnItemClickListener;
+    private Context mContext;
+    private Account mAccount;
 
     public FileAdapter(Context context, Collection<RemoteFile> collection) {
         this.validateTransactionCollection(collection);
         this.mLayoutInflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mCollection = (List<RemoteFile>) collection;
+        this.mContext = context;
+        mAccount = AccountUtils.getCurrentOwnCloudAccount(mContext);
     }
 
     @Override
@@ -51,16 +66,50 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         if (model.getMimeType().equals("DIR"))
         {
             holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().substring(0, model.getRemotePath().length() -1).lastIndexOf('/') + 1));
-            holder.ivIcon.setImageResource(R.drawable.ic_folder);
+            // Folder
+            holder.ivIcon.setImageResource(
+                    MimeTypeUtil.getFolderTypeIconId());
         } else if (model.getRemotePath().contains("Contacts"))
         {
             holder.ivIcon.setImageResource(R.drawable.ic_contact);
-        } else if (model.getRemotePath().contains("Videos"))
+        } else if (model.getRemotePath().contains("Photos") || model.getRemotePath().contains("Videos"))
         {
-            holder.ivIcon.setImageResource(R.drawable.ic_video);
-        } else if (model.getRemotePath().contains("Photos"))
-        {
-            holder.ivIcon.setImageResource(R.drawable.ic_photo);
+            // Thumbnail in Cache?
+            Bitmap thumbnail = ThumbnailsCacheManager.getBitmapFromDiskCache(model.getRemoteId());
+            if (thumbnail != null) {
+
+                if (MimeTypeUtil.isVideo(model.getMimeType())) {
+                    Bitmap withOverlay = ThumbnailsCacheManager.addVideoOverlay(thumbnail);
+                    holder.ivIcon.setImageBitmap(withOverlay);
+                } else {
+                    holder.ivIcon.setImageBitmap(thumbnail);
+                }
+            } else {
+                if (ThumbnailsCacheManager.cancelPotentialThumbnailWork(model, holder.ivIcon)) {
+                    try {
+                        final ThumbnailsCacheManager.ThumbnailGenerationTask task =
+                                new ThumbnailsCacheManager.ThumbnailGenerationTask(
+                                        holder.ivIcon, mAccount
+                                );
+
+                        if (MimeTypeUtil.isVideo(model.getMimeType())) {
+                            thumbnail = ThumbnailsCacheManager.mDefaultVideo;
+                        } else {
+                            thumbnail = ThumbnailsCacheManager.mDefaultImg;
+                        }
+                        final ThumbnailsCacheManager.AsyncThumbnailDrawable asyncDrawable =
+                                new ThumbnailsCacheManager.AsyncThumbnailDrawable(
+                                        mContext.getResources(),
+                                        thumbnail,
+                                        task
+                                );
+                        holder.ivIcon.setImageDrawable(asyncDrawable);
+                        task.execute(model);
+                    } catch (IllegalArgumentException e) {
+                    }
+                }
+            }
+
         } else
         {
             holder.ivIcon.setImageResource(R.drawable.ic_document);
@@ -100,6 +149,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         }
     }
 
+    private int getThumbnailDimension(){
+        // Converts dp to pixel
+        Resources r = mContext.getResources();
+        Double d = Math.pow(2,Math.floor(Math.log(r.getDimension(R.dimen.file_icon_size_grid))/Math.log(2)));
+        return d.intValue();
+    }
+
     static class TransactionViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.iv_icon)
         ImageView ivIcon;
@@ -111,4 +167,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
             ButterKnife.bind(this, itemView);
         }
     }
+
+
 }
