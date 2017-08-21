@@ -3,6 +3,7 @@ package com.americavoice.backup.contacts.presenter;
 import android.support.annotation.NonNull;
 
 import com.americavoice.backup.contacts.ui.ContactsBackupView;
+import com.americavoice.backup.contacts.ui.ContactsListView;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
@@ -20,16 +21,16 @@ import javax.inject.Inject;
  * layer.
  */
 @PerActivity
-public class ContactsBackupPresenter extends BasePresenter implements IPresenter {
+public class ContactsListPresenter extends BasePresenter implements IPresenter {
 
-    private ContactsBackupView mView;
+    private ContactsListView mView;
 
-    public void setView(@NonNull ContactsBackupView view) {
+    public void setView(@NonNull ContactsListView view) {
         this.mView = view;
     }
 
     @Inject
-    public ContactsBackupPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
+    public ContactsListPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
     }
 

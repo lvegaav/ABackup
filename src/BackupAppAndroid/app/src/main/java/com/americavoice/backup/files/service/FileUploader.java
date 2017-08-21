@@ -998,7 +998,7 @@ public class FileUploader extends Service
                 NotificationUtils.newNotificationBuilder(this);
         mNotificationBuilder
                 .setOngoing(true)
-                .setSmallIcon(R.drawable.ic_contact)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setTicker(getString(R.string.files_uploader_upload_in_progress_ticker))
                 .setContentTitle(getString(R.string.files_uploader_upload_in_progress_ticker))
                 .setProgress(100, 0, false)
