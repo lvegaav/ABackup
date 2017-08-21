@@ -36,7 +36,7 @@
     <string name="files.instant_upload_photo_path">/Photos</string>
     <string name="files.instant_upload_video_path">/Videos</string>
 
-    <string name="files.uploader_upload_in_progress_ticker"><![CDATA[Uploading &#8230;]]></string>
+    <string name="files.uploader_upload_in_progress_ticker">Uploading…</string>
     <string name="files.uploader_upload_in_progress_content">%1$d%% Uploading %2$s</string>
     <string name="files.uploader_upload_succeeded_ticker">Uploaded</string>
     <string name="files.uploader_upload_succeeded_content_single">%1$s uploaded</string>

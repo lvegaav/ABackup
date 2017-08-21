@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.datamodel.OCFile;
 
 import java.io.File;
@@ -50,10 +51,36 @@ public class MimeTypeUtil {
 
     /** Mapping: mime type for file extension. */
     private static final Map<String, List<String>> FILE_EXTENSION_TO_MIMETYPE_MAPPING = new HashMap<>();
-
+    private static final Map<String, Integer> MIMETYPE_TO_ICON_MAPPING = new HashMap<>();
+    private static final Map<String, Integer> MAIN_MIMETYPE_TO_ICON_MAPPING = new HashMap<>();
     static {
         populateFileExtensionMimeTypeMapping();
+        populateMimeTypeIconMapping();
+        populateMainMimeTypeMapping();
     }
+
+    /**
+     * Returns the resource identifier of an image to use as icon associated to a known MIME type.
+     *
+     * @param mimetype MIME type string; if NULL, the method tries to guess it from the extension in filename
+     * @param filename Name, with extension.
+     * @return Identifier of an image resource.
+     */
+    public static int getFileTypeIconId(String mimetype, String filename) {
+        List<String> possibleMimeTypes;
+        if (mimetype == null) {
+            possibleMimeTypes = determineMimeTypesByFilename(filename);
+        } else {
+            possibleMimeTypes = Collections.singletonList(mimetype);
+        }
+
+        return determineIconIdByMimeTypeList(possibleMimeTypes);
+    }
+
+   public static int getFolderTypeIconId() {
+        return R.drawable.ic_menu_archive;
+    }
+
 
     /**
      * Returns a single MIME type of all the possible, by inspection of the file extension, and taking
@@ -183,6 +210,42 @@ public class MimeTypeUtil {
         Uri selectedUri = Uri.fromFile(file);
         String fileExtension = MimeTypeMap.getFileExtensionFromUrl(selectedUri.toString().toLowerCase());
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
+    }
+
+    /**
+     * determines the icon based on the mime type.
+     *
+     * @param mimetypes the mimetypes
+     * @return the icon id, R.drawable.file if the mime type could not be matched at all or was {@code null}
+     */
+    private static int determineIconIdByMimeTypeList(List<String> mimetypes) {
+        // no mime type leads to file
+        if (mimetypes == null || mimetypes.size() < 1) {
+            return R.drawable.file;
+        } else {
+
+            // search for full mime type mapping
+            for (String mimetype : mimetypes) {
+                Integer iconId = MIMETYPE_TO_ICON_MAPPING.get(mimetype);
+
+                if (iconId != null) {
+                    return iconId;
+                }
+            }
+
+            // fallback to main mime type part mapping
+            for (String mimetype : mimetypes) {
+                String mainMimetypePart = mimetype.split("/")[0];
+
+                Integer iconId = MAIN_MIMETYPE_TO_ICON_MAPPING.get(mainMimetypePart);
+                if (iconId != null) {
+                    return iconId;
+                }
+            }
+        }
+
+        // no match found at all, falling back to file
+        return R.drawable.file;
     }
 
     /**
@@ -397,5 +460,106 @@ public class MimeTypeUtil {
         FILE_EXTENSION_TO_MIMETYPE_MAPPING.put("yaml", Arrays.asList("application/yaml", "text/plain"));
         FILE_EXTENSION_TO_MIMETYPE_MAPPING.put("yml", Arrays.asList("application/yaml", "text/plain"));
         FILE_EXTENSION_TO_MIMETYPE_MAPPING.put("zip", Collections.singletonList("application/zip"));
+    }
+
+    private static void populateMimeTypeIconMapping() {
+        MIMETYPE_TO_ICON_MAPPING.put("application/coreldraw", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/epub+zip", R.drawable.file_text);
+        MIMETYPE_TO_ICON_MAPPING.put("application/font-sfnt", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/font-woff", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/illustrator", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/javascript", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("application/json", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("application/msaccess", R.drawable.file);
+        MIMETYPE_TO_ICON_MAPPING.put("application/msexcel", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/mspowerpoint", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/msword", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/octet-stream", R.drawable.file);
+        MIMETYPE_TO_ICON_MAPPING.put("application/postscript", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/pdf", R.drawable.file_pdf);
+        MIMETYPE_TO_ICON_MAPPING.put("application/rss+xml", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("application/rtf", R.drawable.file);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.android.package-archive", R.drawable.file_zip);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-excel", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-excel.addin.macroEnabled.12", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-excel.sheet.binary.macroEnabled.12", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-excel.sheet.macroEnabled.12", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-excel.template.macroEnabled.12", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-fontobject", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-powerpoint", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-powerpoint.addin.macroEnabled.12", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-powerpoint.presentation.macroEnabled.12", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-powerpoint.slideshow.macroEnabled.12", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-powerpoint.template.macroEnabled.12", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-word.document.macroEnabled.12", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.ms-word.template.macroEnabled.12", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.presentation", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.presentation-template", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.spreadsheet", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.spreadsheet-template", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.text", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.text-master", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.text-template", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.oasis.opendocument.text-web", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.openxmlformats-officedocument.presentationml.presentation", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.openxmlformats-officedocument.presentationml.slideshow", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.openxmlformats-officedocument.presentationml.template", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.openxmlformats-officedocument.spreadsheetml.template", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.openxmlformats-officedocument.wordprocessingml.document", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/vnd.openxmlformats-officedocument.wordprocessingml.template", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-7z-compressed", R.drawable.file_zip);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-bin", R.drawable.file_application);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-cbr", R.drawable.file_text);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-compressed", R.drawable.file_zip);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-dcraw", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-deb", R.drawable.file_zip);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-font", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-gimp", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-gzip", R.drawable.file_zip);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-ms-dos-executable", R.drawable.file_application);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-msi", R.drawable.file_application);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-iwork-numbers-sffnumbers", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-iwork-keynote-sffkey", R.drawable.file_ppt);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-iwork-pages-sffpages", R.drawable.file_doc);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-perl", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-photoshop", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-php", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-rar-compressed", R.drawable.file_zip);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-shockwave-flash", R.drawable.file_application);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-tar", R.drawable.file_zip);
+        MIMETYPE_TO_ICON_MAPPING.put("application/x-tex", R.drawable.file_text);
+        MIMETYPE_TO_ICON_MAPPING.put("application/xml", R.drawable.file_text);
+        MIMETYPE_TO_ICON_MAPPING.put("application/yaml", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("application/zip", R.drawable.file_zip);
+        MIMETYPE_TO_ICON_MAPPING.put("database", R.drawable.file);
+        MIMETYPE_TO_ICON_MAPPING.put("httpd/unix-directory", R.drawable.ic_menu_archive);
+        MIMETYPE_TO_ICON_MAPPING.put("image/svg+xml", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("image/vector", R.drawable.file_image);
+        MIMETYPE_TO_ICON_MAPPING.put("text/calendar", R.drawable.file_calendar);
+        MIMETYPE_TO_ICON_MAPPING.put("text/css", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("text/csv", R.drawable.file_xls);
+        MIMETYPE_TO_ICON_MAPPING.put("text/html", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("text/vcard", R.drawable.file_vcard);
+        MIMETYPE_TO_ICON_MAPPING.put("text/x-c", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("text/x-c++src", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("text/x-h", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("text/x-python", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("text/x-shellscript", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put("web", R.drawable.file_code);
+        MIMETYPE_TO_ICON_MAPPING.put(MimeType.DIRECTORY, R.drawable.ic_menu_archive);
+    }
+
+    /**
+     * populates the mapping list: main mime type --> icon.
+     */
+    private static void populateMainMimeTypeMapping() {
+        MAIN_MIMETYPE_TO_ICON_MAPPING.put("audio", R.drawable.file_sound);
+        MAIN_MIMETYPE_TO_ICON_MAPPING.put("database", R.drawable.file);
+        MAIN_MIMETYPE_TO_ICON_MAPPING.put("httpd", R.drawable.file_zip);
+        MAIN_MIMETYPE_TO_ICON_MAPPING.put("image", R.drawable.file_image);
+        MAIN_MIMETYPE_TO_ICON_MAPPING.put("text", R.drawable.file_text);
+        MAIN_MIMETYPE_TO_ICON_MAPPING.put("video", R.drawable.file_movie);
+        MAIN_MIMETYPE_TO_ICON_MAPPING.put("web", R.drawable.file_code);
     }
 }
