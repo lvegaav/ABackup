@@ -4,6 +4,8 @@ package com.americavoice.backup.main.navigation;
 import android.content.Intent;
 
 import com.americavoice.backup.main.ui.activity.BaseActivity;
+import com.americavoice.backup.main.ui.activity.ContactsBackupActivity;
+import com.americavoice.backup.main.ui.activity.FileListActivity;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.main.ui.activity.MainActivity;
 
@@ -45,4 +47,18 @@ public class Navigator {
         }
     }
 
+    public void navigateToFileListActivity(BaseActivity context, String fileType) {
+        if (context != null) {
+            Intent intentToLaunch = FileListActivity.getCallingIntent(context);
+            intentToLaunch.putExtra(FileListActivity.EXTRA_FILE_TYPE, fileType);
+            context.startActivity(intentToLaunch);
+        }
+    }
+
+    public void navigateToContactsBackupActivity(BaseActivity context) {
+        if (context != null) {
+            Intent intentToLaunch = ContactsBackupActivity.getCallingIntent(context);
+            context.startActivity(intentToLaunch);
+        }
+    }
 }

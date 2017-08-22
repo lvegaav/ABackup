@@ -12,18 +12,10 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <RelativeLayout
-            android:id="@+id/rl_root_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <include
-                layout="@layout/view_header"/>
-        </RelativeLayout>
         <LinearLayout
             android:id="@+id/contacts_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rl_root_header"
             android:orientation="vertical">
 
             <android.support.v7.widget.SwitchCompat

@@ -31,9 +31,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
 import com.americavoice.backup.R;
@@ -51,7 +48,6 @@ import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
-import com.owncloud.android.lib.common.network.CertificateCombinedException;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -81,10 +77,6 @@ public abstract class FileActivity extends BaseOwncloudActivity
     public static final int REQUEST_CODE__LAST_SHARED = REQUEST_CODE__UPDATE_CREDENTIALS;
 
     protected static final long DELAY_TO_REQUEST_OPERATIONS_LATER = 200;
-
-    /* Dialog tags */
-    private static final String DIALOG_UNTRUSTED_CERT = "DIALOG_UNTRUSTED_CERT";
-    private static final String DIALOG_CERT_NOT_SAVED = "DIALOG_CERT_NOT_SAVED";
 
      /** Main {@link OCFile} handled by the activity.*/
     private OCFile mFile;
@@ -365,7 +357,7 @@ public abstract class FileActivity extends BaseOwncloudActivity
 
     private void onSynchronizeFileOperationFinish(SynchronizeFileOperation operation,
                                                   RemoteOperationResult result) {
-        OCFile syncedFile = operation.getLocalFile();
+//        OCFile syncedFile = operation.getLocalFile();
         if (!result.isSuccess()) {
 //            if (result.getCode() == ResultCode.SYNC_CONFLICT) {
 //                Intent i = new Intent(this, ConflictsResolveActivity.class);
@@ -416,9 +408,6 @@ public abstract class FileActivity extends BaseOwncloudActivity
             if (component.equals(new ComponentName(FileActivity.this, OperationsService.class))) {
                 Log_OC.d(TAG, "Operations service connected");
                 mOperationsServiceBinder = (OperationsService.OperationsServiceBinder) service;
-                /*if (!mOperationsServiceBinder.isPerformingBlockingOperation()) {
-                    dismissLoadingDialog();
-                }*/
 //                if (mResumed) {
 //                    doOnResumeAndBound();
 //                }
@@ -433,7 +422,6 @@ public abstract class FileActivity extends BaseOwncloudActivity
             if (component.equals(new ComponentName(FileActivity.this, OperationsService.class))) {
                 Log_OC.d(TAG, "Operations service disconnected");
                 mOperationsServiceBinder = null;
-                // TODO whatever could be waiting for the service is unbound
             }
         }
     }
@@ -448,7 +436,7 @@ public abstract class FileActivity extends BaseOwncloudActivity
         return mUploaderBinder;
     }
 
-    protected OCFile getCurrentDir() {
+    public OCFile getCurrentDir() {
         OCFile file = getFile();
         if (file != null) {
             if (file.isFolder()) {

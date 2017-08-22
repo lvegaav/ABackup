@@ -44,6 +44,7 @@ import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.files.utils.FileConstants;
+import com.americavoice.backup.main.ui.activity.FileListActivity;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.operations.DownloadFileOperation;
@@ -520,13 +521,8 @@ public class FileDownloader extends Service
 
         /// includes a pending intent in the notification showing the details view of the file
         Intent showDetailsIntent = null;
-//        if (PreviewImageFragment.canBePreviewed(download.getFile())) {
-        if (false == true) {
-//            showDetailsIntent = new Intent(this, PreviewImageActivity.class);
-        } else {
 //            showDetailsIntent = new Intent(this, FileDisplayActivity.class);
-            showDetailsIntent = new Intent(this, MainActivity.class);
-        }
+        showDetailsIntent = new Intent(this, FileListActivity.class);
 //        showDetailsIntent.putExtra(FileActivity.EXTRA_FILE, download.getFile());
 //        showDetailsIntent.putExtra(FileActivity.EXTRA_ACCOUNT, download.getAccount());
         showDetailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -587,10 +583,10 @@ public class FileDownloader extends Service
                 Intent updateAccountCredentials = new Intent(this, LoginActivity.class);
                 updateAccountCredentials.putExtra(BaseConstants.EXTRA_ACCOUNT,
                         download.getAccount());
-//                updateAccountCredentials.putExtra(
-//                        AuthenticatorActivity.EXTRA_ACTION,
-//                        AuthenticatorActivity.ACTION_UPDATE_EXPIRED_TOKEN
-//                );
+                updateAccountCredentials.putExtra(
+                        BaseConstants.EXTRA_ACTION,
+                        LoginActivity.ACTION_UPDATE_EXPIRED_TOKEN
+                );
                 updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 updateAccountCredentials.addFlags(Intent.FLAG_FROM_BACKGROUND);

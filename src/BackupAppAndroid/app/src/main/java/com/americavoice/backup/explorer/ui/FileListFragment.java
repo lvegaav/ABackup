@@ -2,8 +2,11 @@
 package com.americavoice.backup.explorer.ui;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.explorer.helper.FilesHelper;
@@ -20,8 +24,12 @@ import com.americavoice.backup.explorer.presenter.FileListPresenter;
 import com.americavoice.backup.explorer.ui.adapter.FileAdapter;
 import com.americavoice.backup.explorer.ui.adapter.FileLayoutManager;
 import com.americavoice.backup.explorer.ui.adapter.SimpleDividerItemDecoration;
+import com.americavoice.backup.files.service.FileDownloader;
+import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
+import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
+import com.americavoice.backup.main.ui.activity.FileActivity;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -43,6 +51,10 @@ public class FileListFragment extends BaseFragment implements FileListView {
     private static final int SELECT_PHOTO = 1001;
     private static final int SELECT_DOCUMENT = 1002;
 
+
+    private UploadFinishReceiver mUploadFinishReceiver;
+    private DownloadFinishReceiver mDownloadFinishReceiver;
+
     /**
      * Interface for listening file list events.
      */
@@ -62,8 +74,6 @@ public class FileListFragment extends BaseFragment implements FileListView {
     RelativeLayout rlRetry;
     @BindView(R.id.tv_empty)
     TextView tvEmpty;
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
 
     private FileAdapter mAdapter;
     private Unbinder mUnBind;
@@ -110,11 +120,29 @@ public class FileListFragment extends BaseFragment implements FileListView {
     @Override
     public void onResume() {
         super.onResume();
+
+        // Listen for upload messages
+        IntentFilter uploadIntentFilter = new IntentFilter(FileUploader.getUploadFinishMessage());
+        mUploadFinishReceiver = new UploadFinishReceiver();
+        getContext().registerReceiver(mUploadFinishReceiver, uploadIntentFilter);
+
+        IntentFilter downloadIntentFilter = new IntentFilter(FileDownloader.getDownloadFinishMessage());
+        mDownloadFinishReceiver = new DownloadFinishReceiver();
+        getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
+
         this.mPresenter.resume();
     }
 
     @Override
     public void onPause() {
+        if (mUploadFinishReceiver != null) {
+            getContext().unregisterReceiver(mUploadFinishReceiver);
+            mUploadFinishReceiver = null;
+        }
+        if (mDownloadFinishReceiver != null) {
+            getContext().unregisterReceiver(mDownloadFinishReceiver);
+            mDownloadFinishReceiver = null;
+        }
         super.onPause();
         this.mPresenter.pause();
     }
@@ -133,7 +161,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
-        this.mPresenter.setView(this);
+        if (mPresenter != null) this.mPresenter.setView(this);
     }
 
     private void setupUI() {
@@ -174,13 +202,16 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     @Override
     public void renderList(List<RemoteFile> transactionModelCollection) {
-        tvEmpty.setVisibility(View.GONE);
-        this.mAdapter = new FileAdapter(getContext(), new ArrayList<RemoteFile>());
-        this.mAdapter.setOnItemClickListener(onItemClickListener);
-        this.rvFiles.setAdapter(mAdapter);
-        if (transactionModelCollection != null) {
-            this.mAdapter.setTransactionCollection(transactionModelCollection);
+        if (rvFiles != null) {
+            if (tvEmpty != null) tvEmpty.setVisibility(View.GONE);
+            this.mAdapter = new FileAdapter(getContext(), new ArrayList<RemoteFile>());
+            this.mAdapter.setOnItemClickListener(onItemClickListener);
+            this.rvFiles.setAdapter(mAdapter);
+            if (transactionModelCollection != null) {
+                this.mAdapter.setTransactionCollection(transactionModelCollection);
+            }
         }
+
     }
 
     @Override
@@ -199,8 +230,38 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     @Override
     public void renderEmpty() {
-        tvEmpty.setVisibility(View.VISIBLE);
-        tvEmpty.setText(getString(R.string.files_no_files));
+        if (tvEmpty != null) {
+            tvEmpty.setVisibility(View.VISIBLE);
+            tvEmpty.setText(getString(R.string.files_no_files));
+        }
+    }
+
+    @Override
+    public void showUploading() {
+        hideLoading();
+        mProgress = ProgressDialog.show(getActivity(),
+                getResources().getString(R.string.app_name),
+                getResources().getString(R.string.common_uploading),
+                true,
+                false);
+    }
+    @Override
+    public void showDownloading() {
+        hideLoading();
+        mProgress = ProgressDialog.show(getActivity(),
+                getResources().getString(R.string.app_name),
+                getResources().getString(R.string.common_downloading),
+                true,
+                false);
+    }
+
+    @Override
+    public void hideDLoading() {
+        if (mProgress != null) {
+            mProgress.hide();
+            mProgress.dismiss();
+            mProgress = null;
+        }
     }
 
     @Override
@@ -216,8 +277,8 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     private void loadList() {
         mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");
-        tvTitle.setText(mPath.replace("/", ""));
-        this.mPresenter.initialize(mPath);
+        setTitle(mPath.replace("/", ""));
+        if (mPresenter != null ) this.mPresenter.initialize(getContext(), mPath);
     }
 
     @OnClick(R.id.bt_retry)
@@ -226,7 +287,6 @@ public class FileListFragment extends BaseFragment implements FileListView {
         loadList();
     }
 
-    @OnClick(R.id.btn_back)
     void onButtonBack() {
         String path = null;
         String subPath = mPath.substring(1, mPath.length() -1);
@@ -249,7 +309,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
         } else if (mPath.startsWith(Const.Documents)) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("application/*|text/*");
-            startActivityForResult(intent,SELECT_DOCUMENT);
+            startActivityForResult(intent, SELECT_DOCUMENT);
         }
     }
     @ Override
@@ -278,6 +338,58 @@ public class FileListFragment extends BaseFragment implements FileListView {
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
         onButtonBack();
+    }
+
+    /**
+     * Once the file upload has finished -> update view
+     */
+    private class UploadFinishReceiver extends BroadcastReceiver {
+        /**
+         * Once the file upload has finished -> update view
+         *
+         * {@link BroadcastReceiver} to enable upload feedback in UI
+         */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                boolean uploadWasFine = intent.getBooleanExtra(
+                        FileUploader.EXTRA_UPLOAD_RESULT,
+                        false);
+                if (uploadWasFine) {
+                    loadList();
+                } else {
+                    showToastMessage(getString(R.string.exception_message_generic));
+                }
+
+            } finally {
+                if (intent != null) {
+                    context.removeStickyBroadcast(intent);
+                }
+            }
+
+        }
+    }
+    /**
+     * Class waiting for broadcast events from the {@link FileDownloader} service.
+     * <p/>
+     * Updates the UI when a download is started or finished, provided that it is relevant for the
+     * current folder.
+     */
+    private class DownloadFinishReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+
+                String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
+                //TODO: openFile.
+
+            } finally {
+                if (intent != null) {
+                    getContext().removeStickyBroadcast(intent);
+                }
+            }
+        }
     }
 }
 

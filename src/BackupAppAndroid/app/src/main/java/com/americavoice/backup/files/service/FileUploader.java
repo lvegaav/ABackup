@@ -49,13 +49,16 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
+import com.americavoice.backup.datamodel.ThumbnailsCacheManager;
 import com.americavoice.backup.datamodel.UploadsStorageManager;
 import com.americavoice.backup.datamodel.UploadsStorageManager.UploadStatus;
 import com.americavoice.backup.db.OCUpload;
 import com.americavoice.backup.db.UploadResult;
+import com.americavoice.backup.main.ui.activity.FileListActivity;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.operations.UploadFileOperation;
+import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ErrorMessageAdapter;
 import com.americavoice.backup.utils.NotificationUtils;
 import com.owncloud.android.lib.common.OwnCloudAccount;
@@ -68,6 +71,7 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.FileUtils;
 import com.owncloud.android.lib.resources.status.OwnCloudVersion;
 
+import java.io.File;
 import java.util.AbstractList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1007,7 +1011,7 @@ public class FileUploader extends Service
                 );
 
         /// includes a pending intent in the notification showing the details
-        Intent showUploadListIntent = new Intent(this, MainActivity.class);
+        Intent showUploadListIntent = new Intent(this, FileListActivity.class);
 //        showUploadListIntent.putExtra(FileActivity.EXTRA_FILE, upload.getFile());
 //        showUploadListIntent.putExtra(FileActivity.EXTRA_ACCOUNT, upload.getAccount());
         showUploadListIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -1081,13 +1085,13 @@ public class FileUploader extends Service
             if (needsToUpdateCredentials) {
                 // let the user update credentials with one click
                 Intent updateAccountCredentials = new Intent(this, LoginActivity.class);
-//                updateAccountCredentials.putExtra(
-//                        LoginActivity.EXTRA_ACCOUNT, upload.getAccount()
-//                );
-//                updateAccountCredentials.putExtra(
-//                        AuthenticatorActivity.EXTRA_ACTION,
-//                        AuthenticatorActivity.ACTION_UPDATE_EXPIRED_TOKEN
-//                );
+                updateAccountCredentials.putExtra(
+                        BaseConstants.EXTRA_ACCOUNT, upload.getAccount()
+                );
+                updateAccountCredentials.putExtra(
+                        BaseConstants.EXTRA_ACTION,
+                        LoginActivity.ACTION_UPDATE_EXPIRED_TOKEN
+                );
 
                 updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 updateAccountCredentials.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
@@ -1105,7 +1109,7 @@ public class FileUploader extends Service
 
             if (!uploadResult.isSuccess() && !needsToUpdateCredentials ) {
                 //in case of failure, do not show details file view (because there is no file!)
-                Intent showUploadListIntent = new Intent(this, MainActivity.class);
+                Intent showUploadListIntent = new Intent(this, FileListActivity.class);
 //                showUploadListIntent.putExtra(FileActivity.EXTRA_FILE, upload.getFile());
 //                showUploadListIntent.putExtra(FileActivity.EXTRA_ACCOUNT, upload.getAccount());
                 showUploadListIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

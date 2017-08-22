@@ -18,12 +18,16 @@
 
 package com.americavoice.backup.utils;
 
+import android.accounts.Account;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
 
+import com.americavoice.backup.AndroidApplication;
 import com.americavoice.backup.R;
 import com.americavoice.backup.datamodel.OCFile;
+import com.americavoice.backup.di.components.ApplicationComponent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,6 +61,25 @@ public class MimeTypeUtil {
         populateFileExtensionMimeTypeMapping();
         populateMimeTypeIconMapping();
         populateMainMimeTypeMapping();
+    }
+
+    /**
+     * Returns the Drawable of an image to use as icon associated to a known MIME type.
+     *
+     * @param mimetype MIME type string; if NULL, the method tries to guess it from the extension in filename
+     * @param filename Name, with extension.
+     * @param account account which color should be used
+     * @return Drawable of an image resource.
+     */
+    public static Drawable getFileTypeIcon(String mimetype, String filename, Account account) {
+        int iconId = MimeTypeUtil.getFileTypeIconId(mimetype, filename);
+        Drawable icon = AndroidApplication.getAppContext().getResources().getDrawable(iconId);
+
+        if(R.drawable.file_zip == iconId) {
+            ThemeUtils.tintDrawable(icon, ThemeUtils.primaryColor(account));
+        }
+
+        return icon;
     }
 
     /**

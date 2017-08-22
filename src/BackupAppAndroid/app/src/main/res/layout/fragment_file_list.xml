@@ -12,20 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:id="@+id/rl_root_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <include
-                layout="@layout/view_header"/>
-        </RelativeLayout>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_files"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/rl_root_header"
             android:background="@color/white" />
 
         <com.americavoice.backup.main.ui.widget.CustomTextView
@@ -34,14 +25,12 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             android:gravity="center"
-            android:layout_below="@id/rl_root_header"
             android:background="@color/white"/>
 
         <RelativeLayout
             android:id="@+id/rl_progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/rl_root_header"
             android:background="@color/white">
             <ProgressBar
                 style="@style/AppTheme.ProgressBar"
@@ -50,7 +39,6 @@
 
         <RelativeLayout
             android:id="@+id/rl_retry"
-            android:layout_below="@id/rl_root_header"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone">

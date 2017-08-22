@@ -108,6 +108,9 @@
     <string name="common.empty">Empty</string>
     <string name="files.list_empty">Upload some content or sync with your devices.</string>
     <string name="contacts.preference_restore_backup">Restore Backup</string>
+    <string name="common.uploading">Uploading</string>
+    <string name="common.downloading">Downloading</string>
+    <string name="action_settings">Settings</string>
 
 
 </resources>

@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
@@ -33,7 +32,6 @@ import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
-import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.operations.RefreshFolderOperation;
@@ -63,7 +61,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class ContactsBackupFragment extends BaseFragment implements ContactsBackupView, DatePickerDialog.OnDateSetListener{
+public class ContactsBackupFragment extends BaseFragment implements ContactsBackupView, DatePickerDialog.OnDateSetListener {
 
     public static final String PREFERENCE_CONTACTS_AUTOMATIC_BACKUP = "PREFERENCE_CONTACTS_AUTOMATIC_BACKUP";
     public static final String PREFERENCE_CONTACTS_LAST_BACKUP = "PREFERENCE_CONTACTS_LAST_BACKUP";
@@ -82,9 +80,6 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
     @Inject
     ContactsBackupPresenter mPresenter;
-
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
 
     @BindView(R.id.contacts_automatic_backup)
     public SwitchCompat backupSwitch;
@@ -141,7 +136,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         super.onActivityCreated(savedInstanceState);
         showKeyboard(false);
         if (getActivity() instanceof BaseOwncloudActivity)
-            mContainerActivity =  ((BaseOwncloudActivity) getActivity());
+            mContainerActivity = ((BaseOwncloudActivity) getActivity());
         this.initialize(savedInstanceState);
     }
 
@@ -247,16 +242,10 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
     }
 
-    @OnClick(R.id.btn_back)
     void onButtonBack() {
         if (this.mListener != null) {
             this.mListener.onContactsBackPressed();
         }
-    }
-
-    @Override
-    public void setTitle(String title) {
-        tvTitle.setText(title);
     }
 
     @Override
@@ -573,11 +562,12 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
                             .getFolderContent(backupFolder, false);
-
-                    if (backupFiles == null || backupFiles.size() == 0) {
-                        contactsDatePickerBtn.setVisibility(View.GONE);
-                    } else {
-                        contactsDatePickerBtn.setVisibility(View.VISIBLE);
+                    if (contactsDatePickerBtn != null) {
+                        if (backupFiles == null || backupFiles.size() == 0) {
+                            contactsDatePickerBtn.setVisibility(View.GONE);
+                        } else {
+                            contactsDatePickerBtn.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
             }

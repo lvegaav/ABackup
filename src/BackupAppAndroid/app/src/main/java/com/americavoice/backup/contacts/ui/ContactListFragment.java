@@ -120,9 +120,6 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
 
     public static final String CHECKED_ITEMS_ARRAY_KEY = "CHECKED_ITEMS";
 
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
-
     @BindView(R.id.contactlist_recyclerview)
     public RecyclerView recyclerView;
 
@@ -298,12 +295,6 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
         mUnBind.unbind();
     }
 
-    @Override
-    public void setTitle(String title) {
-        tvTitle.setText(title);
-    }
-
-    @OnClick(R.id.btn_back)
     void onButtonBack() {
         if (this.mListener != null) {
             this.mListener.onContactsListBackPressed();

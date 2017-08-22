@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -63,21 +64,15 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
     public void onBindViewHolder(TransactionViewHolder holder, final int position) {
         final RemoteFile model = this.mCollection.get(position);
         holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().lastIndexOf('/') + 1));
-        if (model.getMimeType().equals("DIR"))
-        {
+        if (model.getMimeType().equals("DIR")) {
             holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().substring(0, model.getRemotePath().length() -1).lastIndexOf('/') + 1));
             // Folder
             holder.ivIcon.setImageResource(
                     MimeTypeUtil.getFolderTypeIconId());
-        } else if (model.getRemotePath().contains("Contacts"))
-        {
-            holder.ivIcon.setImageResource(R.drawable.ic_contact);
-        } else if (model.getRemotePath().contains("Photos") || model.getRemotePath().contains("Videos"))
-        {
+        } else if (model.getRemotePath().contains("Photos") || model.getRemotePath().contains("Videos")) {
             // Thumbnail in Cache?
             Bitmap thumbnail = ThumbnailsCacheManager.getBitmapFromDiskCache(model.getRemoteId());
             if (thumbnail != null) {
-
                 if (MimeTypeUtil.isVideo(model.getMimeType())) {
                     Bitmap withOverlay = ThumbnailsCacheManager.addVideoOverlay(thumbnail);
                     holder.ivIcon.setImageBitmap(withOverlay);
@@ -110,9 +105,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
                 }
             }
 
-        } else
-        {
-            holder.ivIcon.setImageResource(R.drawable.ic_document);
+        } else {
+            Drawable drawable = MimeTypeUtil.getFileTypeIcon(model.getMimeType(), model.getRemotePath(), mAccount);
+            holder.ivIcon.setImageDrawable(drawable);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
