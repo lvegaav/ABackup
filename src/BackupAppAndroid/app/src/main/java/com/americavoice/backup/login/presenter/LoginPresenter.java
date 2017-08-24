@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.americavoice.backup.di.PerActivity;
+import com.americavoice.backup.login.model.SpinnerItem;
 import com.americavoice.backup.login.ui.LoginView;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.exception.DefaultErrorBundle;
@@ -17,6 +18,9 @@ import com.americavoice.backup.main.presenter.IPresenter;
 
 import net.servicestack.client.AsyncResult;
 import net.servicestack.client.WebServiceException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -57,6 +61,10 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
      */
     public void initialize() {
         mNetworkProvider.logout();    //Logout server
+        List<SpinnerItem> items = new ArrayList<>();
+        items.add(new SpinnerItem("1","+1"));
+        items.add(new SpinnerItem("502","+502"));
+        mView.populateCountries(items);
     }
 
     public void submit(final String countryCode, final String phoneNumber) {

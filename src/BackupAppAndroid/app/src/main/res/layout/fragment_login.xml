@@ -38,36 +38,30 @@
             android:layout_marginTop="51dp"
             android:textColor="@color/white"/>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:gravity="center_vertical"
             android:layout_below="@id/tv_hello"
             android:layout_margin="40dp">
 
-            <TextView
-                android:id="@+id/et_country_code"
-                android:layout_width="100dp"
+            <Spinner
+                android:id="@+id/sp_country"
+                android:layout_width="80dp"
                 android:layout_height="57dp"
                 android:textColorHint="@color/white"
                 android:textColor="@color/white"
-                android:inputType="none"
-                android:paddingRight="5dp"
-                android:textAlignment="center"
-                android:gravity="center"
                 android:textSize="24sp"
-                android:text="502"
-                android:maxLength="3"
-                android:layout_marginRight="5dp"
+                android:gravity="center"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:background="@drawable/button_border"
-                android:drawableLeft="@drawable/ic_glove"
-                android:drawableRight="@drawable/ic_arrow_down"/>
+                android:spinnerMode="dialog" />
 
             <EditText
                 android:id="@+id/et_phone_number"
-                android:layout_width="190dp"
+                android:layout_width="match_parent"
                 android:layout_height="57dp"
                 android:background="@drawable/button_border"
                 android:hint="@string/login.phonePlaceHolder"
@@ -76,8 +70,10 @@
                 android:textAlignment="center"
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
-                android:textSize="24sp" />
-        </LinearLayout>
+                android:textSize="24sp"
+                android:layout_toRightOf="@+id/sp_country"
+                android:layout_toEndOf="@+id/sp_country" />
+        </RelativeLayout>
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

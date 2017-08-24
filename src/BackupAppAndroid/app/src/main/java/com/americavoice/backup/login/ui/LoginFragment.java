@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AuthenticatorAsyncTask;
 import com.americavoice.backup.di.components.AppComponent;
+import com.americavoice.backup.login.model.SpinnerItem;
 import com.americavoice.backup.login.presenter.LoginPresenter;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
@@ -26,6 +28,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -54,6 +58,8 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     private Unbinder mUnBind;
     @BindView(R.id.et_phone_number)
     public EditText etPhoneNumber;
+    @BindView(R.id.sp_country)
+    Spinner spCountry;
 
 
     public LoginFragment() {
@@ -87,7 +93,7 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE) {
-                    mPresenter.submit("502", etPhoneNumber.getText().toString());
+                    mPresenter.submit(((SpinnerItem) spCountry.getSelectedItem()).getId(), etPhoneNumber.getText().toString());
                 }
                 return false;
             }
@@ -193,6 +199,17 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     @Override
     public void viewValidation() {
         if (mListener != null) mListener.viewValidation();
+    }
+
+    @Override
+    public void populateCountries(List<SpinnerItem> items) {
+        if (spCountry == null) return;
+
+        spCountry.setAdapter(
+                new SpinnerItemAdapter(
+                        getActivity(),
+                        R.layout.spinner_item,
+                        items));
     }
 
     @Override
