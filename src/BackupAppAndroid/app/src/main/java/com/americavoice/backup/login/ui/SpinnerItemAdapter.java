@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.login.model.SpinnerItem;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class SpinnerItemAdapter extends ArrayAdapter<SpinnerItem> {
         TextView view = (TextView) super.getView(position, convertView, parent);
         view.setText(getItem(position).getValue());
         view.setTextColor(Color.WHITE);
+        view.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_glove, 0, R.drawable.ic_arrow_down, 0);
         return view;
     }
 
