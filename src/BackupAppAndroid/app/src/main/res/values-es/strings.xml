@@ -85,7 +85,7 @@
     <string name="contacts.automatic_backup">Backup Automático</string>
     <string name="contacts.last_backup">Último Backup</string>
     <string name="contacts.preference_backup_never">nunca</string>
-    <string name="contacts.backup_button">Backup Ahora</string>
+    <string name="contacts.backup_button">Realizar Backup</string>
     <string name="contacts.read_permission">Permisos para leer tu lista de contactos son requeridos</string>
     <string name="contacts.list_restore_selected">Restaurar contactos seleccionados</string>
     <string name="contacts.list_account_chooser_title">Escoje una cuenta para importar</string>
@@ -96,7 +96,7 @@
     <string name="contacts.preferences_import_scheduled">Import calendarizado empezará enseguida</string>
     <string name="contacts.preferences_something_strange_happened">No podemos encontrar tu último backup!</string>
     <string name="contacts.preferences_no_file_found">Archivo no encontrado</string>
-    <string name="contacts.preference_restore_backup">Restaurar Backup</string>
+    <string name="contacts.preference_restore_backup">Restaurar</string>
 
     <string name="auth.unsupported_multiaccount">%1$s no soporta multiples cuentas</string>
     <string name="auth.account_does_not_exist">La cuenta no existe en este dispositivo todavia</string>

@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.utils.BaseConstants;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -113,10 +114,9 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
      */
     protected void setAccount(Account account, boolean savedAccount) {
         Account oldAccount = mCurrentAccount;
-        boolean validAccount =
-                (account != null && AccountUtils.setCurrentOwnCloudAccount(getApplicationContext(),
-                        account.name));
+        boolean validAccount = (account != null && AccountUtils.setCurrentOwnCloudAccount(getApplicationContext(), account.name));
         if (validAccount) {
+            ContactsBackupFragment.startContactBackupJob(account);
             mCurrentAccount = account;
             mAccountWasSet = true;
             mAccountWasRestored = (savedAccount || mCurrentAccount.equals(oldAccount));
