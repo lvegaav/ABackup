@@ -277,7 +277,22 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     private void loadList() {
         mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");
-        setTitle(mPath.replace("/", ""));
+        switch (mPath) {
+            case Const.Contacts:
+                setTitle(getString(R.string.contacts_title));
+                break;
+            case Const.Documents:
+                setTitle(getString(R.string.main_documents));
+                break;
+            case Const.Photos:
+                setTitle(getString(R.string.main_photos));
+                break;
+            case Const.Videos:
+                setTitle(getString(R.string.main_videos));
+                break;
+            default:
+                break;
+        }
         if (mPresenter != null ) this.mPresenter.initialize(getContext(), mPath);
     }
 
