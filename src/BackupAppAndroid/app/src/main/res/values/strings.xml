@@ -6,6 +6,9 @@
     <string name="common.ok">OK</string>
     <string name="common.retry">Retry</string>
     <string name="common.getting_server_info">Getting server information</string>
+    <string name="common.uploading">Uploading</string>
+    <string name="common.downloading">Downloading</string>
+    <string name="common.empty">Empty</string>
 
     <string name="network.error_socket_exception">An error occurred during connection to the server.</string>
     <string name="network.error_socket_timeout_exception">An error occurred while waiting for the server. Could not complete operation.</string>
@@ -70,6 +73,7 @@
     <string name="files.update_link_forbidden_permissions">to update this share</string>
     <string name="files.create_dir_fail">Could not create folder</string>
     <string name="file.list_seconds_ago">seconds ago.</string>
+    <string name="files.list_empty">Upload some content or sync with your devices.</string>
 
     <string name="sync.fail_ticker">Sync failed</string>
     <string name="sync.fail_ticker_unauthorized">Sync failed, you need to log in again</string>
@@ -95,6 +99,7 @@
     <string name="contacts.preferences_import_scheduled">Import scheduled and will start shortly</string>
     <string name="contacts.preferences_something_strange_happened">We can\'t find your last backup!</string>
     <string name="contacts.preferences_no_file_found">No file found</string>
+    <string name="contacts.preference_restore_backup">Restore Backup</string>
 
     <string name="auth.unsupported_multiaccount">%1$s does not support multiple accounts</string>
     <string name="auth.account_does_not_exist">Account does not exist on the device yet</string>
@@ -104,13 +109,7 @@
     <string name="sync_string_files">Files</string>
 
     <string name="exception.message_generic">Something went wrong, please try again.</string>
-    <string name="settings.sync_files">Sync Files</string>
-    <string name="common.empty">Empty</string>
-    <string name="files.list_empty">Upload some content or sync with your devices.</string>
-    <string name="contacts.preference_restore_backup">Restore Backup</string>
-    <string name="common.uploading">Uploading</string>
-    <string name="common.downloading">Downloading</string>
-    <string name="action_settings">Settings</string>
 
+    <string name="settings.sync_files">Sync Files</string>
 
 </resources>

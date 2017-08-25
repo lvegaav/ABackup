@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Backup</string>
+
+    <string name="common.loading">Cargando</string>
+    <string name="common.sending">Enviando código de verificación</string>
+    <string name="common.ok">OK</string>
+    <string name="common.retry">Procesar de nuevo</string>
+    <string name="common.getting_server_info">Obteniendo información del servidor</string>
+    <string name="common.uploading">Cargando</string>
+    <string name="common.downloading">Descargando</string>
+    <string name="common.empty">Vacío</string>
+
+    <string name="network.error_socket_exception">Un error ocurrió en la conexión con el servidor.</string>
+    <string name="network.error_socket_timeout_exception">Un error ocurrió mientras esperamos al servidor. No se pudo completar la operación.</string>
+    <string name="network.error_connect_timeout_exception">Un error ocurrió mientras esperamos al servidor. No se pudo completar la operación.</string>
+    <string name="network.host_not_available">Nose pudo completar la operación. Servidor no disponible</string>
+    <string name="network.server_maintenance_mode">Servidor en mantenimiento</string>
+
+    <string name="login.hello">Hola \n¿cual es tu número?</string>
+    <string name="login.phonePlaceHolder">Número</string>
+    <string name="login.validationPhoneNumberRequired">Número requerido</string>
+    <string name="login.validationPhoneNumberInvalid">Número inválido</string>
+
+    <string name="confirmation.codePlaceHolder">Código de Confirmación</string>
+    <string name="confirmation.hello">Código de Confirmación</string>
+    <string name="confirmation.verification_code_invalid">Código de confirmación inválido</string>
+    <string name="confirmation.verification_message">Un mensaje con un código de confirmación ha sido enviado a tu teléfono</string>
+
+    <string name="main.title">Opciones</string>
+    <string name="main.photos">Fotos</string>
+    <string name="main.videos">Videos</string>
+    <string name="main.contacts">Contactos</string>
+    <string name="main.documents">Documentos</string>
+
+    <string name="files.no_files">No hay archivos. \nSube contenido o sincroniza tus dispositivos!</string>
+    <string name="files.permission_storage_access">Permisos adicionales son requeridos para subir y bajar archivos.</string>
+
+    <string name="files.uploader_upload_in_progress_ticker">Cargando&#8230;</string>
+    <string name="files.uploader_upload_in_progress_content">%1$d%% Cargando %2$s</string>
+    <string name="files.uploader_upload_succeeded_ticker">Cargado</string>
+    <string name="files.uploader_upload_succeeded_content_single">%1$s cargado</string>
+    <string name="files.uploader_upload_failed_ticker">Carga fallida</string>
+    <string name="files.uploader_upload_failed_content_single">No se pudo cargar %1$s</string>
+    <string name="files.uploader_upload_failed_credentials_error">Carga fallida, tienes que autenticarte de nuevo</string>
+    <string name="files.uploader_upload_forbidden_permissions">cargar a esta carpeta</string>
+    <string name="files.downloader_download_in_progress_ticker">Descargando&#8230;</string>
+    <string name="files.downloader_download_in_progress_content">%1$d%% Descargando %2$s</string>
+    <string name="files.downloader_download_succeeded_ticker">Descargado</string>
+    <string name="files.downloader_download_succeeded_content">%1$s descargado</string>
+    <string name="files.downloader_download_failed_ticker">Descarga fallida</string>
+    <string name="files.downloader_download_failed_content">No se pudo descargar %1$s</string>
+    <string name="files.downloader_not_downloaded_yet">Aún no ha sido descargado</string>
+    <string name="files.downloader_download_failed_credentials_error">Descarga fallida, tienes que autenticarte de nuevo</string>
+    <string name="files.downloader_download_file_not_found">El archivo ya no esta disponible en el servidor</string>
+
+    <string name="files.error__upload__local_file_not_copied">%1$s no pudo ser copiado a %2$s</string>
+
+    <string name="files.forbidden_permissions">No tienes permiso %s</string>
+    <string name="files.forbidden_permissions_delete">de eliminar este archivo</string>
+    <string name="files.forbidden_permissions_create">de crear este archivo</string>
+
+    <string name="files.filename_empty">El nombre del archivo no puede ser vacío</string>
+    <string name="files.filename_forbidden_characters">Caracteres prohibidos: / \\ &lt; &gt; : " | ? *</string>
+    <string name="files.filename_forbidden_charaters_from_server">El archivo contiene por lo menos un carácter inválido</string>
+    <string name="files.filename_forbidden_permissions_rename">de renombrar este archivo</string>
+
+    <string name="files.share_link_forbidden_permissions">de compartir este archivo</string>
+    <string name="files.unshare_link_forbidden_permissions">de dejar de compartir este archivo</string>
+    <string name="files.update_link_forbidden_permissions">de actualizar este archivo compartido</string>
+    <string name="files.create_dir_fail">No se pudo crear la carpeta</string>
+    <string name="file.list_seconds_ago">hece unos segundos.</string>
+    <string name="files.list_empty">Carga contenido o sincroniza tus dispositivos.</string>
+
+    <string name="sync.fail_ticker">Sincronización fallida</string>
+    <string name="sync.fail_ticker_unauthorized">Sincronización fallida, necesitas autenticarte de nuevo</string>
+    <string name="sync.fail_content">No se pudo completar la sincronización de %1$s</string>
+    <string name="sync.fail_content_unauthorized">Contraseña inválida para %1$s</string>
+    <string name="sync.fail_in_favorites_ticker">Archivos favoritos fallados</string>
+    <string name="sync.fail_in_favorites_content">El contenido de %1$d archivos no pudo ser sincronizado (%2$d conflictos)</string>
+    <string name="sync.conflicts_in_favorites_ticker">Se encontraron conflictos</string>
+    <string name="sync.conflicts_in_favorites_content">%1$d archivos favoritos no pudieron sincronizarse</string>
+
+    <string name="contacts.title">Contactos</string>
+    <string name="contacts.automatic_backup">Backup Automático</string>
+    <string name="contacts.last_backup">Último Backup</string>
+    <string name="contacts.preference_backup_never">nunca</string>
+    <string name="contacts.backup_button">Backup Ahora</string>
+    <string name="contacts.read_permission">Permisos para leer tu lista de contactos son requeridos</string>
+    <string name="contacts.list_restore_selected">Restaurar contactos seleccionados</string>
+    <string name="contacts.list_account_chooser_title">Escoje una cuenta para importar</string>
+    <string name="contacts.list_no_permission">No hay permisos suficientes, nada fue importado!</string>
+    <string name="contacts.select_all">Selecciona todos</string>
+    <string name="contacts.select_none">Selecciona ninguno</string>
+    <string name="contacts.preferences_backup_scheduled">Backup calendarizado empezará enseguida</string>
+    <string name="contacts.preferences_import_scheduled">Import calendarizado empezará enseguida</string>
+    <string name="contacts.preferences_something_strange_happened">No podemos encontrar tu último backup!</string>
+    <string name="contacts.preferences_no_file_found">Archivo no encontrado</string>
+    <string name="contacts.preference_restore_backup">Restaurar Backup</string>
+
+    <string name="auth.unsupported_multiaccount">%1$s no soporta multiples cuentas</string>
+    <string name="auth.account_does_not_exist">La cuenta no existe en este dispositivo todavia</string>
+
+    <string name="exception.message_generic">Ups, algo salió mal, por favor intenta de nuevo.</string>
+
+    <string name="settings.sync_files">Sincronizar Archivos</string>
+
+</resources>
