@@ -65,6 +65,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
     public static final String PREFERENCE_CONTACTS_AUTOMATIC_BACKUP = "PREFERENCE_CONTACTS_AUTOMATIC_BACKUP";
     public static final String PREFERENCE_CONTACTS_LAST_BACKUP = "PREFERENCE_CONTACTS_LAST_BACKUP";
+    public static final String PREFERENCE_IS_NOT_FIRST_TIME = "PREFERENCE_IS_NOT_FIRST_TIME";
 
     private static final String KEY_CALENDAR_PICKER_OPEN = "IS_CALENDAR_PICKER_OPEN";
     private static final String KEY_CALENDAR_DAY = "CALENDAR_DAY";
@@ -119,7 +120,6 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         // Inflate the layout for this fragment
         View fragmentView = inflater.inflate(R.layout.fragment_contacts_backup, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
-
         return fragmentView;
     }
 
@@ -196,7 +196,13 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
 
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP));
+        if (!arbitraryDataProvider.getBooleanValue(account, PREFERENCE_IS_NOT_FIRST_TIME)) {
+            backupSwitch.setChecked(true);
+            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_IS_NOT_FIRST_TIME, String.valueOf(true));
+            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(true));
+        } else {
+            backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP));
+        }
 
         onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override

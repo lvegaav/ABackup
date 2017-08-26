@@ -109,6 +109,8 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
     private Unbinder mUnBind;
     private Listener mListener;
 
+    private Menu mMenu;
+
     public ContactListFragment() {
 
     }
@@ -188,6 +190,7 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.contactlist_menu, menu);
+        mMenu = menu;
     }
 
     @Override
@@ -604,6 +607,9 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
             if (!isCancelled()) {
                 emptyListContainer.setVisibility(View.GONE);
                 contactListAdapter.replaceVCards(vCards);
+                if (mMenu != null) {
+                    onOptionsItemSelected(mMenu.findItem(R.id.action_select_all));
+                }
             }
         }
     };
