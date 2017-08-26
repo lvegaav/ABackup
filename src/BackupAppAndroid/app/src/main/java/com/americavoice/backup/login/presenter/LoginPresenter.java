@@ -87,7 +87,25 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
 
             @Override
             public void error(Exception ex) {
-                if (ex instanceof WebServiceException){
+                dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
+                request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumberWithCode));
+                mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
+                    @Override
+                    public void success(dtos.SendResetPasswordSmsResponse response) {
+                        mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
+                        mView.viewValidation();
+                    }
+                    @Override
+                    public void error(Exception ex) {
+                        mView.showPhoneNumberInvalid();
+                    }
+
+                    @Override
+                    public void complete() {
+                        mView.hideLoading();
+                    }
+                });
+                /*if (ex instanceof WebServiceException){
                     WebServiceException webEx = (WebServiceException) ex;
                     if (webEx.getStatusCode() == 401) {
                         dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
@@ -114,7 +132,7 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                 } else {
                     mView.hideLoading();
                     showErrorMessage(new DefaultErrorBundle(ex));
-                }
+                }*/
             }
         });
     }

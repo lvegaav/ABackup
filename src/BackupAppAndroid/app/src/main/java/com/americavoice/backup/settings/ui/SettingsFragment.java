@@ -5,10 +5,14 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
@@ -48,6 +52,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     TextView tvTitle;
     @BindString(R.string.main_title)
     String title;
+    @BindView(R.id.tv_sync_files)
+    public TextView tvSyncFiles;
 
     public SettingsFragment() {
         super();
@@ -77,6 +83,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
         tvTitle.setText("");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tvSyncFiles.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sync, 0, 0, 0);
+        } else {
+            Drawable draw = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.ic_sync);
+            tvSyncFiles.setCompoundDrawablesWithIntrinsicBounds(draw, null, null, null);
+        }
         return fragmentView;
     }
 

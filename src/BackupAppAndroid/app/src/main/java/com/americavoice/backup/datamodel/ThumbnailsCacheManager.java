@@ -245,7 +245,7 @@ public class ThumbnailsCacheManager {
         }
 
         protected void onPostExecute(Bitmap bitmap){
-            if (bitmap != null && mImageViewReference != null) {
+            if (bitmap != null) {
                 final ImageView imageView = mImageViewReference.get();
                 final ThumbnailGenerationTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
                 if (this == bitmapWorkerTask) {

@@ -1,12 +1,17 @@
 package com.americavoice.backup.main.ui.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.main.ui.SplashScreenFragment;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.security.ProviderInstaller;
 
 import butterknife.ButterKnife;
 
@@ -35,8 +40,18 @@ public class SplashScreenActivity extends BaseActivity implements HasComponent<A
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume()
+    {
         super.onResume();
+        try {
+            ProviderInstaller.installIfNeeded(this);
+        } catch (GooglePlayServicesRepairableException e) {
+            // Thrown when Google Play Services is not installed, up-to-date, or enabled
+            // Show dialog to allow users to install, update, or otherwise enable Google Play services.
+            GooglePlayServicesUtil.getErrorDialog(e.getConnectionStatusCode(), this, 0);
+        } catch (GooglePlayServicesNotAvailableException e) {
+            Log.e("SecurityException", "Google Play Services not available.");
+        }
     }
 
     @Override

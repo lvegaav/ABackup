@@ -8,6 +8,7 @@ import android.accounts.OperationCanceledException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.americavoice.backup.authentication.AccountUtils;
@@ -270,7 +271,7 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
 
                     onAccountCreationSuccessful(future);
                 } catch (OperationCanceledException e) {
-                    finishAffinity();
+                    ActivityCompat.finishAffinity(BaseOwncloudActivity.this);
                     Log_OC.d(TAG, "Account creation canceled");
 
                 } catch (Exception e) {

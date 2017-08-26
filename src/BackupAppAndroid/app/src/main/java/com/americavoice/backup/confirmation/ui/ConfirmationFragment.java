@@ -3,7 +3,10 @@ package com.americavoice.backup.confirmation.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,6 +93,12 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
 
         View fragmentView = inflater.inflate(R.layout.fragment_confirmation, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            etConfirmationCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_glove, 0, 0, 0);
+        } else {
+            Drawable globe = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.ic_wand);
+            etConfirmationCode.setCompoundDrawablesWithIntrinsicBounds(globe, null, null, null);
+        }
         etConfirmationCode.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

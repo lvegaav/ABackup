@@ -57,7 +57,6 @@
                 android:maxLength="8"
                 android:imeOptions="actionDone"
                 android:background="@drawable/button_border"
-                android:drawableLeft="@drawable/ic_wand"
                 android:paddingLeft="5dp"/>
             <TextView
                 android:layout_width="match_parent"
