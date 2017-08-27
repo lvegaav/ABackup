@@ -15,6 +15,7 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 import net.servicestack.client.WebServiceException;
@@ -87,6 +88,8 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
 
             @Override
             public void error(Exception ex) {
+                Crashlytics.setString("login", phoneNumberWithCode);
+                Crashlytics.logException(ex);
                 dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
                 request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumberWithCode));
                 mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
@@ -97,6 +100,8 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                     }
                     @Override
                     public void error(Exception ex) {
+                        Crashlytics.setString("SendResetPasswordSms", mNetworkProvider.getUserName(phoneNumberWithCode));
+                        Crashlytics.logException(ex);
                         mView.showPhoneNumberInvalid();
                     }
 

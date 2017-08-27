@@ -31,6 +31,7 @@
     <string name="main.videos">Videos</string>
     <string name="main.contacts">Contacts</string>
     <string name="main.documents">Documents</string>
+    <string name="main.available">Available</string>
 
     <string name="files.upload_folder_path">to_upload</string>
     <string name="files.download_folder_path">downloaded</string>

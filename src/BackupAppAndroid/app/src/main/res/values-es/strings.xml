@@ -32,6 +32,7 @@
     <string name="main.videos">Videos</string>
     <string name="main.contacts">Contactos</string>
     <string name="main.documents">Documentos</string>
+    <string name="main.available">Disponible</string>
 
     <string name="files.no_files">No hay archivos. \nSube contenido o sincroniza tus dispositivos!</string>
     <string name="files.permission_storage_access">Permisos adicionales son requeridos para subir y bajar archivos.</string>

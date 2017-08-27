@@ -39,10 +39,11 @@
 
         <ImageView
             android:id="@+id/btn_settings"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="15dp"
             app:srcCompat="@drawable/ic_settings"
             android:layout_alignParentBottom="true"/>
 

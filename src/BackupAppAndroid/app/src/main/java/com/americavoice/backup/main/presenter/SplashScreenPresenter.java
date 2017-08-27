@@ -51,11 +51,6 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
      * Initializes the presenter
      */
     public void initialize() {
-        new Handler().postDelayed(new Runnable(){
-            @Override
-            public void run() {
-                mView.viewHome();
-            }
-        }, SPLASH_DISPLAY_LENGTH);
+
     }
 }

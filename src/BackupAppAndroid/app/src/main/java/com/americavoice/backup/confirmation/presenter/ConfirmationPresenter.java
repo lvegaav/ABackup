@@ -14,6 +14,7 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 
@@ -83,6 +84,8 @@ public class ConfirmationPresenter extends BasePresenter implements IPresenter {
 
             @Override
             public void error(Exception ex) {
+                Crashlytics.setString("PerformResetPassword", mNetworkProvider.getUserName(phoneNumber));
+                Crashlytics.logException(ex);
                 mView.hideLoading();
                 mView.showConfirmationCodeInvalid();
             }

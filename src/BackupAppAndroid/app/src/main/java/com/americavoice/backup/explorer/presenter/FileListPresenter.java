@@ -70,8 +70,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     public void destroy() {
     }
 
-    public void
-    onFileUpload(String path) {
+    public void onFileUpload(String path) {
 
         mView.hideRetry();
 //        mView.showUploading();
