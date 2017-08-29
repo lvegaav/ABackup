@@ -30,6 +30,8 @@ import butterknife.ButterKnife;
 
 public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionViewHolder> {
 
+    private FileDataStorageManager mStorageManager;
+
     public interface OnItemClickListener {
         void onItemClicked(RemoteFile file);
     }
@@ -40,12 +42,13 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
     private Context mContext;
     private Account mAccount;
 
-    public FileAdapter(Context context, Collection<RemoteFile> collection) {
+    public FileAdapter(Context context, Collection<RemoteFile> collection, FileDataStorageManager fileDataStorageManager) {
         this.validateTransactionCollection(collection);
         this.mLayoutInflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mCollection = (List<RemoteFile>) collection;
         this.mContext = context;
+        this.mStorageManager = fileDataStorageManager;
         mAccount = AccountUtils.getCurrentOwnCloudAccount(mContext);
     }
 
@@ -64,6 +67,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
     public void onBindViewHolder(TransactionViewHolder holder, final int position) {
         final RemoteFile model = this.mCollection.get(position);
         holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().lastIndexOf('/') + 1));
+        holder.ivIcon.setTag(model.getRemoteId());
         if (model.getMimeType().equals("DIR")) {
             holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().substring(0, model.getRemotePath().length() -1).lastIndexOf('/') + 1));
             // Folder
@@ -73,6 +77,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
             // Thumbnail in Cache?
             Bitmap thumbnail = ThumbnailsCacheManager.getBitmapFromDiskCache(model.getRemoteId());
             if (thumbnail != null) {
+
                 if (MimeTypeUtil.isVideo(model.getMimeType())) {
                     Bitmap withOverlay = ThumbnailsCacheManager.addVideoOverlay(thumbnail);
                     holder.ivIcon.setImageBitmap(withOverlay);
@@ -80,11 +85,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
                     holder.ivIcon.setImageBitmap(thumbnail);
                 }
             } else {
+                // generate new Thumbnail
                 if (ThumbnailsCacheManager.cancelPotentialThumbnailWork(model, holder.ivIcon)) {
                     try {
                         final ThumbnailsCacheManager.ThumbnailGenerationTask task =
                                 new ThumbnailsCacheManager.ThumbnailGenerationTask(
-                                        holder.ivIcon, mAccount
+                                        holder.ivIcon, mStorageManager, mAccount
                                 );
 
                         if (MimeTypeUtil.isVideo(model.getMimeType())) {
@@ -92,6 +98,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
                         } else {
                             thumbnail = ThumbnailsCacheManager.mDefaultImg;
                         }
+
                         final ThumbnailsCacheManager.AsyncThumbnailDrawable asyncDrawable =
                                 new ThumbnailsCacheManager.AsyncThumbnailDrawable(
                                         mContext.getResources(),
@@ -101,8 +108,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
                         holder.ivIcon.setImageDrawable(asyncDrawable);
                         task.execute(model);
                     } catch (IllegalArgumentException e) {
+                        Log_OC.d(FileAdapter.class.getSimpleName(), "ThumbnailGenerationTask : " + e.getMessage());
                     }
                 }
+            }
+
+            if (model.getMimeType().equalsIgnoreCase("image/png")) {
+                holder.ivIcon.setBackgroundColor(mContext.getResources()
+                        .getColor(R.color.white));
             }
 
         } else {

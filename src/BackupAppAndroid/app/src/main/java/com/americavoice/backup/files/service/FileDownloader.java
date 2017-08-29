@@ -520,16 +520,16 @@ public class FileDownloader extends Service
                 );
 
         /// includes a pending intent in the notification showing the details view of the file
-        Intent showDetailsIntent = null;
+//        Intent showDetailsIntent = null;
 //            showDetailsIntent = new Intent(this, FileDisplayActivity.class);
-        showDetailsIntent = new Intent(this, FileListActivity.class);
+//        showDetailsIntent = new Intent(this, FileListActivity.class);
 //        showDetailsIntent.putExtra(FileActivity.EXTRA_FILE, download.getFile());
 //        showDetailsIntent.putExtra(FileActivity.EXTRA_ACCOUNT, download.getAccount());
-        showDetailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        showDetailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        mNotificationBuilder.setContentIntent(PendingIntent.getActivity(
-                this, (int) System.currentTimeMillis(), showDetailsIntent, 0
-        ));
+//        mNotificationBuilder.setContentIntent(PendingIntent.getActivity(
+//                this, (int) System.currentTimeMillis(), showDetailsIntent, 0
+//        ));
 
         mNotificationManager.notify(R.string.files_downloader_download_in_progress_ticker, mNotificationBuilder.build());
     }
