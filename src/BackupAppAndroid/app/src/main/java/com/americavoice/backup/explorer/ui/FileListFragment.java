@@ -204,7 +204,11 @@ public class FileListFragment extends BaseFragment implements FileListView {
     public void renderList(List<RemoteFile> transactionModelCollection) {
         if (rvFiles != null) {
             if (tvEmpty != null) tvEmpty.setVisibility(View.GONE);
-            this.mAdapter = new FileAdapter(getContext(), new ArrayList<RemoteFile>());
+            this.mAdapter = new FileAdapter(
+                    getContext(),
+                    new ArrayList<RemoteFile>(),
+                    ((BaseOwncloudActivity) getActivity()).getStorageManager()
+            );
             this.mAdapter.setOnItemClickListener(onItemClickListener);
             this.rvFiles.setAdapter(mAdapter);
             if (transactionModelCollection != null) {

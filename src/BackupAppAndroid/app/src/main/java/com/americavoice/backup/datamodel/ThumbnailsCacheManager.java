@@ -60,15 +60,15 @@ import java.lang.ref.WeakReference;
  * Manager for concurrent access to thumbnails cache.
  */
 public class ThumbnailsCacheManager {
-    
+
     private static final String TAG = ThumbnailsCacheManager.class.getSimpleName();
-    
+
     private static final String CACHE_FOLDER = "thumbnailCache";
 
     private static final Object mThumbnailsDiskCacheLock = new Object();
     private static DiskLruImageCache mThumbnailCache = null;
     private static boolean mThumbnailCacheStarting = true;
-    
+
     private static final int DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
     private static final CompressFormat mCompressFormat = CompressFormat.JPEG;
     private static final int mCompressQuality = 70;
@@ -86,7 +86,7 @@ public class ThumbnailsCacheManager {
                     R.drawable.file_movie
             );
 
-    
+
     public static class InitDiskCacheTask extends AsyncTask<File, Void, Void> {
 
         @Override
@@ -100,13 +100,13 @@ public class ThumbnailsCacheManager {
                         // try and use external cache dir; otherwise use internal cache dir
                         final String cachePath =
                                 AndroidApplication.getAppContext().getExternalCacheDir().getPath() +
-                                File.separator + CACHE_FOLDER;
+                                        File.separator + CACHE_FOLDER;
                         Log_OC.d(TAG, "create dir: " + cachePath);
                         final File diskCacheDir = new File(cachePath);
                         mThumbnailCache = new DiskLruImageCache(
-                                diskCacheDir, 
-                                DISK_CACHE_SIZE, 
-                                mCompressFormat, 
+                                diskCacheDir,
+                                DISK_CACHE_SIZE,
+                                mCompressFormat,
                                 mCompressQuality
                         );
                     } catch (Exception e) {
@@ -151,7 +151,7 @@ public class ThumbnailsCacheManager {
 
         return thumbnail;
     }
-    
+
     public static void addBitmapToCache(String key, Bitmap bitmap) {
         synchronized (mThumbnailsDiskCacheLock) {
             if (mThumbnailCache != null) {
@@ -182,13 +182,32 @@ public class ThumbnailsCacheManager {
         private static Account mAccount;
         private Object mFile;
         private String mImageKey = null;
+        private FileDataStorageManager mStorageManager;
 
 
-        public ThumbnailGenerationTask(ImageView imageView,
-                                       Account account){
+        public ThumbnailGenerationTask(ImageView imageView, FileDataStorageManager storageManager,
+                                       Account account) throws IllegalArgumentException {
             // Use a WeakReference to ensure the ImageView can be garbage collected
             mImageViewReference = new WeakReference<ImageView>(imageView);
+            if (storageManager == null) {
+                throw new IllegalArgumentException("storageManager must not be NULL");
+            }
+            mStorageManager = storageManager;
             mAccount = account;
+        }
+
+        public ThumbnailGenerationTask(FileDataStorageManager storageManager, Account account){
+            if (storageManager == null) {
+                throw new IllegalArgumentException("storageManager must not be NULL");
+            }
+            mStorageManager = storageManager;
+            mAccount = account;
+            mImageViewReference = null;
+        }
+
+        public ThumbnailGenerationTask(ImageView imageView) {
+            // Use a WeakReference to ensure the ImageView can be garbage collected
+            mImageViewReference = new WeakReference<ImageView>(imageView);
         }
 
         @Override
@@ -212,16 +231,11 @@ public class ThumbnailsCacheManager {
 
                 if (mFile instanceof OCFile) {
                     thumbnail = doOCFileInBackground();
+                    if (MimeTypeUtil.isVideo((OCFile) mFile) && thumbnail != null) thumbnail = addVideoOverlay(thumbnail);
 
-                    if (MimeTypeUtil.isVideo((OCFile) mFile) && thumbnail != null) {
-                        thumbnail = addVideoOverlay(thumbnail);
-                    }
-                }else if (mFile instanceof RemoteFile) {
+                } else if (mFile instanceof RemoteFile) {
                     thumbnail = doRemoteFileInBackground();
-
-                    if (MimeTypeUtil.isVideo(((RemoteFile) mFile).getMimeType()) && thumbnail != null) {
-                        thumbnail = addVideoOverlay(thumbnail);
-                    }
+                    if (MimeTypeUtil.isVideo(((RemoteFile) mFile).getMimeType()) && thumbnail != null) thumbnail = addVideoOverlay(thumbnail);
                 } else if (mFile instanceof File) {
                     thumbnail = doFileInBackground();
 
@@ -245,15 +259,17 @@ public class ThumbnailsCacheManager {
         }
 
         protected void onPostExecute(Bitmap bitmap){
-            if (bitmap != null) {
+            if (bitmap != null && mImageViewReference != null) {
                 final ImageView imageView = mImageViewReference.get();
                 final ThumbnailGenerationTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
                 if (this == bitmapWorkerTask) {
-                    String tagId = "";
+                    String tagId = "null";
                     if (mFile instanceof OCFile){
                         tagId = String.valueOf(((OCFile)mFile).getFileId());
                     } else if (mFile instanceof File){
                         tagId = String.valueOf(mFile.hashCode());
+                    } else if (mFile instanceof RemoteFile) {
+                        tagId = String.valueOf(((RemoteFile) mFile).getRemoteId());
                     }
                     if (String.valueOf(imageView.getTag()).equals(tagId)) {
                         imageView.setImageBitmap(bitmap);
@@ -274,7 +290,7 @@ public class ThumbnailsCacheManager {
         }
 
         private Bitmap doOCFileInBackground() {
-            OCFile file = (OCFile)mFile;
+            OCFile file = (OCFile) mFile;
 
             final String imageKey = String.valueOf(file.getRemoteId());
 
@@ -300,6 +316,7 @@ public class ThumbnailsCacheManager {
                         thumbnail = addThumbnailToCache(imageKey, bitmap, file.getStoragePath(), px);
 
                         file.setNeedsUpdateThumbnail(false);
+                        mStorageManager.saveFile(file);
                     }
 
                 } else {
@@ -365,48 +382,48 @@ public class ThumbnailsCacheManager {
 
                 int px = getThumbnailDimension();
 
-                    // Download thumbnail from server
-                    OwnCloudVersion serverOCVersion = AccountUtils.getServerVersion(mAccount, AndroidApplication.getAppContext());
-                    if (mClient != null && serverOCVersion != null) {
-                        if (serverOCVersion.supportsRemoteThumbnails()) {
-                            GetMethod get = null;
-                            try {
-                                String uri = mClient.getBaseUri() + "" +
-                                        "/index.php/apps/files/api/v1/thumbnail/" +
-                                        px + "/" + px + Uri.encode(file.getRemotePath(), "/");
-                                Log_OC.d("Thumbnail", "URI: " + uri);
-                                get = new GetMethod(uri);
-                                get.setRequestHeader("Cookie",
-                                        "nc_sameSiteCookielax=true;nc_sameSiteCookiestrict=true");
-                                int status = mClient.executeMethod(get);
-                                if (status == HttpStatus.SC_OK) {
-                                    InputStream inputStream = get.getResponseBodyAsStream();
-                                    Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-                                    thumbnail = ThumbnailUtils.extractThumbnail(bitmap, px, px);
+                // Download thumbnail from server
+                OwnCloudVersion serverOCVersion = AccountUtils.getServerVersion(mAccount, AndroidApplication.getAppContext());
+                if (mClient != null && serverOCVersion != null) {
+                    if (serverOCVersion.supportsRemoteThumbnails()) {
+                        GetMethod get = null;
+                        try {
+                            String uri = mClient.getBaseUri() + "" +
+                                    "/index.php/apps/files/api/v1/thumbnail/" +
+                                    px + "/" + px + Uri.encode(file.getRemotePath(), "/");
+                            Log_OC.d("Thumbnail", "URI: " + uri);
+                            get = new GetMethod(uri);
+                            get.setRequestHeader("Cookie",
+                                    "nc_sameSiteCookielax=true;nc_sameSiteCookiestrict=true");
+                            int status = mClient.executeMethod(get);
+                            if (status == HttpStatus.SC_OK) {
+                                InputStream inputStream = get.getResponseBodyAsStream();
+                                Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+                                thumbnail = ThumbnailUtils.extractThumbnail(bitmap, px, px);
 
-                                    // Handle PNG
-                                    if (file.getMimeType().equalsIgnoreCase("image/png")) {
-                                        thumbnail = handlePNG(thumbnail, px);
-                                    }
+                                // Handle PNG
+                                if (file.getMimeType().equalsIgnoreCase("image/png")) {
+                                    thumbnail = handlePNG(thumbnail, px);
+                                }
 
-                                    // Add thumbnail to cache
-                                    if (thumbnail != null) {
-                                        addBitmapToCache(imageKey, thumbnail);
-                                    }
-                                } else {
-                                    mClient.exhaustResponse(get.getResponseBodyAsStream());
+                                // Add thumbnail to cache
+                                if (thumbnail != null) {
+                                    addBitmapToCache(imageKey, thumbnail);
                                 }
-                            } catch (Exception e) {
-                                Log_OC.d(TAG, e.getMessage(), e);
-                            } finally {
-                                if (get != null) {
-                                    get.releaseConnection();
-                                }
+                            } else {
+                                mClient.exhaustResponse(get.getResponseBodyAsStream());
                             }
-                        } else {
-                            Log_OC.d(TAG, "Server too old");
+                        } catch (Exception e) {
+                            Log_OC.d(TAG, e.getMessage(), e);
+                        } finally {
+                            if (get != null) {
+                                get.releaseConnection();
+                            }
                         }
+                    } else {
+                        Log_OC.d(TAG, "Server too old");
                     }
+                }
             }
 
             return thumbnail;
