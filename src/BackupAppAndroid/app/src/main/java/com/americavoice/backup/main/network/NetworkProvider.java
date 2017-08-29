@@ -108,6 +108,10 @@ public class NetworkProvider {
         mClient.getAsync(new dtos.GetFullUser(), result);
     }
 
+    public void CustomRegister(dtos.CustomRegister request, AsyncResult<dtos.CustomRegisterResponse> result) {
+        mClient.postAsync(request, result);
+    }
+
     public void SendResetPasswordSms(dtos.SendResetPasswordSms request, AsyncResult<dtos.SendResetPasswordSmsResponse> result) {
         mClient.postAsync(request, result);
     }

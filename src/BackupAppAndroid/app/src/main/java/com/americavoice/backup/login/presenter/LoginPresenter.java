@@ -91,10 +91,12 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                 Crashlytics.setString("login", phoneNumberWithCode);
                 Crashlytics.logException(ex);
                 dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
-                request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumberWithCode));
+                request.setCompanyId(NetworkProvider.COMPANY_ID);
+                request.setPhoneNumber(phoneNumberWithCode);
                 mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
                     @Override
                     public void success(dtos.SendResetPasswordSmsResponse response) {
+                        mView.hideLoading();
                         mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
                         mView.viewValidation();
                     }
@@ -102,12 +104,38 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                     public void error(Exception ex) {
                         Crashlytics.setString("SendResetPasswordSms", mNetworkProvider.getUserName(phoneNumberWithCode));
                         Crashlytics.logException(ex);
-                        mView.showPhoneNumberInvalid();
-                    }
+                        if (ex instanceof WebServiceException) {
+                            WebServiceException webEx = (WebServiceException) ex;
+                            if (webEx.getErrorCode().equals("UserNotFound")) {
+                                mView.hideLoading();
+                                mView.showPhoneNumberInvalid();
+                                return;
+                            }
+                            if (webEx.getErrorCode().equals("UserNotRegister")) {
+                                dtos.CustomRegister request = new dtos.CustomRegister();
+                                request.setCompanyId(NetworkProvider.COMPANY_ID);
+                                request.setPhoneNumber(phoneNumberWithCode);
+                                mNetworkProvider.CustomRegister(request, new AsyncResult<dtos.CustomRegisterResponse>() {
+                                    @Override
+                                    public void success(dtos.CustomRegisterResponse response) {
+                                        mView.hideLoading();
+                                        mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
+                                        mView.viewValidation();
+                                    }
 
-                    @Override
-                    public void complete() {
-                        mView.hideLoading();
+                                    @Override
+                                    public void error(Exception ex) {
+                                        mView.hideLoading();
+                                        mView.showPhoneNumberInvalid();
+                                    }
+                                });
+                            }
+                        }
+                        else
+                        {
+                            mView.hideLoading();
+                            mView.showPhoneNumberInvalid();
+                        }
                     }
                 });
                 /*if (ex instanceof WebServiceException){

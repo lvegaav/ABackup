@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-07-23 11:25:24
+Date: 2017-08-28 21:51:19
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://localhost:52239/api
@@ -38,150 +38,6 @@ public class dtos
     {
         
         private static Object responseType = GetSessionResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Get the permission list.
-    */
-    @Route(Path="/authorization/permissions", Verbs="GET")
-    // @Route(Path="/authorization/permissions/parent/{ParentId}", Verbs="GET")
-    @Api(Description="Get the permission list.")
-    public static class GetPermissions implements IReturn<GetPermissionsResponse>
-    {
-        public Integer parentId = null;
-        
-        public Integer getParentId() { return parentId; }
-        public GetPermissions setParentId(Integer value) { this.parentId = value; return this; }
-        private static Object responseType = GetPermissionsResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Get permission by Id.
-    */
-    @Route(Path="/authorization/permissions/{Id}", Verbs="GET")
-    @Api(Description="Get permission by Id.")
-    public static class GetPermission implements IReturn<GetPermissionResponse>
-    {
-        public Integer id = null;
-        
-        public Integer getId() { return id; }
-        public GetPermission setId(Integer value) { this.id = value; return this; }
-        private static Object responseType = GetPermissionResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Get the role list.
-    */
-    @Route(Path="/authorization/roles", Verbs="GET")
-    @Api(Description="Get the role list.")
-    public static class GetRoles implements IReturn<GetRolesResponse>
-    {
-        
-        private static Object responseType = GetRolesResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Get role by Id.
-    */
-    @Route(Path="/authorization/roles/{Id}", Verbs="GET")
-    @Api(Description="Get role by Id.")
-    public static class GetRole implements IReturn<GetRoleResponse>
-    {
-        public Integer id = null;
-        
-        public Integer getId() { return id; }
-        public GetRole setId(Integer value) { this.id = value; return this; }
-        private static Object responseType = GetRoleResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Create a new role.
-    */
-    @Route(Path="/authorization/roles", Verbs="POST")
-    @Api(Description="Create a new role.")
-    public static class CreateRole implements IReturn<CreateRoleResponse>
-    {
-        @ApiMember(IsRequired=true, ParameterType="body")
-        public String name = null;
-        
-        public String getName() { return name; }
-        public CreateRole setName(String value) { this.name = value; return this; }
-        private static Object responseType = CreateRoleResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Delete role.
-    */
-    @Route(Path="/authorization/roles/{Id}", Verbs="PUT")
-    @Api(Description="Delete role.")
-    public static class UpdateRole implements IReturn<UpdateRoleResponse>
-    {
-        public Integer id = null;
-        public RoleModel rol = null;
-        
-        public Integer getId() { return id; }
-        public UpdateRole setId(Integer value) { this.id = value; return this; }
-        public RoleModel getRol() { return rol; }
-        public UpdateRole setRol(RoleModel value) { this.rol = value; return this; }
-        private static Object responseType = UpdateRoleResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Delete role.
-    */
-    @Route(Path="/authorization/roles/{Id}", Verbs="DELETE")
-    @Api(Description="Delete role.")
-    public static class DeleteRole implements IReturn<DeleteRoleResponse>
-    {
-        public Integer id = null;
-        
-        public Integer getId() { return id; }
-        public DeleteRole setId(Integer value) { this.id = value; return this; }
-        private static Object responseType = DeleteRoleResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Assign Permission.
-    */
-    @Route(Path="/authorization/roles/{RoleId}/permissions/{PermissionId}", Verbs="POST")
-    @Api(Description="Assign Permission.")
-    public static class AssignPermission implements IReturn<AssignPermissionResponse>
-    {
-        public Integer roleId = null;
-        public Integer permissionId = null;
-        
-        public Integer getRoleId() { return roleId; }
-        public AssignPermission setRoleId(Integer value) { this.roleId = value; return this; }
-        public Integer getPermissionId() { return permissionId; }
-        public AssignPermission setPermissionId(Integer value) { this.permissionId = value; return this; }
-        private static Object responseType = AssignPermissionResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * UnAssign Permission.
-    */
-    @Route(Path="/authorization/roles/{RoleId}/permissions", Verbs="DELETE")
-    // @Route(Path="/authorization/roles/{RoleId}/permissions/{PermissionId}", Verbs="DELETE")
-    @Api(Description="UnAssign Permission.")
-    public static class UnAssignPermission implements IReturn<UnAssignPermissionResponse>
-    {
-        public Integer roleId = null;
-        public Integer permissionId = null;
-        
-        public Integer getRoleId() { return roleId; }
-        public UnAssignPermission setRoleId(Integer value) { this.roleId = value; return this; }
-        public Integer getPermissionId() { return permissionId; }
-        public UnAssignPermission setPermissionId(Integer value) { this.permissionId = value; return this; }
-        private static Object responseType = UnAssignPermissionResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -346,57 +202,6 @@ public class dtos
         public Integer getId() { return id; }
         public DeleteUser setId(Integer value) { this.id = value; return this; }
         private static Object responseType = DeleteUserResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Get the role list by user.
-    */
-    @Route(Path="/authorization/users/{UserId}/roles", Verbs="GET")
-    @Api(Description="Get the role list by user.")
-    public static class GetUserRoles implements IReturn<GetUserRolesResponse>
-    {
-        public Integer userId = null;
-        
-        public Integer getUserId() { return userId; }
-        public GetUserRoles setUserId(Integer value) { this.userId = value; return this; }
-        private static Object responseType = GetUserRolesResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Assign Role.
-    */
-    @Route(Path="/authorization/users/{UserId}/roles/{RoleId}", Verbs="POST")
-    @Api(Description="Assign Role.")
-    public static class AssignRole implements IReturn<AssignRoleResponse>
-    {
-        public Integer userId = null;
-        public Integer roleId = null;
-        
-        public Integer getUserId() { return userId; }
-        public AssignRole setUserId(Integer value) { this.userId = value; return this; }
-        public Integer getRoleId() { return roleId; }
-        public AssignRole setRoleId(Integer value) { this.roleId = value; return this; }
-        private static Object responseType = AssignRoleResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * UnAssign Role.
-    */
-    @Route(Path="/authorization/users/{UserId}/roles/{RoleId}", Verbs="DELETE")
-    @Api(Description="UnAssign Role.")
-    public static class UnAssignRole implements IReturn<UnAssignRoleResponse>
-    {
-        public Integer userId = null;
-        public Integer roleId = null;
-        
-        public Integer getUserId() { return userId; }
-        public UnAssignRole setUserId(Integer value) { this.userId = value; return this; }
-        public Integer getRoleId() { return roleId; }
-        public UnAssignRole setRoleId(Integer value) { this.roleId = value; return this; }
-        private static Object responseType = UnAssignRoleResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -573,51 +378,12 @@ public class dtos
         */
         @ApiMember(Description="US valid phone number.", IsRequired=true, ParameterType="form")
         public String phoneNumber = null;
-
-        /**
-        * DeviceId.
-        */
-        @ApiMember(Description="DeviceId.", IsRequired=true, ParameterType="form")
-        public String password = null;
         
         public Integer getCompanyId() { return companyId; }
         public CustomRegister setCompanyId(Integer value) { this.companyId = value; return this; }
         public String getPhoneNumber() { return phoneNumber; }
         public CustomRegister setPhoneNumber(String value) { this.phoneNumber = value; return this; }
-        public String getPassword() { return password; }
-        public CustomRegister setPassword(String value) { this.password = value; return this; }
         private static Object responseType = CustomRegisterResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Send phone verification code to authenticated user.
-    */
-    @Route(Path="/register/send-phonecode", Verbs="POST")
-    @Api(Description="Send phone verification code to authenticated user.")
-    public static class SendPhoneVerificationCode implements IReturn<SendPhoneVerificationCodeResponse>
-    {
-        
-        private static Object responseType = SendPhoneVerificationCodeResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Validate phone verification code for authenticated user.
-    */
-    @Route(Path="/register/validate-phonecode", Verbs="POST")
-    @Api(Description="Validate phone verification code for authenticated user.")
-    public static class ValidateSmsVerificationCode implements IReturn<ValidateSmsVerificationCodeResponse>
-    {
-        /**
-        * Verification code.
-        */
-        @ApiMember(Description="Verification code.", IsRequired=true, ParameterType="form")
-        public String verificationCode = null;
-        
-        public String getVerificationCode() { return verificationCode; }
-        public ValidateSmsVerificationCode setVerificationCode(String value) { this.verificationCode = value; return this; }
-        private static Object responseType = ValidateSmsVerificationCodeResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -629,11 +395,19 @@ public class dtos
     public static class SendResetPasswordSms implements IReturn<SendResetPasswordSmsResponse>
     {
         /**
+        * Company Id.
+        */
+        @ApiMember(Description="Company Id.", IsRequired=true, ParameterType="form")
+        public Integer companyId = null;
+
+        /**
         * Phone number.
         */
         @ApiMember(Description="Phone number.", IsRequired=true, ParameterType="form")
         public String phoneNumber = null;
         
+        public Integer getCompanyId() { return companyId; }
+        public SendResetPasswordSms setCompanyId(Integer value) { this.companyId = value; return this; }
         public String getPhoneNumber() { return phoneNumber; }
         public SendResetPasswordSms setPhoneNumber(String value) { this.phoneNumber = value; return this; }
         private static Object responseType = SendResetPasswordSmsResponse.class;
@@ -799,93 +573,6 @@ public class dtos
         public GetSessionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class GetPermissionsResponse
-    {
-        public ArrayList<PermissionModel> permissions = null;
-        public ResponseStatus responseStatus = null;
-        
-        public ArrayList<PermissionModel> getPermissions() { return permissions; }
-        public GetPermissionsResponse setPermissions(ArrayList<PermissionModel> value) { this.permissions = value; return this; }
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public GetPermissionsResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class GetPermissionResponse
-    {
-        public PermissionModel permission = null;
-        public ResponseStatus responseStatus = null;
-        
-        public PermissionModel getPermission() { return permission; }
-        public GetPermissionResponse setPermission(PermissionModel value) { this.permission = value; return this; }
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public GetPermissionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class GetRolesResponse
-    {
-        public ArrayList<RoleModel> roles = null;
-        public ResponseStatus responseStatus = null;
-        
-        public ArrayList<RoleModel> getRoles() { return roles; }
-        public GetRolesResponse setRoles(ArrayList<RoleModel> value) { this.roles = value; return this; }
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public GetRolesResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class GetRoleResponse
-    {
-        public RoleModel role = null;
-        public ResponseStatus responseStatus = null;
-        
-        public RoleModel getRole() { return role; }
-        public GetRoleResponse setRole(RoleModel value) { this.role = value; return this; }
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public GetRoleResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class CreateRoleResponse
-    {
-        public Integer idRole = null;
-        public ResponseStatus responseStatus = null;
-        
-        public Integer getIdRole() { return idRole; }
-        public CreateRoleResponse setIdRole(Integer value) { this.idRole = value; return this; }
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public CreateRoleResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class UpdateRoleResponse
-    {
-        public ResponseStatus responseStatus = null;
-        
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public UpdateRoleResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class DeleteRoleResponse
-    {
-        public ResponseStatus responseStatus = null;
-        
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public DeleteRoleResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class AssignPermissionResponse
-    {
-        public ResponseStatus responseStatus = null;
-        
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public AssignPermissionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class UnAssignPermissionResponse
-    {
-        public ResponseStatus responseStatus = null;
-        
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public UnAssignPermissionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
     public static class GetUsersResponse
     {
         public ArrayList<UserModel> users = null;
@@ -933,33 +620,6 @@ public class dtos
         
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public DeleteUserResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class GetUserRolesResponse
-    {
-        public ArrayList<RoleModel> roles = null;
-        public ResponseStatus responseStatus = null;
-        
-        public ArrayList<RoleModel> getRoles() { return roles; }
-        public GetUserRolesResponse setRoles(ArrayList<RoleModel> value) { this.roles = value; return this; }
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public GetUserRolesResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class AssignRoleResponse
-    {
-        public ResponseStatus responseStatus = null;
-        
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public AssignRoleResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class UnAssignRoleResponse
-    {
-        public ResponseStatus responseStatus = null;
-        
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public UnAssignRoleResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class UpdateUserPasswordResponse
@@ -1078,22 +738,6 @@ public class dtos
         public CustomRegisterResponse setUserId(String value) { this.userId = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public CustomRegisterResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class SendPhoneVerificationCodeResponse
-    {
-        public ResponseStatus responseStatus = null;
-        
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public SendPhoneVerificationCodeResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class ValidateSmsVerificationCodeResponse
-    {
-        public ResponseStatus responseStatus = null;
-        
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public ValidateSmsVerificationCodeResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class SendResetPasswordSmsResponse
@@ -1391,34 +1035,6 @@ public class dtos
         public AuthUserSession setAuthProvider(String value) { this.authProvider = value; return this; }
         public ArrayList<IAuthTokens> getProviderOAuthAccess() { return providerOAuthAccess; }
         public AuthUserSession setProviderOAuthAccess(ArrayList<IAuthTokens> value) { this.providerOAuthAccess = value; return this; }
-    }
-
-    public static class PermissionModel
-    {
-        public Integer id = null;
-        public String name = null;
-        public Integer parent = null;
-        
-        public Integer getId() { return id; }
-        public PermissionModel setId(Integer value) { this.id = value; return this; }
-        public String getName() { return name; }
-        public PermissionModel setName(String value) { this.name = value; return this; }
-        public Integer getParent() { return parent; }
-        public PermissionModel setParent(Integer value) { this.parent = value; return this; }
-    }
-
-    public static class RoleModel
-    {
-        public Integer id = null;
-        public String name = null;
-        public ArrayList<Integer> permissions = null;
-        
-        public Integer getId() { return id; }
-        public RoleModel setId(Integer value) { this.id = value; return this; }
-        public String getName() { return name; }
-        public RoleModel setName(String value) { this.name = value; return this; }
-        public ArrayList<Integer> getPermissions() { return permissions; }
-        public RoleModel setPermissions(ArrayList<Integer> value) { this.permissions = value; return this; }
     }
 
     public static class UserModel extends UserAuth
