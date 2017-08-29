@@ -14,7 +14,7 @@
     <string name="network.error_socket_exception">Un error ocurrió en la conexión con el servidor.</string>
     <string name="network.error_socket_timeout_exception">Un error ocurrió mientras esperamos al servidor. No se pudo completar la operación.</string>
     <string name="network.error_connect_timeout_exception">Un error ocurrió mientras esperamos al servidor. No se pudo completar la operación.</string>
-    <string name="network.host_not_available">Nose pudo completar la operación. Servidor no disponible</string>
+    <string name="network.host_not_available">No se pudo completar la operación. Servidor no disponible</string>
     <string name="network.server_maintenance_mode">Servidor en mantenimiento</string>
 
     <string name="login.hello">Hola \n¿cual es tu número?</string>
