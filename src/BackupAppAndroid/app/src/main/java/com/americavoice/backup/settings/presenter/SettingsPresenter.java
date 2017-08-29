@@ -90,14 +90,13 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
 
     @Override
     public void onRemoteOperationFinish(RemoteOperation remoteOperation, RemoteOperationResult result) {
-        List<RemoteFile> files = new ArrayList<>();
         HashMap<String, BigDecimal> mSizes = new HashMap<>();
         BigDecimal total = new BigDecimal(0);
         BigDecimal totalAvailable = new BigDecimal(0);
+        if (result.getData() == null) return;
         for(Object obj: result.getData()) {
             RemoteFile remoteFile = (RemoteFile) obj;
-            if (remoteFile.getRemotePath().equals("/"))
-            {
+            if (remoteFile.getRemotePath().equals("/")) {
                 try {
                     Field field =RemoteFile.class.getDeclaredField("mQuotaAvailableBytes");
                     field.setAccessible(true);
@@ -112,8 +111,7 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
             if (remoteFile.getRemotePath().equals(Const.Documents)
                     || remoteFile.getRemotePath().equals(Const.Photos)
                     || remoteFile.getRemotePath().equals(Const.Videos)
-                    || remoteFile.getRemotePath().equals(Const.Contacts))
-            {
+                    || remoteFile.getRemotePath().equals(Const.Contacts)) {
                 BigDecimal size = new BigDecimal(0);
                 try {
                     Field field =RemoteFile.class.getDeclaredField("mQuotaUsedBytes");
@@ -127,7 +125,6 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
                 }
                 mSizes.put(remoteFile.getRemotePath(), size);
             }
-            files.add(remoteFile);
         }
         mView.showPercent(mSizes, total, totalAvailable);
         mView.hideLoading();

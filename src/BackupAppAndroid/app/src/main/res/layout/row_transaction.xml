@@ -18,7 +18,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_contact"
+        android:src="@drawable/ic_menu_archive"
         />
 
     <com.americavoice.backup.main.ui.widget.CustomTextView
@@ -32,7 +32,6 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:text="PIC0231.jpg"
         android:textColor="#6d6e71"
         android:textSize="18sp"
         app:font="fonts/Lato-Black.ttf"/>
