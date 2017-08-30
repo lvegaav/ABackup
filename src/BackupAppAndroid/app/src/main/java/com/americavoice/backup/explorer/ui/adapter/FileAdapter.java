@@ -18,11 +18,13 @@ import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.ThumbnailsCacheManager;
 import com.americavoice.backup.main.network.NetworkProvider;
+import com.americavoice.backup.utils.DisplayUtils;
 import com.americavoice.backup.utils.MimeTypeUtil;
 import com.bumptech.glide.Glide;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import butterknife.BindView;
@@ -59,25 +61,36 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
 
     @Override
     public TransactionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = this.mLayoutInflater.inflate(R.layout.row_transaction, parent, false);
+        View view = this.mLayoutInflater.inflate(R.layout.list_item, parent, false);
         return new TransactionViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(TransactionViewHolder holder, final int position) {
         final RemoteFile model = this.mCollection.get(position);
+
+        File downFile = new File(mContext.getExternalCacheDir(), mContext.getString(R.string.files_download_folder_path) + "/" + model.getRemotePath());
+        boolean fileIsOnCache =  downFile.exists();
+
         holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().lastIndexOf('/') + 1));
         holder.ivIcon.setTag(model.getRemoteId());
+        // If ListView
+        holder.tvFileSize.setText(DisplayUtils.bytesToHumanReadable(model.getLength()));
+        holder.tvLastMod.setText(DisplayUtils.getRelativeTimestamp(mContext, model.getModifiedTimestamp()));
+
+        if (fileIsOnCache) {
+            holder.ivLocalFileIndicator.setImageResource(R.drawable.ic_synced);
+            holder.ivLocalFileIndicator.setVisibility(View.VISIBLE);
+        }
+
         if (model.getMimeType().equals("DIR")) {
             holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().substring(0, model.getRemotePath().length() -1).lastIndexOf('/') + 1));
-            // Folder
             holder.ivIcon.setImageResource(
                     MimeTypeUtil.getFolderTypeIconId());
         } else if (model.getRemotePath().contains("Photos") || model.getRemotePath().contains("Videos")) {
             // Thumbnail in Cache?
             Bitmap thumbnail = ThumbnailsCacheManager.getBitmapFromDiskCache(model.getRemoteId());
             if (thumbnail != null) {
-
                 if (MimeTypeUtil.isVideo(model.getMimeType())) {
                     Bitmap withOverlay = ThumbnailsCacheManager.addVideoOverlay(thumbnail);
                     holder.ivIcon.setImageBitmap(withOverlay);
@@ -169,6 +182,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         ImageView ivIcon;
         @BindView(R.id.tv_name)
         TextView tvName;
+        @BindView(R.id.tv_file_size)
+        TextView tvFileSize;
+        @BindView(R.id.tv_last_mod)
+        TextView tvLastMod;
+        @BindView(R.id.iv_local_file_indicator)
+        ImageView ivLocalFileIndicator;
 
         public TransactionViewHolder(View itemView) {
             super(itemView);
