@@ -235,7 +235,8 @@ public class ThumbnailsCacheManager {
 
                 } else if (mFile instanceof RemoteFile) {
                     thumbnail = doRemoteFileInBackground();
-                    if (MimeTypeUtil.isVideo(((RemoteFile) mFile).getMimeType()) && thumbnail != null) thumbnail = addVideoOverlay(thumbnail);
+                    if (MimeTypeUtil.isVideo(((RemoteFile) mFile).getMimeType()) && thumbnail != null)
+                        thumbnail = addVideoOverlay(thumbnail);
                 } else if (mFile instanceof File) {
                     thumbnail = doFileInBackground();
 

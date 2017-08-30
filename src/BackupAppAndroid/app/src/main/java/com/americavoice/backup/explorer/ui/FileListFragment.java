@@ -278,6 +278,11 @@ public class FileListFragment extends BaseFragment implements FileListView {
         return this.getActivity().getApplicationContext();
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        this.mAdapter.notifyDataSetChanged();
+    }
+
 
     private void loadList() {
         mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");

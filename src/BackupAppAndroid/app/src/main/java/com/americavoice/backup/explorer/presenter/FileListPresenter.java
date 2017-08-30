@@ -166,6 +166,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
     private void onSuccessfulDownload(DownloadRemoteFileOperation operation, RemoteOperationResult result) {
         mView.viewDetail(mRemoteFile);
+        mView.notifyDataSetChanged();
         mRemoteFile = null;
     }
 
