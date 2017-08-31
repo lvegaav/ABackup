@@ -33,6 +33,7 @@ public class MainFragment extends BaseFragment implements MainView {
         void viewVideos();
         void viewContacts();
         void viewDocuments();
+        void viewCalls();
         void viewSettings();
         void onMainBackPressed();
     }
@@ -139,6 +140,10 @@ public class MainFragment extends BaseFragment implements MainView {
     @Override
     public void hideRetry() {
 
+    }
+    @OnClick(R.id.ll_calls)
+    public void onCalls(View view) {
+        if (mListener != null) mListener.viewCalls();
     }
 
     @OnClick(R.id.ll_contacts)

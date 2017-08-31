@@ -63,8 +63,8 @@ dependencies {
 
     //dagger
     annotationProcessor 'com.squareup:javapoet:1.7.0'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.2'
-    compile 'com.google.dagger:dagger:2.2'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
+    compile 'com.google.dagger:dagger:2.5'
     provided 'javax.annotation:jsr250-api:1.0'
 
     //butterknife

@@ -10,7 +10,9 @@ public class BaseConstants {
     public static final String FILE_PROVIDER_AUTHORITY = "com.americavoice.backup.files";
     public static final String DATA_FOLDER = "americavoice";
     public static final String CONTACTS_BACKUP_FOLDER = "/Contacts";
+    public static final String CALLS_BACKUP_FOLDER = "/Calls";
     public static final Integer CONTACTS_BACKUP_EXPLIRE = -1;
+    public static final Integer CALLS_BACKUP_EXPLIRE = -1;
 
     public static final String EXTRA_ACCOUNT = "EXTRA_ACCOUNT";
     public static final String EXTRA_ACTION = "EXTRA_ACTION";

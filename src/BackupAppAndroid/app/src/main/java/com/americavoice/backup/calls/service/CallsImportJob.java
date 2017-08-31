@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.americavoice.backup.contacts.service;
+package com.americavoice.backup.calls.service;
 
 import android.database.Cursor;
 import android.net.Uri;
@@ -46,7 +46,7 @@ import third_parties.ezvcard_android.ContactOperations;
  * Job to import contacts
  */
 
-public class ContactsImportJob extends Job {
+public class CallsImportJob extends Job {
     public static final String TAG = "CallsImportJob";
 
     public static final String ACCOUNT_TYPE = "account_type";

@@ -4,6 +4,7 @@ package com.americavoice.backup.main.navigation;
 import android.content.Intent;
 
 import com.americavoice.backup.main.ui.activity.BaseActivity;
+import com.americavoice.backup.main.ui.activity.CallsBackupActivity;
 import com.americavoice.backup.main.ui.activity.ContactsBackupActivity;
 import com.americavoice.backup.main.ui.activity.FileListActivity;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
@@ -58,6 +59,13 @@ public class Navigator {
     public void navigateToContactsBackupActivity(BaseActivity context) {
         if (context != null) {
             Intent intentToLaunch = ContactsBackupActivity.getCallingIntent(context);
+            context.startActivity(intentToLaunch);
+        }
+    }
+
+    public void navigateToCallsBackupActivity(BaseActivity context) {
+        if (context != null) {
+            Intent intentToLaunch = CallsBackupActivity.getCallingIntent(context);
             context.startActivity(intentToLaunch);
         }
     }

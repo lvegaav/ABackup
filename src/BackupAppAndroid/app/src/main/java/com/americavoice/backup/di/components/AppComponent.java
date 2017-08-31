@@ -2,6 +2,8 @@
 package com.americavoice.backup.di.components;
 
 
+import com.americavoice.backup.calls.ui.CallListFragment;
+import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.confirmation.ui.ConfirmationFragment;
 import com.americavoice.backup.contacts.ui.ContactListFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
@@ -30,4 +32,6 @@ public interface AppComponent extends ActivityComponent {
     void inject(SettingsFragment fragment);
     void inject(ContactsBackupFragment fragment);
     void inject(ContactListFragment fragment);
+    void inject(CallsBackupFragment fragment);
+    void inject(CallListFragment fragment);
 }

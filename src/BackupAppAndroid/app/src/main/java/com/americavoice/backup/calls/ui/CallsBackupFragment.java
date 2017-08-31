@@ -1,4 +1,4 @@
-package com.americavoice.backup.contacts.ui;
+package com.americavoice.backup.calls.ui;
 
 
 import android.Manifest;
@@ -25,8 +25,8 @@ import android.widget.Toast;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
-import com.americavoice.backup.contacts.presenter.ContactsBackupPresenter;
-import com.americavoice.backup.contacts.service.ContactsBackupJob;
+import com.americavoice.backup.calls.presenter.CallsBackupPresenter;
+import com.americavoice.backup.calls.service.CallsBackupJob;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
@@ -61,11 +61,11 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class ContactsBackupFragment extends BaseFragment implements ContactsBackupView, DatePickerDialog.OnDateSetListener {
+public class CallsBackupFragment extends BaseFragment implements CallsBackupView, DatePickerDialog.OnDateSetListener {
 
-    public static final String PREFERENCE_CONTACTS_AUTOMATIC_BACKUP = "PREFERENCE_CALLS_AUTOMATIC_BACKUP";
-    public static final String PREFERENCE_CONTACTS_LAST_BACKUP = "PREFERENCE_CALLS_LAST_BACKUP";
-    public static final String PREFERENCE_IS_NOT_FIRST_TIME = "PREFERENCE_IS_NOT_FIRST_TIME";
+    public static final String PREFERENCE_CALLS_AUTOMATIC_BACKUP = "PREFERENCE_CALLS__AUTOMATIC_BACKUP";
+    public static final String PREFERENCE_CALLS_LAST_BACKUP = "PREFERENCE_CALLS__LAST_BACKUP";
+    public static final String PREFERENCE_CALLS_IS_NOT_FIRST_TIME = "PREFERENCE_CALLS__IS_NOT_FIRST_TIME";
 
     private static final String KEY_CALENDAR_PICKER_OPEN = "IS_CALENDAR_PICKER_OPEN";
     private static final String KEY_CALENDAR_DAY = "CALENDAR_DAY";
@@ -76,23 +76,23 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
      * Interface for listening file list events.
      */
     public interface Listener {
-        void onContactsBackPressed();
+        void onCallsBackPressed();
     }
 
     @Inject
-    ContactsBackupPresenter mPresenter;
+    CallsBackupPresenter mPresenter;
 
-    @BindView(R.id.contacts_automatic_backup)
+    @BindView(R.id.calls_automatic_backup)
     public SwitchCompat backupSwitch;
 
-    @BindView(R.id.contacts_last_backup_timestamp)
+    @BindView(R.id.calls_last_backup_timestamp)
     public TextView lastBackup;
 
-    @BindView(R.id.contacts_datepicker)
-    public AppCompatButton contactsDatePickerBtn;
+    @BindView(R.id.calls_datepicker)
+    public AppCompatButton callsDatePickerBtn;
 
-    @BindView(R.id.contacts_backup_now)
-    public AppCompatButton contactsBackupNow;
+    @BindView(R.id.calls_backup_now)
+    public AppCompatButton callsBackupNow;
 
     private BaseOwncloudActivity mContainerActivity;
 
@@ -106,19 +106,19 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
     private ArbitraryDataProvider arbitraryDataProvider;
 
-    public ContactsBackupFragment() {
+    public CallsBackupFragment() {
         // Required empty public constructor
     }
 
-    public static ContactsBackupFragment newInstance() {
-        return new ContactsBackupFragment();
+    public static CallsBackupFragment newInstance() {
+        return new CallsBackupFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.fragment_contacts_backup, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_calls_backup, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
         return fragmentView;
     }
@@ -144,6 +144,8 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     public void onResume() {
         super.onResume();
         this.mPresenter.resume();
+
+        this.mPresenter.resume();
         if (calendarPickerOpen) {
             if (selectedDate != null) {
                 openDate(selectedDate);
@@ -152,14 +154,9 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             }
         }
 
-        String backupFolderPath = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderPath = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
         refreshBackupFolder(backupFolderPath);
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        this.mPresenter.pause();
     }
 
     @Override
@@ -177,6 +174,12 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        this.mPresenter.pause();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         this.mPresenter.destroy();
@@ -191,23 +194,23 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     private void initialize(Bundle savedInstanceState) {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
-        this.mPresenter.initialize(getString(R.string.contacts_title));
+        this.mPresenter.initialize(getString(R.string.calls_title));
 
         this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
 
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        if (!arbitraryDataProvider.getBooleanValue(account, PREFERENCE_IS_NOT_FIRST_TIME)) {
+        if (!arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CALLS_IS_NOT_FIRST_TIME)) {
             backupSwitch.setChecked(true);
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_IS_NOT_FIRST_TIME, String.valueOf(true));
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(true));
+            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CALLS_IS_NOT_FIRST_TIME, String.valueOf(true));
+            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP, String.valueOf(true));
         } else {
-            backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP));
+            backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP));
         }
 
         onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (checkAndAskForContactsReadPermission()) {
+                if (checkAndAskForCallsReadPermission()) {
                     if (isChecked) {
                         setAutomaticBackup(true);
                     } else {
@@ -220,7 +223,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         backupSwitch.setOnCheckedChangeListener(onCheckedChangeListener);
 
         // display last backup
-        Long lastBackupTimestamp = arbitraryDataProvider.getLongValue(account, PREFERENCE_CONTACTS_LAST_BACKUP);
+        Long lastBackupTimestamp = arbitraryDataProvider.getLongValue(account, PREFERENCE_CALLS_LAST_BACKUP);
 
         if (lastBackupTimestamp == -1) {
             lastBackup.setText(R.string.contacts_preference_backup_never);
@@ -239,18 +242,18 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         }
 
         int accentColor = getResources().getColor(R.color.colorAccent);
-        contactsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        contactsBackupNow.getBackground()
+        callsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+        callsBackupNow.getBackground()
                 .setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
 
-        contactsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        contactsDatePickerBtn.setTextColor(getResources().getColor(R.color.white));
+        callsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+        callsDatePickerBtn.setTextColor(getResources().getColor(R.color.white));
 
     }
 
     void onButtonBack() {
         if (this.mListener != null) {
-            this.mListener.onContactsBackPressed();
+            this.mListener.onCallsBackPressed();
         }
     }
 
@@ -284,24 +287,24 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         onButtonBack();
     }
 
-    private boolean checkAndAskForContactsReadPermission() {
+    private boolean checkAndAskForCallsReadPermission() {
 
         // check permissions
-        if ((PermissionUtil.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.READ_CONTACTS))) {
+        if ((PermissionUtil.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.READ_CALL_LOG))) {
             return true;
         } else {
             // Check if we should show an explanation
             if (PermissionUtil.shouldShowRequestPermissionRationale(getActivity(),
-                    android.Manifest.permission.READ_CONTACTS)) {
+                    Manifest.permission.READ_CALL_LOG)) {
                 // Show explanation to the user and then request permission
-                Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.contacts_linear_layout),
+                Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.calls_linear_layout),
                         R.string.contacts_read_permission,
                         Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.common_ok, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                                        PermissionUtil.PERMISSIONS_READ_CONTACTS_AUTOMATIC);
+                                requestPermissions(new String[]{Manifest.permission.READ_CALL_LOG},
+                                        PermissionUtil.PERMISSIONS_READ_CALLS_AUTOMATIC);
                             }
                         });
 
@@ -312,19 +315,19 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
                 return false;
             } else {
                 // No explanation needed, request the permission.
-                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                        PermissionUtil.PERMISSIONS_READ_CONTACTS_AUTOMATIC);
+                requestPermissions(new String[]{Manifest.permission.READ_CALL_LOG},
+                        PermissionUtil.PERMISSIONS_READ_CALLS_AUTOMATIC);
                 return false;
             }
         }
     }
 
-    public static void startContactBackupJob(Account account) {
+    public static void startCallBackupJob(Account account) {
 
         PersistableBundleCompat bundle = new PersistableBundleCompat();
-        bundle.putString(ContactsBackupJob.ACCOUNT, account.name);
+        bundle.putString(CallsBackupJob.ACCOUNT, account.name);
 
-        new JobRequest.Builder(ContactsBackupJob.TAG)
+        new JobRequest.Builder(CallsBackupJob.TAG)
                 .setExtras(bundle)
                 .setRequiresCharging(false)
                 .setPersisted(true)
@@ -334,14 +337,14 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
                 .schedule();
     }
 
-    private void startContactsBackupJob() {
+    private void startCallsBackupJob() {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
 
         PersistableBundleCompat bundle = new PersistableBundleCompat();
-        bundle.putString(ContactsBackupJob.ACCOUNT, account.name);
-        bundle.putBoolean(ContactsBackupJob.FORCE, true);
+        bundle.putString(CallsBackupJob.ACCOUNT, account.name);
+        bundle.putBoolean(CallsBackupJob.FORCE, true);
 
-        new JobRequest.Builder(ContactsBackupJob.TAG)
+        new JobRequest.Builder(CallsBackupJob.TAG)
                 .setExtras(bundle)
                 .setExecutionWindow(3_000L, 10_000L)
                 .setRequiresCharging(false)
@@ -350,19 +353,19 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
                 .build()
                 .schedule();
 
-        Snackbar.make(getView().findViewById(R.id.contacts_linear_layout),
+        Snackbar.make(getView().findViewById(R.id.calls_linear_layout),
                 R.string.contacts_preferences_backup_scheduled,
                 Snackbar.LENGTH_LONG).show();
     }
 
-    public static void cancelContactBackupJobForAccount(Context context, Account account) {
+    public static void cancelCallBackupJobForAccount(Context context, Account account) {
 
         JobManager jobManager = JobManager.create(context);
-        Set<JobRequest> jobs = jobManager.getAllJobRequestsForTag(ContactsBackupJob.TAG);
+        Set<JobRequest> jobs = jobManager.getAllJobRequestsForTag(CallsBackupJob.TAG);
 
         for (JobRequest jobRequest : jobs) {
             PersistableBundleCompat extras = jobRequest.getExtras();
-            if (extras.getString(ContactsBackupJob.ACCOUNT, "").equalsIgnoreCase(account.name)) {
+            if (extras.getString(CallsBackupJob.ACCOUNT, "").equalsIgnoreCase(account.name)) {
                 jobManager.cancel(jobRequest.getJobId());
             }
         }
@@ -373,12 +376,12 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
 
         if (bool) {
-            startContactBackupJob(account);
+            startCallBackupJob(account);
         } else {
-            cancelContactBackupJobForAccount(getContext(), account);
+            cancelCallBackupJobForAccount(getContext(), account);
         }
 
-        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP,
+        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP,
                 String.valueOf(bool));
     }
 
@@ -386,9 +389,9 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PermissionUtil.PERMISSIONS_READ_CONTACTS_AUTOMATIC) {
+        if (requestCode == PermissionUtil.PERMISSIONS_READ_CALLS_AUTOMATIC) {
             for (int index = 0; index < permissions.length; index++) {
-                if (Manifest.permission.READ_CONTACTS.equalsIgnoreCase(permissions[index])) {
+                if (Manifest.permission.READ_CALL_LOG.equalsIgnoreCase(permissions[index])) {
                     if (grantResults[index] >= 0) {
                         setAutomaticBackup(true);
                     } else {
@@ -402,11 +405,11 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             }
         }
 
-        if (requestCode == PermissionUtil.PERMISSIONS_READ_CONTACTS_MANUALLY) {
+        if (requestCode == PermissionUtil.PERMISSIONS_READ_CALLS_MANUALLY) {
             for (int index = 0; index < permissions.length; index++) {
-                if (Manifest.permission.READ_CONTACTS.equalsIgnoreCase(permissions[index])) {
+                if (Manifest.permission.READ_CALL_LOG.equalsIgnoreCase(permissions[index])) {
                     if (grantResults[index] >= 0) {
-                        startContactsBackupJob();
+                        startCallsBackupJob();
                     }
 
                     break;
@@ -415,21 +418,20 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         }
     }
 
-    @OnClick(R.id.contacts_backup_now)
-    public void backupContacts() {
-        if (checkAndAskForContactsReadPermission()) {
-            startContactsBackupJob();
+    @OnClick(R.id.calls_backup_now)
+    public void backupCalls() {
+        if (checkAndAskForCallsReadPermission()) {
+            startCallsBackupJob();
         }
     }
-
-    @OnClick(R.id.contacts_datepicker)
+    @OnClick(R.id.calls_datepicker)
     public void openCleanDate() {
         openDate(null);
     }
 
     public void openDate(@Nullable Date savedDate) {
 
-        String backupFolderString = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderString = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
 
         Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(backupFolder, false);
@@ -488,7 +490,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
         selectedDate = new Date(year, month, dayOfMonth);
 
-        String backupFolderString = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderString = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
         Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(
                 backupFolder, false);
@@ -526,7 +528,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
         if (backupToRestore != null) {
             mContainerActivity.replaceFragment(R.id.fl_fragment,
-                    ContactListFragment.newInstance(backupToRestore, mContainerActivity.getAccount()), true, true);
+                    CallListFragment.newInstance(backupToRestore, mContainerActivity.getAccount()), true, true);
         } else {
             Toast.makeText(getContext(), R.string.contacts_preferences_no_file_found,
                     Toast.LENGTH_SHORT).show();
@@ -568,11 +570,11 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
                             .getFolderContent(backupFolder, false);
-                    if (contactsDatePickerBtn != null) {
+                    if (callsDatePickerBtn != null) {
                         if (backupFiles == null || backupFiles.size() == 0) {
-                            contactsDatePickerBtn.setVisibility(View.GONE);
+                            callsDatePickerBtn.setVisibility(View.GONE);
                         } else {
-                            contactsDatePickerBtn.setVisibility(View.VISIBLE);
+                            callsDatePickerBtn.setVisibility(View.VISIBLE);
                         }
                     }
                 }

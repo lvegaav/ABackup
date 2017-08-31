@@ -33,6 +33,8 @@
     <string name="main.contacts">Contactos</string>
     <string name="main.documents">Documentos</string>
     <string name="main.available">Disponible</string>
+    <string name="main.sms">SMS</string>
+    <string name="main.calls">Llamadas</string>
 
     <string name="files.no_files">No hay archivos. \nSube contenido o sincroniza tus dispositivos!</string>
     <string name="files.permission_storage_access">Permisos adicionales son requeridos para subir y bajar archivos.</string>
@@ -98,6 +100,8 @@
     <string name="contacts.preferences_something_strange_happened">No podemos encontrar tu último backup!</string>
     <string name="contacts.preferences_no_file_found">Archivo no encontrado</string>
     <string name="contacts.preference_restore_backup">Restaurar</string>
+
+    <string name="calls.title">Llamadas</string>
 
     <string name="auth.unsupported_multiaccount">%1$s no soporta multiples cuentas</string>
     <string name="auth.account_does_not_exist">La cuenta no existe en este dispositivo todavia</string>

@@ -32,6 +32,8 @@
     <string name="main.contacts">Contacts</string>
     <string name="main.documents">Documents</string>
     <string name="main.available">Available</string>
+    <string name="main.sms">SMS</string>
+    <string name="main.calls">Calls</string>
 
     <string name="files.upload_folder_path">to_upload</string>
     <string name="files.download_folder_path">downloaded</string>
@@ -101,6 +103,8 @@
     <string name="contacts.preferences_something_strange_happened">We can\'t find your last backup!</string>
     <string name="contacts.preferences_no_file_found">No file found</string>
     <string name="contacts.preference_restore_backup">Restore Backup</string>
+
+    <string name="calls.title">Calls</string>
 
     <string name="auth.unsupported_multiaccount">%1$s does not support multiple accounts</string>
     <string name="auth.account_does_not_exist">Account does not exist on the device yet</string>

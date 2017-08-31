@@ -19,152 +19,258 @@
             android:layout_height="wrap_content"
             android:text="@string/main.title"
             android:textSize="24sp"
-            android:layout_marginTop="51dp"
+            android:layout_marginTop="20dp"
             android:textColor="@color/white"/>
 
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            app:srcCompat="@drawable/ic_corner_oval"
+        <RelativeLayout
+            android:id="@+id/rl_root_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"/>
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
-            app:srcCompat="@drawable/ic_sip_v_logo"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"/>
+            >
+            <ImageView
+                android:id="@+id/btn_settings"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:padding="15dp"
+                app:srcCompat="@drawable/ic_settings"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="13dp"
+                android:layout_marginStart="13dp" />
 
-        <ImageView
-            android:id="@+id/btn_settings"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginBottom="15dp"
-            app:srcCompat="@drawable/ic_settings"
-            android:layout_alignParentBottom="true"/>
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                app:srcCompat="@drawable/ic_corner_oval"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/ic_sip_v_logo"
+                android:layout_marginTop="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true">
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_hello"
+            android:layout_above="@id/rl_root_footer"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:weightSum="3">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:clickable="true"
+                android:weightSum="2"
                 android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/ll_photos"
-                    android:layout_width="144dp"
-                    android:layout_height="144dp"
-                    android:layout_margin="2.5dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginRight="30dp"
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        app:srcCompat="@drawable/ic_photos" />
-
                     <TextView
+                        android:id="@+id/tv_photos"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
                         android:text="@string/main.photos"
                         android:gravity="center"
                         android:textSize="18sp"
                         android:textColor="@color/white"/>
-                </LinearLayout>
-                <LinearLayout
+
+                    <ImageView
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/tv_photos"
+                        app:srcCompat="@drawable/ic_photos" />
+
+
+                </RelativeLayout>
+                <RelativeLayout
                     android:id="@+id/ll_videos"
-                    android:layout_width="144dp"
-                    android:layout_height="144dp"
-                    android:layout_margin="2.5dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        app:srcCompat="@drawable/ic_videos" />
-
                     <TextView
+                        android:id="@+id/tv_videos"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
                         android:text="@string/main.videos"
                         android:gravity="center"
                         android:textSize="18sp"
                         android:textColor="@color/white"/>
-                </LinearLayout>
+
+                    <ImageView
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/tv_videos"
+                        app:srcCompat="@drawable/ic_videos" />
+
+
+                </RelativeLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:clickable="true"
+                android:weightSum="2"
+                android:layout_marginTop="30dp"
                 android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/ll_contacts"
-                    android:layout_width="144dp"
-                    android:layout_height="144dp"
-                    android:layout_margin="2.5dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginRight="30dp"
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        app:srcCompat="@drawable/ic_contacts" />
-
                     <TextView
+                        android:id="@+id/tv_contacts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
                         android:text="@string/main.contacts"
                         android:gravity="center"
                         android:textSize="18sp"
                         android:textColor="@color/white"/>
-                </LinearLayout>
-                <LinearLayout
+
+                    <ImageView
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/tv_contacts"
+                        app:srcCompat="@drawable/ic_contacts" />
+
+
+                </RelativeLayout>
+                <RelativeLayout
                     android:id="@+id/ll_documents"
-                    android:layout_width="144dp"
-                    android:layout_height="144dp"
-                    android:layout_margin="2.5dp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="72dp"
-                        app:srcCompat="@drawable/ic_documents" />
-
                     <TextView
+                        android:id="@+id/tv_documents"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
                         android:text="@string/main.documents"
                         android:gravity="center"
                         android:textSize="18sp"
                         android:textColor="@color/white"/>
-                </LinearLayout>
+
+                    <ImageView
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/tv_documents"
+                        app:srcCompat="@drawable/ic_documents" />
+
+
+                </RelativeLayout>
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:weightSum="2"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:id="@+id/ll_sms"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginRight="30dp"
+                    android:background="@color/blackOpacity"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_sms"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:text="@string/main.sms"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
+
+                    <ImageView
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/tv_sms"
+                        app:srcCompat="@drawable/ic_contacts" />
+
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/ll_calls"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/blackOpacity"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_ll_calls"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:text="@string/main.calls"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
+
+                    <ImageView
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/tv_ll_calls"
+                        app:srcCompat="@drawable/ic_documents" />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
         </LinearLayout>
 
     </RelativeLayout>
