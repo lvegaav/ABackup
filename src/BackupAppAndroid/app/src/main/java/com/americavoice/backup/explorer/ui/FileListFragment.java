@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.americavoice.backup.explorer.presenter.FileListPresenter;
 import com.americavoice.backup.explorer.ui.adapter.FileAdapter;
 import com.americavoice.backup.explorer.ui.adapter.FileLayoutManager;
 import com.americavoice.backup.explorer.ui.adapter.SimpleDividerItemDecoration;
+import com.americavoice.backup.explorer.ui.adapter.SpacesItemDecoration;
 import com.americavoice.backup.files.service.FileDownloader;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.main.event.OnBackPress;
@@ -165,10 +167,19 @@ public class FileListFragment extends BaseFragment implements FileListView {
     }
 
     private void setupUI() {
-        FileLayoutManager layoutManager = new FileLayoutManager(getContext());
         if (this.rvFiles != null) {
-            this.rvFiles.setLayoutManager(layoutManager);
-            this.rvFiles.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
+            mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");
+            switch (mPath) {
+                case Const.Documents:
+                    this.rvFiles.setLayoutManager(new FileLayoutManager(getContext()));
+                    this.rvFiles.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
+                    break;
+                default:
+                    this.rvFiles.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+                    int spacingInPixels = getResources().getDimensionPixelSize(R.dimen.spacing);
+                    this.rvFiles.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
+                    break;
+            }
         }
     }
 

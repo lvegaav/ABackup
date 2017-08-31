@@ -34,13 +34,11 @@
         <RelativeLayout
             android:layout_width="72dp"
             android:layout_height="@dimen/standard_list_item_size"
-            android:paddingBottom="@dimen/default_padding"
-            android:paddingTop="@dimen/default_padding"
             android:paddingRight="4dp">
 
             <ImageView
                 android:id="@+id/iv_icon"
-                android:layout_width="32dp"
+                android:layout_width="@dimen/file_icon_size"
                 android:layout_height="@dimen/file_icon_size"
                 android:layout_centerInParent="true"
                 android:layout_marginLeft="8dp"
@@ -56,6 +54,7 @@
                 android:layout_alignParentRight="true"
                 android:scaleType="fitCenter"
                 android:layout_marginRight="4dp"
+                android:layout_marginBottom="8dp"
                 android:visibility="gone"/>
 
         </RelativeLayout>
@@ -140,6 +139,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/list_divider_background"></View>
+        android:background="@color/list_divider_background"/>
 
 </LinearLayout>
