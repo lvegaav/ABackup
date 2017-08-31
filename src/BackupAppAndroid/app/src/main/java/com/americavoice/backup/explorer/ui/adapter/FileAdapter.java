@@ -55,13 +55,36 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
     }
 
     @Override
+    public int getItemViewType(int position) {
+        RemoteFile file = null;
+        int viewType;
+        if (mCollection != null && mCollection.size() > position) {
+            file = mCollection.get(position);
+        }
+
+        if (file != null && (MimeTypeUtil.isImage(file.getMimeType()) || MimeTypeUtil.isVideo(file.getMimeType()))) {
+            viewType = ViewType.GRID_IMAGE;
+        } else {
+            viewType = ViewType.LIST_ITEM;
+        }
+        return viewType;
+    }
+
+    @Override
     public int getItemCount() {
         return (this.mCollection != null) ? this.mCollection.size() : 0;
     }
 
     @Override
     public TransactionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = this.mLayoutInflater.inflate(R.layout.list_item, parent, false);
+        View view = null;
+        if (viewType == ViewType.GRID_IMAGE) {
+             view = this.mLayoutInflater.inflate(R.layout.grid_image, parent, false);
+        } else if (viewType == ViewType.GRID_ITEM) {
+            view = this.mLayoutInflater.inflate(R.layout.grid_item, parent, false);
+        } else if (viewType == ViewType.LIST_ITEM) {
+            view = this.mLayoutInflater.inflate(R.layout.list_item, parent, false);
+        }
         return new TransactionViewHolder(view);
     }
 
@@ -75,8 +98,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().lastIndexOf('/') + 1));
         holder.ivIcon.setTag(model.getRemoteId());
         // If ListView
-        holder.tvFileSize.setText(DisplayUtils.bytesToHumanReadable(model.getLength()));
-        holder.tvLastMod.setText(DisplayUtils.getRelativeTimestamp(mContext, model.getModifiedTimestamp()));
+        if (getItemViewType(position) == ViewType.LIST_ITEM) {
+            holder.tvFileSize.setText(DisplayUtils.bytesToHumanReadable(model.getLength()));
+            holder.tvLastMod.setText(DisplayUtils.getRelativeTimestamp(mContext, model.getModifiedTimestamp()));
+        }
 
         if (fileIsOnCache) {
             holder.ivLocalFileIndicator.setImageResource(R.drawable.ic_synced);

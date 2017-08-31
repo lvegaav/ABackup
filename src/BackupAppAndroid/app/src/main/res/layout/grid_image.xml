@@ -19,18 +19,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ListItemLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@drawable/list_selector"
     android:layout_gravity="center_horizontal"
     android:gravity="center_horizontal"
     android:orientation="vertical">
+
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <com.americavoice.backup.main.ui.widget.SquareImageView
-            android:id="@+id/thumbnail"
+            android:id="@+id/iv_icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/alternate_padding"
@@ -39,14 +40,15 @@
             android:src="@drawable/ic_menu_archive"/>
 
         <ImageView
-            android:id="@+id/localFileIndicator"
+            android:id="@+id/iv_local_file_indicator"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_gravity="bottom|right"
             android:layout_marginBottom="@dimen/standard_quarter_margin"
             android:layout_marginRight="@dimen/standard_quarter_margin"
             android:layout_marginTop="@dimen/standard_quarter_margin"
-            android:src="@drawable/ic_synced"/>
+            android:src="@drawable/ic_synced"
+            android:visibility="gone"/>
 
 
         <ImageView
@@ -57,7 +59,33 @@
             android:layout_marginRight="@dimen/standard_quarter_margin"
             android:layout_gravity="center_vertical|top"
             android:src="@android:drawable/checkbox_off_background"
-            />
+            android:visibility="gone"/>
     </FrameLayout>
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/standard_quarter_margin"
+        android:layout_marginRight="@dimen/standard_quarter_margin"
+        android:ellipsize="middle"
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/grid_item_text_size"
+        android:visibility="gone"
+        android:maxLines="1" />
+    <TextView
+        android:id="@+id/tv_file_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/two_line_secondary_text_size"
+        android:visibility="gone"/>
 
+    <TextView
+        android:id="@+id/tv_last_mod"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/two_line_secondary_text_size"
+        android:visibility="gone"/>
 </LinearLayout>

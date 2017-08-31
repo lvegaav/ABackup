@@ -10,7 +10,8 @@
     <dimen name="standard_quarter_margin">4dp</dimen>
     <dimen name="standard_list_item_size">72dp</dimen>
     <dimen name="grid_item_text_size">16sp</dimen>
-    <dimen name="file_icon_size">32dp</dimen>
+    <dimen name="file_icon_size">48dp</dimen>
     <dimen name="two_line_primary_text_size">16sp</dimen>
     <dimen name="two_line_secondary_text_size">14sp</dimen>
+    <dimen name="spacing">1dp</dimen>
 </resources>
