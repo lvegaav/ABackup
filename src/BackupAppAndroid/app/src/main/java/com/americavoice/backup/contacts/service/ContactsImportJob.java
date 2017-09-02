@@ -47,7 +47,7 @@ import third_parties.ezvcard_android.ContactOperations;
  */
 
 public class ContactsImportJob extends Job {
-    public static final String TAG = "CallsImportJob";
+    public static final String TAG = "ContactssImportJob";
 
     public static final String ACCOUNT_TYPE = "account_type";
     public static final String ACCOUNT_NAME = "account_name";
