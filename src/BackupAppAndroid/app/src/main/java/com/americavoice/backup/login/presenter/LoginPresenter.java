@@ -65,6 +65,7 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
         List<SpinnerItem> items = new ArrayList<>();
         items.add(new SpinnerItem("1","+1"));
         items.add(new SpinnerItem("502","+502"));
+        items.add(new SpinnerItem("503","+503"));
         mView.populateCountries(items);
     }
 
