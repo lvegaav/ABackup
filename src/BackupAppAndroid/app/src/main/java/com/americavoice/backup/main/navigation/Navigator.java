@@ -9,6 +9,7 @@ import com.americavoice.backup.main.ui.activity.ContactsBackupActivity;
 import com.americavoice.backup.main.ui.activity.FileListActivity;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.main.ui.activity.MainActivity;
+import com.americavoice.backup.main.ui.activity.SmsBackupActivity;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -66,6 +67,13 @@ public class Navigator {
     public void navigateToCallsBackupActivity(BaseActivity context) {
         if (context != null) {
             Intent intentToLaunch = CallsBackupActivity.getCallingIntent(context);
+            context.startActivity(intentToLaunch);
+        }
+    }
+
+    public void navigateToSmsBackupActivity(BaseActivity context) {
+        if (context != null) {
+            Intent intentToLaunch = SmsBackupActivity.getCallingIntent(context);
             context.startActivity(intentToLaunch);
         }
     }

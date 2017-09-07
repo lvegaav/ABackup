@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.americavoice.backup.calls.service;
+package com.americavoice.backup.sms.service;
 
 import android.Manifest;
 import android.accounts.Account;
@@ -33,26 +33,22 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.format.DateFormat;
 
 import com.americavoice.backup.authentication.AccountUtils;
-import com.americavoice.backup.calls.ui.CallsBackupFragment;
-import com.americavoice.backup.calls.ui.model.Call;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.OperationsService;
+import com.americavoice.backup.sms.ui.SmsBackupFragment;
+import com.americavoice.backup.sms.ui.model.Sms;
 import com.americavoice.backup.utils.BaseConstants;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.json.JSONArray;
@@ -62,21 +58,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 /**
- * Job that backup contacts to /Contacts-Backup and deletes files older than x days
+ * Job that backup sms
  */
 
-public class CallsBackupJob extends Job {
-    public static final String TAG = "CallsBackupJob";
+public class SmsBackupJob extends Job {
+    public static final String TAG = "SmsBackupJob";
     public static final String ACCOUNT = "account";
     public static final String FORCE = "force";
     private OperationsServiceConnection operationsServiceConnection;
@@ -96,16 +88,16 @@ public class CallsBackupJob extends Job {
         final Account account = AccountUtils.getOwnCloudAccountByName(context, bundle.getString(ACCOUNT, ""));
 
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
-        Long lastExecution = arbitraryDataProvider.getLongValue(account, CallsBackupFragment.PREFERENCE_CALLS_LAST_BACKUP);
+        Long lastExecution = arbitraryDataProvider.getLongValue(account, SmsBackupFragment.PREFERENCE_SMS_LAST_BACKUP);
 
         if (force || (lastExecution + 24 * 60 * 60 * 1000) < Calendar.getInstance().getTimeInMillis()) {
-            Log_OC.d(TAG, "start calls backup job");
+            Log_OC.d(TAG, "start sms backup job");
 
-            String backupFolder = BaseConstants.CALLS_BACKUP_FOLDER +
+            String backupFolder = BaseConstants.SMS_BACKUP_FOLDER +
                     OCFile.PATH_SEPARATOR;
-            Integer daysToExpire = BaseConstants.CALLS_BACKUP_EXPLIRE;
+            Integer daysToExpire = BaseConstants.SMS_BACKUP_EXPIRE;
 
-            backupCall(account, backupFolder);
+            backupSms(account, backupFolder);
 
             // bind to Operations Service
             operationsServiceConnection = new OperationsServiceConnection(daysToExpire, backupFolder, account);
@@ -115,7 +107,7 @@ public class CallsBackupJob extends Job {
 
             // store execution date
             arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                    CallsBackupFragment.PREFERENCE_CALLS_LAST_BACKUP,
+                    SmsBackupFragment.PREFERENCE_SMS_LAST_BACKUP,
                     String.valueOf(Calendar.getInstance().getTimeInMillis()));
         } else {
             Log_OC.d(TAG, "last execution less than 24h ago");
@@ -124,82 +116,80 @@ public class CallsBackupJob extends Job {
         return Result.SUCCESS;
     }
 
-    private void backupCall(Account account, String backupFolder) {
+    private void backupSms(Account account, String backupFolder) {
 
         try {
-            List<String> calls = new ArrayList<>();
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            List<String> smsList = new ArrayList<>();
+
+            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
-            Calendar from = Calendar.getInstance();
-            from.set(Calendar.HOUR_OF_DAY, 0);
-            from.set(Calendar.MINUTE, 0);
-            from.set(Calendar.SECOND, 0);
-            from.set(Calendar.MILLISECOND, 0);
 
-            Calendar to = Calendar.getInstance();
-            to.set(Calendar.HOUR_OF_DAY, 23);
-            to.set(Calendar.MINUTE, 59);
-            to.set(Calendar.SECOND, 59);
-            to.set(Calendar.MILLISECOND, 999);
+            Uri message = Uri.parse("content://sms/");
 
-            String from1 =DateFormat.format("yyyy-MM-dd_HH-mm-ss", from).toString();
-            String to1 =DateFormat.format("yyyy-MM-dd_HH-mm-ss", to).toString();
-            String fromDate = String.valueOf(from.getTimeInMillis());
-            String toDate = String.valueOf(to.getTimeInMillis());
-            String[] whereValue = {fromDate,toDate};
+            Cursor c = getContext().getContentResolver().query(message, null, null, null, null);
+            if (c != null) {
+                int totalSMS = c.getCount();
 
-            Cursor managedCursor = getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, android.provider.CallLog.Calls.DATE + " BETWEEN ? AND ?", whereValue, strOrder);
+                if (c.moveToFirst()) {
+                    for (int i = 0; i < totalSMS; i++) {
+
+                        Sms objSms = new Sms();
+                        objSms.setAddress(c.getString(c
+                                .getColumnIndexOrThrow("address")));
+                        objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
+                        objSms.setReadState(c.getString(c.getColumnIndex("read")));
+                        objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
+                        if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
+                            objSms.setFolderName("inbox");
+                        } else {
+                            objSms.setFolderName("sent");
+                        }
+
+                        smsList.add(objSms.toJson());
+                        c.moveToNext();
+                    }
+                } else {
+                    c.close();
+                    Log_OC.d(TAG, "You have no SMS");
+                    return;
+                }
+                c.close();
 
 
-            int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
-            int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
-            int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
-            int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-            while (managedCursor.moveToNext())
-            {
-                String phoneNumber = managedCursor.getString(number);
-                String callType = managedCursor.getString(type);
-                String callDate = managedCursor.getString(date);
-                //SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
-                //String dateString = formatter.format(new Date(Long.parseLong(callDate)));
-                String callDuration = managedCursor.getString(duration);
-                calls.add(new Call(phoneNumber, callType, callDate, callDuration).ToJson());
-            }
+                String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
+                Log_OC.d(TAG, "Storing: " + filename);
+                File file = new File(getContext().getCacheDir(), filename);
 
-            String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
-            Log_OC.d(TAG, "Storing: " + filename);
-            File file = new File(getContext().getCacheDir(), filename);
-
-            FileWriter fw = null;
-            try {
-                fw = new FileWriter(file);
-                JSONArray jsArray = new JSONArray(calls);
-                fw.write(jsArray.toString());
-            } catch (IOException e) {
-                Log_OC.d(TAG, "Error ", e);
-            } finally {
-                if (fw != null) {
-                    try {
-                        fw.close();
-                    } catch (IOException e) {
-                        Log_OC.d(TAG, "Error closing file writer ", e);
+                FileWriter fw = null;
+                try {
+                    fw = new FileWriter(file);
+                    JSONArray jsArray = new JSONArray(smsList);
+                    fw.write(jsArray.toString());
+                } catch (IOException e) {
+                    Log_OC.d(TAG, "Error ", e);
+                } finally {
+                    if (fw != null) {
+                        try {
+                            fw.close();
+                        } catch (IOException e) {
+                            Log_OC.d(TAG, "Error closing file writer ", e);
+                        }
                     }
                 }
-            }
 
-            FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
-            requester.uploadNewFile(
-                    getContext(),
-                    account,
-                    file.getAbsolutePath(),
-                    backupFolder + filename,
-                    FileUploader.LOCAL_BEHAVIOUR_MOVE,
-                    null,
-                    true,
-                    UploadFileOperation.CREATED_BY_USER
-            );
+                FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+                requester.uploadNewFile(
+                        getContext(),
+                        account,
+                        file.getAbsolutePath(),
+                        backupFolder + filename,
+                        FileUploader.LOCAL_BEHAVIOUR_MOVE,
+                        null,
+                        true,
+                        UploadFileOperation.CREATED_BY_USER
+                );
+            }
         } catch (Exception e) {
             Log_OC.d(TAG, e.getMessage());
         }

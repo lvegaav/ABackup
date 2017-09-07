@@ -34,6 +34,7 @@ public class MainFragment extends BaseFragment implements MainView {
         void viewContacts();
         void viewDocuments();
         void viewCalls();
+        void viewSms();
         void viewSettings();
         void onMainBackPressed();
     }
@@ -141,9 +142,15 @@ public class MainFragment extends BaseFragment implements MainView {
     public void hideRetry() {
 
     }
+
     @OnClick(R.id.ll_calls)
     public void onCalls(View view) {
         if (mListener != null) mListener.viewCalls();
+    }
+
+    @OnClick(R.id.ll_sms)
+    public void onSms(View view) {
+        if (mListener != null) mListener.viewSms();
     }
 
     @OnClick(R.id.ll_contacts)

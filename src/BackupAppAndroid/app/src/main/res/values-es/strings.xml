@@ -102,7 +102,12 @@
     <string name="contacts.preference_restore_backup">Restaurar</string>
 
     <string name="calls.title">Llamadas</string>
+    <string name="calls.read_permission">Permisos para leer tu lista de llamadas son requeridos</string>
     <string name="calls.list_restore_selected">Restaurar llamadas</string>
+
+    <string name="sms.title">Mensajes</string>
+    <string name="sms.read_permission">Permisos para leer tu lista de mensajes son requeridos</string>
+    <string name="sms.list_restore_selected">Restaurar mensajes</string>
 
     <string name="auth.unsupported_multiaccount">%1$s no soporta multiples cuentas</string>
     <string name="auth.account_does_not_exist">La cuenta no existe en este dispositivo todavia</string>

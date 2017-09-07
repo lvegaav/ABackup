@@ -123,7 +123,7 @@ public class GridViewWithHeaderAndFooter extends GridView {
      * called more than once, the views will appear in the order they were
      * added. Views added using this call can take focus if they want.
      * <p/>
-     * NOTE: Call this before calling setAdapter. This is so HeaderGridView can wrap
+     * NOTE: Sms this before calling setAdapter. This is so HeaderGridView can wrap
      * the supplied cursor with one that will also account for header views.
      *
      * @param v The view to add.
@@ -137,7 +137,7 @@ public class GridViewWithHeaderAndFooter extends GridView {
      * called more than once, the views will appear in the order they were
      * added. Views added using this call can take focus if they want.
      * <p/>
-     * NOTE: Call this before calling setAdapter. This is so HeaderGridView can wrap
+     * NOTE: Sms this before calling setAdapter. This is so HeaderGridView can wrap
      * the supplied cursor with one that will also account for header views.
      *
      * @param v            The view to add.

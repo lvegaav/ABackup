@@ -71,7 +71,7 @@ public class GetServerInfoOperation extends RemoteOperation {
      * 
      * @return      Result of the operation. If successful, includes an instance of 
      *              {@link ServerInfo} with the information retrieved from the server. 
-     *              Call {@link RemoteOperationResult#getData()}.get(0) to get it.
+     *              Sms {@link RemoteOperationResult#getData()}.get(0) to get it.
      */
 	@Override
 	protected RemoteOperationResult run(OwnCloudClient client) {

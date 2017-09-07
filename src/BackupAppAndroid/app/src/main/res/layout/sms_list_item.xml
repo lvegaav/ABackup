@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Nextcloud Android client application
+
+  Copyright (C) 2017 Tobias Kaminsky
+  Copyright (C) 2017 Nextcloud.
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
+  License as published by the Free Software Foundation; either
+  version 3 of the License, or any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU AFFERO GENERAL PUBLIC LICENSE for more details.
+
+  You should have received a copy of the GNU Affero General Public
+  License along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/default_list_item_size">
+
+    <ImageView
+        android:id="@+id/smslist_item_icon"
+        android:layout_width="@dimen/default_list_item_size"
+        android:layout_height="@dimen/default_list_item_size"
+        android:scaleType="centerCrop"
+        android:padding="5dp"
+        android:src="@drawable/ic_account_circle"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="@dimen/default_list_item_size"
+        android:padding="5dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:weightSum="3">
+
+        <TextView
+            android:id="@+id/smslist_item_name"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:gravity="center_vertical"
+            android:textStyle="bold"
+            android:text="Juan Perez"
+            android:textAppearance="?android:attr/textAppearanceListItem" />
+
+        <TextView
+            android:id="@+id/smslist_item_duration"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:text="12:00"
+            android:textAppearance="?android:attr/textAppearanceListItem"/>
+
+        <TextView
+            android:id="@+id/smslist_item_date"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="12:00"
+            android:paddingRight="5dp"
+            android:textAlignment="viewEnd"
+            android:layout_gravity="end"
+            android:maxLines="1"
+            android:textAppearance="?android:attr/textAppearanceListItem"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

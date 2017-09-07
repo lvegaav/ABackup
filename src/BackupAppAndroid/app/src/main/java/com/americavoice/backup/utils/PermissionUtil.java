@@ -14,6 +14,9 @@ public class PermissionUtil {
     public static final int PERMISSIONS_READ_CALLS_AUTOMATIC = 5;
     public static final int PERMISSIONS_READ_CALLS_MANUALLY = 6;
     public static final int PERMISSIONS_WRITE_CALLS = 7;
+    public static final int PERMISSIONS_READ_SMS_AUTOMATIC = 8;
+    public static final int PERMISSIONS_READ_SMS_MANUALLY = 9;
+    public static final int PERMISSIONS_WRITE_SMS = 10;
     /**
      * Wrapper method for ContextCompat.checkSelfPermission().
      * Determine whether <em>the app</em> has been granted a particular permission.

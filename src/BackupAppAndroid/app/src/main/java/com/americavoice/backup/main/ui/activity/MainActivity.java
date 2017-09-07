@@ -96,6 +96,11 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     }
 
     @Override
+    public void viewSms() {
+        navigator.navigateToSmsBackupActivity(this);
+    }
+
+    @Override
     public void viewDocuments() {
         navigator.navigateToFileListActivity(this, Const.Documents);
     }

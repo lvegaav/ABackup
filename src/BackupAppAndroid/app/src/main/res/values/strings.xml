@@ -105,7 +105,12 @@
     <string name="contacts.preference_restore_backup">Restore Backup</string>
 
     <string name="calls.title">Calls</string>
+    <string name="calls.read_permission">Permission to read call log needed</string>
     <string name="calls.list_restore_selected">Restore calls</string>
+
+    <string name="sms.title">Sms</string>
+    <string name="sms.read_permission">Permission to read sms list needed</string>
+    <string name="sms.list_restore_selected">Restore sms</string>
 
     <string name="auth.unsupported_multiaccount">%1$s does not support multiple accounts</string>
     <string name="auth.account_does_not_exist">Account does not exist on the device yet</string>

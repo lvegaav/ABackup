@@ -1,4 +1,4 @@
-package com.americavoice.backup.calls.ui;
+package com.americavoice.backup.sms.ui;
 
 
 import android.Manifest;
@@ -25,8 +25,6 @@ import android.widget.Toast;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
-import com.americavoice.backup.calls.presenter.CallsBackupPresenter;
-import com.americavoice.backup.calls.service.CallsBackupJob;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
@@ -35,6 +33,8 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.operations.RefreshFolderOperation;
+import com.americavoice.backup.sms.presenter.SmsBackupPresenter;
+import com.americavoice.backup.sms.service.SmsBackupJob;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.americavoice.backup.utils.PermissionUtil;
@@ -61,11 +61,11 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class CallsBackupFragment extends BaseFragment implements CallsBackupView, DatePickerDialog.OnDateSetListener {
+public class SmsBackupFragment extends BaseFragment implements SmsBackupView, DatePickerDialog.OnDateSetListener {
 
-    public static final String PREFERENCE_CALLS_AUTOMATIC_BACKUP = "PREFERENCE_CALLS_AUTOMATIC_BACKUP";
-    public static final String PREFERENCE_CALLS_LAST_BACKUP = "PREFERENCE_CALLS_LAST_BACKUP";
-    public static final String PREFERENCE_CALLS_IS_NOT_FIRST_TIME = "PREFERENCE_CALLS_IS_NOT_FIRST_TIME";
+    public static final String PREFERENCE_SMS_AUTOMATIC_BACKUP = "PREFERENCE_SMS_AUTOMATIC_BACKUP";
+    public static final String PREFERENCE_SMS_LAST_BACKUP = "PREFERENCE_SMS_LAST_BACKUP";
+    public static final String PREFERENCE_SMS_IS_NOT_FIRST_TIME = "PREFERENCE_SMS_IS_NOT_FIRST_TIME";
 
     private static final String KEY_CALENDAR_PICKER_OPEN = "IS_CALENDAR_PICKER_OPEN";
     private static final String KEY_CALENDAR_DAY = "CALENDAR_DAY";
@@ -76,23 +76,23 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
      * Interface for listening file list events.
      */
     public interface Listener {
-        void onCallsBackPressed();
+        void onSmsBackPressed();
     }
 
     @Inject
-    CallsBackupPresenter mPresenter;
+    SmsBackupPresenter mPresenter;
 
-    @BindView(R.id.calls_automatic_backup)
+    @BindView(R.id.sms_automatic_backup)
     public SwitchCompat backupSwitch;
 
-    @BindView(R.id.calls_last_backup_timestamp)
+    @BindView(R.id.sms_last_backup_timestamp)
     public TextView lastBackup;
 
-    @BindView(R.id.calls_datepicker)
-    public AppCompatButton callsDatePickerBtn;
+    @BindView(R.id.sms_datepicker)
+    public AppCompatButton smsDatePickerBtn;
 
-    @BindView(R.id.calls_backup_now)
-    public AppCompatButton callsBackupNow;
+    @BindView(R.id.sms_backup_now)
+    public AppCompatButton smsBackupNow;
 
     private BaseOwncloudActivity mContainerActivity;
 
@@ -106,19 +106,19 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
     private ArbitraryDataProvider arbitraryDataProvider;
 
-    public CallsBackupFragment() {
+    public SmsBackupFragment() {
         // Required empty public constructor
     }
 
-    public static CallsBackupFragment newInstance() {
-        return new CallsBackupFragment();
+    public static SmsBackupFragment newInstance() {
+        return new SmsBackupFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View fragmentView = inflater.inflate(R.layout.fragment_calls_backup, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_sms_backup, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
         return fragmentView;
     }
@@ -154,7 +154,7 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
             }
         }
 
-        String backupFolderPath = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderPath = BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
         refreshBackupFolder(backupFolderPath);
 
     }
@@ -194,23 +194,23 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
     private void initialize(Bundle savedInstanceState) {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
-        this.mPresenter.initialize(getString(R.string.calls_title));
+        this.mPresenter.initialize(getString(R.string.sms_title));
 
         this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
 
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        if (!arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CALLS_IS_NOT_FIRST_TIME)) {
+        if (!arbitraryDataProvider.getBooleanValue(account, PREFERENCE_SMS_IS_NOT_FIRST_TIME)) {
             backupSwitch.setChecked(true);
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CALLS_IS_NOT_FIRST_TIME, String.valueOf(true));
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP, String.valueOf(true));
+            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_SMS_IS_NOT_FIRST_TIME, String.valueOf(true));
+            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_SMS_AUTOMATIC_BACKUP, String.valueOf(true));
         } else {
-            backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP));
+            backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_SMS_AUTOMATIC_BACKUP));
         }
 
         onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (checkAndAskForCallsReadPermission()) {
+                if (checkAndAskForSmsReadPermission()) {
                     if (isChecked) {
                         setAutomaticBackup(true);
                     } else {
@@ -223,7 +223,7 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
         backupSwitch.setOnCheckedChangeListener(onCheckedChangeListener);
 
         // display last backup
-        Long lastBackupTimestamp = arbitraryDataProvider.getLongValue(account, PREFERENCE_CALLS_LAST_BACKUP);
+        Long lastBackupTimestamp = arbitraryDataProvider.getLongValue(account, PREFERENCE_SMS_LAST_BACKUP);
 
         if (lastBackupTimestamp == -1) {
             lastBackup.setText(R.string.contacts_preference_backup_never);
@@ -242,18 +242,18 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
         }
 
         int accentColor = getResources().getColor(R.color.colorAccent);
-        callsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        callsBackupNow.getBackground()
+        smsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+        smsBackupNow.getBackground()
                 .setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
 
-        callsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        callsDatePickerBtn.setTextColor(getResources().getColor(R.color.white));
+        smsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
+        smsDatePickerBtn.setTextColor(getResources().getColor(R.color.white));
 
     }
 
     void onButtonBack() {
         if (this.mListener != null) {
-            this.mListener.onCallsBackPressed();
+            this.mListener.onSmsBackPressed();
         }
     }
 
@@ -287,24 +287,24 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
         onButtonBack();
     }
 
-    private boolean checkAndAskForCallsReadPermission() {
+    private boolean checkAndAskForSmsReadPermission() {
 
         // check permissions
-        if ((PermissionUtil.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.READ_CALL_LOG))) {
+        if ((PermissionUtil.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.READ_SMS))) {
             return true;
         } else {
             // Check if we should show an explanation
             if (PermissionUtil.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.READ_CALL_LOG)) {
+                    Manifest.permission.READ_SMS)) {
                 // Show explanation to the user and then request permission
-                Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.calls_linear_layout),
-                        R.string.calls_read_permission,
+                Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.sms_linear_layout),
+                        R.string.sms_read_permission,
                         Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.common_ok, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                requestPermissions(new String[]{Manifest.permission.READ_CALL_LOG},
-                                        PermissionUtil.PERMISSIONS_READ_CALLS_AUTOMATIC);
+                                requestPermissions(new String[]{Manifest.permission.READ_SMS},
+                                        PermissionUtil.PERMISSIONS_READ_SMS_AUTOMATIC);
                             }
                         });
 
@@ -315,19 +315,19 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
                 return false;
             } else {
                 // No explanation needed, request the permission.
-                requestPermissions(new String[]{Manifest.permission.READ_CALL_LOG},
-                        PermissionUtil.PERMISSIONS_READ_CALLS_AUTOMATIC);
+                requestPermissions(new String[]{Manifest.permission.READ_SMS},
+                        PermissionUtil.PERMISSIONS_READ_SMS_AUTOMATIC);
                 return false;
             }
         }
     }
 
-    public static void startCallBackupJob(Account account) {
+    public static void startSmsBackupJob(Account account) {
 
         PersistableBundleCompat bundle = new PersistableBundleCompat();
-        bundle.putString(CallsBackupJob.ACCOUNT, account.name);
+        bundle.putString(SmsBackupJob.ACCOUNT, account.name);
 
-        new JobRequest.Builder(CallsBackupJob.TAG)
+        new JobRequest.Builder(SmsBackupJob.TAG)
                 .setExtras(bundle)
                 .setRequiresCharging(false)
                 .setPersisted(true)
@@ -337,14 +337,14 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
                 .schedule();
     }
 
-    private void startCallsBackupJob() {
+    private void startSmsBackupJob() {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
 
         PersistableBundleCompat bundle = new PersistableBundleCompat();
-        bundle.putString(CallsBackupJob.ACCOUNT, account.name);
-        bundle.putBoolean(CallsBackupJob.FORCE, true);
+        bundle.putString(SmsBackupJob.ACCOUNT, account.name);
+        bundle.putBoolean(SmsBackupJob.FORCE, true);
 
-        new JobRequest.Builder(CallsBackupJob.TAG)
+        new JobRequest.Builder(SmsBackupJob.TAG)
                 .setExtras(bundle)
                 .setExecutionWindow(3_000L, 10_000L)
                 .setRequiresCharging(false)
@@ -353,19 +353,19 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
                 .build()
                 .schedule();
 
-        Snackbar.make(getView().findViewById(R.id.calls_linear_layout),
+        Snackbar.make(getView().findViewById(R.id.sms_linear_layout),
                 R.string.contacts_preferences_backup_scheduled,
                 Snackbar.LENGTH_LONG).show();
     }
 
-    public static void cancelCallBackupJobForAccount(Context context, Account account) {
+    public static void cancelSmsBackupJobForAccount(Context context, Account account) {
 
         JobManager jobManager = JobManager.create(context);
-        Set<JobRequest> jobs = jobManager.getAllJobRequestsForTag(CallsBackupJob.TAG);
+        Set<JobRequest> jobs = jobManager.getAllJobRequestsForTag(SmsBackupJob.TAG);
 
         for (JobRequest jobRequest : jobs) {
             PersistableBundleCompat extras = jobRequest.getExtras();
-            if (extras.getString(CallsBackupJob.ACCOUNT, "").equalsIgnoreCase(account.name)) {
+            if (extras.getString(SmsBackupJob.ACCOUNT, "").equalsIgnoreCase(account.name)) {
                 jobManager.cancel(jobRequest.getJobId());
             }
         }
@@ -376,12 +376,12 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
 
         if (bool) {
-            startCallBackupJob(account);
+            startSmsBackupJob(account);
         } else {
-            cancelCallBackupJobForAccount(getContext(), account);
+            cancelSmsBackupJobForAccount(getContext(), account);
         }
 
-        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP,
+        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_SMS_AUTOMATIC_BACKUP,
                 String.valueOf(bool));
     }
 
@@ -389,9 +389,9 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PermissionUtil.PERMISSIONS_READ_CALLS_AUTOMATIC) {
+        if (requestCode == PermissionUtil.PERMISSIONS_READ_SMS_AUTOMATIC) {
             for (int index = 0; index < permissions.length; index++) {
-                if (Manifest.permission.READ_CALL_LOG.equalsIgnoreCase(permissions[index])) {
+                if (Manifest.permission.READ_SMS.equalsIgnoreCase(permissions[index])) {
                     if (grantResults[index] >= 0) {
                         setAutomaticBackup(true);
                     } else {
@@ -405,11 +405,11 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
             }
         }
 
-        if (requestCode == PermissionUtil.PERMISSIONS_READ_CALLS_MANUALLY) {
+        if (requestCode == PermissionUtil.PERMISSIONS_READ_SMS_MANUALLY) {
             for (int index = 0; index < permissions.length; index++) {
-                if (Manifest.permission.READ_CALL_LOG.equalsIgnoreCase(permissions[index])) {
+                if (Manifest.permission.READ_SMS.equalsIgnoreCase(permissions[index])) {
                     if (grantResults[index] >= 0) {
-                        startCallsBackupJob();
+                        startSmsBackupJob();
                     }
 
                     break;
@@ -418,20 +418,20 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
         }
     }
 
-    @OnClick(R.id.calls_backup_now)
-    public void backupCalls() {
-        if (checkAndAskForCallsReadPermission()) {
-            startCallsBackupJob();
+    @OnClick(R.id.sms_backup_now)
+    public void backupSms() {
+        if (checkAndAskForSmsReadPermission()) {
+            startSmsBackupJob();
         }
     }
-    @OnClick(R.id.calls_datepicker)
+    @OnClick(R.id.sms_datepicker)
     public void openCleanDate() {
         openDate(null);
     }
 
     public void openDate(@Nullable Date savedDate) {
 
-        String backupFolderString = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderString = BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
 
         Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(backupFolder, false);
@@ -490,7 +490,7 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
 
         selectedDate = new Date(year, month, dayOfMonth);
 
-        String backupFolderString = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderString = BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
         Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(
                 backupFolder, false);
@@ -528,7 +528,7 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
 
         if (backupToRestore != null) {
             mContainerActivity.replaceFragment(R.id.fl_fragment,
-                    CallListFragment.newInstance(backupToRestore, mContainerActivity.getAccount()), true, true);
+                    SmsListFragment.newInstance(backupToRestore, mContainerActivity.getAccount()), true, true);
         } else {
             Toast.makeText(getContext(), R.string.contacts_preferences_no_file_found,
                     Toast.LENGTH_SHORT).show();
@@ -570,11 +570,11 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
 
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
                             .getFolderContent(backupFolder, false);
-                    if (callsDatePickerBtn != null) {
+                    if (smsDatePickerBtn != null) {
                         if (backupFiles == null || backupFiles.size() == 0) {
-                            callsDatePickerBtn.setVisibility(View.GONE);
+                            smsDatePickerBtn.setVisibility(View.GONE);
                         } else {
-                            callsDatePickerBtn.setVisibility(View.VISIBLE);
+                            smsDatePickerBtn.setVisibility(View.VISIBLE);
                         }
                     }
                 }
