@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/main.title"
                 android:textSize="24sp"
-                android:layout_marginTop="51dp"
+                android:layout_marginTop="41dp"
                 android:textColor="@color/white"/>
 
             <TextView
@@ -157,24 +157,24 @@
         </RelativeLayout>
 
         <RelativeLayout
-        android:id="@+id/rl_root_footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        >
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:srcCompat="@drawable/ic_corner_oval"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"/>
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:srcCompat="@drawable/ic_sip_v_logo"
-            android:layout_marginTop="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:id="@+id/rl_root_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                app:srcCompat="@drawable/ic_corner_oval"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/ic_sip_v_logo"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
     </RelativeLayout>
 
 
@@ -183,14 +183,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/rl_root_header"
-            android:layout_above="@+id/rl_root_footer"
-            />
-
-
-
-
-
-
+            android:layout_above="@+id/rl_root_footer" />
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
