@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.format.DateFormat;
@@ -53,6 +54,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import com.owncloud.android.lib.common.utils.Log_OC;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -112,7 +115,7 @@ public class CallsBackupJob extends Job {
 
             // store execution date
             arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                    CallsBackupFragment.PREFERENCE_CALLS_AUTOMATIC_BACKUP,
+                    CallsBackupFragment.PREFERENCE_CALLS_LAST_BACKUP,
                     String.valueOf(Calendar.getInstance().getTimeInMillis()));
         } else {
             Log_OC.d(TAG, "last execution less than 24h ago");
@@ -172,11 +175,8 @@ public class CallsBackupJob extends Job {
             FileWriter fw = null;
             try {
                 fw = new FileWriter(file);
-
-                for (String card : calls) {
-                    fw.write(card);
-                }
-
+                JSONArray jsArray = new JSONArray(calls);
+                fw.write(jsArray.toString());
             } catch (IOException e) {
                 Log_OC.d(TAG, "Error ", e);
             } finally {

@@ -21,6 +21,7 @@
 package com.americavoice.backup.service;
 
 import com.americavoice.backup.calls.service.CallsBackupJob;
+import com.americavoice.backup.calls.service.CallsImportJob;
 import com.americavoice.backup.contacts.service.ContactsBackupJob;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
@@ -39,6 +40,8 @@ public class NCJobCreator implements JobCreator {
                 return new ContactsBackupJob();
             case CallsBackupJob.TAG:
                 return new CallsBackupJob();
+            case CallsImportJob.TAG:
+                return new CallsImportJob();
             default:
                 return null;
         }

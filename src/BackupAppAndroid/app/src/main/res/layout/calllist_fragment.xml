@@ -19,18 +19,17 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/contactlist_recyclerview"
+                android:id="@+id/calllist_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
             <LinearLayout
-                android:id="@+id/contactlist_restore_selected_container"
+                android:id="@+id/calllist_restore_selected_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -38,11 +37,11 @@
                     android:src="@drawable/uploader_list_separator" />
 
                 <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/contactlist_restore_selected"
+                    android:id="@+id/calllist_restore_selected"
                     style="@style/Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/contacts.list_restore_selected" />
+                    android:text="@string/calls.list_restore_selected" />
 
             </LinearLayout>
         </LinearLayout>

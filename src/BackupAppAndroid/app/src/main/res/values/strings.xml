@@ -105,6 +105,7 @@
     <string name="contacts.preference_restore_backup">Restore Backup</string>
 
     <string name="calls.title">Calls</string>
+    <string name="calls.list_restore_selected">Restore calls</string>
 
     <string name="auth.unsupported_multiaccount">%1$s does not support multiple accounts</string>
     <string name="auth.account_does_not_exist">Account does not exist on the device yet</string>

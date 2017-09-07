@@ -21,21 +21,33 @@
 
 package com.americavoice.backup.calls.service;
 
+import android.Manifest;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 
+import com.americavoice.backup.calls.ui.model.Call;
 import com.americavoice.backup.contacts.ui.ContactListFragment;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
+import org.json.JSONArray;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Scanner;
 import java.util.TreeMap;
 
 import ezvcard.Ezvcard;
@@ -49,54 +61,35 @@ import third_parties.ezvcard_android.ContactOperations;
 public class CallsImportJob extends Job {
     public static final String TAG = "CallsImportJob";
 
-    public static final String ACCOUNT_TYPE = "account_type";
-    public static final String ACCOUNT_NAME = "account_name";
-    public static final String VCARD_FILE_PATH = "vcard_file_path";
-    public static final String CHECKED_ITEMS_ARRAY = "checked_items_array";
+    public static final String CALL_FILE_PATH = "call_file_path";
 
     @NonNull
     @Override
     protected Result onRunJob(Params params) {
         PersistableBundleCompat bundle = params.getExtras();
-
-        String vCardFilePath = bundle.getString(VCARD_FILE_PATH, "");
-        String accountName = bundle.getString(ACCOUNT_NAME, "");
-        String accountType = bundle.getString(ACCOUNT_TYPE, "");
-        int[] intArray = bundle.getIntArray(CHECKED_ITEMS_ARRAY);
-
-        File file = new File(vCardFilePath);
-        ArrayList<VCard> vCards = new ArrayList<>();
-
+        final Context context = getContext();
+        String callFilePath = bundle.getString(CALL_FILE_PATH, "");
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            return Result.FAILURE;
+        }
         try {
-            ContactOperations operations = new ContactOperations(getContext(), accountName, accountType);
-            vCards.addAll(Ezvcard.parse(file).all());
-            Collections.sort(vCards, new ContactListFragment.VCardComparator());
-            Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null,
-                    null, null, null);
-
-            TreeMap<VCard, Long> ownContactList = new TreeMap<>(new ContactListFragment.VCardComparator());
-            if (cursor != null && cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                for (int i = 0; i < cursor.getCount(); i++) {
-                    VCard vCard = getContactFromCursor(cursor);
-                    if (vCard != null) {
-                        ownContactList.put(vCard, cursor.getLong(cursor.getColumnIndex("NAME_RAW_CONTACT_ID")));
-                    }
-                    cursor.moveToNext();
-                }
-            }
-
-
-            for (int i = 0; i < intArray.length; i++) {
-                VCard vCard = vCards.get(intArray[i]);
-                if (ContactListFragment.getDisplayName(vCard).length() != 0) {
-                    if (!ownContactList.containsKey(vCard)) {
-                        operations.insertContact(vCard);
-                    } else {
-                        operations.updateContact(vCard, ownContactList.get(vCard));
-                    }
-                } else {
-                    operations.insertContact(vCard); //Insert All the contacts without name
+            FileInputStream in = new FileInputStream(callFilePath);
+            Scanner br = new Scanner(new InputStreamReader(in));
+            while (br.hasNext()) {
+                String strLine = br.nextLine();
+                JSONArray jsonArr = new JSONArray(strLine);
+                for (int i = 0; i < jsonArr.length(); i++) {
+                    Call call = Call.FromJson(jsonArr.getString(i));
+                    ContentValues values = new ContentValues();
+                    values.put(CallLog.Calls.NUMBER, call.getPhoneNumber());
+                    values.put(CallLog.Calls.DATE, Long.valueOf(call.getCallDate()));
+                    values.put(CallLog.Calls.DURATION, Long.valueOf(call.getCallDuration()));
+                    values.put(CallLog.Calls.TYPE, Integer.valueOf(call.getCallType()));
+                    values.put(CallLog.Calls.NEW, 1);
+                    values.put(CallLog.Calls.CACHED_NAME, "");
+                    values.put(CallLog.Calls.CACHED_NUMBER_TYPE, 0);
+                    values.put(CallLog.Calls.CACHED_NUMBER_LABEL, "");
+                    context.getContentResolver().insert(CallLog.Calls.CONTENT_URI, values);
                 }
             }
         } catch (Exception e) {
@@ -105,24 +98,4 @@ public class CallsImportJob extends Job {
 
         return Result.SUCCESS;
     }
-
-    private VCard getContactFromCursor(Cursor cursor) {
-        String lookupKey = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
-        Uri uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey);
-        VCard vCard = null;
-        try {
-            InputStream inputStream = getContext().getContentResolver().openInputStream(uri);
-            ArrayList<VCard> vCardList = new ArrayList<>();
-            vCardList.addAll(Ezvcard.parse(inputStream).all());
-            if (vCardList.size() > 0) {
-                vCard = vCardList.get(0);
-            }
-
-        } catch (IOException e) {
-            Log_OC.d(TAG, e.getMessage());
-        }
-        return vCard;
-    }
-
-
 }

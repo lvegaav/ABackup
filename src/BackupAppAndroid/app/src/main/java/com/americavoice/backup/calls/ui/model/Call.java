@@ -19,9 +19,31 @@ public class Call {
         this.callDuration = callDuration;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getCallType() {
+        return callType;
+    }
+
+    public String getCallDate() {
+        return callDate;
+    }
+
+    public String getCallDuration() {
+        return callDuration;
+    }
+
     public String ToJson()
     {
         Gson gson = new Gson();
         return gson.toJson(this);
+    }
+
+    public static Call FromJson(String json)
+    {
+        Gson gson = new Gson();
+        return gson.fromJson(json, Call.class);
     }
 }

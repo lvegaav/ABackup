@@ -33,10 +33,10 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -57,8 +57,8 @@ import android.widget.Toast;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.calls.presenter.CallsListPresenter;
-import com.americavoice.backup.contacts.presenter.ContactsListPresenter;
-import com.americavoice.backup.contacts.service.ContactsImportJob;
+import com.americavoice.backup.calls.service.CallsImportJob;
+import com.americavoice.backup.calls.ui.model.Call;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.components.AppComponent;
@@ -73,13 +73,18 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -108,8 +113,6 @@ public class CallListFragment extends FileFragment implements CallsListView {
     private Unbinder mUnBind;
     private Listener mListener;
 
-    private Menu mMenu;
-
     public CallListFragment() {
 
     }
@@ -119,15 +122,13 @@ public class CallListFragment extends FileFragment implements CallsListView {
     public static final String FILE_NAME = "FILE_NAME";
     public static final String ACCOUNT = "ACCOUNT";
 
-    public static final String CHECKED_ITEMS_ARRAY_KEY = "CHECKED_ITEMS";
-
-    @BindView(R.id.contactlist_recyclerview)
+    @BindView(R.id.calllist_recyclerview)
     public RecyclerView recyclerView;
 
-    @BindView(R.id.contactlist_restore_selected_container)
+    @BindView(R.id.calllist_restore_selected_container)
     public LinearLayout restoreContactsContainer;
 
-    @BindView(R.id.contactlist_restore_selected)
+    @BindView(R.id.calllist_restore_selected)
     public Button restoreContacts;
 
     @BindView(R.id.empty_list_view_text)
@@ -148,7 +149,7 @@ public class CallListFragment extends FileFragment implements CallsListView {
 
     private CallListAdapter callListAdapter;
     private Account account;
-    private ArrayList<VCard> vCards = new ArrayList<>();
+    private ArrayList<Call> mCalls = new ArrayList<>();
     private OCFile ocFile;
 
     public static CallListFragment newInstance(OCFile file, Account account) {
@@ -179,42 +180,25 @@ public class CallListFragment extends FileFragment implements CallsListView {
     private void initialize(Bundle savedInstanceState) {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
-        this.mPresenter.initialize(getString(R.string.contacts_title));
+        this.mPresenter.initialize(getString(R.string.calls_title));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.contactlist_menu, menu);
-        mMenu = menu;
-    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View fragmentView = inflater.inflate(R.layout.contactlist_fragment, container, false);
+        View fragmentView = inflater.inflate(R.layout.calllist_fragment, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
 
-        setHasOptionsMenu(true);
+        callListAdapter = new CallListAdapter(getContext(), mCalls);
 
-        if (savedInstanceState == null) {
-            callListAdapter = new CallListAdapter(getContext(), vCards);
-        } else {
-            Set<Integer> checkedItems = new HashSet<>();
-            int[] itemsArray = savedInstanceState.getIntArray(CHECKED_ITEMS_ARRAY_KEY);
-            for (int i = 0; i < itemsArray.length; i++) {
-                checkedItems.add(itemsArray[i]);
-            }
-            if (checkedItems.size() > 0) {
-                onMessageEvent(new VCardToggleEvent(true));
-            }
-            callListAdapter = new CallListAdapter(getContext(), vCards, checkedItems);
-        }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
         recyclerView.setAdapter(callListAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setLayoutManager(layoutManager);
 
         ocFile = getArguments().getParcelable(FILE_NAME);
         setFile(ocFile);
@@ -232,7 +216,7 @@ public class CallListFragment extends FileFragment implements CallsListView {
             DownloadFinishReceiver mDownloadFinishReceiver = new DownloadFinishReceiver();
             getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
         } else {
-            loadContactsTask.execute();
+            loadCallsTask.execute();
         }
 
         restoreContacts.setOnClickListener(new View.OnClickListener() {
@@ -240,7 +224,7 @@ public class CallListFragment extends FileFragment implements CallsListView {
             public void onClick(View v) {
 
                 if (checkAndAskForContactsWritePermission()) {
-                    getAccountForImport();
+                    importCalls();
                 }
             }
         });
@@ -250,20 +234,7 @@ public class CallListFragment extends FileFragment implements CallsListView {
         return fragmentView;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putIntArray(CHECKED_ITEMS_ARRAY_KEY, callListAdapter.getCheckedIntArray());
-    }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(VCardToggleEvent event) {
-        if (event.showRestoreButton) {
-            restoreContactsContainer.setVisibility(View.VISIBLE);
-        } else {
-            restoreContactsContainer.setVisibility(View.GONE);
-        }
-    }
 
     @Override
     public void onDestroy() {
@@ -286,8 +257,8 @@ public class CallListFragment extends FileFragment implements CallsListView {
     @Override
     public void onStop() {
         super.onStop();
-        if (loadContactsTask != null) {
-            loadContactsTask.cancel(true);
+        if (loadCallsTask != null) {
+            loadCallsTask.cancel(true);
         }
     }
 
@@ -343,12 +314,6 @@ public class CallListFragment extends FileFragment implements CallsListView {
                 getActivity().onBackPressed();
                 retval = true;
                 break;
-            case R.id.action_select_all:
-                item.setChecked(!item.isChecked());
-                setSelectAllMenuItem(item, item.isChecked());
-                callListAdapter.selectAllFiles(item.isChecked());
-                retval = true;
-                break;
             default:
                 retval = super.onOptionsItemSelected(item);
                 break;
@@ -364,58 +329,43 @@ public class CallListFragment extends FileFragment implements CallsListView {
         emptyContentProgressBar.setVisibility(View.VISIBLE);
     }
 
-    private void setSelectAllMenuItem(MenuItem selectAll, boolean checked) {
-        selectAll.setChecked(checked);
-        if (checked) {
-            selectAll.setTitle(R.string.contacts_select_all);
-        } else {
-            selectAll.setTitle(R.string.contacts_select_none);
-        }
-    }
+    static class CallItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView name;
+        private TextView duration;
+        private TextView date;
 
-    static class ContactItemViewHolder extends RecyclerView.ViewHolder {
-        private ImageView badge;
-        private CheckedTextView name;
-
-        ContactItemViewHolder(View itemView) {
+        CallItemViewHolder(View itemView) {
             super(itemView);
 
-            badge = (ImageView) itemView.findViewById(R.id.contactlist_item_icon);
-            name = (CheckedTextView) itemView.findViewById(R.id.contactlist_item_name);
-
+            name = (TextView) itemView.findViewById(R.id.calllist_item_name);
+            duration = (TextView) itemView.findViewById(R.id.calllist_item_duration);
+            date = (TextView) itemView.findViewById(R.id.calllist_item_date);
 
             itemView.setTag(this);
         }
 
-        public void setVCardListener(View.OnClickListener onClickListener) {
+        public void setListener(View.OnClickListener onClickListener) {
             itemView.setOnClickListener(onClickListener);
         }
 
-        public ImageView getBadge() {
-            return badge;
-        }
-
-        public void setBadge(ImageView badge) {
-            this.badge = badge;
-        }
-
-        public CheckedTextView getName() {
+        public TextView getName() {
             return name;
         }
 
-        public void setName(CheckedTextView name) {
-            this.name = name;
+        public TextView getDuration() {
+            return duration;
+        }
+
+        public TextView getDate() {
+            return date;
         }
     }
 
-    private void importContacts(ContactAccount account) {
+    private void importCalls() {
         PersistableBundleCompat bundle = new PersistableBundleCompat();
-        bundle.putString(ContactsImportJob.ACCOUNT_NAME, account.name);
-        bundle.putString(ContactsImportJob.ACCOUNT_TYPE, account.type);
-        bundle.putString(ContactsImportJob.VCARD_FILE_PATH, getFile().getStoragePath());
-        bundle.putIntArray(ContactsImportJob.CHECKED_ITEMS_ARRAY, callListAdapter.getCheckedIntArray());
+        bundle.putString(CallsImportJob.CALL_FILE_PATH, getFile().getStoragePath());
 
-        new JobRequest.Builder(ContactsImportJob.TAG)
+        new JobRequest.Builder(CallsImportJob.TAG)
                 .setExtras(bundle)
                 .setExecutionWindow(3_000L, 10_000L)
                 .setRequiresCharging(false)
@@ -439,62 +389,11 @@ public class CallListFragment extends FileFragment implements CallsListView {
         }, 1750);
     }
 
-    private void getAccountForImport() {
-        final ArrayList<ContactAccount> accounts = new ArrayList<>();
-
-        // add local one
-        accounts.add(new ContactAccount("Local contacts", null, null));
-
-        Cursor cursor = null;
-        try {
-            cursor = getContext().getContentResolver().query(ContactsContract.RawContacts.CONTENT_URI,
-                    new String[]{ContactsContract.RawContacts.ACCOUNT_NAME, ContactsContract.RawContacts.ACCOUNT_TYPE},
-                    null,
-                    null,
-                    null);
-
-            if (cursor != null && cursor.getCount() > 0) {
-                while (cursor.moveToNext()) {
-                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_NAME));
-                    String type = cursor.getString(cursor.getColumnIndex(ContactsContract.RawContacts.ACCOUNT_TYPE));
-
-                    ContactAccount account = new ContactAccount(name, name, type);
-
-                    if (!accounts.contains(account)) {
-                        accounts.add(account);
-                    }
-                }
-
-                cursor.close();
-            }
-        } catch (Exception e) {
-            Log_OC.d(TAG, e.getMessage());
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-        if (accounts.size() == 1) {
-            importContacts(accounts.get(0));
-        } else {
-            ArrayAdapter adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, accounts);
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle(R.string.contacts_list_account_chooser_title)
-                    .setAdapter(adapter, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            importContacts(accounts.get(which));
-                        }
-                    }).show();
-        }
-    }
-
     private boolean checkAndAskForContactsWritePermission() {
         // check permissions
-        if (!PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.WRITE_CONTACTS)) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_CONTACTS},
-                    PermissionUtil.PERMISSIONS_WRITE_CONTACTS);
+        if (!PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.WRITE_CALL_LOG)) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_CALL_LOG},
+                    PermissionUtil.PERMISSIONS_WRITE_CALLS);
             return false;
         } else {
             return true;
@@ -505,11 +404,11 @@ public class CallListFragment extends FileFragment implements CallsListView {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PermissionUtil.PERMISSIONS_WRITE_CONTACTS) {
+        if (requestCode == PermissionUtil.PERMISSIONS_WRITE_CALLS) {
             for (int index = 0; index < permissions.length; index++) {
-                if (Manifest.permission.WRITE_CONTACTS.equalsIgnoreCase(permissions[index])) {
+                if (Manifest.permission.WRITE_CALL_LOG.equalsIgnoreCase(permissions[index])) {
                     if (grantResults[index] >= 0) {
-                        getAccountForImport();
+                        importCalls();
                     } else {
                         if (getView() != null) {
                             Snackbar.make(getView(), R.string.contacts_list_no_permission, Snackbar.LENGTH_LONG)
@@ -524,33 +423,6 @@ public class CallListFragment extends FileFragment implements CallsListView {
         }
     }
 
-    private class ContactAccount {
-        private String displayName;
-        private String name;
-        private String type;
-
-        ContactAccount(String displayName, String name, String type) {
-            this.displayName = displayName;
-            this.name = name;
-            this.type = type;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj instanceof ContactAccount) {
-                ContactAccount other = (ContactAccount) obj;
-                return this.name.equalsIgnoreCase(other.name) && this.type.equalsIgnoreCase(other.type);
-            } else {
-                return false;
-            }
-        }
-
-        @Override
-        public String toString() {
-            return displayName;
-        }
-    }
-
     private class DownloadFinishReceiver extends BroadcastReceiver {
 
         @Override
@@ -561,24 +433,12 @@ public class CallListFragment extends FileFragment implements CallsListView {
                 FileDataStorageManager storageManager = new FileDataStorageManager(account,
                         getContext());
                 ocFile = storageManager.getFileByPath(downloadedRemotePath);
-                loadContactsTask.execute();
+                loadCallsTask.execute();
             }
         }
     }
 
-    public static class VCardComparator implements Comparator<VCard> {
-        @Override
-        public int compare(VCard o1, VCard o2) {
-            String contac1 = getDisplayName(o1);
-            String contac2 = getDisplayName(o2);
-
-            return contac1.compareToIgnoreCase(contac2);
-        }
-
-
-    }
-
-    private AsyncTask loadContactsTask = new AsyncTask() {
+    private AsyncTask loadCallsTask = new AsyncTask() {
 
         @Override
         protected void onPreExecute() {
@@ -588,13 +448,23 @@ public class CallListFragment extends FileFragment implements CallsListView {
         @Override
         protected Object doInBackground(Object[] params) {
             if (!isCancelled()) {
-                File file = new File(ocFile.getStoragePath());
+                //File file = new File(ocFile.getStoragePath());
                 try {
-                    vCards.addAll(Ezvcard.parse(file).all());
-                    Collections.sort(vCards, new VCardComparator());
+                    FileInputStream in = new FileInputStream(ocFile.getStoragePath());
+                    Scanner br = new Scanner(new InputStreamReader(in));
+                    while (br.hasNext()) {
+                        String strLine = br.nextLine();
+                        JSONArray jsonArr = new JSONArray(strLine);
+                        for (int i = 0; i < jsonArr.length(); i++)
+                        {
+                            mCalls.add(Call.FromJson(jsonArr.getString(i)));
+                        }
+                    }
                 } catch (IOException e) {
-                    Log_OC.e(TAG, "IO Exception: " + file.getAbsolutePath());
+                    Log_OC.e(TAG, "IO Exception: " + ocFile.getStoragePath());
                     return false;
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
                 return true;
             }
@@ -605,23 +475,9 @@ public class CallListFragment extends FileFragment implements CallsListView {
         protected void onPostExecute(Object o) {
             if (!isCancelled()) {
                 emptyListContainer.setVisibility(View.GONE);
-                callListAdapter.replaceVCards(vCards);
-                if (mMenu != null) {
-                    onOptionsItemSelected(mMenu.findItem(R.id.action_select_all));
-                }
+                callListAdapter.replaceList(mCalls);
             }
         }
     };
 
-    public static String getDisplayName(VCard vCard) {
-        if (vCard.getFormattedName() != null) {
-            return vCard.getFormattedName().getValue();
-        } else if (vCard.getTelephoneNumbers() != null && vCard.getTelephoneNumbers().size() > 0) {
-            return vCard.getTelephoneNumbers().get(0).getText();
-        } else if (vCard.getEmails() != null && vCard.getEmails().size() > 0) {
-            return vCard.getEmails().get(0).getValue();
-        }
-
-        return "";
-    }
 }
