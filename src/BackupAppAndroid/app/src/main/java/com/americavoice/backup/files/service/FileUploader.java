@@ -115,16 +115,16 @@ public class FileUploader extends Service
     private Notification mNotification;
 
     /**
-     * Sms this Service with only this Intent key if all pending uploads are to be retried.
+     * Call this Service with only this Intent key if all pending uploads are to be retried.
      */
     private static final String KEY_RETRY = "KEY_RETRY";
 //    /**
-//     * Sms this Service with KEY_RETRY and KEY_RETRY_REMOTE_PATH to retry
+//     * Call this Service with KEY_RETRY and KEY_RETRY_REMOTE_PATH to retry
 //     * upload of file identified by KEY_RETRY_REMOTE_PATH.
 //     */
 //    private static final String KEY_RETRY_REMOTE_PATH = "KEY_RETRY_REMOTE_PATH";
     /**
-     * Sms this Service with KEY_RETRY and KEY_RETRY_UPLOAD to retry
+     * Call this Service with KEY_RETRY and KEY_RETRY_UPLOAD to retry
      * upload of file identified by KEY_RETRY_UPLOAD.
      */
     private static final String KEY_RETRY_UPLOAD = "KEY_RETRY_UPLOAD";
@@ -205,7 +205,7 @@ public class FileUploader extends Service
     public static class UploadRequester {
 
         /**
-         * Sms to upload several new files
+         * Call to upload several new files
          */
         public void uploadNewFile(
                 Context context,
@@ -231,7 +231,7 @@ public class FileUploader extends Service
         }
 
         /**
-         * Sms to upload a new single file
+         * Call to upload a new single file
          */
         public void uploadNewFile(Context context, Account account, String localPath, String remotePath, int
                 behaviour, String mimeType, boolean createRemoteFile, int createdBy) {
@@ -249,7 +249,7 @@ public class FileUploader extends Service
         }
 
         /**
-         * Sms to update multiple files already uploaded
+         * Call to update multiple files already uploaded
          */
         public void uploadUpdate(Context context, Account account, OCFile[] existingFiles, Integer behaviour,
                                  Boolean forceOverwrite) {
@@ -264,7 +264,7 @@ public class FileUploader extends Service
         }
 
         /**
-         * Sms to update a dingle file already uploaded
+         * Call to update a dingle file already uploaded
          */
         public void uploadUpdate(Context context, Account account, OCFile existingFile, Integer behaviour,
                                  Boolean forceOverwrite) {
@@ -274,7 +274,7 @@ public class FileUploader extends Service
 
 
         /**
-         * Sms to retry upload identified by remotePath
+         * Call to retry upload identified by remotePath
          */
         public void retry (Context context, OCUpload upload) {
             if (upload != null && context != null) {

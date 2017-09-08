@@ -80,10 +80,10 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
             }
 
             // Operation - get display name
-            if (result.isSuccess()) {
-                GetRemoteUserInfoOperation remoteUserNameOperation = new GetRemoteUserInfoOperation();
-                result = remoteUserNameOperation.execute(client);
-            }
+//            if (result.isSuccess()) {
+//                GetRemoteUserInfoOperation remoteUserNameOperation = new GetRemoteUserInfoOperation();
+//                result = remoteUserNameOperation.execute(client);
+//            }
 
         } else {
             result = new RemoteOperationResult(RemoteOperationResult.ResultCode.UNKNOWN_ERROR);
@@ -98,8 +98,7 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
         if (result!= null)
         {
             OnAuthenticatorTaskListener listener = mListener.get();
-            if (listener!= null)
-            {
+            if (listener!= null) {
                 listener.onAuthenticatorTaskCallback(result);
             }
         }

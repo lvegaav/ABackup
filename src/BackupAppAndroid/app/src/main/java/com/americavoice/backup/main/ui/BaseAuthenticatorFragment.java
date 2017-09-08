@@ -142,7 +142,7 @@ public class BaseAuthenticatorFragment extends BaseFragment {
             intent.putExtra(AccountManager.KEY_USERDATA, username);
 
             mAccountMgr.setUserData(
-                    mAccount, com.owncloud.android.lib.common.accounts.AccountUtils.Constants.KEY_OC_VERSION, "11.0.3"
+                    mAccount, com.owncloud.android.lib.common.accounts.AccountUtils.Constants.KEY_OC_VERSION, "12.0.2"
             );
             mAccountMgr.setUserData(
                     mAccount, com.owncloud.android.lib.common.accounts.AccountUtils.Constants.KEY_OC_BASE_URL, mServerInfo.mBaseUrl

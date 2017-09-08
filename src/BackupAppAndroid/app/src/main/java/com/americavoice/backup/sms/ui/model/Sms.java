@@ -8,16 +8,12 @@ import com.google.gson.Gson;
 
 public class Sms {
 
-    private String _id;
     private String _address;
     private String _msg;
     private String _readState; //"0" for have not read sms and "1" for have read sms
     private String _time;
     private String _folderName;
 
-    public String getId(){
-        return _id;
-    }
     public String getAddress(){
         return _address;
     }
@@ -34,10 +30,6 @@ public class Sms {
         return _folderName;
     }
 
-
-    public void setId(String id){
-        _id = id;
-    }
     public void setAddress(String address){
         _address = address;
     }

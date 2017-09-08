@@ -23,6 +23,7 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
+import com.crashlytics.android.Crashlytics;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -250,14 +251,16 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
             if (success) {
                 getActivity().finish();
             } else {
-                showToastMessage("Couldn't create the account, please try again");
+                showToastMessage(getString(R.string.common_account_error));
             }
 
         } else if (result.isServerFail() || result.isException()) {
-            showToastMessage(result.getLogMessage());
+            Log_OC.e(TAG, "Something went wrong with the server: " + result.getLogMessage());
+            Crashlytics.logException(result.getException());
+            showToastMessage(getString(R.string.exception_message_generic));
 
         } else {    // authorization fail due to client side - probably wrong credentials
-            showToastMessage("Check credentials, please try again");
+            showToastMessage(getString(R.string.common_wrong_credentials));
         }
     }
 

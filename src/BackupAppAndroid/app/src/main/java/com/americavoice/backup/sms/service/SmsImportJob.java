@@ -26,7 +26,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.CallLog;
+import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
@@ -72,16 +74,29 @@ public class SmsImportJob extends Job {
                 for (int i = 0; i < jsonArr.length(); i++) {
                     Sms sms = Sms.fromJson(jsonArr.getString(i));
                     ContentValues initialValues = new ContentValues();
-                    initialValues.put("address", sms.getAddress());
 
                     long millis = Long.parseLong(sms.getTime()) * 1000;
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
                     sdf.setTimeZone(TimeZone.getDefault());
                     String date = sdf.format(new Date(millis));
-                    initialValues.put("date", date);
+
+                    initialValues.put("address", sms.getAddress());
                     initialValues.put("body", sms.getMsg());
                     initialValues.put("read", sms.getReadState());
-                    getContext().getContentResolver().insert(Uri.parse("content://sms/" + sms.getFolderName()), initialValues);
+                    initialValues.put("date", date);
+
+                    String folderName = sms.getFolderName();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        Uri uri = Telephony.Sms.Sent.CONTENT_URI;
+                        if(folderName.equals("inbox")){
+                            uri = Telephony.Sms.Inbox.CONTENT_URI;
+                        }
+                        getContext().getContentResolver().insert(uri, initialValues);
+                    }
+                    else {
+                        /* folderName  could be inbox or sent */
+                        getContext().getContentResolver().insert(Uri.parse("content://sms/" + folderName), initialValues);
+                    }
                 }
             }
         } catch (Exception e) {

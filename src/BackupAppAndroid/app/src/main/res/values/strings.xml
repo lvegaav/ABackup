@@ -9,6 +9,8 @@
     <string name="common.uploading">Uploading</string>
     <string name="common.downloading">Downloading</string>
     <string name="common.empty">Empty</string>
+    <string name="common.wrong_credentials">Check credentials, please try again</string>
+    <string name="common.account_error">Couldn\'t create the account, please try again</string>
 
     <string name="network.error_socket_exception">An error occurred during connection to the server.</string>
     <string name="network.error_socket_timeout_exception">An error occurred while waiting for the server. Could not complete operation.</string>
