@@ -21,7 +21,6 @@ android {
     compileSdkVersion 25
     buildToolsVersion "26.0.1"
     defaultConfig {
-        applicationId "com.americavoice.backup"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
@@ -42,6 +41,21 @@ android {
         debug {
             signingConfig signingConfigs.debug
         }
+    }
+
+    productFlavors {
+        atel {
+            applicationId "atel.secureip.backup"
+            resValue "string", "authority", "atel.secureip.backup"
+            resValue "string", "account_type", "atel.backup"
+        }
+
+        secureip {
+            applicationId "com.americavoice.backup"
+            resValue "string", "authority", "com.americavoice.backup"
+            resValue "string", "account_type", "americavoice.backup"
+        }
+
     }
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'

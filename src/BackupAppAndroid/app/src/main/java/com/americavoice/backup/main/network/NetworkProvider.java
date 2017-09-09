@@ -5,9 +5,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.util.Log;
 
-import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.Const;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
@@ -28,7 +27,7 @@ import javax.net.ssl.X509TrustManager;
 
 @Singleton
 public class NetworkProvider {
-    public static final int COMPANY_ID = 1;
+
     private static final String KEY_PREFS = "com.americavoice.backup.KEY_PREFS";
     public static final String KEY_PHONE_NUMBER = "com.americavoice.backup.KEY_PHONE_NUMBER";
     private final SharedPreferences mPref;
@@ -90,7 +89,7 @@ public class NetworkProvider {
     }
 
     public String getUserName(String phoneNumber) {
-        return COMPANY_ID + "_" + phoneNumber;
+        return Const.COMPANY_ID + "_" + phoneNumber;
     }
 
     public void logout() {

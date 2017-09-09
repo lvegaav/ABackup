@@ -71,6 +71,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import freemarker.core.ReturnInstruction;
+
 /**
  * Job that backup contacts to /Contacts-Backup and deletes files older than x days
  */
@@ -132,25 +134,7 @@ public class CallsBackupJob extends Job {
                 return;
             }
             String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
-            Calendar from = Calendar.getInstance();
-            from.set(Calendar.HOUR_OF_DAY, 0);
-            from.set(Calendar.MINUTE, 0);
-            from.set(Calendar.SECOND, 0);
-            from.set(Calendar.MILLISECOND, 0);
-
-            Calendar to = Calendar.getInstance();
-            to.set(Calendar.HOUR_OF_DAY, 23);
-            to.set(Calendar.MINUTE, 59);
-            to.set(Calendar.SECOND, 59);
-            to.set(Calendar.MILLISECOND, 999);
-
-            String from1 =DateFormat.format("yyyy-MM-dd_HH-mm-ss", from).toString();
-            String to1 =DateFormat.format("yyyy-MM-dd_HH-mm-ss", to).toString();
-            String fromDate = String.valueOf(from.getTimeInMillis());
-            String toDate = String.valueOf(to.getTimeInMillis());
-            String[] whereValue = {fromDate,toDate};
-
-            Cursor managedCursor = getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, android.provider.CallLog.Calls.DATE + " BETWEEN ? AND ?", whereValue, strOrder);
+            Cursor managedCursor = getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, strOrder);
 
 
             int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
@@ -162,10 +146,13 @@ public class CallsBackupJob extends Job {
                 String phoneNumber = managedCursor.getString(number);
                 String callType = managedCursor.getString(type);
                 String callDate = managedCursor.getString(date);
-                //SimpleDateFormat formatter = new SimpleDateFormat("dd-MMM-yyyy HH:mm");
-                //String dateString = formatter.format(new Date(Long.parseLong(callDate)));
                 String callDuration = managedCursor.getString(duration);
                 calls.add(new Call(phoneNumber, callType, callDate, callDuration).ToJson());
+            }
+
+            if (calls.size() == 0)
+            {
+                return;
             }
 
             String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";

@@ -1995,12 +1995,13 @@ public class FileDataStorageManager {
         OCCapability capability = null;
         Cursor c = getCapabilityCursorForAccount(accountName);
 
-        if (c.moveToFirst()) {
+        if (c != null && c.moveToFirst()) {
             capability = createCapabilityInstance(c);
+            c.close();
         } else {
             capability = new OCCapability();    // return default with all UNKNOWN
         }
-        c.close();
+
         return capability;
     }
 

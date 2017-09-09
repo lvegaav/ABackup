@@ -47,6 +47,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -72,24 +73,51 @@ public class CallsImportJob extends Job {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
             return Result.FAILURE;
         }
+
         try {
+            //Current history
+            List<String> currentHistory = new ArrayList<>();
+            String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
+            Cursor managedCursor = getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, strOrder);
+
+
+            int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
+            int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
+            int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
+            int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
+            while (managedCursor.moveToNext())
+            {
+                String phoneNumber = managedCursor.getString(number);
+                String callType = managedCursor.getString(type);
+                String callDate = managedCursor.getString(date);
+                String callDuration = managedCursor.getString(duration);
+                currentHistory.add(new Call(phoneNumber, callType, callDate, callDuration).ToJson());
+            }
+
             FileInputStream in = new FileInputStream(callFilePath);
             Scanner br = new Scanner(new InputStreamReader(in));
             while (br.hasNext()) {
                 String strLine = br.nextLine();
                 JSONArray jsonArr = new JSONArray(strLine);
                 for (int i = 0; i < jsonArr.length(); i++) {
-                    Call call = Call.FromJson(jsonArr.getString(i));
-                    ContentValues values = new ContentValues();
-                    values.put(CallLog.Calls.NUMBER, call.getPhoneNumber());
-                    values.put(CallLog.Calls.DATE, Long.valueOf(call.getCallDate()));
-                    values.put(CallLog.Calls.DURATION, Long.valueOf(call.getCallDuration()));
-                    values.put(CallLog.Calls.TYPE, Integer.valueOf(call.getCallType()));
-                    values.put(CallLog.Calls.NEW, 1);
-                    values.put(CallLog.Calls.CACHED_NAME, "");
-                    values.put(CallLog.Calls.CACHED_NUMBER_TYPE, 0);
-                    values.put(CallLog.Calls.CACHED_NUMBER_LABEL, "");
-                    context.getContentResolver().insert(CallLog.Calls.CONTENT_URI, values);
+                    String callString = jsonArr.getString(i);
+                    //Check if call exists in current history
+                    if (!currentHistory.contains(callString)) {
+                        Call call = Call.FromJson(callString);
+                        ContentValues values = new ContentValues();
+                        values.put(CallLog.Calls.NUMBER, call.getPhoneNumber());
+                        values.put(CallLog.Calls.DATE, Long.valueOf(call.getCallDate()));
+                        values.put(CallLog.Calls.DURATION, Long.valueOf(call.getCallDuration()));
+                        values.put(CallLog.Calls.TYPE, Integer.valueOf(call.getCallType()));
+                        values.put(CallLog.Calls.NEW, 1);
+                        values.put(CallLog.Calls.CACHED_NAME, "");
+                        values.put(CallLog.Calls.CACHED_NUMBER_TYPE, 0);
+                        values.put(CallLog.Calls.CACHED_NUMBER_LABEL, "");
+                        context.getContentResolver().insert(CallLog.Calls.CONTENT_URI, values);
+                    }
+
+
+
                 }
             }
         } catch (Exception e) {

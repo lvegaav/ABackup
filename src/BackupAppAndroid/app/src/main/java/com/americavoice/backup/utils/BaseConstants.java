@@ -1,14 +1,16 @@
 package com.americavoice.backup.utils;
 
+import com.americavoice.backup.Const;
+
 /**
  * Created by angelchanquin on 8/11/17.
  */
 
 public class BaseConstants {
-    public static final String ACCOUNT_TYPE = "americavoice.backup";
-    public static final String AUTHORITY = "com.americavoice.backup";
-    public static final String FILE_PROVIDER_AUTHORITY = "com.americavoice.backup.files";
-    public static final String DATA_FOLDER = "americavoice";
+    public static final String ACCOUNT_TYPE = Const.ACCOUNT_TYPE;
+    public static final String AUTHORITY = Const.AUTHORITY;
+    public static final String FILE_PROVIDER_AUTHORITY = Const.FILE_PROVIDER_AUTHORITY;
+    public static final String DATA_FOLDER = Const.DATA_FOLDER;
     public static final String CONTACTS_BACKUP_FOLDER = "/Contacts";
     public static final String CALLS_BACKUP_FOLDER = "/Calls";
     public static final String SMS_BACKUP_FOLDER = "/Sms";

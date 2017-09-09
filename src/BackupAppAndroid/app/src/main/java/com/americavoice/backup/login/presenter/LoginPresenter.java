@@ -4,11 +4,11 @@ package com.americavoice.backup.login.presenter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.americavoice.backup.Const;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.login.model.SpinnerItem;
 import com.americavoice.backup.login.ui.LoginView;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
-import com.americavoice.backup.main.exception.DefaultErrorBundle;
 import com.americavoice.backup.main.exception.ErrorBundle;
 import com.americavoice.backup.main.exception.ErrorMessageFactory;
 import com.americavoice.backup.main.network.NetworkProvider;
@@ -92,7 +92,7 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                 Crashlytics.setString("login", phoneNumberWithCode);
                 Crashlytics.logException(ex);
                 dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
-                request.setCompanyId(NetworkProvider.COMPANY_ID);
+                request.setCompanyId(Const.COMPANY_ID);
                 request.setPhoneNumber(phoneNumberWithCode);
                 mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
                     @Override
@@ -114,7 +114,7 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                             }
                             if (webEx.getErrorCode().equals("UserNotRegister")) {
                                 dtos.CustomRegister request = new dtos.CustomRegister();
-                                request.setCompanyId(NetworkProvider.COMPANY_ID);
+                                request.setCompanyId(Const.COMPANY_ID);
                                 request.setPhoneNumber(phoneNumberWithCode);
                                 mNetworkProvider.CustomRegister(request, new AsyncResult<dtos.CustomRegisterResponse>() {
                                     @Override

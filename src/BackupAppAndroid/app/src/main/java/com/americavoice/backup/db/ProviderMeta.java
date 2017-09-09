@@ -24,6 +24,7 @@ package com.americavoice.backup.db;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
+import com.americavoice.backup.Const;
 import com.americavoice.backup.utils.BaseConstants;
 
 /**
@@ -31,7 +32,7 @@ import com.americavoice.backup.utils.BaseConstants;
  */
 public class ProviderMeta {
 
-    public static final String DB_NAME = "filelist";
+    public static final String DB_NAME = Const.COMPANY + "_filelist";
     public static final int DB_VERSION = 22;
 
     private ProviderMeta() {
