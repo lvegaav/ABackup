@@ -11,5 +11,5 @@ public class Const {
     public static final String AUTHORITY = "atel.secureip.backup";
     public static final String FILE_PROVIDER_AUTHORITY = "atel.secureip.backup.files";
     public static final String DATA_FOLDER = "atel";
-
+    public static final String ICON_URL = "http://www.atel.com.gt";
 }

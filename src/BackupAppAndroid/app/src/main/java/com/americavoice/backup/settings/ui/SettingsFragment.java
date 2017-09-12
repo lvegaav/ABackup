@@ -5,15 +5,17 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
@@ -31,17 +33,14 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -228,6 +227,10 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         this.showDialogMessage(message);
     }
 
+    @Override
+    public void showDefaultError() {
+        showToastMessage(getString(R.string.exception_message_generic));
+    }
 
     @Override
     public Context getContext() {
@@ -245,15 +248,14 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         if (this.mListener != null) this.mListener.onBackSettingsClicked();
     }
 
-    /*@OnClick(R.id.btn_logout)
+    @OnClick(R.id.tv_logout)
     public void logout(){
         Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
         AccountUtils.removeAccount(getContext(), account);
         mPresenter.logout();
-        //getActivity().finishAffinity();
-    }*/
-    private float getPercent(BigDecimal value, BigDecimal size)
-    {
+        ActivityCompat.finishAffinity(getActivity());
+    }
+    private float getPercent(BigDecimal value, BigDecimal size) {
         float x = value.floatValue() * 100;
         float x1 = x / size.floatValue();
         BigDecimal x2= new BigDecimal(x1).setScale(1,BigDecimal.ROUND_HALF_UP);
@@ -278,23 +280,19 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
         List<Integer> colors = new ArrayList<>();
 
-        if (photoPercent > 0)
-        {
+        if (photoPercent > 0) {
             entries.add(new PieEntry(photoPercent, photos));
             colors.add(Color.rgb(49, 61, 102));
         }
-        if (videoPercent > 0)
-        {
+        if (videoPercent > 0) {
             entries.add(new PieEntry(videoPercent, videos));
             colors.add(Color.rgb(72, 82, 118));
         }
-        if (contactPercent > 0)
-        {
+        if (contactPercent > 0) {
             entries.add(new PieEntry(contactPercent, contacts));
             colors.add(Color.rgb(95, 104, 136));
         }
-        if (documentPercent > 0)
-        {
+        if (documentPercent > 0) {
             entries.add(new PieEntry(documentPercent, documents));
             colors.add(Color.rgb(118, 126, 153));
         }
@@ -338,6 +336,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         //chartPie.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         chartPie.spin(2000, 0, 360, Easing.EasingOption.EaseInOutQuad);
 
+    }
+
+    @OnClick(R.id.iv_logo)
+    public void onLogo() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(com.americavoice.backup.Const.ICON_URL));
+        startActivity(browserIntent);
     }
 }
 

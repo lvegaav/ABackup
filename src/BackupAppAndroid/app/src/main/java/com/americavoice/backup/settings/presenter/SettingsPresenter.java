@@ -3,16 +3,14 @@ package com.americavoice.backup.settings.presenter;
 
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
-import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.R;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.exception.ErrorBundle;
 import com.americavoice.backup.main.exception.ErrorMessageFactory;
 import com.americavoice.backup.main.network.NetworkProvider;
-import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.settings.ui.SettingsView;
@@ -22,13 +20,9 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 
-import net.servicestack.client.AsyncResult;
-
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -93,7 +87,11 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
         HashMap<String, BigDecimal> mSizes = new HashMap<>();
         BigDecimal total = new BigDecimal(0);
         BigDecimal totalAvailable = new BigDecimal(0);
-        if (result.getData() == null) return;
+        if (result.getData() == null) {
+            mView.hideLoading();
+            mView.showDefaultError();
+            return;
+        }
         for(Object obj: result.getData()) {
             RemoteFile remoteFile = (RemoteFile) obj;
             if (remoteFile.getRemotePath().equals("/")) {

@@ -29,6 +29,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"/>
         <ImageView
+            android:id="@+id/iv_logo"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginBottom="20dp"

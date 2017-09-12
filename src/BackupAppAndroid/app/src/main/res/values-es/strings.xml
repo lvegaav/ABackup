@@ -10,6 +10,7 @@
     <string name="common.uploading">Cargando</string>
     <string name="common.downloading">Descargando</string>
     <string name="common.empty">Vacío</string>
+    <string name="common_logout">Cerrar Sesión</string>
 
     <string name="network.error_socket_exception">Un error ocurrió en la conexión con el servidor.</string>
     <string name="network.error_socket_timeout_exception">Un error ocurrió mientras esperamos al servidor. No se pudo completar la operación.</string>
