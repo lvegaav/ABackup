@@ -5,8 +5,10 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatDrawableManager;
@@ -338,6 +340,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         //chartPie.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         chartPie.spin(2000, 0, 360, Easing.EasingOption.EaseInOutQuad);
 
+    }
+
+    @OnClick(R.id.iv_logo)
+    public void onLogo() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(com.americavoice.backup.Const.ICON_URL));
+        startActivity(browserIntent);
     }
 }
 

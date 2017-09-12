@@ -4,12 +4,15 @@ package com.americavoice.backup.main.ui;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.americavoice.backup.Const;
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
@@ -181,6 +184,13 @@ public class MainFragment extends BaseFragment implements MainView {
     {
         if (mListener != null) mListener.viewSettings();
     }
+
+    @OnClick(R.id.iv_logo)
+    public void onLogo() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Const.ICON_URL));
+        startActivity(browserIntent);
+    }
+
 
     @Override
     public void showError(String message) {
