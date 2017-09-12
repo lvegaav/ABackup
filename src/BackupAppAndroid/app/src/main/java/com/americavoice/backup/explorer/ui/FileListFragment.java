@@ -48,6 +48,11 @@ import butterknife.Unbinder;
 
 
 public class FileListFragment extends BaseFragment implements FileListView {
+
+    public static final String PREFERENCE_PHOTOS_LAST_TOTAL = "PREFERENCE_PHOTOS_LAST_TOTAL";
+    public static final String PREFERENCE_VIDEOS_LAST_TOTAL = "PREFERENCE_VIDEOS_LAST_TOTAL";
+    public static final String PREFERENCE_DOCUMENTS_LAST_TOTAL = "PREFERENCE_DOCUMENTS_LAST_TOTAL";
+
     private static final String ARGUMENT_KEY_PATH = "com.americavoice.backup.ARGUMENT_KEY_PATH";
     private static final int SELECT_VIDEO = 1000;
     private static final int SELECT_PHOTO = 1001;

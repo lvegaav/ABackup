@@ -65,6 +65,7 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
 
     public static final String PREFERENCE_SMS_AUTOMATIC_BACKUP = "PREFERENCE_SMS_AUTOMATIC_BACKUP";
     public static final String PREFERENCE_SMS_LAST_BACKUP = "PREFERENCE_SMS_LAST_BACKUP";
+    public static final String PREFERENCE_SMS_LAST_TOTAL = "PREFERENCE_SMS_LAST_TOTAL";
     public static final String PREFERENCE_SMS_IS_NOT_FIRST_TIME = "PREFERENCE_SMS_IS_NOT_FIRST_TIME";
 
     private static final String KEY_CALENDAR_PICKER_OPEN = "IS_CALENDAR_PICKER_OPEN";

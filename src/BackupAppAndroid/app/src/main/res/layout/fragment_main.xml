@@ -68,12 +68,34 @@
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dashboard_icon"
-                        app:srcCompat="@drawable/ic_photos" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_photos" />
+
+                        <TextView
+                            android:id="@+id/badge_photos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textColor="#FFF"
+                            android:textSize="8sp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/badge_circle"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+
+                    </RelativeLayout>
+
 
                     <TextView
                         android:layout_width="match_parent"
@@ -91,12 +113,34 @@
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dashboard_icon"
-                        app:srcCompat="@drawable/ic_videos" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_videos" />
+
+                        <TextView
+                            android:id="@+id/badge_videos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textColor="#FFF"
+                            android:textSize="8sp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/badge_circle"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+
+
+                    </RelativeLayout>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -124,12 +168,33 @@
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dashboard_icon"
-                        app:srcCompat="@drawable/ic_contacts" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_contacts" />
+
+                        <TextView
+                            android:id="@+id/badge_contacts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textColor="#FFF"
+                            android:textSize="8sp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/badge_circle"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+
+                    </RelativeLayout>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -147,12 +212,34 @@
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dashboard_icon"
-                        app:srcCompat="@drawable/ic_documents" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_documents" />
+
+                        <TextView
+                            android:id="@+id/badge_documents"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textColor="#FFF"
+                            android:textSize="8sp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/badge_circle"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+
+
+                    </RelativeLayout>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -180,12 +267,34 @@
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dashboard_icon"
-                        app:srcCompat="@drawable/ic_sms" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_sms" />
+
+                        <TextView
+                            android:id="@+id/badge_sms"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textColor="#FFF"
+                            android:textSize="8sp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/badge_circle"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+
+
+                    </RelativeLayout>
 
                     <TextView
                         android:layout_width="match_parent"
@@ -203,12 +312,33 @@
                     android:background="@color/blackOpacity"
                     android:orientation="vertical">
 
-                    <ImageView
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="10dp"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dashboard_icon"
-                        app:srcCompat="@drawable/ic_call_log" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_call_log" />
+
+                        <TextView
+                            android:id="@+id/badge_call_log"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:padding="8dp"
+                            android:gravity="center"
+                            android:textColor="#FFF"
+                            android:textSize="8sp"
+                            android:layout_marginRight="15dp"
+                            android:background="@drawable/badge_circle"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
+
+                    </RelativeLayout>
 
                     <TextView
                         android:layout_width="match_parent"

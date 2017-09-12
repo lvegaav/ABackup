@@ -155,6 +155,13 @@ public class CallsBackupJob extends Job {
                 return;
             }
 
+
+            // store total
+            ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
+            arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                    CallsBackupFragment.PREFERENCE_CALLS_LAST_TOTAL,
+                    String.valueOf(calls.size()));
+
             String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
             Log_OC.d(TAG, "Storing: " + filename);
             File file = new File(getContext().getCacheDir(), filename);

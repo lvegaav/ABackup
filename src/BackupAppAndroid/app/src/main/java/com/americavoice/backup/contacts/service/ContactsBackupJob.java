@@ -41,6 +41,7 @@ import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.OperationsService;
+import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
@@ -123,6 +124,12 @@ public class ContactsBackupJob extends Job {
                     cursor.moveToNext();
                 }
             }
+
+            // store total
+            ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
+            arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                    ContactsBackupFragment.PREFERENCE_CONTACTS_LAST_TOTAL,
+                    String.valueOf(vCard.size()));
 
             String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".vcf";
             Log_OC.d(TAG, "Storing: " + filename);

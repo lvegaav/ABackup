@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
@@ -16,9 +17,11 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.presenter.MainPresenter;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
@@ -41,6 +44,20 @@ public class MainFragment extends BaseFragment implements MainView {
 
     @Inject
     MainPresenter mPresenter;
+
+    @BindView(R.id.badge_photos)
+    TextView tvBadgePhotos;
+    @BindView(R.id.badge_videos)
+    TextView tvBadgeVideos;
+    @BindView(R.id.badge_contacts)
+    TextView tvBadgeContacts;
+    @BindView(R.id.badge_documents)
+    TextView tvBadgeDocuments;
+    @BindView(R.id.badge_sms)
+    TextView tvBadgeSms;
+    @BindView(R.id.badge_call_log)
+    TextView tvBadgeCallLog;
+
     private Listener mListener;
     private Unbinder mUnBind;
 
@@ -105,7 +122,7 @@ public class MainFragment extends BaseFragment implements MainView {
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
-        this.mPresenter.initialize(getString(R.string.main_title));
+        this.mPresenter.initialize(getContext(), getString(R.string.main_title));
 
 
     }
@@ -201,6 +218,45 @@ public class MainFragment extends BaseFragment implements MainView {
     @Override
     public void render() {
 
+    }
+
+    @Override
+    public void setBadgePhotos(int size) {
+        setBadge(tvBadgePhotos, size);
+    }
+
+    @Override
+    public void setBadgeVideos(int size) {
+        setBadge(tvBadgeVideos, size);
+    }
+
+    @Override
+    public void setBadgeContacts(int size) {
+        setBadge(tvBadgeContacts, size);
+    }
+
+    @Override
+    public void setBadgeFiles(int size) {
+        setBadge(tvBadgeDocuments, size);
+    }
+
+    @Override
+    public void setBadgeSms(int size) {
+        setBadge(tvBadgeSms, size);
+    }
+
+    @Override
+    public void setBadgeCallLog(int size) {
+        setBadge(tvBadgeCallLog, size);
+    }
+
+    private void setBadge(TextView tv, int size)
+    {
+        if (size <= 0) return;
+        if (size > 999) size = 999;
+
+        tv.setVisibility(View.VISIBLE);
+        tv.setText(String.valueOf(size));
     }
 }
 

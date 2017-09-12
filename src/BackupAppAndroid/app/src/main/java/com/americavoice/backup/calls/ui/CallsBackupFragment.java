@@ -63,8 +63,10 @@ import butterknife.Unbinder;
 
 public class CallsBackupFragment extends BaseFragment implements CallsBackupView, DatePickerDialog.OnDateSetListener {
 
+
     public static final String PREFERENCE_CALLS_AUTOMATIC_BACKUP = "PREFERENCE_CALLS_AUTOMATIC_BACKUP";
     public static final String PREFERENCE_CALLS_LAST_BACKUP = "PREFERENCE_CALLS_LAST_BACKUP";
+    public static final String PREFERENCE_CALLS_LAST_TOTAL = "PREFERENCE_CALLS_LAST_TOTAL";
     public static final String PREFERENCE_CALLS_IS_NOT_FIRST_TIME = "PREFERENCE_CALLS_IS_NOT_FIRST_TIME";
 
     private static final String KEY_CALENDAR_PICKER_OPEN = "IS_CALENDAR_PICKER_OPEN";

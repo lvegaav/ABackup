@@ -10,7 +10,11 @@ import android.webkit.MimeTypeMap;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.calls.ui.CallsBackupFragment;
+import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.di.PerActivity;
+import com.americavoice.backup.explorer.Const;
+import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.explorer.ui.FileListView;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
@@ -178,10 +182,38 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
                 continue;
             files.add(remoteFile);
         }
+
         if (files.size() > 0) {
+            refreshTotal(files.size());
             mView.renderList(files);
         } else {
             mView.renderEmpty();
+        }
+    }
+
+    private void refreshTotal(int size)
+    {
+        // store total
+        final Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(mContext.getContentResolver());
+        switch (mPath) {
+            case Const.Documents:
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL,
+                        String.valueOf(size));
+                break;
+            case Const.Photos:
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL,
+                        String.valueOf(size));
+                break;
+            case Const.Videos:
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL,
+                        String.valueOf(size));
+                break;
+            default:
+                break;
         }
     }
 }

@@ -38,6 +38,7 @@ import android.support.v4.app.ActivityCompat;
 import android.text.format.DateFormat;
 
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
@@ -156,6 +157,11 @@ public class SmsBackupJob extends Job {
                 }
                 c.close();
 
+                // store total
+                ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        SmsBackupFragment.PREFERENCE_SMS_LAST_TOTAL,
+                        String.valueOf(smsList.size()));
 
                 String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
                 Log_OC.d(TAG, "Storing: " + filename);

@@ -25,6 +25,7 @@ import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.CallLog;
@@ -42,7 +43,9 @@ import org.json.JSONArray;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.TimeZone;
@@ -66,36 +69,49 @@ public class SmsImportJob extends Job {
             return Result.FAILURE;
         }
         try {
+            //Current history
+            List<String> currentHistory = new ArrayList<>();
+            Uri message = Uri.parse("content://sms/");
+            Cursor c = getContext().getContentResolver().query(message, null, null, null, null);
+            if (c != null) {
+                int totalSMS = c.getCount();
+
+                if (c.moveToFirst()) {
+                    for (int i = 0; i < totalSMS; i++) {
+
+                        Sms objSms = new Sms();
+                        objSms.setAddress(c.getString(c
+                                .getColumnIndexOrThrow("address")));
+                        objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
+                        objSms.setReadState(c.getString(c.getColumnIndex("read")));
+                        objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
+                        if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
+                            objSms.setFolderName("inbox");
+                        } else {
+                            objSms.setFolderName("sent");
+                        }
+
+                        currentHistory.add(objSms.toJson());
+                        c.moveToNext();
+                    }
+                } else {
+                    c.close();
+                    Log_OC.d(TAG, "You have no SMS");
+                }
+                c.close();
+            }
+
             FileInputStream in = new FileInputStream(callFilePath);
             Scanner br = new Scanner(new InputStreamReader(in));
             while (br.hasNext()) {
                 String strLine = br.nextLine();
                 JSONArray jsonArr = new JSONArray(strLine);
                 for (int i = 0; i < jsonArr.length(); i++) {
-                    Sms sms = Sms.fromJson(jsonArr.getString(i));
-                    ContentValues initialValues = new ContentValues();
-
-                    long millis = Long.parseLong(sms.getTime()) * 1000;
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-                    sdf.setTimeZone(TimeZone.getDefault());
-                    String date = sdf.format(new Date(millis));
-
-                    initialValues.put("address", sms.getAddress());
-                    initialValues.put("body", sms.getMsg());
-                    initialValues.put("read", sms.getReadState());
-                    initialValues.put("date", date);
-
-                    String folderName = sms.getFolderName();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        Uri uri = Telephony.Sms.Sent.CONTENT_URI;
-                        if(folderName.equals("inbox")){
-                            uri = Telephony.Sms.Inbox.CONTENT_URI;
-                        }
-                        getContext().getContentResolver().insert(uri, initialValues);
-                    }
-                    else {
-                        /* folderName  could be inbox or sent */
-                        getContext().getContentResolver().insert(Uri.parse("content://sms/" + folderName), initialValues);
+                    String smsString = jsonArr.getString(i);
+                    //Check if call exists in current history
+                    if (!currentHistory.contains(smsString)) {
+                        Sms sms = Sms.fromJson(smsString);
+                        saveSms(sms);
                     }
                 }
             }
@@ -104,5 +120,40 @@ public class SmsImportJob extends Job {
         }
 
         return Result.SUCCESS;
+    }
+
+    public boolean saveSms(Sms sms) {
+        boolean ret = false;
+        try {
+            long millis = Long.parseLong(sms.getTime()) * 1000;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+            sdf.setTimeZone(TimeZone.getDefault());
+            String date = sdf.format(new Date(millis));
+            String folderName = sms.getFolderName();
+
+            ContentValues initialValues = new ContentValues();
+            initialValues.put("address", sms.getAddress());
+            initialValues.put("body", sms.getMsg());
+            initialValues.put("read", sms.getReadState());
+            initialValues.put("date", date);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                Uri uri = Telephony.Sms.Sent.CONTENT_URI;
+                if(folderName.equals("inbox")){
+                    uri = Telephony.Sms.Inbox.CONTENT_URI;
+                }
+                getContext().getContentResolver().insert(uri, initialValues);
+            }
+            else {
+                /* folderName  could be inbox or sent */
+                getContext().getContentResolver().insert(Uri.parse("content://sms/" + folderName), initialValues);
+            }
+
+            ret = true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            ret = false;
+        }
+        return ret;
     }
 }
