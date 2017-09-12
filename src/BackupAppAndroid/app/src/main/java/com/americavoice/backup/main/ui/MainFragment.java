@@ -126,8 +126,6 @@ public class MainFragment extends BaseFragment implements MainView {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
         this.mPresenter.initialize(getContext(), getString(R.string.main_title));
-
-
     }
 
     @Override
@@ -260,8 +258,7 @@ public class MainFragment extends BaseFragment implements MainView {
         setBadge(tvBadgeCallLog, size);
     }
 
-    private void setBadge(TextView tv, int size)
-    {
+    private void setBadge(TextView tv, int size) {
         if (size <= 0) return;
         if (size > 999) size = 999;
 

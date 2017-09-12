@@ -44,6 +44,7 @@ public class MainPresenter extends BasePresenter implements IPresenter {
 
     @Override
     public void resume() {
+        initBadges();
     }
 
     @Override
@@ -60,7 +61,9 @@ public class MainPresenter extends BasePresenter implements IPresenter {
     public void initialize(Context context, String title) {
         mView.setTitle(title);
         mContext = context;
+    }
 
+    public void initBadges() {
         Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(mContext.getContentResolver());
 
