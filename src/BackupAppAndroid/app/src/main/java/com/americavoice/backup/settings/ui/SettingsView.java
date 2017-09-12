@@ -10,4 +10,5 @@ import java.util.HashMap;
  */
 public interface SettingsView extends ILoadDataView {
     void showPercent(HashMap<String, BigDecimal> sizes, BigDecimal total, BigDecimal totalAvailable);
+    void showDefaultError();
 }
