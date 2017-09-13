@@ -12,8 +12,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
+import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.status.OCCapability;
@@ -118,6 +120,8 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
         boolean validAccount = (account != null && AccountUtils.setCurrentOwnCloudAccount(getApplicationContext(), account.name));
         if (validAccount) {
             ContactsBackupFragment.startContactBackupJob(account);
+            CallsBackupFragment.startCallBackupJob(account);
+            SmsBackupFragment.startSmsBackupJob(account);
             mCurrentAccount = account;
             mAccountWasSet = true;
             mAccountWasRestored = (savedAccount || mCurrentAccount.equals(oldAccount));
