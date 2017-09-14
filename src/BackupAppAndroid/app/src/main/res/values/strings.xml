@@ -8,6 +8,7 @@
     <string name="common.getting_server_info">Getting server information</string>
     <string name="common.uploading">Uploading</string>
     <string name="common.downloading">Downloading</string>
+    <string name="common.download">Download</string>
     <string name="common.empty">Empty</string>
     <string name="common.wrong_credentials">Check credentials, please try again</string>
     <string name="common.account_error">Couldn\'t create the account, please try again</string>

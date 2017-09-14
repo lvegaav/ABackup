@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
+import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.datamodel.ThumbnailsCacheManager;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.utils.DisplayUtils;
@@ -25,6 +27,7 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import butterknife.BindView;
@@ -35,34 +38,43 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
     private FileDataStorageManager mStorageManager;
 
     public interface OnItemClickListener {
-        void onItemClicked(RemoteFile file);
+        void onItemClicked(OCFile file);
     }
 
-    private List<RemoteFile> mCollection;
+    private List<OCFile> mCollection;
+    private List<OCFile> mSelectedCollection;
     private final LayoutInflater mLayoutInflater;
     private OnItemClickListener mOnItemClickListener;
     private Context mContext;
     private Account mAccount;
 
-    public FileAdapter(Context context, Collection<RemoteFile> collection, FileDataStorageManager fileDataStorageManager) {
+    public FileAdapter(Context context, Collection<OCFile> collection,Collection<OCFile> selectedCollection, FileDataStorageManager fileDataStorageManager) {
         this.validateTransactionCollection(collection);
         this.mLayoutInflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.mCollection = (List<RemoteFile>) collection;
+        this.mCollection = (List<OCFile>) collection;
+        this.mSelectedCollection= (List<OCFile>) selectedCollection;
+
         this.mContext = context;
         this.mStorageManager = fileDataStorageManager;
         mAccount = AccountUtils.getCurrentOwnCloudAccount(mContext);
     }
 
+    public void refresh(List<OCFile> selectedCollection)
+    {
+        mSelectedCollection = selectedCollection;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getItemViewType(int position) {
-        RemoteFile file = null;
+        OCFile file = null;
         int viewType;
         if (mCollection != null && mCollection.size() > position) {
             file = mCollection.get(position);
         }
 
-        if (file != null && (MimeTypeUtil.isImage(file.getMimeType()) || MimeTypeUtil.isVideo(file.getMimeType()))) {
+        if (file != null &&  (MimeTypeUtil.isImage(file.getMimetype()) || MimeTypeUtil.isVideo(file.getMimetype()))) {
             viewType = ViewType.GRID_IMAGE;
         } else {
             viewType = ViewType.LIST_ITEM;
@@ -90,25 +102,25 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
 
     @Override
     public void onBindViewHolder(TransactionViewHolder holder, final int position) {
-        final RemoteFile model = this.mCollection.get(position);
-
-        File downFile = new File(mContext.getExternalCacheDir(), mContext.getString(R.string.files_download_folder_path) + "/" + model.getRemotePath());
-        boolean fileIsOnCache =  downFile.exists();
+        final OCFile model = this.mCollection.get(position);
 
         holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().lastIndexOf('/') + 1));
         holder.ivIcon.setTag(model.getRemoteId());
         // If ListView
         if (getItemViewType(position) == ViewType.LIST_ITEM) {
-            holder.tvFileSize.setText(DisplayUtils.bytesToHumanReadable(model.getLength()));
-            holder.tvLastMod.setText(DisplayUtils.getRelativeTimestamp(mContext, model.getModifiedTimestamp()));
+            holder.tvFileSize.setText(DisplayUtils.bytesToHumanReadable(model.getFileLength()));
+            holder.tvLastMod.setText(DisplayUtils.getRelativeTimestamp(mContext, model.getModificationTimestamp()));
         }
 
-        if (fileIsOnCache) {
+        if (model.isDown()) {
             holder.ivLocalFileIndicator.setImageResource(R.drawable.ic_synced);
             holder.ivLocalFileIndicator.setVisibility(View.VISIBLE);
+        } else
+        {
+            holder.ivLocalFileIndicator.setVisibility(View.GONE);
         }
 
-        if (model.getMimeType().equals("DIR")) {
+        if (model.isFolder()) {
             holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().substring(0, model.getRemotePath().length() -1).lastIndexOf('/') + 1));
             holder.ivIcon.setImageResource(
                     MimeTypeUtil.getFolderTypeIconId());
@@ -116,7 +128,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
             // Thumbnail in Cache?
             Bitmap thumbnail = ThumbnailsCacheManager.getBitmapFromDiskCache(model.getRemoteId());
             if (thumbnail != null) {
-                if (MimeTypeUtil.isVideo(model.getMimeType())) {
+                if (MimeTypeUtil.isVideo(model.getMimetype())) {
                     Bitmap withOverlay = ThumbnailsCacheManager.addVideoOverlay(thumbnail);
                     holder.ivIcon.setImageBitmap(withOverlay);
                 } else {
@@ -131,7 +143,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
                                         holder.ivIcon, mStorageManager, mAccount
                                 );
 
-                        if (MimeTypeUtil.isVideo(model.getMimeType())) {
+                        if (MimeTypeUtil.isVideo(model.getMimetype())) {
                             thumbnail = ThumbnailsCacheManager.mDefaultVideo;
                         } else {
                             thumbnail = ThumbnailsCacheManager.mDefaultImg;
@@ -151,15 +163,31 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
                 }
             }
 
-            if (model.getMimeType().equalsIgnoreCase("image/png")) {
+            if (model.getMimetype().equalsIgnoreCase("image/png")) {
                 holder.ivIcon.setBackgroundColor(mContext.getResources()
                         .getColor(R.color.white));
             }
 
         } else {
-            Drawable drawable = MimeTypeUtil.getFileTypeIcon(model.getMimeType(), model.getRemotePath(), mAccount);
+            Drawable drawable = MimeTypeUtil.getFileTypeIcon(model.getMimetype(), model.getRemotePath(), mAccount);
             holder.ivIcon.setImageDrawable(drawable);
         }
+        holder.ivCheckBox.setVisibility(View.GONE);
+        if (mSelectedCollection.size() > 0)
+        {
+            if (mSelectedCollection.contains(model)){
+                holder.view.setBackgroundColor(mContext.getResources().getColor(
+                        R.color.selected_item_background));
+                holder.ivCheckBox.setImageResource(
+                        R.drawable.ic_checkbox_marked);
+            } else {
+                holder.view.setBackgroundColor(Color.WHITE);
+                holder.ivCheckBox.setImageResource(
+                        R.drawable.ic_checkbox_blank_outline);
+            }
+            holder.ivCheckBox.setVisibility(View.VISIBLE);
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -175,21 +203,58 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         return position;
     }
 
-    public void setTransactionCollection(Collection<RemoteFile> collection) {
+    public List<OCFile> getCollection()
+    {
+        return mCollection;
+    }
+
+    public List<OCFile> getSelectedCollection()
+    {
+        return mSelectedCollection;
+    }
+
+    public OCFile getSelectedItem(int position)
+    {
+        if (position < mSelectedCollection.size())
+        {
+            mSelectedCollection.get(position);
+        }
+        return  null;
+
+    }
+
+    public void setTransactionCollection(Collection<OCFile> collection) {
         this.validateTransactionCollection(collection);
         if (this.mCollection == null) {
-            this.mCollection = (List<RemoteFile>) collection;
+            this.mCollection = (List<OCFile>) collection;
         } else {
             this.mCollection.addAll(collection);
         }
         this.notifyDataSetChanged();
     }
+    public void resetSelectedCollection() {
+        this.mSelectedCollection = new ArrayList<>();
+        this.notifyDataSetChanged();
+    }
+    public void addOrRemoveSelectedItem(int position) {
+        if (this.mSelectedCollection == null) {
+            this.mSelectedCollection = new ArrayList<>();
+        }
+
+        if (mSelectedCollection.contains(mCollection.get(position)))
+            mSelectedCollection.remove(mCollection.get(position));
+        else
+            mSelectedCollection.add(mCollection.get(position));
+
+        this.notifyDataSetChanged();
+    }
+
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;
     }
 
-    private void validateTransactionCollection(Collection<RemoteFile> collection) {
+    private void validateTransactionCollection(Collection<OCFile> collection) {
         if (collection == null) {
             throw new IllegalArgumentException("The list cannot be null");
         }
@@ -213,6 +278,10 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         TextView tvLastMod;
         @BindView(R.id.iv_local_file_indicator)
         ImageView ivLocalFileIndicator;
+        @BindView(R.id.custom_checkbox)
+        ImageView ivCheckBox;
+        @BindView(R.id.ListItemLayout)
+        View view;
 
         public TransactionViewHolder(View itemView) {
             super(itemView);

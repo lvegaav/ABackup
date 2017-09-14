@@ -1,22 +1,34 @@
 
 package com.americavoice.backup.explorer.ui;
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.calls.service.CallsBackupJob;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.explorer.Const;
@@ -32,6 +44,13 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.main.ui.activity.FileActivity;
+import com.americavoice.backup.service.OperationsService;
+import com.americavoice.backup.utils.FileStorageUtils;
+import com.americavoice.backup.utils.RecyclerItemClickListener;
+import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
+import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -66,8 +85,10 @@ public class FileListFragment extends BaseFragment implements FileListView {
      * Interface for listening file list events.
      */
     public interface Listener {
-        void onFileClicked(final RemoteFile remoteFile);
+        void onFileClicked(final OCFile remoteFile);
         void onFolderClicked(final String path);
+        ActionMode startActivityActionMode(ActionMode.Callback actionMode);
+        void finishActivityActionMode();
     }
 
     @Inject
@@ -81,7 +102,14 @@ public class FileListFragment extends BaseFragment implements FileListView {
     RelativeLayout rlRetry;
     @BindView(R.id.tv_empty)
     TextView tvEmpty;
+    @BindView(R.id.fab_upload)
+    FloatingActionButton fabUpload;
 
+    private BaseOwncloudActivity mContainerActivity;
+    private FileListFragment.OperationsServiceConnection operationsServiceConnection;
+    private OperationsService.OperationsServiceBinder operationsServiceBinder;
+    private ActionMode mActionMode;
+    boolean isMultiSelect = false;
     private FileAdapter mAdapter;
     private Unbinder mUnBind;
     private Listener mListener;
@@ -120,6 +148,8 @@ public class FileListFragment extends BaseFragment implements FileListView {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         showKeyboard(false);
+        if (getActivity() instanceof BaseOwncloudActivity)
+            mContainerActivity = ((BaseOwncloudActivity) getActivity());
         this.initialize();
         this.loadList();
     }
@@ -186,6 +216,35 @@ public class FileListFragment extends BaseFragment implements FileListView {
                     break;
             }
         }
+        rvFiles.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), rvFiles, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (isMultiSelect)
+                    multiSelect(position);
+                else {
+                    OCFile file = mAdapter.getCollection().get(position);
+                    if (FileListFragment.this.mPresenter != null && file != null) {
+                        //Download file
+                        FileListFragment.this.mPresenter.onFileClicked(getContext(), mAdapter.getCollection().get(position));
+                    }
+                }
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                if (!isMultiSelect) {
+                    mAdapter.resetSelectedCollection();
+                    isMultiSelect = true;
+
+                    if (mActionMode == null) {
+                        mActionMode = mListener.startActivityActionMode(mActionModeCallback);
+                    }
+                }
+
+                multiSelect(position);
+
+            }
+        }));
     }
 
     @Override
@@ -217,15 +276,15 @@ public class FileListFragment extends BaseFragment implements FileListView {
     }
 
     @Override
-    public void renderList(List<RemoteFile> transactionModelCollection) {
+    public void renderList(List<OCFile> transactionModelCollection) {
         if (rvFiles != null) {
             if (tvEmpty != null) tvEmpty.setVisibility(View.GONE);
             this.mAdapter = new FileAdapter(
                     getContext(),
-                    new ArrayList<RemoteFile>(),
+                    new ArrayList<OCFile>(),
+                    new ArrayList<OCFile>(),
                     ((BaseOwncloudActivity) getActivity()).getStorageManager()
             );
-            this.mAdapter.setOnItemClickListener(onItemClickListener);
             this.rvFiles.setAdapter(mAdapter);
             if (transactionModelCollection != null) {
                 this.mAdapter.setTransactionCollection(transactionModelCollection);
@@ -235,7 +294,16 @@ public class FileListFragment extends BaseFragment implements FileListView {
     }
 
     @Override
-    public void viewDetail(RemoteFile transactionModel) {
+    public void downloadFile(OCFile file) {
+        List<OCFile> files = new ArrayList<>();
+        files.add(file);
+        operationsServiceConnection = new FileListFragment.OperationsServiceConnection(files);
+        getContext().bindService(new Intent(getContext(), OperationsService.class), operationsServiceConnection,
+                OperationsService.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void viewDetail(OCFile transactionModel) {
         if (this.mListener != null) {
             this.mListener.onFileClicked(transactionModel);
         }
@@ -318,7 +386,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
             default:
                 break;
         }
-        if (mPresenter != null ) this.mPresenter.initialize(getContext(), mPath);
+        if (mPresenter != null ) this.mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
     }
 
     @OnClick(R.id.bt_retry)
@@ -362,18 +430,6 @@ public class FileListFragment extends BaseFragment implements FileListView {
                 if (mPresenter != null) mPresenter.onFileUpload(selectedPath);
         }
     }
-
-    private FileAdapter.OnItemClickListener onItemClickListener =
-            new FileAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClicked(RemoteFile file) {
-                    if (FileListFragment.this.mPresenter != null && file != null) {
-                        FileListFragment.this.mPresenter.onFileClicked(getContext(), file);
-                    }
-                }
-            };
-
-
 
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
@@ -420,15 +476,119 @@ public class FileListFragment extends BaseFragment implements FileListView {
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-
-                String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
-                //TODO: openFile.
-
+                if (mPresenter != null ) mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
             } finally {
                 if (intent != null) {
                     getContext().removeStickyBroadcast(intent);
                 }
             }
+        }
+    }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.menu_multi_select, menu);
+            //context_menu = menu;
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+
+                case R.id.action_download:
+                    // bind to Operations Service
+                    operationsServiceConnection = new FileListFragment.OperationsServiceConnection(mAdapter.getSelectedCollection());
+                    getContext().bindService(new Intent(getContext(), OperationsService.class), operationsServiceConnection,
+                            OperationsService.BIND_AUTO_CREATE);
+
+                    if (mActionMode != null) {
+                        mActionMode.finish();
+                    }
+
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mAdapter.resetSelectedCollection();
+            isMultiSelect = false;
+            mActionMode = null;
+            mListener.finishActivityActionMode();
+        }
+    };
+
+
+    public void multiSelect(int position) {
+        if (mActionMode != null) {
+            mAdapter.addOrRemoveSelectedItem(position);
+
+            if (mAdapter.getSelectedCollection().size() > 0)
+                mActionMode.setTitle("" + mAdapter.getSelectedCollection().size());
+            else
+                mActionMode.setTitle("");
+        }
+    }
+
+    /**
+     * Implements callback methods for service binding.
+     */
+    private class OperationsServiceConnection implements ServiceConnection {
+
+        List<OCFile> mFiles = null;
+        OperationsServiceConnection(List<OCFile> files) {
+            mFiles = files;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName component, IBinder service) {
+            if (component.equals(new ComponentName(getContext(), OperationsService.class))) {
+                operationsServiceBinder = (OperationsService.OperationsServiceBinder) service;
+                Account account = mContainerActivity.getAccount();
+                for (OCFile file : mFiles)
+                {
+                    download(file, account);
+
+                }
+                getContext().unbindService(operationsServiceConnection);
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName component) {
+            if (component.equals(new ComponentName(getContext(), OperationsService.class))) {
+                operationsServiceBinder = null;
+            }
+        }
+    }
+
+    private void download(OCFile file, Account account)
+    {
+        if (!file.isFolder()) {
+            Intent intent = new Intent(getContext(), OperationsService.class);
+            intent.setAction(OperationsService.ACTION_SYNC_FILE);
+            intent.putExtra(OperationsService.EXTRA_ACCOUNT, account);
+            intent.putExtra(OperationsService.EXTRA_REMOTE_PATH, file.getRemotePath());
+            intent.putExtra(OperationsService.EXTRA_SYNC_FILE_CONTENTS, true);
+            operationsServiceBinder.queueNewOperation(intent);
+        } else {
+            Intent intent = new Intent(getContext(), OperationsService.class);
+            intent.setAction(OperationsService.ACTION_SYNC_FOLDER);
+            intent.putExtra(OperationsService.EXTRA_ACCOUNT, account);
+            intent.putExtra(OperationsService.EXTRA_REMOTE_PATH, file.getRemotePath());
+            getContext().startService(intent);
         }
     }
 }

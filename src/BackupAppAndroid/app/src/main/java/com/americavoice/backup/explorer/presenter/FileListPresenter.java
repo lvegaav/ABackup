@@ -12,6 +12,8 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
+import com.americavoice.backup.datamodel.FileDataStorageManager;
+import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.explorer.ui.FileListFragment;
@@ -24,9 +26,11 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.operations.UploadFileOperation;
+import com.americavoice.backup.utils.FileStorageUtils;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.DownloadRemoteFileOperation;
 import com.owncloud.android.lib.resources.files.FileUtils;
 import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
@@ -47,15 +51,18 @@ import javax.inject.Inject;
 @PerActivity
 public class FileListPresenter extends BasePresenter implements IPresenter, OnRemoteOperationListener {
 
+    private FileDataStorageManager mStorageManager;
+    private Account mAccount;
     private FileListView mView;
     private Handler mHandler;
     private String mPath;
-    private RemoteFile mRemoteFile;
+    private OCFile mRemoteFile;
     private Context mContext;
 
     @Inject
     public FileListPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
+
     }
 
     public void setView(@NonNull FileListView view) {
@@ -106,36 +113,31 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     /**
      * Initializes the presenter
      */
-    public void initialize(Context context, String path) {
+    public void initialize(Context context, String path, Account account) {
         mContext = context;
         mPath = path;
         mHandler = new Handler();
         mView.showLoading();
+        mAccount = account;
+        mStorageManager = new FileDataStorageManager(account, context);
+
         ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(path);
         refreshOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
     }
 
-    public void onFileClicked(Context context, RemoteFile remoteFile) {
+    public void onFileClicked(Context context, OCFile remoteFile) {
         if (mRemoteFile != null) return;
 
-        if ("DIR".equals(remoteFile.getMimeType())) {
+        if (remoteFile.isFolder()) {
             mView.viewFolder(remoteFile.getRemotePath());
         } else {
             //Check cache
-            File downFile = new File(context.getExternalCacheDir(), context.getString(R.string.files_download_folder_path) + "/" + remoteFile.getRemotePath());
-            if (downFile.exists()) {
+            if (remoteFile.isDown()) {
                 mView.viewDetail(remoteFile);
                 return;
             }
 
-            mRemoteFile = remoteFile;
-            mView.showDownloading();
-            File downFolder = new File(context.getExternalCacheDir(), context.getString(R.string.files_download_folder_path));
-            if (!downFolder.exists()) {
-                downFolder.mkdir();
-            }
-            DownloadRemoteFileOperation downloadOperation = new DownloadRemoteFileOperation(remoteFile.getRemotePath(), downFolder.getAbsolutePath());
-            downloadOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+            mView.downloadFile(remoteFile);
         }
     }
 
@@ -165,7 +167,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     private void onSuccessfulUpload(UploadRemoteFileOperation operation, RemoteOperationResult result) {
         mView.hideLoading();
         mView.hideDLoading();
-        initialize(mContext, mPath);
+        initialize(mContext, mPath, mAccount);
     }
 
     private void onSuccessfulDownload(DownloadRemoteFileOperation operation, RemoteOperationResult result) {
@@ -175,20 +177,36 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     }
 
     private void onSuccessfulRefresh(ReadRemoteFolderOperation operation, RemoteOperationResult result) {
-        List<RemoteFile> files = new ArrayList<>();
-        for(Object obj: result.getData()) {
-            RemoteFile remoteFile = (RemoteFile) obj;
-            if (mPath.equals(remoteFile.getRemotePath()))
-                continue;
-            files.add(remoteFile);
-        }
+        if (result.isSuccess()) {
+            List<OCFile> files = new ArrayList<>();
+            for(Object obj: result.getData()) {
+                RemoteFile remoteFile = (RemoteFile) obj;
+                OCFile file = mStorageManager.getFileByPath(remoteFile.getRemotePath());
+                if (file == null)
+                {
+                    file = FileStorageUtils.fillOCFile(remoteFile);
+                    mStorageManager.saveFile(file);
+                }
+                if (mPath.equals(remoteFile.getRemotePath()))
+                    continue;
+                files.add(file);
+            }
 
-        if (files.size() > 0) {
-            refreshTotal(files.size());
-            mView.renderList(files);
+            if (files.size() > 0) {
+                refreshTotal(files.size());
+                mView.renderList(files);
+            } else {
+                mView.renderEmpty();
+            }
+
+
+
         } else {
             mView.renderEmpty();
         }
+
+
+
     }
 
     private void refreshTotal(int size)

@@ -12,11 +12,13 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.ActionMode;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
@@ -148,9 +150,10 @@ public class FileListActivity extends FileActivity implements HasComponent<AppCo
     }
 
     @Override
-    public void onFileClicked(RemoteFile remoteFile) {
+    public void onFileClicked(OCFile remoteFile) {
         //File downFolder = new File(getExternalCacheDir(), getString(R.string.download_folder_path) + "/" + mTempRemoteFile.getRemotePath().substring(0, mTempRemoteFile.getRemotePath().lastIndexOf('/') - 1));
-        File downFolder = new File(getExternalCacheDir(), getString(R.string.files_download_folder_path) + "/" + remoteFile.getRemotePath());
+        File downFolder = new File(remoteFile.getStoragePath());
+
         //Get file extension and mime type
         Uri selectedUri = Uri.fromFile(downFolder.getAbsoluteFile());
         String fileExtension =  MimeTypeMap.getFileExtensionFromUrl(selectedUri.toString());
@@ -170,6 +173,17 @@ public class FileListActivity extends FileActivity implements HasComponent<AppCo
         }
     }
 
+    @Override
+    public ActionMode startActivityActionMode(ActionMode.Callback actionMode) {
+        mToolbar.setVisibility(View.GONE);
+        return startActionMode(actionMode);
+    }
+
+    @Override
+    public void finishActivityActionMode()
+    {
+        mToolbar.setVisibility(View.VISIBLE);
+    }
     @Override
     public void onBackPressed() {
         EventBus.getDefault().post(new OnBackPress());

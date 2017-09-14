@@ -184,7 +184,7 @@ public class SynchronizeFileOperation extends SyncOperation {
             mLocalFile = getStorageManager().getFileByPath(mRemotePath);
         }
 
-        if (!mLocalFile.isDown()) {
+        if (mLocalFile != null && !mLocalFile.isDown()) {
             /// easy decision
             requestForDownload(mLocalFile);
             result = new RemoteOperationResult(ResultCode.OK);
