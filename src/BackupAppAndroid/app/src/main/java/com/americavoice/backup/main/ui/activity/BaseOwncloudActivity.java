@@ -6,8 +6,10 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.accounts.OperationCanceledException;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 
@@ -15,6 +17,7 @@ import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
+import com.americavoice.backup.service.PhotosContentJob;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -115,6 +118,7 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
      * @param account      New {@link Account} to set.
      * @param savedAccount When 'true', account was retrieved from a saved instance state.
      */
+
     protected void setAccount(Account account, boolean savedAccount) {
         Account oldAccount = mCurrentAccount;
         boolean validAccount = (account != null && AccountUtils.setCurrentOwnCloudAccount(getApplicationContext(), account.name));
@@ -122,6 +126,9 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
             ContactsBackupFragment.startContactBackupJob(account);
             CallsBackupFragment.startCallBackupJob(account);
             SmsBackupFragment.startSmsBackupJob(account);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                schedulePhotos();
+            }
             mCurrentAccount = account;
             mAccountWasSet = true;
             mAccountWasRestored = (savedAccount || mCurrentAccount.equals(oldAccount));
@@ -129,6 +136,10 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
         } else {
             swapToDefaultAccount();
         }
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    protected void schedulePhotos() {
+        PhotosContentJob.scheduleJob(this);
     }
 
     /**
