@@ -44,6 +44,7 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.main.ui.activity.FileActivity;
+import com.americavoice.backup.operations.RemoveFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.FileStorageUtils;
 import com.americavoice.backup.utils.RecyclerItemClickListener;
@@ -52,6 +53,7 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.RemoteFile;
+import com.owncloud.android.lib.resources.files.RemoveRemoteFileOperation;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -66,7 +68,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 
-public class FileListFragment extends BaseFragment implements FileListView {
+public class FileListFragment extends BaseFragment implements FileListView, OnRemoteOperationListener {
 
     public static final String PREFERENCE_PHOTOS_LAST_TOTAL = "PREFERENCE_PHOTOS_LAST_TOTAL";
     public static final String PREFERENCE_VIDEOS_LAST_TOTAL = "PREFERENCE_VIDEOS_LAST_TOTAL";
@@ -80,6 +82,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
 
     private UploadFinishReceiver mUploadFinishReceiver;
     private DownloadFinishReceiver mDownloadFinishReceiver;
+
 
     /**
      * Interface for listening file list events.
@@ -105,6 +108,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
     @BindView(R.id.fab_upload)
     FloatingActionButton fabUpload;
 
+    private Handler mHandler;
     private BaseOwncloudActivity mContainerActivity;
     private FileListFragment.OperationsServiceConnection operationsServiceConnection;
     private OperationsService.OperationsServiceBinder operationsServiceBinder;
@@ -147,6 +151,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mHandler = new Handler();
         showKeyboard(false);
         if (getActivity() instanceof BaseOwncloudActivity)
             mContainerActivity = ((BaseOwncloudActivity) getActivity());
@@ -179,6 +184,9 @@ public class FileListFragment extends BaseFragment implements FileListView {
         if (mDownloadFinishReceiver != null) {
             getContext().unregisterReceiver(mDownloadFinishReceiver);
             mDownloadFinishReceiver = null;
+        }
+        if (operationsServiceBinder != null) {
+            operationsServiceBinder.removeOperationListener(this);
         }
         super.onPause();
         this.mPresenter.pause();
@@ -297,7 +305,7 @@ public class FileListFragment extends BaseFragment implements FileListView {
     public void downloadFile(OCFile file) {
         List<OCFile> files = new ArrayList<>();
         files.add(file);
-        operationsServiceConnection = new FileListFragment.OperationsServiceConnection(files);
+        operationsServiceConnection = new FileListFragment.OperationsServiceConnection(files, R.id.action_download);
         getContext().bindService(new Intent(getContext(), OperationsService.class), operationsServiceConnection,
                 OperationsService.BIND_AUTO_CREATE);
     }
@@ -504,10 +512,10 @@ public class FileListFragment extends BaseFragment implements FileListView {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
-
+                case R.id.action_delete:
                 case R.id.action_download:
                     // bind to Operations Service
-                    operationsServiceConnection = new FileListFragment.OperationsServiceConnection(mAdapter.getSelectedCollection());
+                    operationsServiceConnection = new FileListFragment.OperationsServiceConnection(mAdapter.getSelectedCollection(), item.getItemId());
                     getContext().bindService(new Intent(getContext(), OperationsService.class), operationsServiceConnection,
                             OperationsService.BIND_AUTO_CREATE);
 
@@ -546,20 +554,30 @@ public class FileListFragment extends BaseFragment implements FileListView {
      * Implements callback methods for service binding.
      */
     private class OperationsServiceConnection implements ServiceConnection {
-
+        int mAction = 0;
         List<OCFile> mFiles = null;
-        OperationsServiceConnection(List<OCFile> files) {
+
+        OperationsServiceConnection(List<OCFile> files, int action) {
             mFiles = files;
+            mAction = action;
         }
 
         @Override
         public void onServiceConnected(ComponentName component, IBinder service) {
             if (component.equals(new ComponentName(getContext(), OperationsService.class))) {
                 operationsServiceBinder = (OperationsService.OperationsServiceBinder) service;
+                operationsServiceBinder.addOperationListener(FileListFragment.this, mHandler);
                 Account account = mContainerActivity.getAccount();
                 for (OCFile file : mFiles)
                 {
-                    download(file, account);
+                    switch (mAction)
+                    {
+                        case R.id.action_delete:
+                            delete(file, account);
+                        case R.id.action_download:
+                            download(file, account);
+                    }
+
 
                 }
                 getContext().unbindService(operationsServiceConnection);
@@ -574,6 +592,17 @@ public class FileListFragment extends BaseFragment implements FileListView {
         }
     }
 
+    private void delete(OCFile file, Account account)
+    {
+        Intent service = new Intent(getContext(), OperationsService.class);
+        service.setAction(OperationsService.ACTION_REMOVE);
+        service.putExtra(OperationsService.EXTRA_ACCOUNT, account);
+        service.putExtra(OperationsService.EXTRA_REMOTE_PATH, file.getRemotePath());
+        service.putExtra(OperationsService.EXTRA_REMOVE_ONLY_LOCAL, false);
+        operationsServiceBinder.queueNewOperation(service);
+        //Remove
+        mAdapter.removeItem(file);
+    }
     private void download(OCFile file, Account account)
     {
         if (!file.isFolder()) {
@@ -591,5 +620,10 @@ public class FileListFragment extends BaseFragment implements FileListView {
             getContext().startService(intent);
         }
     }
+
+    @Override
+    public void onRemoteOperationFinish(RemoteOperation remoteOperation, RemoteOperationResult remoteOperationResult) {
+    }
+
 }
 

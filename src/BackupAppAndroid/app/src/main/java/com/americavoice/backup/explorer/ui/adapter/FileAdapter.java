@@ -249,6 +249,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         this.notifyDataSetChanged();
     }
 
+    public void removeItem(OCFile file)
+    {
+        mCollection.remove(file);
+        this.notifyDataSetChanged();
+    }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.mOnItemClickListener = onItemClickListener;

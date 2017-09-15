@@ -10,6 +10,7 @@
     <string name="common.uploading">Cargando</string>
     <string name="common.downloading">Descargando</string>
     <string name="common.download">Descargar</string>
+    <string name="common.delete">Eliminar</string>
     <string name="common.empty">Vacío</string>
     <string name="common_logout">Cerrar Sesión</string>
 
