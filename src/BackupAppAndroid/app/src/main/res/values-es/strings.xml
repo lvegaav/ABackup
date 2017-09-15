@@ -118,5 +118,9 @@
     <string name="exception.message_generic">Ups, algo salió mal, por favor intenta de nuevo.</string>
 
     <string name="settings.sync_files">Sincronizar Archivos</string>
+    <string name="sync.title">Sincronizar Archivos</string>
+    <string name="sync.sync">Sincronizar</string>
+    <string name="sync.photos">%1$d Fotos</string>
+    <string name="sync.videos">%1$d Videos</string>
 
 </resources>

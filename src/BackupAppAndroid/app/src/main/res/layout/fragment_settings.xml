@@ -47,8 +47,7 @@
                 android:paddingEnd="10dp"
                 android:layout_marginTop="23dp"
                 android:background="@drawable/rounded_black_background"
-                android:clickable="true"
-                android:visibility="gone"/>
+                android:clickable="true"/>
 
             <LinearLayout
                 android:id="@+id/rl_space_description"

@@ -25,6 +25,7 @@ import com.americavoice.backup.calls.service.CallsImportJob;
 import com.americavoice.backup.contacts.service.ContactsBackupJob;
 import com.americavoice.backup.sms.service.SmsBackupJob;
 import com.americavoice.backup.sms.service.SmsImportJob;
+import com.americavoice.backup.sync.service.SyncBackupJob;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.JobCreator;
 
@@ -48,6 +49,8 @@ public class NCJobCreator implements JobCreator {
                 return new SmsBackupJob();
             case SmsImportJob.TAG:
                 return new SmsImportJob();
+            case SyncBackupJob.TAG:
+                return new SyncBackupJob();
             default:
                 return null;
         }

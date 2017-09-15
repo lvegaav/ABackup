@@ -15,7 +15,8 @@ import com.americavoice.backup.login.ui.LoginFragment;
 import butterknife.ButterKnife;
 
 public class LoginActivity extends AccountAuthenticatorActivity implements HasComponent<AppComponent>,
-        LoginFragment.Listener, ConfirmationFragment.Listener {
+        LoginFragment.Listener,
+        ConfirmationFragment.Listener {
 
 
 

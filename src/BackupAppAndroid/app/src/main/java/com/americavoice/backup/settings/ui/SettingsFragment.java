@@ -61,6 +61,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
      */
     public interface Listener {
         void onBackSettingsClicked();
+        void onRestoreClicked();
     }
 
     @Inject
@@ -260,6 +261,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         }
         mPresenter.logout();
         ActivityCompat.finishAffinity(getActivity());
+    }
+
+    @OnClick(R.id.tv_sync_files)
+    public void sync()
+    {
+        if (this.mListener != null) this.mListener.onRestoreClicked();
     }
     private float getPercent(BigDecimal value, BigDecimal size) {
         float x = value.floatValue() * 100;

@@ -61,6 +61,9 @@ public class MainPresenter extends BasePresenter implements IPresenter {
     public void initialize(Context context, String title) {
         mView.setTitle(title);
         mContext = context;
+        if (mSharedPrefsUtils.getBooleanPreference(NetworkProvider.KEY_FIRST_TIME, false)) {
+            mView.showSync();
+        }
     }
 
     public void initBadges() {

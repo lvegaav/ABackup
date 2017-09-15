@@ -42,6 +42,7 @@ public class MainFragment extends BaseFragment implements MainView {
         void viewCalls();
         void viewSms();
         void viewSettings();
+        void viewSync();
         void onMainBackPressed();
     }
 
@@ -256,6 +257,11 @@ public class MainFragment extends BaseFragment implements MainView {
     @Override
     public void setBadgeCallLog(int size) {
         setBadge(tvBadgeCallLog, size);
+    }
+
+    @Override
+    public void showSync() {
+        if (mListener != null) mListener.viewSync();
     }
 
     private void setBadge(TextView tv, int size) {

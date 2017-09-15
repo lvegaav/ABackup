@@ -77,6 +77,7 @@ public class ConfirmationPresenter extends BasePresenter implements IPresenter {
         mNetworkProvider.PerformResetPassword(request, new AsyncResult<dtos.PerformResetPasswordResponse>() {
             @Override
             public void success(dtos.PerformResetPasswordResponse response) {
+                mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
                 mView.hideLoading();
                 mView.showGettingServerInfo();
                 mView.loginWithCredentials(mNetworkProvider.getCloudClient(phoneNumber).getCredentials());

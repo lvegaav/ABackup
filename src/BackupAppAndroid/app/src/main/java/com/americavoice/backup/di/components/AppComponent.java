@@ -14,6 +14,7 @@ import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.login.ui.LoginFragment;
 import com.americavoice.backup.main.ui.MainFragment;
 import com.americavoice.backup.main.ui.SplashScreenFragment;
+import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sms.ui.SmsListFragment;
@@ -29,6 +30,7 @@ public interface AppComponent extends ActivityComponent {
     void inject(SplashScreenFragment fragment);
     void inject(LoginFragment fragment);
     void inject(ConfirmationFragment fragment);
+    void inject(SyncFragment fragment);
     void inject(MainFragment fragment);
     void inject(FileListFragment fragment);
     void inject(SettingsFragment fragment);

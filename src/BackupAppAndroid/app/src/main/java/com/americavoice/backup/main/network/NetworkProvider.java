@@ -30,6 +30,7 @@ public class NetworkProvider {
 
     private static final String KEY_PREFS = "com.americavoice.backup.KEY_PREFS";
     public static final String KEY_PHONE_NUMBER = "com.americavoice.backup.KEY_PHONE_NUMBER";
+    public static final String KEY_FIRST_TIME = "com.americavoice.backup.KEY_FIRST_TIME";
     private final SharedPreferences mPref;
     private final AndroidServiceClient mClient;
     private final Context mContext;
