@@ -21,6 +21,7 @@ import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.ThemeUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -32,6 +33,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
         MainFragment.Listener,
         SettingsFragment.Listener {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     private AppComponent mAppComponent;
 
     public static Intent getCallingIntent(Context context) {
@@ -41,6 +43,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_main);
         this.initializeActivity(savedInstanceState);
         this.initializeInjector();
@@ -133,6 +136,11 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
 
     @Override
     public void viewPhotos() {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Photos");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Photos button");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu button");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
         navigator.navigateToFileListActivity(this, Const.Photos);
     }
 

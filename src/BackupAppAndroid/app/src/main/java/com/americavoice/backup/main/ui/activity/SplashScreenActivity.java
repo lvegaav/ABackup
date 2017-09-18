@@ -17,6 +17,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import butterknife.ButterKnife;
 
@@ -27,10 +28,12 @@ public class SplashScreenActivity extends BaseActivity implements HasComponent<A
     private AppComponent mAppComponent;
     private static final int ERROR_DIALOG_REQUEST_CODE = 1;
     private boolean mRetryProviderInstall;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_splash_screen);
         this.initializeActivity(savedInstanceState);
         this.initializeInjector();
