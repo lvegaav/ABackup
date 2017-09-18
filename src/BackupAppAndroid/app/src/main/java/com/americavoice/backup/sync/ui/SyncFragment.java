@@ -173,14 +173,12 @@ public class SyncFragment extends BaseAuthenticatorFragment implements SyncView 
     }
 
     @OnClick(R.id.btn_sync)
-    public void Sync(View view)
-    {
+    public void Sync(View view) {
         if (this.mPresenter != null) this.mPresenter.sync();
     }
 
     @OnClick(R.id.btn_back)
-    public void Back(View view)
-    {
+    public void Back(View view) {
         if (this.mListener != null) this.mListener.onBackConfirmationClicked();
     }
 
@@ -196,8 +194,12 @@ public class SyncFragment extends BaseAuthenticatorFragment implements SyncView 
 
         PersistableBundleCompat bundle = new PersistableBundleCompat();
         bundle.putString(SyncBackupJob.ACCOUNT, account.name);
-        bundle.putStringArray(SyncBackupJob.PENDING_PHOTOS, pendingPhotos.toArray(new String[pendingPhotos.size()]));
-        bundle.putStringArray(SyncBackupJob.PENDING_VIDEOS, pendingVideos.toArray(new String[pendingVideos.size()]));
+        if (pendingPhotos != null) {
+            bundle.putStringArray(SyncBackupJob.PENDING_PHOTOS, pendingPhotos.toArray(new String[pendingPhotos.size()]));
+        }
+        if (pendingVideos != null) {
+            bundle.putStringArray(SyncBackupJob.PENDING_VIDEOS, pendingVideos.toArray(new String[pendingVideos.size()]));
+        }
         bundle.putBoolean(SyncBackupJob.FORCE, true);
 
         new JobRequest.Builder(SyncBackupJob.TAG)

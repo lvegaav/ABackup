@@ -115,7 +115,7 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
         ReadRemoteFolderOperation operation = (ReadRemoteFolderOperation) remoteOperation;
         Map<String, RemoteFile> remoteFilesMap = new HashMap<>();
         List<String> pendingFiles = new ArrayList<>();
-        List<String> localFiles = new ArrayList<>();
+        List<String> localFiles;
         boolean isPhotos = mDownloadPhotosOperation.equals(operation);
 
         if (remoteOperationResult.isSuccess()) {

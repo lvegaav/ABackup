@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -37,6 +39,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.MPPointF;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -84,6 +87,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     TextView tvFiles;
     @BindView(R.id.chart)
     PieChart chartPie;
+    @BindView(R.id.tv_version_name)
+    TextView tvVersionName;
+
     @BindString(R.string.main_photos)
     String photos;
     @BindString(R.string.main_videos)
@@ -94,6 +100,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     String documents;
     @BindString(R.string.main_available)
     String available;
+
     public SettingsFragment() {
         super();
     }
@@ -121,7 +128,17 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
         View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
+
         tvTitle.setText("");
+
+        PackageInfo pInfo = null;
+        try {
+            pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+            tvVersionName.setText(getString(R.string.settings_version, pInfo.versionName));
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tvSyncFiles.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sync, 0, 0, 0);
         } else {

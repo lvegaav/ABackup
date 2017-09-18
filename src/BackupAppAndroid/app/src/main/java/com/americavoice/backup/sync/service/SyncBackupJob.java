@@ -94,12 +94,9 @@ public class SyncBackupJob extends Job {
 
     private void backup(Account account, String[] pendingPhotos, String[] pendingVideos) {
 
-        if (pendingPhotos != null)
-        {
-            for (String item : pendingPhotos)
-            {
-                try
-                {
+        if (pendingPhotos != null) {
+            for (String item : pendingPhotos) {
+                try {
                     File file = new File(item);
                     FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
                     requester.uploadNewFile(
@@ -113,16 +110,12 @@ public class SyncBackupJob extends Job {
                             UploadFileOperation.CREATED_BY_USER
                     );
                 } catch (Exception e){}
-
             }
         }
 
-        if (pendingVideos != null)
-        {
-            for (String item : pendingVideos)
-            {
-                try
-                {
+        if (pendingVideos != null) {
+            for (String item : pendingVideos) {
+                try {
                     File file = new File(item);
                     FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
                     requester.uploadNewFile(
@@ -138,8 +131,6 @@ public class SyncBackupJob extends Job {
                 } catch (Exception e){}
             }
         }
-
-
     }
 
     private String getFileName(String path)
