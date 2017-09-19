@@ -39,6 +39,7 @@
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/smslist_restore_selected"
                     style="@style/Button.Borderless"
+                    android:enabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/sms.list_restore_selected" />
