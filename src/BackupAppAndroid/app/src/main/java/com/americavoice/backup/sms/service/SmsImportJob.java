@@ -24,6 +24,7 @@ package com.americavoice.backup.sms.service;
 import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -34,6 +35,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
 import com.americavoice.backup.sms.ui.model.Sms;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -58,6 +60,7 @@ public class SmsImportJob extends Job {
     public static final String TAG = "SmsImportJob";
 
     public static final String SMS_FILE_PATH = "sms_file_path";
+    public static final String PREVIOUS_DEFAULT_SMS_APP = "previous_sms_default_app";
 
     @NonNull
     @Override
@@ -69,37 +72,6 @@ public class SmsImportJob extends Job {
             return Result.FAILURE;
         }
         try {
-            //Current history
-            List<String> currentHistory = new ArrayList<>();
-            Uri message = Uri.parse("content://sms/");
-            Cursor c = getContext().getContentResolver().query(message, null, null, null, null);
-            if (c != null) {
-                int totalSMS = c.getCount();
-
-                if (c.moveToFirst()) {
-                    for (int i = 0; i < totalSMS; i++) {
-
-                        Sms objSms = new Sms();
-                        objSms.setAddress(c.getString(c
-                                .getColumnIndexOrThrow("address")));
-                        objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
-                        objSms.setReadState(c.getString(c.getColumnIndex("read")));
-                        objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
-                        if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
-                            objSms.setFolderName("inbox");
-                        } else {
-                            objSms.setFolderName("sent");
-                        }
-
-                        currentHistory.add(objSms.toJson());
-                        c.moveToNext();
-                    }
-                } else {
-                    c.close();
-                    Log_OC.d(TAG, "You have no SMS");
-                }
-                c.close();
-            }
 
             FileInputStream in = new FileInputStream(callFilePath);
             Scanner br = new Scanner(new InputStreamReader(in));
@@ -108,34 +80,37 @@ public class SmsImportJob extends Job {
                 JSONArray jsonArr = new JSONArray(strLine);
                 for (int i = 0; i < jsonArr.length(); i++) {
                     String smsString = jsonArr.getString(i);
-                    //Check if call exists in current history
-                    if (!currentHistory.contains(smsString)) {
-                        Sms sms = Sms.fromJson(smsString);
-                        saveSms(sms);
-                    }
+                    saveSms(Sms.fromJson(smsString));
                 }
             }
         } catch (Exception e) {
             Log_OC.e(TAG, e.getMessage());
+            Crashlytics.logException(e);
         }
-
+        Intent intent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            String defaultSmsApp = bundle.getString(PREVIOUS_DEFAULT_SMS_APP, null);
+            if (defaultSmsApp != null) {
+                intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+                intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, defaultSmsApp);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(intent);
+            }
+        }
         return Result.SUCCESS;
     }
 
-    public boolean saveSms(Sms sms) {
-        boolean ret = false;
+    private boolean saveSms(Sms sms) {
+        boolean ret;
         try {
-            long millis = Long.parseLong(sms.getTime()) * 1000;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-            sdf.setTimeZone(TimeZone.getDefault());
-            String date = sdf.format(new Date(millis));
+
             String folderName = sms.getFolderName();
 
             ContentValues initialValues = new ContentValues();
             initialValues.put("address", sms.getAddress());
             initialValues.put("body", sms.getMsg());
             initialValues.put("read", sms.getReadState());
-            initialValues.put("date", date);
+            initialValues.put("date", sms.getTime());
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 Uri uri = Telephony.Sms.Sent.CONTENT_URI;
@@ -148,10 +123,10 @@ public class SmsImportJob extends Job {
                 /* folderName  could be inbox or sent */
                 getContext().getContentResolver().insert(Uri.parse("content://sms/" + folderName), initialValues);
             }
-
             ret = true;
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Log_OC.e(TAG, ex.getMessage());
+            Crashlytics.logException(ex);
             ret = false;
         }
         return ret;

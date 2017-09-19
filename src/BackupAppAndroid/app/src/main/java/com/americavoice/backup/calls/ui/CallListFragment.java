@@ -475,6 +475,7 @@ public class CallListFragment extends FileFragment implements CallsListView {
         protected void onPostExecute(Object o) {
             if (!isCancelled()) {
                 emptyListContainer.setVisibility(View.GONE);
+                restoreContacts.setEnabled(true);
                 callListAdapter.replaceList(mCalls);
             }
         }

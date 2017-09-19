@@ -29,8 +29,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Telephony;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DividerItemDecoration;
@@ -59,6 +61,7 @@ import com.americavoice.backup.sms.presenter.SmsListPresenter;
 import com.americavoice.backup.sms.service.SmsImportJob;
 import com.americavoice.backup.sms.ui.model.Sms;
 import com.americavoice.backup.utils.PermissionUtil;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -71,18 +74,24 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
  * This fragment shows all contacts from a file and allows to import them.
  */
 public class SmsListFragment extends FileFragment implements SmsListView {
+
+    private static final int REQUEST_CODE_SMS_DEFAULT = 1;
+
+    private String mDefaultSmsApp;
 
     /**
      * Interface for listening file list events.
@@ -171,6 +180,10 @@ public class SmsListFragment extends FileFragment implements SmsListView {
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            mDefaultSmsApp = Telephony.Sms.getDefaultSmsPackage(getContext());
+        }
+
         View fragmentView = inflater.inflate(R.layout.smslist_fragment, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
 
@@ -203,22 +216,22 @@ public class SmsListFragment extends FileFragment implements SmsListView {
             loadSmsTask.execute();
         }
 
-        restoreContacts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (checkAndAskForContactsWritePermission()) {
-                    importSms();
-                }
-            }
-        });
-
         restoreContacts.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
 
         return fragmentView;
     }
 
-
+    @OnClick(R.id.smslist_restore_selected)
+    public void onRestoreClicked() {
+        Intent intent = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getContext().getPackageName());
+            startActivityForResult(intent, REQUEST_CODE_SMS_DEFAULT);
+        } else {
+            importSms();
+        }
+    }
 
     @Override
     public void onDestroy() {
@@ -288,6 +301,18 @@ public class SmsListFragment extends FileFragment implements SmsListView {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (requestCode == REQUEST_CODE_SMS_DEFAULT) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                final String myPackageName = getContext().getPackageName();
+                if (Telephony.Sms.getDefaultSmsPackage(getActivity()).equals(myPackageName)) {
+                    //start import job
+                    importSms();
+                }
+            }
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -348,6 +373,7 @@ public class SmsListFragment extends FileFragment implements SmsListView {
     private void importSms() {
         PersistableBundleCompat bundle = new PersistableBundleCompat();
         bundle.putString(SmsImportJob.SMS_FILE_PATH, getFile().getStoragePath());
+        bundle.putString(SmsImportJob.PREVIOUS_DEFAULT_SMS_APP, mDefaultSmsApp);
 
         new JobRequest.Builder(SmsImportJob.TAG)
                 .setExtras(bundle)
@@ -371,17 +397,6 @@ public class SmsListFragment extends FileFragment implements SmsListView {
                 }
             }
         }, 1750);
-    }
-
-    private boolean checkAndAskForContactsWritePermission() {
-        // check permissions
-        if (!PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)) {
-            requestPermissions(new String[]{Manifest.permission.READ_SMS},
-                    PermissionUtil.PERMISSIONS_WRITE_SMS);
-            return false;
-        } else {
-            return true;
-        }
     }
 
     @Override
@@ -417,7 +432,9 @@ public class SmsListFragment extends FileFragment implements SmsListView {
                 FileDataStorageManager storageManager = new FileDataStorageManager(account,
                         getContext());
                 ocFile = storageManager.getFileByPath(downloadedRemotePath);
-                loadSmsTask.execute();
+                if (loadSmsTask != null) {
+                    loadSmsTask.execute();
+                }
             }
         }
     }
@@ -432,7 +449,6 @@ public class SmsListFragment extends FileFragment implements SmsListView {
         @Override
         protected Object doInBackground(Object[] params) {
             if (!isCancelled()) {
-                //File file = new File(ocFile.getStoragePath());
                 try {
                     FileInputStream in = new FileInputStream(ocFile.getStoragePath());
                     Scanner br = new Scanner(new InputStreamReader(in));
@@ -445,9 +461,12 @@ public class SmsListFragment extends FileFragment implements SmsListView {
                     }
                 } catch (IOException e) {
                     Log_OC.e(TAG, "IO Exception: " + ocFile.getStoragePath());
+                    Crashlytics.logException(e);
                     return false;
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    Crashlytics.logException(e);
+                    Log_OC.e(TAG, "Json Exception: " + Arrays.toString(e.getStackTrace()));
+                    return false;
                 }
                 return true;
             }
@@ -459,6 +478,7 @@ public class SmsListFragment extends FileFragment implements SmsListView {
             if (!isCancelled()) {
                 emptyListContainer.setVisibility(View.GONE);
                 smsListAdapter.replaceList(mSmses);
+                restoreContacts.setEnabled(true);
             }
         }
     };
