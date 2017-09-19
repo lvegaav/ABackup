@@ -74,12 +74,20 @@ public abstract class PreferenceManager {
         return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_UPLOAD_ON_WIFI, false);
     }
 
+    public static void setInstantPictureUploadViaWifiOnly(Context context, boolean uploadWifiOnly) {
+        saveBooleanPreference(context, PREF__INSTANT_UPLOAD_ON_WIFI, uploadWifiOnly);
+    }
+
     public static boolean instantVideoUploadPathUseSubfolders(Context context) {
         return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_VIDEO_UPLOAD_PATH_USE_SUBFOLDERS, false);
     }
 
     public static boolean instantVideoUploadViaWiFiOnly(Context context) {
         return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_VIDEO_UPLOAD_ON_WIFI, false);
+    }
+
+    public static void setInstantVideoUploadViaWifiOnly(Context context, boolean uploadWifiOnly) {
+        saveBooleanPreference(context, PREF__INSTANT_VIDEO_UPLOAD_ON_WIFI, uploadWifiOnly);
     }
 
     public static boolean instantPictureUploadWhenChargingOnly(Context context) {
