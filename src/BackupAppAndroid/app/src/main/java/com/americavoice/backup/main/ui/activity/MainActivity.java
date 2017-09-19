@@ -17,8 +17,8 @@ import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.MainFragment;
-import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.settings.ui.SettingsFragment;
+import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.ThemeUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -26,6 +26,9 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import org.greenrobot.eventbus.EventBus;
 
 import butterknife.ButterKnife;
+
+import static com.americavoice.backup.utils.FirebaseUtils.MENU_BUTTON_CONTENT_TYPE;
+import static com.americavoice.backup.utils.FirebaseUtils.createFirebaseEvent;
 
 
 public class MainActivity extends BaseOwncloudActivity implements HasComponent<AppComponent>,

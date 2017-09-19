@@ -23,6 +23,8 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
+import com.americavoice.backup.utils.FirebaseUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -39,6 +41,7 @@ import butterknife.Unbinder;
  * Fragment that shows details of a certain political party.
  */
 public class ConfirmationFragment extends BaseAuthenticatorFragment implements ConfirmationView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
+    private FirebaseAnalytics mFirebaseAnalytics;
     @Override
     public void viewHome() {
         if (mListener != null) mListener.viewHome();
@@ -85,6 +88,7 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
     }
 
     @Override
@@ -222,6 +226,7 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
             }
 
             if (success) {
+                FirebaseUtils.createLoginEvent(mFirebaseAnalytics, "phoneNumber");
                 getActivity().finish();
             } else {
                 showToastMessage("Couldn't create the account, please try again");
