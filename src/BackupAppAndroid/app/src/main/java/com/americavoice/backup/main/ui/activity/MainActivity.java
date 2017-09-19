@@ -136,46 +136,97 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
 
     @Override
     public void viewPhotos() {
-        Bundle bundle = new Bundle();
-        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Photos");
-        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Photos button");
-        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "menu button");
-        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Photos",
+                "Photos button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToFileListActivity(this, Const.Photos);
     }
 
     @Override
     public void viewVideos() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Videos",
+                "Videos button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToFileListActivity(this, Const.Videos);
     }
 
     @Override
     public void viewContacts() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Contacts",
+                "Contacts button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToContactsBackupActivity(this);
     }
 
     @Override
     public void viewCalls() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Calls",
+                "Calls button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToCallsBackupActivity(this);
     }
 
     @Override
     public void viewSms() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "SMS",
+                "SMS button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToSmsBackupActivity(this);
     }
 
     @Override
     public void viewDocuments() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Documents",
+                "Documents button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToFileListActivity(this, Const.Documents);
     }
 
     @Override
     public void viewSettings() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Settings",
+                "Settings button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         replaceFragment(R.id.fl_fragment, SettingsFragment.newInstance(), true, true);
     }
 
     @Override
     public void viewSync() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Sync",
+                "Sync button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         replaceFragment(R.id.fl_fragment, SyncFragment.newInstance(), true, true);
     }
 
