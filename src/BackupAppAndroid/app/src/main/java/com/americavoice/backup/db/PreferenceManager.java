@@ -71,7 +71,7 @@ public abstract class PreferenceManager {
     }
 
     public static boolean instantPictureUploadViaWiFiOnly(Context context) {
-        return false;
+        return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_UPLOAD_ON_WIFI, false);
     }
 
     public static boolean instantVideoUploadPathUseSubfolders(Context context) {
@@ -79,7 +79,7 @@ public abstract class PreferenceManager {
     }
 
     public static boolean instantVideoUploadViaWiFiOnly(Context context) {
-        return false;
+        return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_VIDEO_UPLOAD_ON_WIFI, false);
     }
 
     public static boolean instantPictureUploadWhenChargingOnly(Context context) {
