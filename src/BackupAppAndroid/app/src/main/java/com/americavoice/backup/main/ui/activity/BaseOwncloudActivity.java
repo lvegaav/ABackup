@@ -20,6 +20,7 @@ import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.service.PhotosContentJob;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.status.OCCapability;
 import com.americavoice.backup.datamodel.OCFile;
@@ -32,6 +33,7 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
 
     public static final String EXTRA_ACCOUNT = "com.americavoice.backup.main.ui.activity.ACCOUNT";
     public static final String EXTRA_FROM_NOTIFICATION = "com.americavoice.backup.main.ui.activity.FROM_NOTIFICATION";
+    public static final String MENU_BUTTON_CONTENT_TYPE = "menu button";
 
     /** Flag to signal if the activity is launched by a notification */
     private boolean mFromNotification;
@@ -250,6 +252,20 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
      */
     protected void onAccountCreationSuccessful(AccountManagerFuture<Bundle> future) {
         // no special handling in base activity
+    }
+
+    protected void createFirebaseEvent(
+            FirebaseAnalytics firebaseAnalytics,
+            String itemId,
+            String itemName,
+            String contentType,
+            String event
+    ) {
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, itemId);
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, itemName);
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, contentType);
+        firebaseAnalytics.logEvent(event, bundle);
     }
 
     /**

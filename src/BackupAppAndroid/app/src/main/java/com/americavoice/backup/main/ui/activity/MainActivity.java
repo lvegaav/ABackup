@@ -21,6 +21,7 @@ import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.ThemeUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -32,6 +33,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
         MainFragment.Listener,
         SettingsFragment.Listener {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     private AppComponent mAppComponent;
 
     public static Intent getCallingIntent(Context context) {
@@ -41,6 +43,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_main);
         this.initializeActivity(savedInstanceState);
         this.initializeInjector();
@@ -133,41 +136,97 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
 
     @Override
     public void viewPhotos() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Photos",
+                "Photos button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToFileListActivity(this, Const.Photos);
     }
 
     @Override
     public void viewVideos() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Videos",
+                "Videos button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToFileListActivity(this, Const.Videos);
     }
 
     @Override
     public void viewContacts() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Contacts",
+                "Contacts button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToContactsBackupActivity(this);
     }
 
     @Override
     public void viewCalls() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Calls",
+                "Calls button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToCallsBackupActivity(this);
     }
 
     @Override
     public void viewSms() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "SMS",
+                "SMS button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToSmsBackupActivity(this);
     }
 
     @Override
     public void viewDocuments() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Documents",
+                "Documents button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         navigator.navigateToFileListActivity(this, Const.Documents);
     }
 
     @Override
     public void viewSettings() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Settings",
+                "Settings button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         replaceFragment(R.id.fl_fragment, SettingsFragment.newInstance(), true, true);
     }
 
     @Override
     public void viewSync() {
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Sync",
+                "Sync button",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
         replaceFragment(R.id.fl_fragment, SyncFragment.newInstance(), true, true);
     }
 
