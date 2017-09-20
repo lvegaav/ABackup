@@ -64,8 +64,6 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     @BindView(R.id.sp_country)
     Spinner spCountry;
 
-    private FirebaseAnalytics mFirebaseAnalytics;
-
 
     public LoginFragment() {
         super();
@@ -81,12 +79,6 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
         if (context instanceof Listener) {
             this.mListener = (Listener) context;
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
     }
 
     @Override

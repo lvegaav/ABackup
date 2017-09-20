@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.main.ui.dialog.DialogError;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -26,11 +27,13 @@ import org.greenrobot.eventbus.EventBus;
 public abstract class BaseFragment extends Fragment {
 
     protected ProgressDialog mProgress;
+    protected FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
     }
 
     @Override
