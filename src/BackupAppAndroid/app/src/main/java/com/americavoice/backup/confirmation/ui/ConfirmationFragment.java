@@ -226,7 +226,8 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
             }
 
             if (success) {
-                FirebaseUtils.createLoginEvent(mFirebaseAnalytics, "phoneNumber");
+                FirebaseUtils.createLoginEvent(mFirebaseAnalytics,
+                        FirebaseUtils.LOGIN_METHOD_PHONE_NUMBER);
                 getActivity().finish();
             } else {
                 showToastMessage("Couldn't create the account, please try again");

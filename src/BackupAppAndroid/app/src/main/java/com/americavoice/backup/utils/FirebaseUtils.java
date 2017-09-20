@@ -11,6 +11,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 public class FirebaseUtils {
 
     public static final String MENU_BUTTON_CONTENT_TYPE = "menu button";
+    public static final String LOGIN_METHOD_PHONE_NUMBER = "phone number";
 
     public static void createFirebaseEvent(
             FirebaseAnalytics firebaseAnalytics,
