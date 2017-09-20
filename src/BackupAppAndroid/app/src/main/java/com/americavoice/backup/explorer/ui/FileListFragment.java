@@ -303,6 +303,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     @Override
     public void downloadFile(OCFile file) {
+        showToastMessage(getString(R.string.common_file_will_download));
         List<OCFile> files = new ArrayList<>();
         files.add(file);
         operationsServiceConnection = new FileListFragment.OperationsServiceConnection(files, R.id.action_download);

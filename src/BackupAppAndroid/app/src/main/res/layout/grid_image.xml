@@ -17,6 +17,7 @@
   
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ListItemLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -43,12 +44,10 @@
             android:id="@+id/iv_local_file_indicator"
             android:layout_width="16dp"
             android:layout_height="16dp"
-            android:layout_gravity="bottom|right"
             android:layout_marginBottom="@dimen/standard_quarter_margin"
             android:layout_marginRight="@dimen/standard_quarter_margin"
             android:layout_marginTop="@dimen/standard_quarter_margin"
-            android:src="@drawable/ic_synced"
-            android:visibility="gone"/>
+            app:srcCompat="@drawable/ic_photo_from_cloud" />
 
 
         <ImageView
@@ -57,9 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/standard_quarter_margin"
             android:layout_marginRight="@dimen/standard_quarter_margin"
-            android:layout_gravity="center_vertical|top"
-            android:src="@android:drawable/checkbox_off_background"
-            android:visibility="gone"/>
+            android:layout_gravity="bottom|right"
+            android:src="@android:drawable/checkbox_off_background"/>
     </FrameLayout>
     <TextView
         android:id="@+id/tv_name"

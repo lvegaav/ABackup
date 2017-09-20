@@ -105,7 +105,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         final OCFile model = this.mCollection.get(position);
 
         holder.tvName.setText(model.getRemotePath().substring(model.getRemotePath().lastIndexOf('/') + 1));
-        holder.ivIcon.setTag(model.getRemoteId());
+        holder.ivIcon.setTag(model.getFileId());
         // If ListView
         if (getItemViewType(position) == ViewType.LIST_ITEM) {
             holder.tvFileSize.setText(DisplayUtils.bytesToHumanReadable(model.getFileLength()));
@@ -113,7 +113,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         }
 
         if (model.isDown()) {
-            holder.ivLocalFileIndicator.setImageResource(R.drawable.ic_synced);
+            holder.ivLocalFileIndicator.setImageResource(R.drawable.ic_photo_from_cloud);
             holder.ivLocalFileIndicator.setVisibility(View.VISIBLE);
         } else
         {
