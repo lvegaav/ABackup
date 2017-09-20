@@ -73,8 +73,7 @@
                     android:layout_margin="@dimen/default_margin"
                     android:layout_weight="1"
                     android:text="@string/contacts.preference_restore_backup"
-                    android:theme="@style/Button"
-                    android:visibility="gone"/>
+                    android:theme="@style/Button"/>
             </LinearLayout>
 
         </LinearLayout>

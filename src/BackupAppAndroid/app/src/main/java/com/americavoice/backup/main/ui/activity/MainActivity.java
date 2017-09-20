@@ -17,8 +17,8 @@ import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.MainFragment;
-import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.settings.ui.SettingsFragment;
+import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.ThemeUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -27,13 +27,15 @@ import org.greenrobot.eventbus.EventBus;
 
 import butterknife.ButterKnife;
 
+import static com.americavoice.backup.utils.FirebaseUtils.MENU_BUTTON_CONTENT_TYPE;
+import static com.americavoice.backup.utils.FirebaseUtils.createFirebaseEvent;
+
 
 public class MainActivity extends BaseOwncloudActivity implements HasComponent<AppComponent>,
         SyncFragment.Listener,
         MainFragment.Listener,
         SettingsFragment.Listener {
 
-    private FirebaseAnalytics mFirebaseAnalytics;
     private AppComponent mAppComponent;
 
     public static Intent getCallingIntent(Context context) {
@@ -43,7 +45,6 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_main);
         this.initializeActivity(savedInstanceState);
         this.initializeInjector();

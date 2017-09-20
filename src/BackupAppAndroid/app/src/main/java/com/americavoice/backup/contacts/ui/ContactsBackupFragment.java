@@ -153,8 +153,8 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             }
         }
 
-        String backupFolderPath = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
-        refreshBackupFolder(backupFolderPath);
+//        String backupFolderPath = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+//        refreshBackupFolder(backupFolderPath);
     }
 
     @Override
@@ -430,25 +430,25 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
     public void openDate(@Nullable Date savedDate) {
 
-        String backupFolderString = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
-        OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
-
-        Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(backupFolder, false);
-
-        Collections.sort(backupFiles, new Comparator<OCFile>() {
-            @Override
-            public int compare(OCFile o1, OCFile o2) {
-                if (o1.getModificationTimestamp() == o2.getModificationTimestamp()) {
-                    return 0;
-                }
-
-                if (o1.getModificationTimestamp() > o2.getModificationTimestamp()) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            }
-        });
+//        String backupFolderString = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+//        OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
+//
+//        Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(backupFolder, false);
+//
+//        Collections.sort(backupFiles, new Comparator<OCFile>() {
+//            @Override
+//            public int compare(OCFile o1, OCFile o2) {
+//                if (o1.getModificationTimestamp() == o2.getModificationTimestamp()) {
+//                    return 0;
+//                }
+//
+//                if (o1.getModificationTimestamp() > o2.getModificationTimestamp()) {
+//                    return 1;
+//                } else {
+//                    return -1;
+//                }
+//            }
+//        });
 
         Calendar cal = Calendar.getInstance();
         int year;
@@ -457,7 +457,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
         if (savedDate == null) {
             year = cal.get(Calendar.YEAR);
-            month = cal.get(Calendar.MONTH) + 1;
+            month = cal.get(Calendar.MONTH);
             day = cal.get(Calendar.DAY_OF_MONTH);
         } else {
             year = savedDate.getYear();
@@ -465,10 +465,10 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             day = savedDate.getDay();
         }
 
-        if (backupFiles.size() > 0 && backupFiles.lastElement() != null) {
+//        if (backupFiles.size() > 0 && backupFiles.lastElement() != null) {
             datePickerDialog = new DatePickerDialog(getContext(), this, year, month, day);
-            datePickerDialog.getDatePicker().setMaxDate(backupFiles.lastElement().getModificationTimestamp());
-            datePickerDialog.getDatePicker().setMinDate(backupFiles.firstElement().getModificationTimestamp());
+//            datePickerDialog.getDatePicker().setMaxDate(backupFiles.lastElement().getModificationTimestamp());
+//            datePickerDialog.getDatePicker().setMinDate(backupFiles.firstElement().getModificationTimestamp());
 
             datePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
@@ -478,10 +478,10 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             });
 
             datePickerDialog.show();
-        } else {
-            Toast.makeText(getActivity(), R.string.contacts_preferences_something_strange_happened,
-                    Toast.LENGTH_SHORT).show();
-        }
+//        } else {
+//            Toast.makeText(getActivity(), R.string.contacts_preferences_something_strange_happened,
+//                    Toast.LENGTH_SHORT).show();
+//        }
     }
 
     @Override

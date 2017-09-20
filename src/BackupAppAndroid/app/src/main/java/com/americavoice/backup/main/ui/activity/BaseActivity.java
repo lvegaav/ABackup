@@ -11,6 +11,7 @@ import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.components.ApplicationComponent;
 import com.americavoice.backup.di.modules.ActivityModule;
 import com.americavoice.backup.main.navigation.Navigator;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import javax.inject.Inject;
 
@@ -22,10 +23,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Inject
     protected Navigator navigator;
 
+    protected FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.getApplicationComponent().inject(this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     /**
