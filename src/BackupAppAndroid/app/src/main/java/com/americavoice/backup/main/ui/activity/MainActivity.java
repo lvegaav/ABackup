@@ -36,7 +36,6 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
         MainFragment.Listener,
         SettingsFragment.Listener {
 
-    private FirebaseAnalytics mFirebaseAnalytics;
     private AppComponent mAppComponent;
 
     public static Intent getCallingIntent(Context context) {
@@ -46,7 +45,6 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_main);
         this.initializeActivity(savedInstanceState);
         this.initializeInjector();

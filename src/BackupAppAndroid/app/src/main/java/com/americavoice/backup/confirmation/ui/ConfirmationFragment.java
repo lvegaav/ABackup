@@ -41,7 +41,6 @@ import butterknife.Unbinder;
  * Fragment that shows details of a certain political party.
  */
 public class ConfirmationFragment extends BaseAuthenticatorFragment implements ConfirmationView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
-    private FirebaseAnalytics mFirebaseAnalytics;
     @Override
     public void viewHome() {
         if (mListener != null) mListener.viewHome();
@@ -83,12 +82,6 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
         if (context instanceof Listener) {
             this.mListener = (Listener) context;
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
     }
 
     @Override
