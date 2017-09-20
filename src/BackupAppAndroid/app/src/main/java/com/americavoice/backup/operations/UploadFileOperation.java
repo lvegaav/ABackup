@@ -299,6 +299,7 @@ public class UploadFileOperation extends SyncOperation {
         File expectedFile = null;
 
         try {
+            Log_OC.v(TAG, "Starting upload process validations");
 
             /// Check that connectivity conditions are met and delays the upload otherwise
             if (delayForWifi()) {

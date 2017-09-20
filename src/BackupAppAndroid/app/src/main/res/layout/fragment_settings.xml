@@ -51,12 +51,19 @@
             <LinearLayout
                 android:id="@+id/wifi_options"
                 android:layout_below="@id/tv_sync_files"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <CheckBox
                     android:id="@+id/video_over_wifi"
                     android:textColor="@color/white"
-                    android:text="@string/settings.videoOverWifiOnly"
+                    android:text="@string/settings.video_over_wifi_only"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/photo_over_wifi"
+                    android:textColor="@color/white"
+                    android:text="@string/settings.photo_over_wifi_only"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>

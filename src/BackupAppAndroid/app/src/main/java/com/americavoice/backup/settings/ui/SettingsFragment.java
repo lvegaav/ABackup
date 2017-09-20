@@ -18,10 +18,13 @@ import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.event.OnBackPress;
@@ -37,6 +40,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.w3c.dom.Text;
@@ -51,6 +55,7 @@ import javax.inject.Inject;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
@@ -89,6 +94,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     PieChart chartPie;
     @BindView(R.id.tv_version_name)
     TextView tvVersionName;
+
+    @BindView(R.id.photo_over_wifi)
+    CheckBox mPhotoOverWifi;
+
+    @BindView(R.id.video_over_wifi)
+    CheckBox mVideoOverWifi;
 
     @BindString(R.string.main_photos)
     String photos;
@@ -168,6 +179,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         // enable rotation of the chart by touch
         chartPie.setRotationEnabled(true);
         chartPie.setHighlightPerTapEnabled(true);
+
+        // checkbox initial values
+        boolean pictureWifiOnly = PreferenceManager.instantPictureUploadViaWiFiOnly(getContext());
+        boolean videoWifiOnly = PreferenceManager.instantVideoUploadViaWiFiOnly(getContext());
+        mPhotoOverWifi.setChecked(pictureWifiOnly);
+        mVideoOverWifi.setChecked(videoWifiOnly);
         return fragmentView;
     }
 
@@ -367,6 +384,19 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         chartPie.spin(2000, 0, 360, Easing.EasingOption.EaseInOutQuad);
 
     }
+
+    @OnCheckedChanged(R.id.video_over_wifi)
+    public void onChangeVideoOverWifi() {
+        Log_OC.d("Video o/wifi", "" + mVideoOverWifi.isChecked());
+        PreferenceManager.setInstantVideoUploadViaWifiOnly(getContext(), mVideoOverWifi.isChecked());
+    }
+
+    @OnCheckedChanged(R.id.photo_over_wifi)
+    public void onChangePhotoOverWifi() {
+        Log_OC.d("Photo o/wifi", "" + mPhotoOverWifi.isChecked());
+        PreferenceManager.setInstantVideoUploadViaWifiOnly(getContext(), mPhotoOverWifi.isChecked());
+    }
+
 
     @OnClick(R.id.iv_logo)
     public void onLogo() {
