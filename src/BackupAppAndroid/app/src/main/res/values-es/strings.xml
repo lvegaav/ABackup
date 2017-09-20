@@ -124,5 +124,6 @@
     <string name="sync.sync">Sincronizar</string>
     <string name="sync.photos">%1$d Fotos</string>
     <string name="sync.videos">%1$d Videos</string>
+    <string name="common_file_will_download">El archivo sera descargado, por favor espera.</string>
 
 </resources>
