@@ -125,6 +125,7 @@
     <string name="exception.message_generic">Something went wrong, please try again.</string>
 
     <string name="settings.sync_files">Sync files</string>
+    <string name="settings.videoOverWifiOnly">Video over Wifi Only</string>
     <string name="settings.version">Version %1$s</string>
 
     <string name="sync.title">Sync Files</string>

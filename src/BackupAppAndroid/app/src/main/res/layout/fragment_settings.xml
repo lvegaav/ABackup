@@ -48,12 +48,24 @@
                 android:layout_marginTop="23dp"
                 android:background="@drawable/rounded_black_background"
                 android:clickable="true"/>
+            <LinearLayout
+                android:id="@+id/wifi_options"
+                android:layout_below="@id/tv_sync_files"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <CheckBox
+                    android:id="@+id/video_over_wifi"
+                    android:textColor="@color/white"
+                    android:text="@string/settings.videoOverWifiOnly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/rl_space_description"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_below="@id/tv_sync_files"
+                android:layout_below="@id/wifi_options"
                 android:orientation="horizontal"
                 android:weightSum="4">
 
