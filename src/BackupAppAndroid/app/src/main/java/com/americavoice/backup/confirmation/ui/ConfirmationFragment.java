@@ -23,6 +23,8 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
+import com.americavoice.backup.utils.FirebaseUtils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -80,11 +82,6 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
         if (context instanceof Listener) {
             this.mListener = (Listener) context;
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -222,6 +219,8 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
             }
 
             if (success) {
+                FirebaseUtils.createLoginEvent(mFirebaseAnalytics,
+                        FirebaseUtils.LOGIN_METHOD_PHONE_NUMBER);
                 getActivity().finish();
             } else {
                 showToastMessage("Couldn't create the account, please try again");
