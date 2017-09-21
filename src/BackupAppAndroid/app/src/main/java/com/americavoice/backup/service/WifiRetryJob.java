@@ -25,7 +25,7 @@ public class WifiRetryJob extends JobService {
     private static final String TAG = "WifiRetryJob";
 
     static {
-        JOB_INFO = new JobInfo.Builder(JobIds.PHOTOS_CONTENT_JOB,
+        JOB_INFO = new JobInfo.Builder(JobIds.WIFI_RETRY_JOB,
                 new ComponentName("com.americavoice.backup", WifiRetryJob.class.getName()))
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
             .build();

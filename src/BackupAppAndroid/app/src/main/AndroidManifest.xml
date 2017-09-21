@@ -147,6 +147,8 @@
         </service>
         <service android:name=".service.PhotosContentJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service android:name=".service.WifiRetryJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name=".service.OperationsService" />
         <service android:name=".files.service.FileDownloader" />
         <service android:name=".files.service.FileUploader" />

@@ -128,16 +128,18 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
             ContactsBackupFragment.startContactBackupJob(account);
             CallsBackupFragment.startCallBackupJob(account);
             SmsBackupFragment.startSmsBackupJob(account);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                schedulePhotos();
-                scheduleWifiJob();
-            }
             mCurrentAccount = account;
             mAccountWasSet = true;
             mAccountWasRestored = (savedAccount || mCurrentAccount.equals(oldAccount));
 
         } else {
             swapToDefaultAccount();
+        }
+        if (mAccountWasSet) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                schedulePhotos();
+                scheduleWifiJob();
+            }
         }
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
