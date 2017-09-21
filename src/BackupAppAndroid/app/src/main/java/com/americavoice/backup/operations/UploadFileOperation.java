@@ -299,6 +299,7 @@ public class UploadFileOperation extends SyncOperation {
         File expectedFile = null;
 
         try {
+            Log_OC.v(TAG, "Starting upload process validations");
 
             /// Check that connectivity conditions are met and delays the upload otherwise
             if (delayForWifi()) {
@@ -488,14 +489,9 @@ public class UploadFileOperation extends SyncOperation {
      * @return      'True' if the upload was delayed until WiFi connectivity is available, 'false' otherwise.
      */
     private boolean delayForWifi() {
-        boolean delayInstantPicture = (
-            isInstantPicture() &&  PreferenceManager.instantPictureUploadViaWiFiOnly(mContext)
-        );
-        boolean delayInstantVideo = (
-            isInstantVideo() && PreferenceManager.instantVideoUploadViaWiFiOnly(mContext)
-        );
+        boolean delayInstantMedia = !PreferenceManager.instantUploadWithMobileData(mContext);
         return (
-            (delayInstantPicture || delayInstantVideo) &&
+            (delayInstantMedia ) &&
             !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(mContext)
         );
     }
