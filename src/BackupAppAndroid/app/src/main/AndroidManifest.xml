@@ -145,7 +145,7 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
-        <service android:name=".service.PhotosContentJob"
+        <service android:name=".service.MediaContentJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service android:name=".service.WifiRetryJob"
             android:permission="android.permission.BIND_JOB_SERVICE" />

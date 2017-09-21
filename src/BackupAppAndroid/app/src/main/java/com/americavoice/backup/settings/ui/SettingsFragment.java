@@ -19,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
@@ -29,7 +28,7 @@ import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
-import com.americavoice.backup.service.PhotosContentJob;
+import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.utils.DisplayUtils;
@@ -44,7 +43,6 @@ import com.github.mikephil.charting.utils.MPPointF;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -291,7 +289,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         AccountUtils.removeAccount(getContext(), account);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             // cancel job makes the isScheduled validation
-            PhotosContentJob.cancelJob(getContext());
+            MediaContentJob.cancelJob(getContext());
             WifiRetryJob.cancelJob(getContext());
         }
         mPresenter.logout();

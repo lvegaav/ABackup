@@ -5,11 +5,9 @@ import android.Manifest;
 import android.accounts.Account;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
-import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -19,7 +17,6 @@ import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
@@ -37,7 +34,7 @@ import java.util.List;
  * Example stub job to monitor when there is a change to photos in the media provider.
  */
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class PhotosContentJob extends JobService {
+public class MediaContentJob extends JobService {
     // The root URI of the media provider, to monitor for generic changes to its content.
     static final Uri MEDIA_URI = Uri.parse("content://" + MediaStore.AUTHORITY + "/");
 
@@ -58,11 +55,11 @@ public class PhotosContentJob extends JobService {
 
     // A pre-built JobInfo we use for scheduling our job.
     static final JobInfo JOB_INFO;
-    private static final String TAG = "PhotosContentJob";
+    private static final String TAG = "MediaContentJob";
 
     static {
         JobInfo.Builder builder = new JobInfo.Builder(JobIds.PHOTOS_CONTENT_JOB,
-                new ComponentName("com.americavoice.backup", PhotosContentJob.class.getName()));
+                new ComponentName("com.americavoice.backup", MediaContentJob.class.getName()));
         // Look for specific changes to images in the provider.
         builder
                 .addTriggerContentUri(new JobInfo.TriggerContentUri(
@@ -80,7 +77,7 @@ public class PhotosContentJob extends JobService {
     final Handler mHandler = new Handler();
     final Runnable mWorker = new Runnable() {
         @Override public void run() {
-            scheduleJob(PhotosContentJob.this);
+            scheduleJob(MediaContentJob.this);
             jobFinished(mRunningParams, false);
         }
     };
@@ -188,7 +185,7 @@ public class PhotosContentJob extends JobService {
         } else {
             sb.append("(No photos content)");
         }
-        Log.i("PhotosContentJob", sb.toString());
+        Log.i("MediaContentJob", sb.toString());
 
         // We will emulate taking some time to do this work, so we can see batching happen.
         mHandler.postDelayed(mWorker, 10*1000);
