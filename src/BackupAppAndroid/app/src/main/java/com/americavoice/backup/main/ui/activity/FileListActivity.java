@@ -13,6 +13,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -180,10 +182,10 @@ public class FileListActivity extends FileActivity implements HasComponent<AppCo
     }
 
     @Override
-    public void finishActivityActionMode()
-    {
+    public void finishActivityActionMode() {
         mToolbar.setVisibility(View.VISIBLE);
     }
+
     @Override
     public void onBackPressed() {
         EventBus.getDefault().post(new OnBackPress());

@@ -240,19 +240,38 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
             @Override
             public void onItemLongClick(View view, int position) {
-                if (!isMultiSelect) {
-                    mAdapter.resetSelectedCollection();
-                    isMultiSelect = true;
-
-                    if (mActionMode == null) {
-                        mActionMode = mListener.startActivityActionMode(mActionModeCallback);
-                    }
-                }
-
+                startActionMode();
                 multiSelect(position);
 
             }
         }));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.file_list_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.select_files:
+                startActionMode();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void startActionMode() {
+        if (!isMultiSelect) {
+            mAdapter.resetSelectedCollection();
+            isMultiSelect = true;
+            if (mActionMode == null) {
+                mActionMode = mListener.startActivityActionMode(mActionModeCallback);
+            }
+        }
     }
 
     @Override
@@ -297,6 +316,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
             if (transactionModelCollection != null) {
                 this.mAdapter.setTransactionCollection(transactionModelCollection);
             }
+            setHasOptionsMenu(true);
         }
 
     }
@@ -335,13 +355,9 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     @Override
     public void showUploading() {
-        hideLoading();
-        mProgress = ProgressDialog.show(getActivity(),
-                getResources().getString(R.string.app_name),
-                getResources().getString(R.string.common_uploading),
-                true,
-                false);
+        showToastMessage(getString(R.string.common_uploading));
     }
+
     @Override
     public void showDownloading() {
         hideLoading();
@@ -375,7 +391,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     public void notifyDataSetChanged() {
         this.mAdapter.notifyDataSetChanged();
     }
-
 
     private void loadList() {
         mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");
@@ -532,10 +547,10 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
         @Override
         public void onDestroyActionMode(ActionMode mode) {
+            mListener.finishActivityActionMode();
+            mActionMode = null;
             mAdapter.resetSelectedCollection();
             isMultiSelect = false;
-            mActionMode = null;
-            mListener.finishActivityActionMode();
         }
     };
 
@@ -544,14 +559,17 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         if (mActionMode != null) {
             mAdapter.addOrRemoveSelectedItem(position);
 
-            if (mAdapter.getSelectedCollection().size() > 0)
-                mActionMode.setTitle("" + mAdapter.getSelectedCollection().size());
+            if (mAdapter.getSelectedCollection().size() > 0) {
+                int size = mAdapter.getSelectedCollection().size();
+                mActionMode.setTitle(String.valueOf(size));
+                Toast.makeText(getActivity(), (size + " selected"), Toast.LENGTH_SHORT).show();
+            }
             else
                 mActionMode.setTitle("");
         }
     }
 
-    /**
+    /**s
      * Implements callback methods for service binding.
      */
     private class OperationsServiceConnection implements ServiceConnection {
@@ -593,19 +611,17 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         }
     }
 
-    private void delete(OCFile file, Account account)
-    {
+    private void delete(OCFile file, Account account) {
+        showToastMessage(getString(R.string.common_deleting));
         Intent service = new Intent(getContext(), OperationsService.class);
         service.setAction(OperationsService.ACTION_REMOVE);
         service.putExtra(OperationsService.EXTRA_ACCOUNT, account);
         service.putExtra(OperationsService.EXTRA_REMOTE_PATH, file.getRemotePath());
         service.putExtra(OperationsService.EXTRA_REMOVE_ONLY_LOCAL, false);
         operationsServiceBinder.queueNewOperation(service);
-        //Remove
-        mAdapter.removeItem(file);
     }
-    private void download(OCFile file, Account account)
-    {
+
+    private void download(OCFile file, Account account) {
         if (!file.isFolder()) {
             Intent intent = new Intent(getContext(), OperationsService.class);
             intent.setAction(OperationsService.ACTION_SYNC_FILE);
@@ -624,6 +640,18 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     @Override
     public void onRemoteOperationFinish(RemoteOperation remoteOperation, RemoteOperationResult remoteOperationResult) {
+        if (remoteOperation instanceof RemoveFileOperation) {
+            if (mAdapter != null) {
+                mAdapter.removeItem(((RemoveFileOperation) remoteOperation).getFile());
+                mAdapter.notifyDataSetChanged();
+                if (mAdapter.getItemCount() <= 0) {
+                    renderEmpty();
+                }
+                if (mPresenter != null) {
+                    mPresenter.refreshTotal(mAdapter.getItemCount());
+                }
+            }
+        }
     }
 
 }
