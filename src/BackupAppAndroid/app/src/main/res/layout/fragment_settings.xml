@@ -288,7 +288,7 @@
                 android:layout_centerHorizontal="true"
                 android:textColor="@android:color/white"
                 android:layout_marginTop="30dp"
-                android:text="@string/common_logout"/>
+                android:text="@string/common.logout"/>
             <TextView
                 android:id="@+id/tv_version_name"
                 android:padding="0dp"

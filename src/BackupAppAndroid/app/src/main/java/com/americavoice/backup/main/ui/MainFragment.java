@@ -265,7 +265,7 @@ public class MainFragment extends BaseFragment implements MainView {
     }
 
     private void setBadge(TextView tv, int size) {
-        if (size <= 0) return;
+        if (size < 0) return;
         if (size > 999) size = 999;
 
         tv.setVisibility(View.VISIBLE);
