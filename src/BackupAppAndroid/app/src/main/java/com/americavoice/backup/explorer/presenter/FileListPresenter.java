@@ -84,12 +84,9 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     public void onFileUpload(String path) {
 
         mView.hideRetry();
-//        mView.showUploading();
+        mView.showUploading();
 
         File upFile = new File(path);
-//        if (!upFile.exists()) {
-//            mView.hideDLoading();
-//        }
 
         Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
 
@@ -104,11 +101,6 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
                 true,
                 UploadFileOperation.CREATED_BY_USER
         );
-
-        /*UploadRemoteFileOperation uploadOperation =
-                new UploadRemoteFileOperation(upFile.getAbsolutePath(), mPath + FileUtils.PATH_SEPARATOR + upFile.getName(), mimeType, timeStamp);
-        uploadOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);*/
-
     }
     /**
      * Initializes the presenter
@@ -151,11 +143,11 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     public void onRemoteOperationFinish(RemoteOperation operation, RemoteOperationResult result) {
         mView.hideLoading();
         mView.hideDLoading();
+
         if (!result.isSuccess()) {
             mView.showRetry();
         } else if (operation instanceof ReadRemoteFolderOperation) {
             onSuccessfulRefresh((ReadRemoteFolderOperation)operation, result);
-
         } else if (operation instanceof DownloadRemoteFileOperation) {
             onSuccessfulDownload((DownloadRemoteFileOperation)operation, result);
         }  else if (operation instanceof UploadRemoteFileOperation) {
@@ -182,8 +174,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
             for(Object obj: result.getData()) {
                 RemoteFile remoteFile = (RemoteFile) obj;
                 OCFile file = mStorageManager.getFileByPath(remoteFile.getRemotePath());
-                if (file == null)
-                {
+                if (file == null) {
                     file = FileStorageUtils.fillOCFile(remoteFile);
                     mStorageManager.saveFile(file);
                 }
@@ -191,26 +182,18 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
                     continue;
                 files.add(file);
             }
-
+            refreshTotal(files.size());
             if (files.size() > 0) {
-                refreshTotal(files.size());
                 mView.renderList(files);
             } else {
                 mView.renderEmpty();
             }
-
-
-
         } else {
             mView.renderEmpty();
         }
-
-
-
     }
 
-    private void refreshTotal(int size)
-    {
+    public void refreshTotal(int size) {
         // store total
         final Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(mContext.getContentResolver());

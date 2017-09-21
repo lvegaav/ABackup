@@ -9,10 +9,12 @@
     <string name="common.getting_server_info">Obteniendo información del servidor</string>
     <string name="common.uploading">Cargando</string>
     <string name="common.downloading">Descargando</string>
+    <string name="common.deleting">Eliminando</string>
     <string name="common.download">Descargar</string>
     <string name="common.delete">Eliminar</string>
     <string name="common.empty">Vacío</string>
-    <string name="common_logout">Cerrar Sesión</string>
+    <string name="common.logout">Cerrar Sesión</string>
+    <string name="common.select">Seleccionar</string>
 
     <string name="network.error_socket_exception">Un error ocurrió en la conexión con el servidor.</string>
     <string name="network.error_socket_timeout_exception">Un error ocurrió mientras esperamos al servidor. No se pudo completar la operación.</string>
