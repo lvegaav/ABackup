@@ -58,6 +58,7 @@ import com.americavoice.backup.main.ui.activity.FileListActivity;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.operations.UploadFileOperation;
+import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ErrorMessageAdapter;
 import com.americavoice.backup.utils.NotificationUtils;
@@ -972,6 +973,11 @@ public class FileUploader extends Service
 
                 /// notify result
                 notifyUploadResult(mCurrentUpload, uploadResult);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    if (uploadResult != null && uploadResult.getCode() == ResultCode.DELAYED_FOR_WIFI) {
+                        WifiRetryJob.scheduleJob(getApplicationContext());
+                    }
+                }
 
                 sendBroadcastUploadFinished(mCurrentUpload, uploadResult, removeResult.second);
 

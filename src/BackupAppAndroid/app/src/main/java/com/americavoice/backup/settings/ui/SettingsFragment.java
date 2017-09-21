@@ -14,19 +14,25 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
-import com.americavoice.backup.service.PhotosContentJob;
+import com.americavoice.backup.service.MediaContentJob;
+import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.github.mikephil.charting.animation.Easing;
@@ -37,9 +43,9 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.MPPointF;
+import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,6 +57,7 @@ import javax.inject.Inject;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
@@ -89,6 +96,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     PieChart chartPie;
     @BindView(R.id.tv_version_name)
     TextView tvVersionName;
+
+    @BindView(R.id.use_mobile_data)
+    SwitchCompat mUseMobileData;
 
     @BindString(R.string.main_photos)
     String photos;
@@ -168,6 +178,10 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         // enable rotation of the chart by touch
         chartPie.setRotationEnabled(true);
         chartPie.setHighlightPerTapEnabled(true);
+
+        // checkbox initial values
+        boolean useMobileData = PreferenceManager.instantUploadWithMobileData(getContext());
+        mUseMobileData.setChecked(useMobileData);
         return fragmentView;
     }
 
@@ -272,9 +286,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
         AccountUtils.removeAccount(getContext(), account);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (PhotosContentJob.isScheduled(getContext())) {
-                PhotosContentJob.cancelJob(getContext());
-            }
+            // cancel job makes the isScheduled validation
+            MediaContentJob.cancelJob(getContext());
+            WifiRetryJob.cancelJob(getContext());
         }
         mPresenter.logout();
         ActivityCompat.finishAffinity(getActivity());
@@ -367,6 +381,13 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         chartPie.spin(2000, 0, 360, Easing.EasingOption.EaseInOutQuad);
 
     }
+
+    @OnCheckedChanged(R.id.use_mobile_data)
+    public void onChangePhotoOverWifi() {
+        Log_OC.d("Upload using mobile data", "" + mUseMobileData.isChecked());
+        PreferenceManager.setInstantUploadUsingMobileData(getContext(), mUseMobileData.isChecked());
+    }
+
 
     @OnClick(R.id.iv_logo)
     public void onLogo() {

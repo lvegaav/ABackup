@@ -5,11 +5,9 @@ import android.Manifest;
 import android.accounts.Account;
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
-import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -19,7 +17,6 @@ import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
@@ -27,6 +24,7 @@ import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.utils.FileStorageUtils;
+import com.americavoice.backup.utils.JobSchedulerUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.util.ArrayList;
@@ -36,7 +34,7 @@ import java.util.List;
  * Example stub job to monitor when there is a change to photos in the media provider.
  */
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class PhotosContentJob extends JobService {
+public class MediaContentJob extends JobService {
     // The root URI of the media provider, to monitor for generic changes to its content.
     static final Uri MEDIA_URI = Uri.parse("content://" + MediaStore.AUTHORITY + "/");
 
@@ -57,15 +55,19 @@ public class PhotosContentJob extends JobService {
 
     // A pre-built JobInfo we use for scheduling our job.
     static final JobInfo JOB_INFO;
-    private static final String TAG = "PhotosContentJob";
+    private static final String TAG = "MediaContentJob";
 
     static {
         JobInfo.Builder builder = new JobInfo.Builder(JobIds.PHOTOS_CONTENT_JOB,
-                new ComponentName("com.americavoice.backup", PhotosContentJob.class.getName()));
+                new ComponentName("com.americavoice.backup", MediaContentJob.class.getName()));
         // Look for specific changes to images in the provider.
-        builder.addTriggerContentUri(new JobInfo.TriggerContentUri(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS));
+        builder
+                .addTriggerContentUri(new JobInfo.TriggerContentUri(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS))
+                .addTriggerContentUri(new JobInfo.TriggerContentUri(
+                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                        JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS));
         // Also look for general reports of changes in the overall provider.
         builder.addTriggerContentUri(new JobInfo.TriggerContentUri(MEDIA_URI, 0));
         JOB_INFO = builder.build();
@@ -75,7 +77,7 @@ public class PhotosContentJob extends JobService {
     final Handler mHandler = new Handler();
     final Runnable mWorker = new Runnable() {
         @Override public void run() {
-            scheduleJob(PhotosContentJob.this);
+            scheduleJob(MediaContentJob.this);
             jobFinished(mRunningParams, false);
         }
     };
@@ -84,30 +86,17 @@ public class PhotosContentJob extends JobService {
 
     // Schedule this job, replace any existing one.
     public static void scheduleJob(Context context) {
-        JobScheduler js = context.getSystemService(JobScheduler.class);
-        js.schedule(JOB_INFO);
-        Log.i(TAG, "JOB SCHEDULED!");
+        JobSchedulerUtils.scheduleJob(context, JOB_INFO);
     }
 
     // Check whether this job is currently scheduled.
     public static boolean isScheduled(Context context) {
-        JobScheduler js = context.getSystemService(JobScheduler.class);
-        List<JobInfo> jobs = js.getAllPendingJobs();
-        if (jobs == null) {
-            return false;
-        }
-        for (int i=0; i<jobs.size(); i++) {
-            if (jobs.get(i).getId() == JobIds.PHOTOS_CONTENT_JOB) {
-                return true;
-            }
-        }
-        return false;
+        return JobSchedulerUtils.isScheduled(context, JobIds.PHOTOS_CONTENT_JOB);
     }
 
     // Cancel this job, if currently scheduled.
     public static void cancelJob(Context context) {
-        JobScheduler js = context.getSystemService(JobScheduler.class);
-        js.cancel(JobIds.PHOTOS_CONTENT_JOB);
+        JobSchedulerUtils.cancelJob(context, JobIds.PHOTOS_CONTENT_JOB);
     }
 
     @Override
@@ -196,7 +185,7 @@ public class PhotosContentJob extends JobService {
         } else {
             sb.append("(No photos content)");
         }
-        Log.i("PhotosContentJob", sb.toString());
+        Log.i("MediaContentJob", sb.toString());
 
         // We will emulate taking some time to do this work, so we can see batching happen.
         mHandler.postDelayed(mWorker, 10*1000);
