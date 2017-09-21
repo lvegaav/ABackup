@@ -124,6 +124,8 @@
 
     <string name="exception.message_generic">Something went wrong, please try again.</string>
 
+    <string name="settings.title">Info &amp; Settings</string>
+    <string name="settings.subtitle">Tap to configure or info</string>
     <string name="settings.sync_files">Sync files</string>
     <string name="settings.version">Version %1$s</string>
 

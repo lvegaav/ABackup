@@ -117,6 +117,8 @@
 
     <string name="exception.message_generic">Ups, algo salió mal, por favor intenta de nuevo.</string>
 
+    <string name="settings.title">Información y opciones</string>
+    <string name="settings.subtitle">Presione para configurar</string>
     <string name="settings.sync_files">Sincronizar</string>
     <string name="settings.version">Versión %1$s</string>
 
