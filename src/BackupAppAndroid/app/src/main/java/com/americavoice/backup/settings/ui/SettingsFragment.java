@@ -30,6 +30,7 @@ import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.service.PhotosContentJob;
+import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.github.mikephil.charting.animation.Easing;
@@ -289,9 +290,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
         AccountUtils.removeAccount(getContext(), account);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (PhotosContentJob.isScheduled(getContext())) {
-                PhotosContentJob.cancelJob(getContext());
-            }
+            // cancel job makes the isScheduled validation
+            PhotosContentJob.cancelJob(getContext());
+            WifiRetryJob.cancelJob(getContext());
         }
         mPresenter.logout();
         ActivityCompat.finishAffinity(getActivity());

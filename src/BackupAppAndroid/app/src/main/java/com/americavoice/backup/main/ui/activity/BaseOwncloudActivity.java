@@ -18,6 +18,7 @@ import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.service.PhotosContentJob;
+import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -129,6 +130,7 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
             SmsBackupFragment.startSmsBackupJob(account);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 schedulePhotos();
+                scheduleWifiJob();
             }
             mCurrentAccount = account;
             mAccountWasSet = true;
@@ -141,6 +143,11 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected void schedulePhotos() {
         PhotosContentJob.scheduleJob(this);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    protected void scheduleWifiJob() {
+        WifiRetryJob.scheduleJob(this);
     }
 
     /**

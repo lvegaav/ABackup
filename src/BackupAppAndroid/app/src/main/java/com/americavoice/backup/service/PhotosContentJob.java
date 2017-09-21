@@ -27,6 +27,7 @@ import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.utils.FileStorageUtils;
+import com.americavoice.backup.utils.JobSchedulerUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.util.ArrayList;
@@ -84,30 +85,17 @@ public class PhotosContentJob extends JobService {
 
     // Schedule this job, replace any existing one.
     public static void scheduleJob(Context context) {
-        JobScheduler js = context.getSystemService(JobScheduler.class);
-        js.schedule(JOB_INFO);
-        Log.i(TAG, "JOB SCHEDULED!");
+        JobSchedulerUtils.scheduleJob(context, JOB_INFO);
     }
 
     // Check whether this job is currently scheduled.
     public static boolean isScheduled(Context context) {
-        JobScheduler js = context.getSystemService(JobScheduler.class);
-        List<JobInfo> jobs = js.getAllPendingJobs();
-        if (jobs == null) {
-            return false;
-        }
-        for (int i=0; i<jobs.size(); i++) {
-            if (jobs.get(i).getId() == JobIds.PHOTOS_CONTENT_JOB) {
-                return true;
-            }
-        }
-        return false;
+        return JobSchedulerUtils.isScheduled(context, JobIds.PHOTOS_CONTENT_JOB);
     }
 
     // Cancel this job, if currently scheduled.
     public static void cancelJob(Context context) {
-        JobScheduler js = context.getSystemService(JobScheduler.class);
-        js.cancel(JobIds.PHOTOS_CONTENT_JOB);
+        JobSchedulerUtils.cancelJob(context, JobIds.PHOTOS_CONTENT_JOB);
     }
 
     @Override
