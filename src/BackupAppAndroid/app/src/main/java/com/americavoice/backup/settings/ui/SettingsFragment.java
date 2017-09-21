@@ -14,11 +14,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
@@ -95,7 +98,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     TextView tvVersionName;
 
     @BindView(R.id.use_mobile_data)
-    CheckBox mUseMobileData;
+    SwitchCompat mUseMobileData;
 
     @BindString(R.string.main_photos)
     String photos;
