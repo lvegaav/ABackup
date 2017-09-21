@@ -119,8 +119,7 @@
 
     <string name="settings.sync_files">Sincronizar</string>
     <string name="settings.version">Versión %1$s</string>
-    <string name="settings.video_over_wifi_only">Cargar vídeo sólo con red WIFI</string>
-    <string name="settings.photo_over_wifi_only">Cargar foto sólo con red WIFI</string>
+    <string name="settings.use_mobile_data">Usar datos móviles</string>
 
     <string name="sync.title">Sincronizar Archivos</string>
     <string name="sync.sync">Sincronizar</string>

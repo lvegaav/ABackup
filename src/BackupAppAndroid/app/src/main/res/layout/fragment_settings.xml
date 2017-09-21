@@ -55,15 +55,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <CheckBox
-                    android:id="@+id/video_over_wifi"
+                    android:id="@+id/use_mobile_data"
                     android:textColor="@color/white"
-                    android:text="@string/settings.video_over_wifi_only"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <CheckBox
-                    android:id="@+id/photo_over_wifi"
-                    android:textColor="@color/white"
-                    android:text="@string/settings.photo_over_wifi_only"
+                    android:text="@string/settings.use_mobile_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>

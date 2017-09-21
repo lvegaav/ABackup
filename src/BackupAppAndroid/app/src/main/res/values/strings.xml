@@ -125,8 +125,7 @@
     <string name="exception.message_generic">Something went wrong, please try again.</string>
 
     <string name="settings.sync_files">Sync files</string>
-    <string name="settings.video_over_wifi_only">Video over Wifi Only</string>
-    <string name="settings.photo_over_wifi_only">Photo over Wifi Only</string>
+    <string name="settings.use_mobile_data">Use mobile data</string>
     <string name="settings.version">Version %1$s</string>
 
     <string name="sync.title">Sync Files</string>

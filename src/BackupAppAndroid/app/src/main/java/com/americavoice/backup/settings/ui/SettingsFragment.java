@@ -94,11 +94,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     @BindView(R.id.tv_version_name)
     TextView tvVersionName;
 
-    @BindView(R.id.photo_over_wifi)
-    CheckBox mPhotoOverWifi;
-
-    @BindView(R.id.video_over_wifi)
-    CheckBox mVideoOverWifi;
+    @BindView(R.id.use_mobile_data)
+    CheckBox mUseMobileData;
 
     @BindString(R.string.main_photos)
     String photos;
@@ -180,10 +177,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         chartPie.setHighlightPerTapEnabled(true);
 
         // checkbox initial values
-        boolean pictureWifiOnly = PreferenceManager.instantPictureUploadViaWiFiOnly(getContext());
-        boolean videoWifiOnly = PreferenceManager.instantVideoUploadViaWiFiOnly(getContext());
-        mPhotoOverWifi.setChecked(pictureWifiOnly);
-        mVideoOverWifi.setChecked(videoWifiOnly);
+        boolean useMobileData = PreferenceManager.instantUploadWithMobileData(getContext());
+        mUseMobileData.setChecked(useMobileData);
         return fragmentView;
     }
 
@@ -384,16 +379,10 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     }
 
-    @OnCheckedChanged(R.id.video_over_wifi)
-    public void onChangeVideoOverWifi() {
-        Log_OC.d("Video o/wifi", "" + mVideoOverWifi.isChecked());
-        PreferenceManager.setInstantVideoUploadViaWifiOnly(getContext(), mVideoOverWifi.isChecked());
-    }
-
-    @OnCheckedChanged(R.id.photo_over_wifi)
+    @OnCheckedChanged(R.id.use_mobile_data)
     public void onChangePhotoOverWifi() {
-        Log_OC.d("Photo o/wifi", "" + mPhotoOverWifi.isChecked());
-        PreferenceManager.setInstantPictureUploadViaWifiOnly(getContext(), mPhotoOverWifi.isChecked());
+        Log_OC.d("Upload using mobile data", "" + mUseMobileData.isChecked());
+        PreferenceManager.setInstantUploadUsingMobileData(getContext(), mUseMobileData.isChecked());
     }
 
 
