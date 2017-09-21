@@ -44,7 +44,6 @@ public abstract class PreferenceManager {
     private static final String PREF__INSTANT_VIDEO_UPLOADING = "instant_video_uploading";
     private static final String PREF__INSTANT_UPLOAD_PATH_USE_SUBFOLDERS = "instant_upload_path_use_subfolders";
     private static final String PREF__UPLOAD_ON_MOBILE_DATA = "instant_upload_on_wifi";
-//    private static final String PREF__INSTANT_VIDEO_UPLOAD_ON_WIFI = "instant_video_upload_on_wifi";
     private static final String PREF__INSTANT_VIDEO_UPLOAD_PATH_USE_SUBFOLDERS = "instant_video_upload_path_use_subfolders";
     private static final String PREF__LEGACY_CLEAN = "legacyClean";
     private static final String PREF__AUTO_UPLOAD_UPDATE_PATH = "autoUploadPathUpdate";
