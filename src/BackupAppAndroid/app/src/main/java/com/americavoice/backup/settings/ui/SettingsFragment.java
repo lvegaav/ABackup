@@ -394,7 +394,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     @OnCheckedChanged(R.id.photo_over_wifi)
     public void onChangePhotoOverWifi() {
         Log_OC.d("Photo o/wifi", "" + mPhotoOverWifi.isChecked());
-        PreferenceManager.setInstantVideoUploadViaWifiOnly(getContext(), mPhotoOverWifi.isChecked());
+        PreferenceManager.setInstantPictureUploadViaWifiOnly(getContext(), mPhotoOverWifi.isChecked());
     }
 
 
