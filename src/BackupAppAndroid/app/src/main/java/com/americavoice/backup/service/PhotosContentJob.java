@@ -64,9 +64,13 @@ public class PhotosContentJob extends JobService {
         JobInfo.Builder builder = new JobInfo.Builder(JobIds.PHOTOS_CONTENT_JOB,
                 new ComponentName("com.americavoice.backup", PhotosContentJob.class.getName()));
         // Look for specific changes to images in the provider.
-        builder.addTriggerContentUri(new JobInfo.TriggerContentUri(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS));
+        builder
+                .addTriggerContentUri(new JobInfo.TriggerContentUri(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS))
+                .addTriggerContentUri(new JobInfo.TriggerContentUri(
+                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                        JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS));
         // Also look for general reports of changes in the overall provider.
         builder.addTriggerContentUri(new JobInfo.TriggerContentUri(MEDIA_URI, 0));
         JOB_INFO = builder.build();
