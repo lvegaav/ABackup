@@ -9,11 +9,21 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.shapes.RoundRectShape;
+import android.graphics.drawable.shapes.Shape;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.SwitchCompat;
@@ -100,6 +110,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     @BindView(R.id.use_mobile_data)
     SwitchCompat mUseMobileData;
 
+    @BindView(R.id.ratios)
+    View mRatios;
+
     @BindString(R.string.main_photos)
     String photos;
     @BindString(R.string.main_videos)
@@ -182,7 +195,36 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         // checkbox initial values
         boolean useMobileData = PreferenceManager.instantUploadWithMobileData(getContext());
         mUseMobileData.setChecked(useMobileData);
+        createRatioBar();
         return fragmentView;
+    }
+
+    private void createRatioBar() {
+        //TODO:
+        ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
+            @Override
+            public Shader resize(int i, int i1) {
+                LinearGradient lg = new LinearGradient(0, 0, mRatios.getWidth(), 0,
+                        new int[]{
+                                ContextCompat.getColor(getContext(), R.color.colorAccent),
+                                ContextCompat.getColor(getContext(), R.color.colorAccent),
+                                ContextCompat.getColor(getContext(), R.color.white),
+                                ContextCompat.getColor(getContext(), R.color.white)},
+                        new float[]{0, 0.5f, 0.5f, 1},
+                        Shader.TileMode.REPEAT);
+
+                return lg;
+            }
+        };
+        PaintDrawable paintDrawable = new PaintDrawable();
+        paintDrawable.setShape(new RoundRectShape(new float[]{100,100,100,100,100,100,100,100}, null, null));
+        paintDrawable.setShaderFactory(sf);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            mRatios.setBackgroundDrawable(paintDrawable);
+        } else {
+            mRatios.setBackground(paintDrawable);
+        }
+
     }
 
     @Override

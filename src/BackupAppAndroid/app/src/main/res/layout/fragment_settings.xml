@@ -232,47 +232,11 @@
 
                 </LinearLayout>
             </LinearLayout>
-            <LinearLayout
-                android:orientation="horizontal"
+            <View
+                android:id="@+id/ratios"
                 android:layout_below="@id/rl_space_description"
                 android:layout_width="match_parent"
-                android:layout_height="25dp">
-                <com.flyco.roundview.RoundTextView
-                    android:id="@+id/pictures_ratio"
-                    app:rv_cornerRadius_TL="50dp"
-                    app:rv_cornerRadius_BL="50dp"
-                    app:rv_backgroundColor="@color/white"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent" />
-                <View
-                    android:id="@+id/videos_ratio"
-                    android:background="@color/list_divider_background"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent" />
-                <View
-                    android:id="@+id/contacts_ratio"
-                    android:background="@color/list_divider_background"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent" />
-                <View
-                    android:id="@+id/documents_ratio"
-                    android:background="@color/list_divider_background"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent" />
-                <View
-                    android:id="@+id/sms_ratio"
-                    android:background="@color/list_divider_background"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent" />
-                <com.flyco.roundview.RoundTextView
-                    android:id="@+id/calls_ratio"
-                    app:rv_cornerRadius_TR="50dp"
-                    app:rv_cornerRadius_BR="50dp"
-                    app:rv_backgroundColor="@color/colorAccent"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent" />
-
-            </LinearLayout>
+                android:layout_height="50dp" />
         </RelativeLayout>
 
         <RelativeLayout
