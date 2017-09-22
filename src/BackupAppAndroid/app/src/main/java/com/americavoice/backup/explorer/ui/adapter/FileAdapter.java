@@ -5,8 +5,13 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
 import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,7 +118,16 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         }
 
         if (model.isDown()) {
-            holder.ivLocalFileIndicator.setImageResource(R.drawable.ic_photo_from_cloud);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Drawable photoFromCloud = ContextCompat.getDrawable(mContext, R.drawable.ic_photo_from_cloud);
+                holder.ivLocalFileIndicator.setImageDrawable(photoFromCloud);
+            } else {
+                Drawable photoFromCloud = AppCompatDrawableManager.get().getDrawable(mContext, R.drawable.ic_photo_from_cloud);
+                holder.ivLocalFileIndicator.setImageDrawable(photoFromCloud);
+            }
+
+
             holder.ivLocalFileIndicator.setVisibility(View.VISIBLE);
         } else
         {

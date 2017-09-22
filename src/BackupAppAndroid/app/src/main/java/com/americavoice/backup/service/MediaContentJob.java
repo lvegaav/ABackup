@@ -25,6 +25,7 @@ import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.utils.FileStorageUtils;
 import com.americavoice.backup.utils.JobSchedulerUtils;
+import com.crashlytics.android.Crashlytics;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class MediaContentJob extends JobService {
 
     // A pre-built JobInfo we use for scheduling our job.
     static final JobInfo JOB_INFO;
-    private static final String TAG = "MediaContentJob";
+    private static final String TAG = MediaContentJob.class.getName();
 
     static {
         JobInfo.Builder builder = new JobInfo.Builder(JobIds.PHOTOS_CONTENT_JOB,
@@ -185,7 +186,7 @@ public class MediaContentJob extends JobService {
         } else {
             sb.append("(No photos content)");
         }
-        Log.i("MediaContentJob", sb.toString());
+        Log.i(TAG, sb.toString());
 
         // We will emulate taking some time to do this work, so we can see batching happen.
         mHandler.postDelayed(mWorker, 10*1000);
@@ -199,66 +200,71 @@ public class MediaContentJob extends JobService {
     }
 
     private void handleNewPictureAction(Context context, Uri fileUri) {
-        Cursor c = null;
-        String file_path = null;
-        String file_name = null;
-        String mime_type = null;
-        long date_taken = 0;
+        try {
+            Cursor c = null;
+            String file_path = null;
+            String file_name = null;
+            String mime_type = null;
+            long date_taken = 0;
 
-        Log_OC.i(TAG, "New photo received");
+            Log_OC.i(TAG, "New photo received");
 
-        Account account = AccountUtils.getCurrentOwnCloudAccount(context);
-        if (account == null) {
-            Log_OC.w(TAG, "No account found for instant upload, aborting");
-            return;
-        }
-
-        String[] CONTENT_PROJECTION = {
-                MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.MIME_TYPE, MediaStore.Images.Media.SIZE};
-
-        // if < Jelly Bean permission must be accepted during installation
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
-
-            if (android.content.pm.PackageManager.PERMISSION_GRANTED != permissionCheck) {
-                Log_OC.w(TAG, "Read external storage permission isn't granted, aborting");
+            Account account = AccountUtils.getCurrentOwnCloudAccount(context);
+            if (account == null) {
+                Log_OC.w(TAG, "No account found for instant upload, aborting");
                 return;
             }
-        }
 
-        c = context.getContentResolver().query(fileUri, CONTENT_PROJECTION, null, null, null);
-        if (c != null) {
-            if (!c.moveToFirst()) {
-                Log_OC.e(TAG, "Couldn't resolve given uri: " + fileUri);
+            String[] CONTENT_PROJECTION = {
+                    MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.MIME_TYPE, MediaStore.Images.Media.SIZE};
+
+            // if < Jelly Bean permission must be accepted during installation
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                if (android.content.pm.PackageManager.PERMISSION_GRANTED != permissionCheck) {
+                    Log_OC.w(TAG, "Read external storage permission isn't granted, aborting");
+                    return;
+                }
+            }
+
+            c = context.getContentResolver().query(fileUri, CONTENT_PROJECTION, null, null, null);
+            if (c != null) {
+                if (!c.moveToFirst()) {
+                    Log_OC.e(TAG, "Couldn't resolve given uri: " + fileUri);
+                    return;
+                }
+                file_path = c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA));
+                file_name = c.getString(c.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
+                mime_type = c.getString(c.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
+                date_taken = System.currentTimeMillis();
+                c.close();
+            } else {
                 return;
             }
-            file_path = c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA));
-            file_name = c.getString(c.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
-            mime_type = c.getString(c.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
-            date_taken = System.currentTimeMillis();
-            c.close();
-        } else {
-            return;
+
+            Log_OC.d(TAG, "Path: " + file_path + "");
+
+            new FileUploader.UploadRequester();
+
+            int behaviour = FileUploader.LOCAL_BEHAVIOUR_FORGET;
+            Boolean subfolderByDate = PreferenceManager.instantPictureUploadPathUseSubfolders(context);
+            String uploadPath = context.getString(R.string.files_instant_upload_photo_path);
+
+            FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+            requester.uploadNewFile(
+                    context,
+                    account,
+                    file_path,
+                    FileStorageUtils.getInstantUploadFilePath(uploadPath, file_name, date_taken, subfolderByDate),
+                    behaviour,
+                    mime_type,
+                    true,           // create parent folder if not existent
+                    UploadFileOperation.CREATED_AS_INSTANT_PICTURE
+            );
+        } catch (Exception e) {
+            Log_OC.e(TAG, e.getMessage());
+            Crashlytics.logException(e);
         }
-
-        Log_OC.d(TAG, "Path: " + file_path + "");
-
-        new FileUploader.UploadRequester();
-
-        int behaviour = FileUploader.LOCAL_BEHAVIOUR_FORGET;
-        Boolean subfolderByDate = PreferenceManager.instantPictureUploadPathUseSubfolders(context);
-        String uploadPath = context.getString(R.string.files_instant_upload_photo_path);
-
-        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
-        requester.uploadNewFile(
-                context,
-                account,
-                file_path,
-                FileStorageUtils.getInstantUploadFilePath(uploadPath, file_name, date_taken, subfolderByDate),
-                behaviour,
-                mime_type,
-                true,           // create parent folder if not existent
-                UploadFileOperation.CREATED_AS_INSTANT_PICTURE
-        );
     }
 }
