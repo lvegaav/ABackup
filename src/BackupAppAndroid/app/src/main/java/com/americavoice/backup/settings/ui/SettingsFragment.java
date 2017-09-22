@@ -105,8 +105,6 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     TextView tvVideos;
     @BindView(R.id.tv_files)
     TextView tvFiles;
-    @BindView(R.id.chart)
-    PieChart chartPie;
     @BindView(R.id.tv_version_name)
     TextView tvVersionName;
     @BindView(R.id.capacity_text)
@@ -174,28 +172,6 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
             tvSyncFiles.setCompoundDrawablesWithIntrinsicBounds(draw, null, null, null);
         }
 
-        chartPie.setUsePercentValues(true);
-        chartPie.getDescription().setEnabled(false);
-        chartPie.setExtraOffsets(5, 10, 5, 5);
-
-        chartPie.setDragDecelerationFrictionCoef(0.95f);
-
-        chartPie.setDrawHoleEnabled(true);
-        chartPie.setHoleColor(Color.WHITE);
-        chartPie.getLegend().setTextColor(Color.WHITE);
-
-        chartPie.setTransparentCircleColor(Color.WHITE);
-        chartPie.setTransparentCircleAlpha(110);
-
-        chartPie.setHoleRadius(58f);
-        chartPie.setTransparentCircleRadius(61f);
-
-        chartPie.setDrawCenterText(true);
-
-        chartPie.setRotationAngle(0);
-        // enable rotation of the chart by touch
-        chartPie.setRotationEnabled(true);
-        chartPie.setHighlightPerTapEnabled(true);
 
         // checkbox initial values
         boolean useMobileData = PreferenceManager.instantUploadWithMobileData(getContext());
@@ -406,13 +382,6 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     public void onChangePhotoOverWifi() {
         Log_OC.d("Upload using mobile data", "" + mUseMobileData.isChecked());
         PreferenceManager.setInstantUploadUsingMobileData(getContext(), mUseMobileData.isChecked());
-    }
-
-
-    @OnClick(R.id.iv_logo)
-    public void onLogo() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(com.americavoice.backup.Const.ICON_URL));
-        startActivity(browserIntent);
     }
 }
 
