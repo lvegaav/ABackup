@@ -10,10 +10,11 @@
     <color name="list_divider_background">#eee</color>
     <color name="splash_background">@color/white</color>
 
-    <color name="pictures_ratio">#000000</color>
+    <color name="photos_ratio">#000000</color>
     <color name="videos_ratio">#f00000</color>
     <color name="documents_ratio">#700000</color>
     <color name="contacts_ratio">#00f000</color>
     <color name="sms_ratio">#007000</color>
     <color name="calls_ratio">#0000f0</color>
+    <color name="available_ratio">#ffffff</color>
 </resources>

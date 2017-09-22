@@ -27,6 +27,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -195,22 +197,34 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         // checkbox initial values
         boolean useMobileData = PreferenceManager.instantUploadWithMobileData(getContext());
         mUseMobileData.setChecked(useMobileData);
-        createRatioBar();
         return fragmentView;
     }
 
-    private void createRatioBar() {
+    private void createRatioBar(List<Integer> colors, List<Float> ratios) {
         //TODO:
+        final List<Integer> barColors = new ArrayList<>();
+        List<Float> barRatios = new ArrayList<>();
+        float curRatio = 0;
+        for(int i = 0; i < colors.size(); i++) {
+            barColors.add(colors.get(i));
+            barColors.add(colors.get(i));
+            barRatios.add(curRatio);
+            curRatio += ratios.get(i);
+            barRatios.add(curRatio);
+        }
+        final int[] barColorsArray = new int[barColors.size()];
+        final float[] barRatiosArray = new float[barRatios.size()];
+        for (int i = 0; i < barColors.size(); i++) {
+            barColorsArray[i] = barColors.get(i);
+            barRatiosArray[i] = barRatios.get(i);
+        }
+
         ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
             @Override
             public Shader resize(int i, int i1) {
                 LinearGradient lg = new LinearGradient(0, 0, mRatios.getWidth(), 0,
-                        new int[]{
-                                ContextCompat.getColor(getContext(), R.color.colorAccent),
-                                ContextCompat.getColor(getContext(), R.color.colorAccent),
-                                ContextCompat.getColor(getContext(), R.color.white),
-                                ContextCompat.getColor(getContext(), R.color.white)},
-                        new float[]{0, 0.5f, 0.5f, 1},
+                        barColorsArray,
+                        barRatiosArray,
                         Shader.TileMode.REPEAT);
 
                 return lg;
@@ -355,72 +369,40 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         float videoPercent = getPercent(sizes.get(Const.Videos),total);
         float contactPercent = getPercent(sizes.get(Const.Contacts),total);
         float documentPercent = getPercent(sizes.get(Const.Documents),total);
+        float callsPercent = getPercent(sizes.get(Const.Calls),total);
+        float smsPercent = getPercent(sizes.get(Const.Sms), total);
         float availablePercent = getPercent(totalAvailable, total);
+        Log.v("percents", String.format("%s %s %s %s %s", photoPercent, videoPercent, contactPercent, documentPercent, availablePercent));
 
+//        int[] colors = new int[] {
+//                ContextCompat.getColor(getContext(), R.color.photos_ratio),
+//                ContextCompat.getColor(getContext(), R.color.videos_ratio),
+//                ContextCompat.getColor(getContext(), R.color.contacts_ratio),
+//                ContextCompat.getColor(getContext(), R.color.documents_ratio),
+//                ContextCompat.getColor(getContext(), R.color.calls_ratio),
+//                ContextCompat.getColor(getContext(), R.color.sms_ratio),
+//        };
+        List<Integer> colors = Arrays.asList(
+                ContextCompat.getColor(getContext(), R.color.photos_ratio),
+                ContextCompat.getColor(getContext(), R.color.videos_ratio),
+                ContextCompat.getColor(getContext(), R.color.contacts_ratio),
+                ContextCompat.getColor(getContext(), R.color.documents_ratio),
+                ContextCompat.getColor(getContext(), R.color.calls_ratio),
+                ContextCompat.getColor(getContext(), R.color.sms_ratio),
+                ContextCompat.getColor(getContext(), R.color.available_ratio)
+        );
+        List<Float> ratios = Arrays.asList(
+                photoPercent, videoPercent, contactPercent, documentPercent, callsPercent,
+                smsPercent, availablePercent
+//                0.5f, 0.1f, 0.05f, 0.05f, 0.1f, 0f, 0.2f
+        );
 
         tvImages.setText(String.format("%.1f %%", photoPercent));
         tvVideos.setText(String.format("%.1f %%", videoPercent));
         tvContacts.setText(String.format("%.1f %%", contactPercent));
         tvFiles.setText(String.format("%.1f %%", documentPercent));
 
-        ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-        List<Integer> colors = new ArrayList<>();
-
-        if (photoPercent > 0) {
-            entries.add(new PieEntry(photoPercent, photos));
-            colors.add(Color.rgb(49, 61, 102));
-        }
-        if (videoPercent > 0) {
-            entries.add(new PieEntry(videoPercent, videos));
-            colors.add(Color.rgb(72, 82, 118));
-        }
-        if (contactPercent > 0) {
-            entries.add(new PieEntry(contactPercent, contacts));
-            colors.add(Color.rgb(95, 104, 136));
-        }
-        if (documentPercent > 0) {
-            entries.add(new PieEntry(documentPercent, documents));
-            colors.add(Color.rgb(118, 126, 153));
-        }
-        entries.add(new PieEntry(availablePercent, available));
-        colors.add(Color.rgb(16, 24, 51));
-
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setDrawIcons(false);
-        dataSet.setDrawValues(false);
-        dataSet.setSliceSpace(3f);
-        dataSet.setIconsOffset(new MPPointF(0, 40));
-        dataSet.setSelectionShift(5f);
-        dataSet.setColors(colors);
-        dataSet.setValueLinePart1OffsetPercentage(80.f);
-        dataSet.setValueLinePart1Length(1f);
-        dataSet.setValueLinePart2Length(0.4f);
-        //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
-
-        chartPie.setData(data);
-
-        chartPie.setCenterText(DisplayUtils.bytesToHumanReadable(total.longValue()));
-        chartPie.setCenterTextColor(Color.rgb(243, 114, 54));
-
-        chartPie.setDrawSliceText(false);
-        // undo all highlights
-        chartPie.highlightValues(null);
-        Legend l = chartPie.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setEnabled(true);
-
-        chartPie.invalidate();
-        //chartPie.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-        chartPie.spin(2000, 0, 360, Easing.EasingOption.EaseInOutQuad);
+        createRatioBar(colors, ratios);
 
     }
 

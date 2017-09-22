@@ -109,7 +109,9 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
             if (remoteFile.getRemotePath().equals(Const.Documents)
                     || remoteFile.getRemotePath().equals(Const.Photos)
                     || remoteFile.getRemotePath().equals(Const.Videos)
-                    || remoteFile.getRemotePath().equals(Const.Contacts)) {
+                    || remoteFile.getRemotePath().equals(Const.Contacts)
+                    || remoteFile.getRemotePath().equals(Const.Calls)
+                    || remoteFile.getRemotePath().equals(Const.Sms)) {
                 BigDecimal size = new BigDecimal(0);
                 try {
                     Field field =RemoteFile.class.getDeclaredField("mQuotaUsedBytes");
