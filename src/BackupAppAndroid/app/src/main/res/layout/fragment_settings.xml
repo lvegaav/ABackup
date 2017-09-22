@@ -200,8 +200,8 @@
                         app:rv_cornerRadius="50dp"
                         >
                         <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
                             app:srcCompat="@drawable/ic_photos" />
                     </com.flyco.roundview.RoundLinearLayout>
                     <TextView
@@ -251,7 +251,7 @@
                         app:rv_cornerRadius="50dp" >
 
                         <ImageView
-                            android:layout_width="match_parent"
+                            android:layout_width="15dp"
                             android:layout_height="15dp"
                             android:scaleType="fitXY"
                             app:srcCompat="@drawable/ic_contacts" />
@@ -279,8 +279,8 @@
                         app:rv_backgroundColor="@color/documents_ratio"
                         app:rv_cornerRadius="50dp" >
                         <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="24dp"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
                             app:srcCompat="@drawable/ic_documents" />
                     </com.flyco.roundview.RoundLinearLayout>
                     <TextView
@@ -303,8 +303,8 @@
                         app:rv_backgroundColor="@color/sms_ratio"
                         app:rv_cornerRadius="50dp" >
                         <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="24dp"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
                             app:srcCompat="@drawable/ic_sms" />
                     </com.flyco.roundview.RoundLinearLayout>
 
@@ -330,8 +330,8 @@
                         app:rv_backgroundColor="@color/calls_ratio"
                         app:rv_cornerRadius="50dp" >
                         <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="24dp"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
                             app:srcCompat="@drawable/ic_call_log" />
                     </com.flyco.roundview.RoundLinearLayout>
 
