@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -372,16 +373,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         float callsPercent = getPercent(sizes.get(Const.Calls),total);
         float smsPercent = getPercent(sizes.get(Const.Sms), total);
         float availablePercent = getPercent(totalAvailable, total);
-        Log.v("percents", String.format("%s %s %s %s %s", photoPercent, videoPercent, contactPercent, documentPercent, availablePercent));
+        Log.v("percents", String.format("%s %s %s %s %s", photoPercent, videoPercent, contactPercent,
+                documentPercent, availablePercent));
 
-//        int[] colors = new int[] {
-//                ContextCompat.getColor(getContext(), R.color.photos_ratio),
-//                ContextCompat.getColor(getContext(), R.color.videos_ratio),
-//                ContextCompat.getColor(getContext(), R.color.contacts_ratio),
-//                ContextCompat.getColor(getContext(), R.color.documents_ratio),
-//                ContextCompat.getColor(getContext(), R.color.calls_ratio),
-//                ContextCompat.getColor(getContext(), R.color.sms_ratio),
-//        };
         List<Integer> colors = Arrays.asList(
                 ContextCompat.getColor(getContext(), R.color.photos_ratio),
                 ContextCompat.getColor(getContext(), R.color.videos_ratio),
@@ -396,14 +390,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
                 smsPercent, availablePercent
 //                0.5f, 0.1f, 0.05f, 0.05f, 0.1f, 0f, 0.2f
         );
-
-        tvImages.setText(String.format("%.1f %%", photoPercent));
-        tvVideos.setText(String.format("%.1f %%", videoPercent));
-        tvContacts.setText(String.format("%.1f %%", contactPercent));
-        tvFiles.setText(String.format("%.1f %%", documentPercent));
-
         createRatioBar(colors, ratios);
 
+        tvImages.setText(String.format(Locale.US, "%.1f %%", photoPercent));
+        tvVideos.setText(String.format(Locale.US, "%.1f %%", videoPercent));
+        tvContacts.setText(String.format(Locale.US, "%.1f %%", contactPercent));
+        tvFiles.setText(String.format(Locale.US, "%.1f %%", documentPercent));
     }
 
     @OnCheckedChanged(R.id.use_mobile_data)
