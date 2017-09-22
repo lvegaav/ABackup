@@ -160,7 +160,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         PackageInfo pInfo = null;
         try {
             pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
-            tvVersionName.setText(getString(R.string.settings_version, pInfo.versionName));
+            tvVersionName.setText(pInfo.versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -202,7 +202,6 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     }
 
     private void createRatioBar(List<Integer> colors, List<Float> ratios) {
-        //TODO:
         final List<Integer> barColors = new ArrayList<>();
         List<Float> barRatios = new ArrayList<>();
         float curRatio = 0;
@@ -210,7 +209,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
             barColors.add(colors.get(i));
             barColors.add(colors.get(i));
             barRatios.add(curRatio);
-            curRatio += ratios.get(i);
+            curRatio += ratios.get(i) / 100;
             barRatios.add(curRatio);
         }
         final int[] barColorsArray = new int[barColors.size()];

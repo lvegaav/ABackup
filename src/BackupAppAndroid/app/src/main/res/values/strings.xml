@@ -130,7 +130,7 @@
     <string name="settings.subtitle">Tap to configure or info</string>
     <string name="settings.sync_files">Sync files</string>
     <string name="settings.use_mobile_data">Use mobile network</string>
-    <string name="settings.version">Version %1$s</string>
+    <string name="settings.version">Version</string>
 
     <string name="sync.title">Sync Files</string>
     <string name="sync.sync">Sync</string>
