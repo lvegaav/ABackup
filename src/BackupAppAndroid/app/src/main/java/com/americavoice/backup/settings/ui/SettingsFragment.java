@@ -109,6 +109,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     PieChart chartPie;
     @BindView(R.id.tv_version_name)
     TextView tvVersionName;
+    @BindView(R.id.capacity_text)
+    TextView mCapacityView;
 
     @BindView(R.id.use_mobile_data)
     SwitchCompat mUseMobileData;
@@ -155,7 +157,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
 
-        tvTitle.setText("");
+        tvTitle.setText(getText(R.string.settings_title));
 
         PackageInfo pInfo = null;
         try {
@@ -374,6 +376,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         float availablePercent = getPercent(totalAvailable, total);
         Log.v("percents", String.format("%s %s %s %s %s", photoPercent, videoPercent, contactPercent,
                 documentPercent, availablePercent));
+        Log.v("Total", total.toString());
 
         List<Integer> colors = Arrays.asList(
                 ContextCompat.getColor(getContext(), R.color.photos_ratio),
@@ -391,10 +394,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         );
         createRatioBar(colors, ratios);
 
+        int sizeGb = total.divide(new BigDecimal(1073741824), BigDecimal.ROUND_CEILING).intValue();
         tvImages.setText(String.format(Locale.US, "%.1f %%", photoPercent));
         tvVideos.setText(String.format(Locale.US, "%.1f %%", videoPercent));
         tvContacts.setText(String.format(Locale.US, "%.1f %%", contactPercent));
         tvFiles.setText(String.format(Locale.US, "%.1f %%", documentPercent));
+        mCapacityView.setText(String.format(Locale.US, "%d GB", sizeGb));
     }
 
     @OnCheckedChanged(R.id.use_mobile_data)

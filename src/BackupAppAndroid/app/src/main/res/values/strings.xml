@@ -128,9 +128,12 @@
 
     <string name="settings.title">Info &amp; Settings</string>
     <string name="settings.subtitle">Tap to configure or info</string>
-    <string name="settings.sync_files">Sync files</string>
+    <string name="settings.sync_files">Sync now</string>
     <string name="settings.use_mobile_data">Use mobile network</string>
     <string name="settings.version">Version</string>
+    <string name="settings.contact_us">Contact us</string>
+    <string name="settings.payment_options">Payment options</string>
+    <string name="settings.news_info">News &amp; Info</string>
 
     <string name="sync.title">Sync Files</string>
     <string name="sync.sync">Sync</string>

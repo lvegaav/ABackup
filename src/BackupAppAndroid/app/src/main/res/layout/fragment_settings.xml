@@ -20,49 +20,21 @@
             <include layout="@layout/view_header" />
 
             <TextView
-                android:id="@+id/tv_hello"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings.title"
-                android:textSize="24sp"
-                android:layout_marginTop="41dp"
-                android:textColor="@color/white"/>
-            <TextView
                 android:id="@+id/settings_subtitle"
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/settings.subtitle"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:layout_below="@id/tv_hello"
-                android:layout_marginTop="41dp"
+                android:layout_marginTop="60dp"
                 android:textColor="@color/white"/>
 
 
-            <TextView
-                android:id="@+id/tv_sync_files"
-                android:layout_below="@+id/settings_subtitle"
-                android:layout_centerHorizontal="true"
-                android:layout_width="150dp"
-                android:layout_height="43dp"
-                android:textColorHint="@color/white"
-                android:textColor="@color/white"
-                android:inputType="none"
-                android:textAlignment="center"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:text="@string/settings.sync_files"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:layout_marginTop="23dp"
-                android:background="@drawable/rounded_black_background"
-                android:clickable="true"/>
+
             <LinearLayout
                 android:id="@+id/wifi_options"
-                android:layout_below="@id/tv_sync_files"
+                android:layout_below="@id/settings_subtitle"
                 android:orientation="vertical"
                 android:padding="15dp"
                 android:layout_width="match_parent"
@@ -81,8 +53,73 @@
                     android:background="@color/white"
                     />
                 <LinearLayout
-                    android:weightSum="4"
                     android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/SettingsMenuOption"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/settings.payment_options" />
+                    <ImageButton
+                        android:id="@+id/payment_button"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@android:drawable/stat_sys_warning"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white"
+                    />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/SettingsMenuOption"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/settings.contact_us" />
+                    <ImageButton
+                        android:id="@+id/contact_us_button"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@android:drawable/ic_menu_send"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white"
+                    />
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/SettingsMenuOption"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="@string/settings.news_info" />
+                    <ImageButton
+                        android:id="@+id/news_info_button"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:src="@android:drawable/ic_dialog_map"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white"
+                    />
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
@@ -100,17 +137,47 @@
                         android:layout_height="match_parent"
                         />
                 </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white"
-                    />
+
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_sync_files"
+                android:layout_below="@+id/wifi_options"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/white"
+                android:textColor="@color/white"
+                android:inputType="none"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:text="@string/settings.sync_files"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"/>
+            <TextView
+                android:id="@+id/capacity_text"
+                android:textColor="@color/white"
+
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+
+                android:layout_alignBaseline="@id/tv_sync_files"
+                android:textSize="23sp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <View
                 android:id="@+id/ratios"
-                android:layout_below="@id/wifi_options"
+                android:layout_below="@id/tv_sync_files"
                 android:layout_width="match_parent"
+                android:layout_marginTop="25dp"
                 android:layout_height="25dp" />
 
             <LinearLayout
@@ -159,8 +226,8 @@
                         app:rv_backgroundColor="@color/videos_ratio"
                         app:rv_cornerRadius="50dp" >
                         <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="24dp"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
                             app:srcCompat="@drawable/ic_videos" />
                     </com.flyco.roundview.RoundLinearLayout>
                     <TextView
@@ -185,7 +252,8 @@
 
                         <ImageView
                             android:layout_width="match_parent"
-                            android:layout_height="24dp"
+                            android:layout_height="15dp"
+                            android:scaleType="fitXY"
                             app:srcCompat="@drawable/ic_contacts" />
                     </com.flyco.roundview.RoundLinearLayout>
 
