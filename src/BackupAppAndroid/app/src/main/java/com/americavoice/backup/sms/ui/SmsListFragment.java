@@ -399,29 +399,6 @@ public class SmsListFragment extends FileFragment implements SmsListView {
         }, 1750);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PermissionUtil.PERMISSIONS_WRITE_SMS) {
-            for (int index = 0; index < permissions.length; index++) {
-                if (Manifest.permission.READ_SMS.equalsIgnoreCase(permissions[index])) {
-                    if (grantResults[index] >= 0) {
-                        importSms();
-                    } else {
-                        if (getView() != null) {
-                            Snackbar.make(getView(), R.string.contacts_list_no_permission, Snackbar.LENGTH_LONG)
-                                    .show();
-                        } else {
-                            Toast.makeText(getContext(), R.string.contacts_list_no_permission, Toast.LENGTH_LONG).show();
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-    }
-
     private class DownloadFinishReceiver extends BroadcastReceiver {
 
         @Override

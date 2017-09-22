@@ -129,8 +129,6 @@ public abstract class FileActivity extends BaseOwncloudActivity
         AccountUtils.updateAccountVersion(this); // best place, before any access to AccountManager
                                                  // or database
 
-        setAccount(account, savedInstanceState != null);
-
         mOperationsServiceConnection = new OperationsServiceConnection();
         bindService(new Intent(this, OperationsService.class), mOperationsServiceConnection,
                 Context.BIND_AUTO_CREATE);

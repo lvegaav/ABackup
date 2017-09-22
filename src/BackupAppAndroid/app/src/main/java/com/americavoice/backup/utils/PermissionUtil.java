@@ -3,6 +3,8 @@ package com.americavoice.backup.utils;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
@@ -16,7 +18,8 @@ public class PermissionUtil {
     public static final int PERMISSIONS_WRITE_CALLS = 7;
     public static final int PERMISSIONS_READ_SMS_AUTOMATIC = 8;
     public static final int PERMISSIONS_READ_SMS_MANUALLY = 9;
-    public static final int PERMISSIONS_WRITE_SMS = 10;
+    public static final int PERMISSIONS_MULTIPLE = 10;
+
     /**
      * Wrapper method for ContextCompat.checkSelfPermission().
      * Determine whether <em>the app</em> has been granted a particular permission.
@@ -53,5 +56,28 @@ public class PermissionUtil {
         ActivityCompat.requestPermissions(activity,
                 new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                 PERMISSIONS_WRITE_EXTERNAL_STORAGE);
+    }
+
+    public static void requestReadContactsAutomaticPermission(Activity activity) {
+        ActivityCompat.requestPermissions(activity,
+                new String[]{Manifest.permission.READ_CONTACTS},
+                PERMISSIONS_READ_CONTACTS_AUTOMATIC);
+    }
+
+    public static void requestReadSmsAutomaticPermission(Activity activity) {
+        ActivityCompat.requestPermissions(activity,
+                new String[]{Manifest.permission.READ_SMS},
+                PERMISSIONS_READ_SMS_AUTOMATIC);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    public static void requestReadCallsAutomaticPermission(Activity activity) {
+        ActivityCompat.requestPermissions(activity,
+                new String[]{Manifest.permission.READ_CALL_LOG},
+                PERMISSIONS_READ_CALLS_AUTOMATIC);
+    }
+
+    public static void requestMultiplePermission(Activity activity, String[] permissions) {
+        ActivityCompat.requestPermissions(activity, permissions, PERMISSIONS_MULTIPLE);
     }
 }
