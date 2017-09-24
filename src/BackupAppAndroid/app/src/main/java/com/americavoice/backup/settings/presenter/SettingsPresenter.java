@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.PerActivity;
-import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.exception.ErrorBundle;
 import com.americavoice.backup.main.exception.ErrorMessageFactory;
@@ -14,6 +13,7 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.settings.ui.SettingsView;
+import com.americavoice.backup.utils.BaseConstants;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -106,10 +106,10 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
                     e.printStackTrace();
                 }
             }
-            if (remoteFile.getRemotePath().equals(Const.Documents)
-                    || remoteFile.getRemotePath().equals(Const.Photos)
-                    || remoteFile.getRemotePath().equals(Const.Videos)
-                    || remoteFile.getRemotePath().equals(Const.Contacts)) {
+            if (remoteFile.getRemotePath().equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER)
+                    || remoteFile.getRemotePath().equals(BaseConstants.PHOTOS_REMOTE_FOLDER)
+                    || remoteFile.getRemotePath().equals(BaseConstants.VIDEOS_REMOTE_FOLDER)
+                    || remoteFile.getRemotePath().equals(BaseConstants.CONTACTS_REMOTE_FOLDER)) {
                 BigDecimal size = new BigDecimal(0);
                 try {
                     Field field =RemoteFile.class.getDeclaredField("mQuotaUsedBytes");

@@ -11,6 +11,11 @@ public class BaseConstants {
     public static final String AUTHORITY = Const.AUTHORITY;
     public static final String FILE_PROVIDER_AUTHORITY = Const.FILE_PROVIDER_AUTHORITY;
     public static final String DATA_FOLDER = Const.DATA_FOLDER;
+
+    public static final String VIDEOS_REMOTE_FOLDER = "/Videos/";
+    public static final String PHOTOS_REMOTE_FOLDER = "/Photos/";
+    public static final String CONTACTS_REMOTE_FOLDER = "/Contacts/";
+    public static final String DOCUMENTS_REMOTE_FOLDER = "/Documents/";
     public static final String CONTACTS_BACKUP_FOLDER = "/Contacts";
     public static final String CALLS_BACKUP_FOLDER = "/Calls";
     public static final String SMS_BACKUP_FOLDER = "/Sms";
@@ -23,8 +28,6 @@ public class BaseConstants {
 
     public static class PreferenceKeys {
         public static final String STORAGE_PATH = "storage_path";
-        public static final String INSTANT_UPLOAD_PATH = "instant_upload_path";
-        public static final String INSTANT_VIDEO_UPLOAD_PATH = "instant_video_upload_path";
     }
 
 }

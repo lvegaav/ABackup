@@ -9,26 +9,22 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.view.View;
 
 import com.americavoice.backup.R;
-import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
-import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.MainFragment;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sync.ui.SyncFragment;
+import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.PermissionUtil;
-import com.americavoice.backup.utils.ThemeUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.greenrobot.eventbus.EventBus;
@@ -200,7 +196,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
                 MENU_BUTTON_CONTENT_TYPE,
                 FirebaseAnalytics.Event.SELECT_CONTENT
         );
-        navigator.navigateToFileListActivity(this, Const.Photos);
+        navigator.navigateToFileListActivity(this, BaseConstants.PHOTOS_REMOTE_FOLDER);
     }
 
     @Override
@@ -212,7 +208,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
                 MENU_BUTTON_CONTENT_TYPE,
                 FirebaseAnalytics.Event.SELECT_CONTENT
         );
-        navigator.navigateToFileListActivity(this, Const.Videos);
+        navigator.navigateToFileListActivity(this, BaseConstants.VIDEOS_REMOTE_FOLDER);
     }
 
     @Override
@@ -260,7 +256,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
                 MENU_BUTTON_CONTENT_TYPE,
                 FirebaseAnalytics.Event.SELECT_CONTENT
         );
-        navigator.navigateToFileListActivity(this, Const.Documents);
+        navigator.navigateToFileListActivity(this, BaseConstants.DOCUMENTS_REMOTE_FOLDER);
     }
 
     @Override

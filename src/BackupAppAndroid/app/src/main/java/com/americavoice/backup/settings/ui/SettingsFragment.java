@@ -14,26 +14,23 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
-import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
+import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -309,10 +306,10 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @Override
     public void showPercent(HashMap<String, BigDecimal> sizes, BigDecimal total, BigDecimal totalAvailable) {
-        float photoPercent = getPercent(sizes.get(Const.Photos),total);
-        float videoPercent = getPercent(sizes.get(Const.Videos),total);
-        float contactPercent = getPercent(sizes.get(Const.Contacts),total);
-        float documentPercent = getPercent(sizes.get(Const.Documents),total);
+        float photoPercent = getPercent(sizes.get(BaseConstants.PHOTOS_REMOTE_FOLDER),total);
+        float videoPercent = getPercent(sizes.get(BaseConstants.VIDEOS_REMOTE_FOLDER),total);
+        float contactPercent = getPercent(sizes.get(BaseConstants.CONTACTS_REMOTE_FOLDER),total);
+        float documentPercent = getPercent(sizes.get(BaseConstants.DOCUMENTS_REMOTE_FOLDER),total);
         float availablePercent = getPercent(totalAvailable, total);
 
 

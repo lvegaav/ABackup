@@ -28,10 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.americavoice.backup.R;
-import com.americavoice.backup.calls.service.CallsBackupJob;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.components.AppComponent;
-import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.explorer.helper.FilesHelper;
 import com.americavoice.backup.explorer.presenter.FileListPresenter;
 import com.americavoice.backup.explorer.ui.adapter.FileAdapter;
@@ -43,17 +41,13 @@ import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
-import com.americavoice.backup.main.ui.activity.FileActivity;
 import com.americavoice.backup.operations.RemoveFileOperation;
 import com.americavoice.backup.service.OperationsService;
-import com.americavoice.backup.utils.FileStorageUtils;
+import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.RecyclerItemClickListener;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.files.RemoteFile;
-import com.owncloud.android.lib.resources.files.RemoveRemoteFileOperation;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -213,7 +207,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         if (this.rvFiles != null) {
             mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");
             switch (mPath) {
-                case Const.Documents:
+                case BaseConstants.DOCUMENTS_REMOTE_FOLDER:
                     this.rvFiles.setLayoutManager(new FileLayoutManager(getContext()));
                     this.rvFiles.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
                     break;
@@ -395,16 +389,16 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     private void loadList() {
         mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");
         switch (mPath) {
-            case Const.Contacts:
+            case BaseConstants.CONTACTS_REMOTE_FOLDER:
                 setTitle(getString(R.string.contacts_title));
                 break;
-            case Const.Documents:
+            case BaseConstants.DOCUMENTS_REMOTE_FOLDER:
                 setTitle(getString(R.string.main_documents));
                 break;
-            case Const.Photos:
+            case BaseConstants.PHOTOS_REMOTE_FOLDER:
                 setTitle(getString(R.string.main_photos));
                 break;
-            case Const.Videos:
+            case BaseConstants.VIDEOS_REMOTE_FOLDER:
                 setTitle(getString(R.string.main_videos));
                 break;
             default:
@@ -432,13 +426,13 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     @OnClick(R.id.fab_upload)
     void onFabUpload() {
-        if (mPath.startsWith(Const.Photos)) {
+        if (mPath.startsWith(BaseConstants.PHOTOS_REMOTE_FOLDER)) {
             Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(i, SELECT_PHOTO);
-        } else if (mPath.startsWith(Const.Videos)) {
+        } else if (mPath.startsWith(BaseConstants.VIDEOS_REMOTE_FOLDER)) {
             Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(i, SELECT_VIDEO);
-        } else if (mPath.startsWith(Const.Documents)) {
+        } else if (mPath.startsWith(BaseConstants.DOCUMENTS_REMOTE_FOLDER)) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("application/*|text/*");
             startActivityForResult(intent, SELECT_DOCUMENT);
