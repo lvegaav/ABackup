@@ -100,6 +100,8 @@
                 <data android:scheme="mmsto" />
             </intent-filter>
         </activity>
+        <activity android:name=".settings.ui.ContactUsActivity"
+            android:theme="@style/Theme.OptionsDialog" />
 
         <receiver
             android:name=".files.service.ConnectivityActionReceiver"

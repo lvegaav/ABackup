@@ -5,6 +5,7 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.LinearGradient;
@@ -385,6 +386,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
             WifiUtils.wifiConnected(getContext());
         }
         PreferenceManager.setInstantUploadUsingMobileData(getContext(), mUseMobileData.isChecked());
+    }
+
+    @OnClick(R.id.contact_us_button)
+    public void onContactUsClick() {
+        Intent intent = new Intent(getActivity(), ContactUsActivity.class);
+        startActivity(intent);
     }
 }
 

@@ -84,9 +84,34 @@
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
     </style>
+    <style name="Contact_us_option">
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:textSize">19sp</item>
+    </style>
+    <style name="Contact_us_option_image">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:scaleType">fitXY</item>
+
+    </style>
     <style name="RatioCircle">
         <item name="android:gravity">center</item>
         <item name="android:layout_width">30dp</item>
         <item name="android:layout_height">30dp</item>
+    </style>
+
+    <style name="Animation.OptionsDialog" parent="android:Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/slide_up_activity</item>
+        <item name="android:windowExitAnimation">@anim/slide_down_activity</item>
+    </style>
+    <style name="Theme.OptionsDialog" parent="Theme.AppCompat.Light">
+        <item name="android:windowMinWidthMajor">80%</item>
+        <item name="android:windowMinWidthMinor">80%</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 </resources>

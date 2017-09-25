@@ -144,6 +144,12 @@
     <string name="settings.contact_us">Contact us</string>
     <string name="settings.payment_options">Payment options</string>
     <string name="settings.news_info">News &amp; Info</string>
+    <string name="contact_us.title">Contact us</string>
+    <string name="contact_us.customer_service">Customer service</string>
+    <string name="contact_us.facebook">Facebook</string>
+
+    <string name="contact_us.phone">+123456789</string>
+    <string name="contact_us.facebook_link">https://facebook.com</string>
 
     <string name="sync.title">Sync Files</string>
     <string name="sync.sync">Sync</string>
