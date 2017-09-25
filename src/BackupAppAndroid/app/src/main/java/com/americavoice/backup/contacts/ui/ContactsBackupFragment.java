@@ -153,8 +153,8 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             }
         }
 
-//        String backupFolderPath = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
-//        refreshBackupFolder(backupFolderPath);
+        String backupFolderPath = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        refreshBackupFolder(backupFolderPath);
     }
 
     @Override
@@ -564,13 +564,6 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
                             .getFolderContent(backupFolder, false);
-                    if (contactsDatePickerBtn != null) {
-                        if (backupFiles == null || backupFiles.size() == 0) {
-                            contactsDatePickerBtn.setVisibility(View.GONE);
-                        } else {
-                            contactsDatePickerBtn.setVisibility(View.VISIBLE);
-                        }
-                    }
                 }
             }
         };

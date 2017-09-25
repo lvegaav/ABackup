@@ -156,8 +156,8 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
             }
         }
 
-//        String backupFolderPath = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
-//        refreshBackupFolder(backupFolderPath);
+        String backupFolderPath = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        refreshBackupFolder(backupFolderPath);
 
     }
 
@@ -572,13 +572,6 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
 
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
                             .getFolderContent(backupFolder, false);
-                    if (callsDatePickerBtn != null) {
-                        if (backupFiles == null || backupFiles.size() == 0) {
-                            callsDatePickerBtn.setVisibility(View.GONE);
-                        } else {
-                            callsDatePickerBtn.setVisibility(View.VISIBLE);
-                        }
-                    }
                 }
             }
         };
