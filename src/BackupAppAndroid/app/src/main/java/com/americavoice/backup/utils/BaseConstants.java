@@ -16,6 +16,8 @@ public class BaseConstants {
     public static final String PHOTOS_REMOTE_FOLDER = "/Photos/";
     public static final String CONTACTS_REMOTE_FOLDER = "/Contacts/";
     public static final String DOCUMENTS_REMOTE_FOLDER = "/Documents/";
+    public static final String CALLS_REMOTE_FOLDER = "/Calls/";
+    public static final String SMS_REMOTE_FOLDER = "/Sms/";
     public static final String CONTACTS_BACKUP_FOLDER = "/Contacts";
     public static final String CALLS_BACKUP_FOLDER = "/Calls";
     public static final String SMS_BACKUP_FOLDER = "/Sms";

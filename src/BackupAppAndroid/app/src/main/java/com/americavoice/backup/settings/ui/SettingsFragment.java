@@ -325,7 +325,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         if (this.mListener != null) this.mListener.onRestoreClicked();
     }
     private float getPercent(BigDecimal value, BigDecimal size) {
-        float x = value.floatValue() * 100;
+        float x = value != null ? value.floatValue() * 100 : 0;
         float x1 = x / size.floatValue();
         BigDecimal x2= new BigDecimal(x1).setScale(1,BigDecimal.ROUND_HALF_UP);
         float x3 = x2.floatValue();
@@ -338,8 +338,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         float videoPercent = getPercent(sizes.get(BaseConstants.VIDEOS_REMOTE_FOLDER),total);
         float contactPercent = getPercent(sizes.get(BaseConstants.CONTACTS_REMOTE_FOLDER),total);
         float documentPercent = getPercent(sizes.get(BaseConstants.DOCUMENTS_REMOTE_FOLDER),total);
-        float smsPercent = getPercent(sizes.get(BaseConstants.SMS_BACKUP_FOLDER), total);
-        float callsPercent = getPercent(sizes.get(BaseConstants.CALLS_BACKUP_FOLDER),total);
+        float smsPercent = getPercent(sizes.get(BaseConstants.SMS_REMOTE_FOLDER), total);
+        float callsPercent = getPercent(sizes.get(BaseConstants.CALLS_REMOTE_FOLDER),total);
         float availablePercent = getPercent(totalAvailable, total);
         Log.v("percents", String.format("%s %s %s %s %s", photoPercent, videoPercent, contactPercent,
                 documentPercent, availablePercent));
@@ -355,9 +355,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
                 ContextCompat.getColor(getContext(), R.color.available_ratio)
         );
         List<Float> ratios = Arrays.asList(
-                photoPercent, videoPercent, contactPercent, documentPercent, smsPercent,
-                callsPercent, availablePercent
-//                50f, 10f, 5f, 5f, 10f, 5f, 15f
+//                photoPercent, videoPercent, contactPercent, documentPercent, smsPercent,
+//                callsPercent, availablePercent
+                50f, 10f, 5f, 5f, 10f, 5f, 15f
         );
         createRatioBar(colors, ratios);
 
