@@ -471,8 +471,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                         false);
                 if (uploadWasFine) {
                     loadList();
-                } else {
-                    showToastMessage(getString(R.string.exception_message_generic));
                 }
 
             } finally {
