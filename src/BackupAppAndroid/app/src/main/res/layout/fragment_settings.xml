@@ -18,17 +18,17 @@
             android:layout_height="wrap_content">
 
             <include layout="@layout/view_header" />
-            <TextView
+            <ImageButton
                 android:id="@+id/tv_logout"
-                android:padding="15dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitXY"
                 android:layout_centerHorizontal="true"
-                android:textColor="@android:color/white"
-                android:text="@string/common.logout"/>
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/ic_power_settings" />
 
             <TextView
                 android:id="@+id/settings_subtitle"
@@ -76,7 +76,7 @@
                     <ImageButton
                         android:id="@+id/payment_button"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@android:drawable/stat_sys_warning"
+                        app:srcCompat="@drawable/ic_wrench"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent" />
                 </LinearLayout>
@@ -98,7 +98,7 @@
                     <ImageButton
                         android:id="@+id/contact_us_button"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@android:drawable/ic_menu_send"
+                        app:srcCompat="@drawable/ic_email_send"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent" />
                 </LinearLayout>
@@ -120,7 +120,7 @@
                     <ImageButton
                         android:id="@+id/news_info_button"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:src="@android:drawable/ic_dialog_map"
+                        app:srcCompat="@drawable/ic_newspaper"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent" />
                 </LinearLayout>
