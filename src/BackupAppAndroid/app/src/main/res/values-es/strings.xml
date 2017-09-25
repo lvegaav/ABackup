@@ -128,9 +128,14 @@
 
     <string name="exception.message_generic">Ups, algo salió mal, por favor intenta de nuevo.</string>
 
+    <string name="settings.title">Información y opciones</string>
+    <string name="settings.subtitle">Presione para configurar</string>
     <string name="settings.sync_files">Sincronizar</string>
-    <string name="settings.version">Versión %1$s</string>
+    <string name="settings.version">Versión</string>
+    <string name="settings.contact_us">Contáctenos</string>
     <string name="settings.use_mobile_data">Usar red móvil</string>
+    <string name="settings.payment_options">Opciones de pago</string>
+    <string name="settings.news_info">Noticias</string>
 
     <string name="sync.title">Sincronizar Archivos</string>
     <string name="sync.sync">Sincronizar</string>

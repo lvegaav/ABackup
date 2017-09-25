@@ -5,17 +5,21 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.SwitchCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,23 +36,17 @@ import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
-import com.americavoice.backup.utils.DisplayUtils;
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.MPPointF;
+import com.americavoice.backup.utils.WifiUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -90,13 +88,20 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     TextView tvVideos;
     @BindView(R.id.tv_files)
     TextView tvFiles;
-    @BindView(R.id.chart)
-    PieChart chartPie;
+    @BindView(R.id.tv_sms)
+    TextView tvSms;
+    @BindView(R.id.tv_calls)
+    TextView tvCalls;
     @BindView(R.id.tv_version_name)
     TextView tvVersionName;
+    @BindView(R.id.capacity_text)
+    TextView mCapacityView;
 
     @BindView(R.id.use_mobile_data)
     SwitchCompat mUseMobileData;
+
+    @BindView(R.id.ratios)
+    View mRatios;
 
     @BindString(R.string.main_photos)
     String photos;
@@ -137,12 +142,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         View fragmentView = inflater.inflate(R.layout.fragment_settings, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
 
-        tvTitle.setText("");
+        tvTitle.setText(getText(R.string.settings_title));
 
         PackageInfo pInfo = null;
         try {
             pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
-            tvVersionName.setText(getString(R.string.settings_version, pInfo.versionName));
+            tvVersionName.setText(pInfo.versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -154,33 +159,51 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
             tvSyncFiles.setCompoundDrawablesWithIntrinsicBounds(draw, null, null, null);
         }
 
-        chartPie.setUsePercentValues(true);
-        chartPie.getDescription().setEnabled(false);
-        chartPie.setExtraOffsets(5, 10, 5, 5);
-
-        chartPie.setDragDecelerationFrictionCoef(0.95f);
-
-        chartPie.setDrawHoleEnabled(true);
-        chartPie.setHoleColor(Color.WHITE);
-        chartPie.getLegend().setTextColor(Color.WHITE);
-
-        chartPie.setTransparentCircleColor(Color.WHITE);
-        chartPie.setTransparentCircleAlpha(110);
-
-        chartPie.setHoleRadius(58f);
-        chartPie.setTransparentCircleRadius(61f);
-
-        chartPie.setDrawCenterText(true);
-
-        chartPie.setRotationAngle(0);
-        // enable rotation of the chart by touch
-        chartPie.setRotationEnabled(true);
-        chartPie.setHighlightPerTapEnabled(true);
 
         // checkbox initial values
         boolean useMobileData = PreferenceManager.instantUploadWithMobileData(getContext());
         mUseMobileData.setChecked(useMobileData);
         return fragmentView;
+    }
+
+    private void createRatioBar(List<Integer> colors, List<Float> ratios) {
+        final List<Integer> barColors = new ArrayList<>();
+        List<Float> barRatios = new ArrayList<>();
+        float curRatio = 0;
+        for(int i = 0; i < colors.size(); i++) {
+            barColors.add(colors.get(i));
+            barColors.add(colors.get(i));
+            barRatios.add(curRatio);
+            curRatio += ratios.get(i) / 100;
+            barRatios.add(curRatio);
+        }
+        final int[] barColorsArray = new int[barColors.size()];
+        final float[] barRatiosArray = new float[barRatios.size()];
+        for (int i = 0; i < barColors.size(); i++) {
+            barColorsArray[i] = barColors.get(i);
+            barRatiosArray[i] = barRatios.get(i);
+        }
+
+        ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
+            @Override
+            public Shader resize(int i, int i1) {
+                LinearGradient lg = new LinearGradient(0, 0, mRatios.getWidth(), 0,
+                        barColorsArray,
+                        barRatiosArray,
+                        Shader.TileMode.REPEAT);
+
+                return lg;
+            }
+        };
+        PaintDrawable paintDrawable = new PaintDrawable();
+        paintDrawable.setShape(new RoundRectShape(new float[]{100,100,100,100,100,100,100,100}, null, null));
+        paintDrawable.setShaderFactory(sf);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+            mRatios.setBackgroundDrawable(paintDrawable);
+        } else {
+            mRatios.setBackground(paintDrawable);
+        }
+
     }
 
     @Override
@@ -303,7 +326,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         if (this.mListener != null) this.mListener.onRestoreClicked();
     }
     private float getPercent(BigDecimal value, BigDecimal size) {
-        float x = value.floatValue() * 100;
+        float x = value != null ? value.floatValue() * 100 : 0;
         float x1 = x / size.floatValue();
         BigDecimal x2= new BigDecimal(x1).setScale(1,BigDecimal.ROUND_HALF_UP);
         float x3 = x2.floatValue();
@@ -316,86 +339,46 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         float videoPercent = getPercent(sizes.get(BaseConstants.VIDEOS_REMOTE_FOLDER),total);
         float contactPercent = getPercent(sizes.get(BaseConstants.CONTACTS_REMOTE_FOLDER),total);
         float documentPercent = getPercent(sizes.get(BaseConstants.DOCUMENTS_REMOTE_FOLDER),total);
+        float smsPercent = getPercent(sizes.get(BaseConstants.SMS_REMOTE_FOLDER), total);
+        float callsPercent = getPercent(sizes.get(BaseConstants.CALLS_REMOTE_FOLDER),total);
         float availablePercent = getPercent(totalAvailable, total);
+        Log.v("percents", String.format("%s %s %s %s %s", photoPercent, videoPercent, contactPercent,
+                documentPercent, availablePercent));
+        Log.v("Total", total.toString());
 
+        List<Integer> colors = Arrays.asList(
+                ContextCompat.getColor(getContext(), R.color.photos_ratio),
+                ContextCompat.getColor(getContext(), R.color.videos_ratio),
+                ContextCompat.getColor(getContext(), R.color.contacts_ratio),
+                ContextCompat.getColor(getContext(), R.color.documents_ratio),
+                ContextCompat.getColor(getContext(), R.color.sms_ratio),
+                ContextCompat.getColor(getContext(), R.color.calls_ratio),
+                ContextCompat.getColor(getContext(), R.color.available_ratio)
+        );
+        List<Float> ratios = Arrays.asList(
+                photoPercent, videoPercent, contactPercent, documentPercent, smsPercent,
+                callsPercent, availablePercent
+//                50f, 10f, 5f, 5f, 10f, 5f, 15f
+        );
+        createRatioBar(colors, ratios);
 
-        tvImages.setText(String.format("%.1f %%", photoPercent));
-        tvVideos.setText(String.format("%.1f %%", videoPercent));
-        tvContacts.setText(String.format("%.1f %%", contactPercent));
-        tvFiles.setText(String.format("%.1f %%", documentPercent));
-
-        ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-        List<Integer> colors = new ArrayList<>();
-
-        if (photoPercent > 0) {
-            entries.add(new PieEntry(photoPercent, photos));
-            colors.add(Color.rgb(49, 61, 102));
-        }
-        if (videoPercent > 0) {
-            entries.add(new PieEntry(videoPercent, videos));
-            colors.add(Color.rgb(72, 82, 118));
-        }
-        if (contactPercent > 0) {
-            entries.add(new PieEntry(contactPercent, contacts));
-            colors.add(Color.rgb(95, 104, 136));
-        }
-        if (documentPercent > 0) {
-            entries.add(new PieEntry(documentPercent, documents));
-            colors.add(Color.rgb(118, 126, 153));
-        }
-        entries.add(new PieEntry(availablePercent, available));
-        colors.add(Color.rgb(16, 24, 51));
-
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setDrawIcons(false);
-        dataSet.setDrawValues(false);
-        dataSet.setSliceSpace(3f);
-        dataSet.setIconsOffset(new MPPointF(0, 40));
-        dataSet.setSelectionShift(5f);
-        dataSet.setColors(colors);
-        dataSet.setValueLinePart1OffsetPercentage(80.f);
-        dataSet.setValueLinePart1Length(1f);
-        dataSet.setValueLinePart2Length(0.4f);
-        //dataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        dataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-
-        PieData data = new PieData(dataSet);
-        data.setValueFormatter(new PercentFormatter());
-        data.setValueTextSize(11f);
-        data.setValueTextColor(Color.WHITE);
-
-        chartPie.setData(data);
-
-        chartPie.setCenterText(DisplayUtils.bytesToHumanReadable(total.longValue()));
-        chartPie.setCenterTextColor(Color.rgb(243, 114, 54));
-
-        chartPie.setDrawSliceText(false);
-        // undo all highlights
-        chartPie.highlightValues(null);
-        Legend l = chartPie.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setEnabled(true);
-
-        chartPie.invalidate();
-        //chartPie.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-        chartPie.spin(2000, 0, 360, Easing.EasingOption.EaseInOutQuad);
-
+        int sizeGb = total.divide(new BigDecimal(1073741824), BigDecimal.ROUND_CEILING).intValue();
+        tvImages.setText(String.format(Locale.US, "%.1f %%", photoPercent));
+        tvVideos.setText(String.format(Locale.US, "%.1f %%", videoPercent));
+        tvContacts.setText(String.format(Locale.US, "%.1f %%", contactPercent));
+        tvFiles.setText(String.format(Locale.US, "%.1f %%", documentPercent));
+        tvSms.setText(String.format(Locale.US, "%.1f %%", smsPercent));
+        tvCalls.setText(String.format(Locale.US, "%.1f %%", callsPercent));
+        mCapacityView.setText(String.format(Locale.US, "%d GB", sizeGb));
     }
 
     @OnCheckedChanged(R.id.use_mobile_data)
     public void onChangePhotoOverWifi() {
         Log_OC.d("Upload using mobile data", "" + mUseMobileData.isChecked());
+        if (mUseMobileData.isChecked()) {
+            WifiUtils.wifiConnected(getContext());
+        }
         PreferenceManager.setInstantUploadUsingMobileData(getContext(), mUseMobileData.isChecked());
-    }
-
-
-    @OnClick(R.id.iv_logo)
-    public void onLogo() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(com.americavoice.backup.Const.ICON_URL));
-        startActivity(browserIntent);
     }
 }
 

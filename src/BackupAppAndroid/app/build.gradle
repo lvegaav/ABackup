@@ -103,6 +103,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:11.0.4'
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.2'
     compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.flyco.roundview:FlycoRoundView_Lib:1.1.4@aar'
     testCompile 'junit:junit:4.12'
 
 

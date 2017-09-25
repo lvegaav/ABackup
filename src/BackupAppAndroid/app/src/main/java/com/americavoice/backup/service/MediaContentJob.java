@@ -1,6 +1,7 @@
 package com.americavoice.backup.service;
 
 //BEGIN_INCLUDE(job)
+
 import android.Manifest;
 import android.accounts.Account;
 import android.app.job.JobInfo;
@@ -118,7 +119,7 @@ public class MediaContentJob extends JobService {
                 // change has happened.
                 ArrayList<String> ids = new ArrayList<>();
                 for (Uri uri : params.getTriggeredContentUris()) {
-                    handleNewPictureAction(getApplicationContext(), uri);
+                    handleNewFileAction(getApplicationContext(), uri);
                     List<String> path = uri.getPathSegments();
                     if (path != null && path.size() == EXTERNAL_PATH_SEGMENTS.size()+1) {
                         // This is a specific file.
@@ -199,13 +200,14 @@ public class MediaContentJob extends JobService {
         return false;
     }
 
-    private void handleNewPictureAction(Context context, Uri fileUri) {
+    private void handleNewFileAction(Context context, Uri fileUri) {
         try {
-            Cursor c = null;
-            String file_path = null;
-            String file_name = null;
-            String mime_type = null;
-            long date_taken = 0;
+
+            Cursor c;
+            String file_path;
+            String file_name;
+            String mime_type;
+            long date_taken;
 
             Log_OC.i(TAG, "New photo received");
 
@@ -214,9 +216,22 @@ public class MediaContentJob extends JobService {
                 Log_OC.w(TAG, "No account found for instant upload, aborting");
                 return;
             }
+            String data, displayName, mimeType, size;
+            if (!isVideoContentUri(fileUri.toString())) {
+                data = MediaStore.Images.Media.DATA;
+                displayName = MediaStore.Images.Media.DISPLAY_NAME;
+                mimeType = MediaStore.Images.Media.MIME_TYPE;
+                size = MediaStore.Images.Media.SIZE;
+            } else {
+                data = MediaStore.Video.Media.DATA;
+                displayName = MediaStore.Video.Media.DISPLAY_NAME;
+                mimeType = MediaStore.Video.Media.MIME_TYPE;
+                size = MediaStore.Video.Media.SIZE;
+            }
+
 
             String[] CONTENT_PROJECTION = {
-                    MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.MIME_TYPE, MediaStore.Images.Media.SIZE};
+                    data, displayName, mimeType, size};
 
             // if < Jelly Bean permission must be accepted during installation
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -234,9 +249,9 @@ public class MediaContentJob extends JobService {
                     Log_OC.e(TAG, "Couldn't resolve given uri: " + fileUri);
                     return;
                 }
-                file_path = c.getString(c.getColumnIndex(MediaStore.Images.Media.DATA));
-                file_name = c.getString(c.getColumnIndex(MediaStore.Images.Media.DISPLAY_NAME));
-                mime_type = c.getString(c.getColumnIndex(MediaStore.Images.Media.MIME_TYPE));
+                file_path = c.getString(c.getColumnIndex(data));
+                file_name = c.getString(c.getColumnIndex(displayName));
+                mime_type = c.getString(c.getColumnIndex(mimeType));
                 date_taken = System.currentTimeMillis();
                 c.close();
             } else {
@@ -249,7 +264,15 @@ public class MediaContentJob extends JobService {
 
             int behaviour = FileUploader.LOCAL_BEHAVIOUR_FORGET;
             Boolean subfolderByDate = PreferenceManager.instantPictureUploadPathUseSubfolders(context);
-            String uploadPath = context.getString(R.string.files_instant_upload_photo_path);
+            String uploadPath;
+            int createdBy;
+            if (isVideoContentUri(fileUri.toString())) {
+                uploadPath = context.getString(R.string.files_instant_upload_video_path);
+                createdBy = UploadFileOperation.CREATED_AS_INSTANT_VIDEO;
+            } else {
+                uploadPath = context.getString(R.string.files_instant_upload_photo_path);
+                createdBy = UploadFileOperation.CREATED_AS_INSTANT_PICTURE;
+            }
 
             FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
             requester.uploadNewFile(
@@ -260,11 +283,16 @@ public class MediaContentJob extends JobService {
                     behaviour,
                     mime_type,
                     true,           // create parent folder if not existent
-                    UploadFileOperation.CREATED_AS_INSTANT_PICTURE
+                    createdBy
             );
         } catch (Exception e) {
             Log_OC.e(TAG, e.getMessage());
             Crashlytics.logException(e);
         }
     }
+
+    private boolean isVideoContentUri(String mimeType) {
+        return mimeType.startsWith(MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString());
+    }
+
 }
