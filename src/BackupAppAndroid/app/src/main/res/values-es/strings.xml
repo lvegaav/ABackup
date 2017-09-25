@@ -19,6 +19,7 @@
     <string name="common.write_external_storage">Write external storage</string>
     <string name="common.read_contacts">Read contacts</string>
     <string name="common.read_call_log">Read call log</string>
+    <string name="common.connectivity_error">No hay red disponible, por favor revisa tu conectividad</string>
 
     <string name="network.error_socket_exception">Un error ocurrió en la conexión con el servidor.</string>
     <string name="network.error_socket_timeout_exception">Un error ocurrió mientras esperamos al servidor. No se pudo completar la operación.</string>
@@ -92,6 +93,10 @@
     <string name="sync.fail_in_favorites_content">El contenido de %1$d archivos no pudo ser sincronizado (%2$d conflictos)</string>
     <string name="sync.conflicts_in_favorites_ticker">Se encontraron conflictos</string>
     <string name="sync.conflicts_in_favorites_content">%1$d archivos favoritos no pudieron sincronizarse</string>
+    <string name="sync.preferences_backup_scheduled">Backup calendarizado empezará enseguida</string>
+    <string name="sync.preferences_backup_scheduled_on_wifi">Backup calendarizado empezará cuando estes conectado por wifi</string>
+    <string name="sync.no_files_to_backup">No hay %1$s para hacer backup</string>
+    <string name="sync.warning_mobile_data_on">Precaución: Estas conectado en plan de datos, deberias considerar conectarte a una red wifi para hacer backup de tus archivos.</string>
 
     <string name="contacts.title">Contactos</string>
     <string name="contacts.automatic_backup">Backup Automático</string>

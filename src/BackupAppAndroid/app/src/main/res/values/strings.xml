@@ -21,6 +21,7 @@
     <string name="common.read_contacts">Read contacts</string>
     <string name="common.read_sms">Read sms</string>
     <string name="common.read_call_log">Read call log</string>
+    <string name="common.connectivity_error">There is no network available, please check your connectivity</string>
 
     <string name="network.error_socket_exception">An error occurred during connection to the server.</string>
     <string name="network.error_socket_timeout_exception">An error occurred while waiting for the server. Could not complete operation.</string>
@@ -98,6 +99,10 @@
     <string name="sync.fail_in_favorites_content">Contents of %1$d files could not be sync\'ed (%2$d conflicts)</string>
     <string name="sync.conflicts_in_favorites_ticker">Conflicts found</string>
     <string name="sync.conflicts_in_favorites_content">%1$d kept-in-sync files could not be sync\'ed</string>
+    <string name="sync.preferences_backup_scheduled">Backup scheduled and will start shortly</string>
+    <string name="sync.preferences_backup_scheduled_on_wifi">Backup scheduled and will when wifi is available</string>
+    <string name="sync.no_files_to_backup">No %1$s to backup</string>
+    <string name="sync.warning_mobile_data_on">Warning: You are connected over mobile data, you should consider to connect to a wifi network to backup all your files.</string>
 
     <string name="contacts.title">Contacts</string>
     <string name="contacts.automatic_backup">Automatic Backup</string>

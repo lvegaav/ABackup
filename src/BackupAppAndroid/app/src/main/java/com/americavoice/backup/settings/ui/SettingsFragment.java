@@ -31,6 +31,7 @@ import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.utils.BaseConstants;
+import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
@@ -216,6 +217,11 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
+        // check if there is no connectivity
+        if (!ConnectivityUtils.isAppConnected(getContext())) {
+            showToastMessage(getString(R.string.common_connectivity_error));
+            return;
+        }
         this.mPresenter.initialize();
     }
 

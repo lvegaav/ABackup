@@ -16,12 +16,15 @@ import android.widget.Toast;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.service.CallsBackupJob;
+import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
+import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.sync.presenter.SyncPresenter;
 import com.americavoice.backup.sync.service.SyncBackupJob;
+import com.americavoice.backup.utils.ConnectivityUtils;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 
@@ -39,15 +42,14 @@ import butterknife.Unbinder;
 /**
  * Fragment that shows details of a certain political party.
  */
-public class SyncFragment extends BaseAuthenticatorFragment implements SyncView {
+public class SyncFragment extends BaseFragment implements SyncView {
 
     /**
      * Interface for listening submit button.
      */
     public interface Listener {
-        void onBackConfirmationClicked();
+        void onBackSyncClicked();
     }
-
 
     @Inject
     SyncPresenter mPresenter;
@@ -58,6 +60,8 @@ public class SyncFragment extends BaseAuthenticatorFragment implements SyncView 
     public TextView tvSyncPhotos;
     @BindView(R.id.tv_sync_videos)
     public TextView tvSyncVideos;
+    @BindView(R.id.tv_warning)
+    public TextView tvWarning;
 
     private Listener mListener;
     private Unbinder mUnBind;
@@ -98,7 +102,8 @@ public class SyncFragment extends BaseAuthenticatorFragment implements SyncView 
         super.onActivityCreated(savedInstanceState);
         if (getActivity() instanceof BaseOwncloudActivity)
             mContainerActivity = ((BaseOwncloudActivity) getActivity());
-        this.initialize(savedInstanceState);
+
+        this.initialize();
     }
 
     @Override
@@ -125,14 +130,20 @@ public class SyncFragment extends BaseAuthenticatorFragment implements SyncView 
         this.mPresenter.destroy();
     }
 
-    private void initialize(Bundle savedInstanceState) {
+    private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
-        this.mPresenter.initialize(getContext(),mContainerActivity.getAccount());
-        super.initialize();
-
-        if (savedInstanceState != null) {
-            //TODO:Init Values
+        // check if there is no connectivity
+        if (!ConnectivityUtils.isAppConnected(getContext())) {
+            showError(getString(R.string.common_connectivity_error));
+            tvSyncPhotos.setText(getString(R.string.sync_no_files_to_backup, getString(R.string.main_photos)));
+            tvSyncVideos.setText(getString(R.string.sync_no_files_to_backup, getString(R.string.main_videos)));
+            return;
+        }
+        this.mPresenter.initialize(getContext(), mContainerActivity.getAccount());
+        if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+            tvWarning.setVisibility(View.VISIBLE);
+            tvWarning.setText(getString(R.string.sync_warning_mobile_data_on));
         }
     }
 
@@ -169,7 +180,7 @@ public class SyncFragment extends BaseAuthenticatorFragment implements SyncView 
 
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
-        if (this.mListener != null) this.mListener.onBackConfirmationClicked();
+        if (this.mListener != null) this.mListener.onBackSyncClicked();
     }
 
     @OnClick(R.id.btn_sync)
@@ -179,13 +190,7 @@ public class SyncFragment extends BaseAuthenticatorFragment implements SyncView 
 
     @OnClick(R.id.btn_back)
     public void Back(View view) {
-        if (this.mListener != null) this.mListener.onBackConfirmationClicked();
-    }
-
-    @Override
-    public void viewHome() {
-        Snackbar.make(btnSync, R.string.contacts_preferences_backup_scheduled, Snackbar.LENGTH_LONG).show();
-        if (this.mListener != null) this.mListener.onBackConfirmationClicked();
+        if (this.mListener != null) this.mListener.onBackSyncClicked();
     }
 
     @Override
@@ -210,20 +215,34 @@ public class SyncFragment extends BaseAuthenticatorFragment implements SyncView 
                 .setUpdateCurrent(false)
                 .build()
                 .schedule();
+        if (!PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+            Toast.makeText(getContext(), R.string.sync_preferences_backup_scheduled_on_wifi, Toast.LENGTH_LONG).show();
 
-        Toast.makeText(getContext(), R.string.contacts_preferences_backup_scheduled, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(getContext(), R.string.sync_preferences_backup_scheduled, Toast.LENGTH_LONG).show();
+        }
 
-        if (this.mListener != null) this.mListener.onBackConfirmationClicked();
+        if (this.mListener != null) this.mListener.onBackSyncClicked();
     }
 
     @Override
     public void totalImages(int count) {
-        tvSyncPhotos.setText(String.format(getString(R.string.sync_photos), count));
+        if (count > 0) {
+            tvSyncPhotos.setText(String.format(getString(R.string.sync_photos), count));
+            btnSync.setVisibility(View.VISIBLE);
+        }
+        else
+            tvSyncPhotos.setText(getString(R.string.sync_no_files_to_backup, getString(R.string.main_photos)));
     }
 
     @Override
     public void totalVideos(int count) {
-        tvSyncVideos.setText(String.format(getString(R.string.sync_videos), count));
+        if (count > 0) {
+            tvSyncVideos.setText(String.format(getString(R.string.sync_videos), count));
+            btnSync.setVisibility(View.VISIBLE);
+        }
+        else
+            tvSyncVideos.setText(getString(R.string.sync_no_files_to_backup, getString(R.string.main_videos)));
     }
 
 }

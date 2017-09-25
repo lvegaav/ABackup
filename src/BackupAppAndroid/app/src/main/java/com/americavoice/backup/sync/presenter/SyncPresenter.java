@@ -52,13 +52,13 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
     private SyncView mView;
     private Context mContext;
     private Handler mHandler;
-    private FileDataStorageManager mStorageManager;
-    private Account mAccount;
+//    private FileDataStorageManager mStorageManager;
+//    private Account mAccount;
     private List<String> mPendingPhotos;
     private List<String> mPendingVideos;
 
-    private ReadRemoteFolderOperation mDownloadPhotosOperation;
-    private ReadRemoteFolderOperation mDownloadVideosOperation;
+    private ReadRemoteFolderOperation mReadRemotePhotosOperation;
+    private ReadRemoteFolderOperation mReadRemoteVideosOperation;
     @Inject
     SyncPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
@@ -74,6 +74,7 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
 
     @Override
     public void pause() {
+        mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, false);
     }
 
     @Override
@@ -86,27 +87,20 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
     public void initialize(Context context, Account account) {
         mContext = context;
         mHandler = new Handler();
-        mAccount = account;
-        mStorageManager = new FileDataStorageManager(account, context);
+//        mAccount = account;
+//        mStorageManager = new FileDataStorageManager(account, context);
         mView.showLoading();
 
-        mDownloadPhotosOperation = new ReadRemoteFolderOperation("/Photos/");
-        mDownloadPhotosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        mReadRemotePhotosOperation = new ReadRemoteFolderOperation("/Photos/");
+        mReadRemotePhotosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
 
-        mDownloadVideosOperation = new ReadRemoteFolderOperation("/Videos/");
-        mDownloadVideosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        mReadRemoteVideosOperation = new ReadRemoteFolderOperation("/Videos/");
+        mReadRemoteVideosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
 
-        mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, false);
     }
 
     public void sync() {
         mView.syncJob(mPendingPhotos,mPendingVideos);
-    }
-
-    private void showErrorMessage(ErrorBundle errorBundle) {
-        String errorMessage = ErrorMessageFactory.create(this.mView.getContext(),
-                errorBundle.getException());
-        this.mView.showError(errorMessage);
     }
 
     @Override
@@ -116,13 +110,13 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
         Map<String, RemoteFile> remoteFilesMap = new HashMap<>();
         List<String> pendingFiles = new ArrayList<>();
         List<String> localFiles;
-        boolean isPhotos = mDownloadPhotosOperation.equals(operation);
+
+        boolean isPhotos = mReadRemotePhotosOperation.equals(operation);
 
         if (remoteOperationResult.isSuccess()) {
             for(Object obj: remoteOperationResult.getData()) {
                 RemoteFile remoteFile = (RemoteFile) obj;
-                if (remoteFile.getMimeType() != null && !remoteFile.getMimeType().equals(MimeType.DIRECTORY))
-                {
+                if (remoteFile.getMimeType() != null && !remoteFile.getMimeType().equals(MimeType.DIRECTORY)) {
                     remoteFilesMap.put(getFileName(remoteFile.getRemotePath()),remoteFile);
                 }
             }
@@ -141,16 +135,16 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
                 mPendingVideos = pendingFiles;
                 mView.totalVideos(pendingFiles.size());
             }
-
+        } else {
+            if (mView.getContext() != null)
+                mView.showError(mView.getContext().getString(R.string.network_error_socket_exception));
         }
     }
 
     private ArrayList<String> getAllShownImagesPath(Context context) {
         Uri uri;
         Cursor cursor;
-        int column_index_data, column_index_folder_name;
         ArrayList<String> listOfAllImages = new ArrayList<String>();
-        String absolutePathOfImage = null;
         uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
         String[] projection = { MediaStore.MediaColumns.DATA,
@@ -158,24 +152,22 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
 
         cursor = context.getContentResolver().query(uri, projection, null,
                 null, null);
-
-        column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        column_index_folder_name = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
-        while (cursor.moveToNext()) {
-            absolutePathOfImage = cursor.getString(column_index_data);
-            listOfAllImages.add(absolutePathOfImage);
+        if (cursor != null) {
+            int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            while (cursor.moveToNext()) {
+                // Getting the absolute path of the image.
+                listOfAllImages.add(cursor.getString(column_index_data));
+            }
+            cursor.close();
         }
+
         return listOfAllImages;
     }
 
     private ArrayList<String> getAllShownVideosPath(Context context) {
-        int int_position = 0;
         Uri uri;
         Cursor cursor;
         ArrayList<String> listOfAllVideos = new ArrayList<>();
-        int column_index_data, column_index_folder_name, column_id, thum;
-        String absolutePathOfImage = null;
         uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
 
         String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Video.Media.BUCKET_DISPLAY_NAME, MediaStore.Video.Media._ID, MediaStore.Video.Thumbnails.DATA};
@@ -183,14 +175,14 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
         final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
         cursor = context.getContentResolver().query(uri, projection, null, null, orderBy + " DESC");
 
-        column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-        column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.BUCKET_DISPLAY_NAME);
-        column_id = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
-        thum = cursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA);
+        if (cursor != null) {
+            int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            while (cursor.moveToNext()) {
+                // Getting the absolute path of the video.
+                listOfAllVideos.add(cursor.getString(column_index_data));
+            }
 
-        while (cursor.moveToNext()) {
-            absolutePathOfImage = cursor.getString(column_index_data);
-            listOfAllVideos.add(absolutePathOfImage);
+            cursor.close();
         }
 
         return listOfAllVideos;

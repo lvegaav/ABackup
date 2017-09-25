@@ -2,7 +2,6 @@
 package com.americavoice.backup.login.ui;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -23,9 +22,9 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
+import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.FirebaseUtils;
 import com.crashlytics.android.Crashlytics;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -91,7 +90,10 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId== EditorInfo.IME_ACTION_DONE) {
-                    mPresenter.submit(((SpinnerItem) spCountry.getSelectedItem()).getId(), etPhoneNumber.getText().toString());
+                    if (ConnectivityUtils.isAppConnected(getContext()))
+                        mPresenter.submit(((SpinnerItem) spCountry.getSelectedItem()).getId(), etPhoneNumber.getText().toString());
+                    else
+                        showToastMessage(getString(R.string.common_connectivity_error));
                 }
                 return false;
             }

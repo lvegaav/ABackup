@@ -304,7 +304,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     }
 
     @Override
-    public void onBackConfirmationClicked() {
+    public void onBackSyncClicked() {
         replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
     }
 }

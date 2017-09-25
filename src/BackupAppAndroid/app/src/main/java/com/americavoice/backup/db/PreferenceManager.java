@@ -77,6 +77,11 @@ public abstract class PreferenceManager {
         saveBooleanPreference(context, PREF__UPLOAD_ON_MOBILE_DATA, uploadOnMobileData);
     }
 
+    public static boolean getInstantUploadUsingMobileData(Context context){
+        return getDefaultSharedPreferences(context).getBoolean(PREF__UPLOAD_ON_MOBILE_DATA, false);
+    }
+
+
     public static boolean instantVideoUploadPathUseSubfolders(Context context) {
         return getDefaultSharedPreferences(context).getBoolean(PREF__INSTANT_VIDEO_UPLOAD_PATH_USE_SUBFOLDERS, false);
     }

@@ -58,8 +58,7 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/rl_root_header"
             android:layout_above="@+id/rl_root_footer"
-            android:gravity="center_vertical"
-            >
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/tv_sync_photos"
@@ -89,12 +88,22 @@
                 android:layout_margin="60dp"
                 android:textColor="@color/white"
                 android:background="@drawable/rounded_black_background"
-                android:text="@string/sync.sync"/>
+                android:text="@string/sync.sync"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tv_warning"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorAccent"
+                android:paddingTop="10dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:textStyle="bold"
+                android:visibility="gone"/>
 
         </LinearLayout>
-
-
-
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
