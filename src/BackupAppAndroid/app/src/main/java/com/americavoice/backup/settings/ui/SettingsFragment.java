@@ -390,8 +390,6 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @OnClick(R.id.contact_us_button)
     public void onContactUsClick() {
-        //TODO:
-        Log_OC.v("Contact us", "Button clicked");
         Intent intent = new Intent(getActivity(), ContactUsActivity.class);
         startActivity(intent);
     }
