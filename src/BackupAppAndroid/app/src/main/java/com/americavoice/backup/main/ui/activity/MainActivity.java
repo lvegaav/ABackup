@@ -126,7 +126,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
                         switch (permissions[i]) {
                             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    schedulePhotos();
+                                    scheduleMediaJob();
                                     scheduleWifiJob();
                                 }
                                 break;

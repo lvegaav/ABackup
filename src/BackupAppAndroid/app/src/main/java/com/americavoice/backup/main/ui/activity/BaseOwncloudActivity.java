@@ -144,13 +144,13 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
         if (mAccountWasSet && PermissionUtil.checkSelfPermission(
                 getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                schedulePhotos();
+                scheduleMediaJob();
                 scheduleWifiJob();
             }
         }
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
-    protected void schedulePhotos() {
+    protected void scheduleMediaJob() {
         MediaContentJob.scheduleJob(this);
     }
 
