@@ -105,6 +105,10 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     TextView tvVideos;
     @BindView(R.id.tv_files)
     TextView tvFiles;
+    @BindView(R.id.tv_sms)
+    TextView tvSms;
+    @BindView(R.id.tv_calls)
+    TextView tvCalls;
     @BindView(R.id.tv_version_name)
     TextView tvVersionName;
     @BindView(R.id.capacity_text)
@@ -347,8 +351,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         float videoPercent = getPercent(sizes.get(Const.Videos),total);
         float contactPercent = getPercent(sizes.get(Const.Contacts),total);
         float documentPercent = getPercent(sizes.get(Const.Documents),total);
-        float callsPercent = getPercent(sizes.get(Const.Calls),total);
         float smsPercent = getPercent(sizes.get(Const.Sms), total);
+        float callsPercent = getPercent(sizes.get(Const.Calls),total);
         float availablePercent = getPercent(totalAvailable, total);
         Log.v("percents", String.format("%s %s %s %s %s", photoPercent, videoPercent, contactPercent,
                 documentPercent, availablePercent));
@@ -359,14 +363,14 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
                 ContextCompat.getColor(getContext(), R.color.videos_ratio),
                 ContextCompat.getColor(getContext(), R.color.contacts_ratio),
                 ContextCompat.getColor(getContext(), R.color.documents_ratio),
-                ContextCompat.getColor(getContext(), R.color.calls_ratio),
                 ContextCompat.getColor(getContext(), R.color.sms_ratio),
+                ContextCompat.getColor(getContext(), R.color.calls_ratio),
                 ContextCompat.getColor(getContext(), R.color.available_ratio)
         );
         List<Float> ratios = Arrays.asList(
-                photoPercent, videoPercent, contactPercent, documentPercent, callsPercent,
-                smsPercent, availablePercent
-//                0.5f, 0.1f, 0.05f, 0.05f, 0.1f, 0f, 0.2f
+                photoPercent, videoPercent, contactPercent, documentPercent, smsPercent,
+                callsPercent, availablePercent
+//                50f, 10f, 5f, 5f, 10f, 5f, 15f
         );
         createRatioBar(colors, ratios);
 
@@ -375,6 +379,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         tvVideos.setText(String.format(Locale.US, "%.1f %%", videoPercent));
         tvContacts.setText(String.format(Locale.US, "%.1f %%", contactPercent));
         tvFiles.setText(String.format(Locale.US, "%.1f %%", documentPercent));
+        tvSms.setText(String.format(Locale.US, "%.1f %%", smsPercent));
+        tvCalls.setText(String.format(Locale.US, "%.1f %%", callsPercent));
         mCapacityView.setText(String.format(Locale.US, "%d GB", sizeGb));
     }
 
