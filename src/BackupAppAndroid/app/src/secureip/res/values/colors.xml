@@ -17,4 +17,7 @@
     <color name="sms_ratio">#24120e</color>
     <color name="calls_ratio">#010000</color>
     <color name="available_ratio">#ffffff</color>
+    <color name="colorSwitchActivated">#FFFFFF</color>
+    <color name="colorSwitchNormal">#37436D</color>
+    <color name="colorSwitchForeground">#48FFFFFF</color>
 </resources>
