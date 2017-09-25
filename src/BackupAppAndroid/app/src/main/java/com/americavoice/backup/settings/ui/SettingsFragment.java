@@ -36,6 +36,7 @@ import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
+import com.americavoice.backup.utils.WifiUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -355,9 +356,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
                 ContextCompat.getColor(getContext(), R.color.available_ratio)
         );
         List<Float> ratios = Arrays.asList(
-//                photoPercent, videoPercent, contactPercent, documentPercent, smsPercent,
-//                callsPercent, availablePercent
-                50f, 10f, 5f, 5f, 10f, 5f, 15f
+                photoPercent, videoPercent, contactPercent, documentPercent, smsPercent,
+                callsPercent, availablePercent
+//                50f, 10f, 5f, 5f, 10f, 5f, 15f
         );
         createRatioBar(colors, ratios);
 
@@ -374,6 +375,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     @OnCheckedChanged(R.id.use_mobile_data)
     public void onChangePhotoOverWifi() {
         Log_OC.d("Upload using mobile data", "" + mUseMobileData.isChecked());
+        if (mUseMobileData.isChecked()) {
+            WifiUtils.wifiConnected(getContext());
+        }
         PreferenceManager.setInstantUploadUsingMobileData(getContext(), mUseMobileData.isChecked());
     }
 }

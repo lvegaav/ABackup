@@ -1,5 +1,6 @@
 package com.americavoice.backup.main.ui.activity;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
@@ -21,6 +22,7 @@ import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
+import com.americavoice.backup.utils.PermissionUtil;
 import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.status.OCCapability;
 import com.americavoice.backup.datamodel.OCFile;
@@ -138,6 +140,13 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
             }
         } else {
             swapToDefaultAccount();
+        }
+        if (mAccountWasSet && PermissionUtil.checkSelfPermission(
+                getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                schedulePhotos();
+                scheduleWifiJob();
+            }
         }
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
