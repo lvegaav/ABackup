@@ -153,8 +153,8 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             }
         }
 
-//        String backupFolderPath = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
-//        refreshBackupFolder(backupFolderPath);
+        String backupFolderPath = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        refreshBackupFolder(backupFolderPath);
     }
 
     @Override
@@ -197,14 +197,8 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
 
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        if (!arbitraryDataProvider.getBooleanValue(account, PREFERENCE_IS_NOT_FIRST_TIME)) {
-            backupSwitch.setChecked(true);
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_IS_NOT_FIRST_TIME, String.valueOf(true));
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(true));
-        } else {
-            backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP));
-        }
 
+        backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP));
         onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -288,7 +282,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     private boolean checkAndAskForContactsReadPermission() {
 
         // check permissions
-        if ((PermissionUtil.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.READ_CONTACTS))) {
+        if ((PermissionUtil.checkSelfPermission(getActivity(), Manifest.permission.READ_CONTACTS))) {
             return true;
         } else {
             // Check if we should show an explanation
@@ -385,6 +379,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == PermissionUtil.PERMISSIONS_READ_CONTACTS_AUTOMATIC) {
@@ -395,9 +390,10 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
                     } else {
                         backupSwitch.setOnCheckedChangeListener(null);
                         backupSwitch.setChecked(false);
+                        Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+                        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(false));
                         backupSwitch.setOnCheckedChangeListener(onCheckedChangeListener);
                     }
-
                     break;
                 }
             }
@@ -409,7 +405,6 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
                     if (grantResults[index] >= 0) {
                         startContactsBackupJob();
                     }
-
                     break;
                 }
             }
@@ -569,13 +564,6 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
                             .getFolderContent(backupFolder, false);
-                    if (contactsDatePickerBtn != null) {
-                        if (backupFiles == null || backupFiles.size() == 0) {
-                            contactsDatePickerBtn.setVisibility(View.GONE);
-                        } else {
-                            contactsDatePickerBtn.setVisibility(View.VISIBLE);
-                        }
-                    }
                 }
             }
         };

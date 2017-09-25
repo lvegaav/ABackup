@@ -45,6 +45,7 @@ import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -103,13 +104,15 @@ public class SyncBackupJob extends Job {
                             getContext(),
                             account,
                             file.getAbsolutePath(),
-                            "/Photos/" + getFileName(item),
+                            BaseConstants.PHOTOS_REMOTE_FOLDER + getFileName(item),
                             FileUploader.LOCAL_BEHAVIOUR_MOVE,
                             null,
                             true,
                             UploadFileOperation.CREATED_BY_USER
                     );
-                } catch (Exception e){}
+                } catch (Exception e){
+                    Crashlytics.logException(e);
+                }
             }
         }
 
@@ -122,19 +125,20 @@ public class SyncBackupJob extends Job {
                             getContext(),
                             account,
                             file.getAbsolutePath(),
-                            "/Videos/" + getFileName(item),
+                            BaseConstants.VIDEOS_REMOTE_FOLDER + getFileName(item),
                             FileUploader.LOCAL_BEHAVIOUR_MOVE,
                             null,
                             true,
                             UploadFileOperation.CREATED_BY_USER
                     );
-                } catch (Exception e){}
+                } catch (Exception e){
+                    Crashlytics.logException(e);
+                }
             }
         }
     }
 
-    private String getFileName(String path)
-    {
+    private String getFileName(String path) {
         return path.substring(path.lastIndexOf('/') + 1);
     }
 }

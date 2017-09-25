@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
+import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
@@ -39,7 +40,7 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
     /**
      * ownCloud {@link Account} where the main {@link OCFile} handled by the activity is located.
      */
-    private Account mCurrentAccount;
+    protected Account mCurrentAccount;
 
     /**
      * Capabilities of the server where {@link #mCurrentAccount} lives.
@@ -123,21 +124,20 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
         Account oldAccount = mCurrentAccount;
         boolean validAccount = (account != null && AccountUtils.setCurrentOwnCloudAccount(getApplicationContext(), account.name));
         if (validAccount) {
-            ContactsBackupFragment.startContactBackupJob(account);
-            CallsBackupFragment.startCallBackupJob(account);
-            SmsBackupFragment.startSmsBackupJob(account);
             mCurrentAccount = account;
             mAccountWasSet = true;
             mAccountWasRestored = (savedAccount || mCurrentAccount.equals(oldAccount));
-
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContentResolver());
+                arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(true));
+                ContactsBackupFragment.startContactBackupJob(mCurrentAccount);
+                arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, SmsBackupFragment.PREFERENCE_SMS_AUTOMATIC_BACKUP, String.valueOf(true));
+                SmsBackupFragment.startSmsBackupJob(mCurrentAccount);
+                arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, CallsBackupFragment.PREFERENCE_CALLS_AUTOMATIC_BACKUP, String.valueOf(true));
+                CallsBackupFragment.startCallBackupJob(mCurrentAccount);
+            }
         } else {
             swapToDefaultAccount();
-        }
-        if (mAccountWasSet) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                schedulePhotos();
-                scheduleWifiJob();
-            }
         }
     }
     @RequiresApi(api = Build.VERSION_CODES.N)

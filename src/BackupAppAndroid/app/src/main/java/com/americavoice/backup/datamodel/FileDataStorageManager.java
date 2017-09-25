@@ -119,6 +119,12 @@ public class FileDataStorageManager {
         c.close();
         if (file == null && OCFile.ROOT_PATH.equals(path)) {
             return createRootDir(); // root should always exist
+        } else if (file == null && path.equals(BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR)) {
+            return createDir(BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR);
+        } else if (file == null && path.equals(BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR)) {
+            return createDir(BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR);
+        } else if (file == null && path.equals(BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR)) {
+            return createDir(BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR);
         }
         return file;
     }
@@ -853,6 +859,14 @@ public class FileDataStorageManager {
 
     private OCFile createRootDir() {
         OCFile file = new OCFile(OCFile.ROOT_PATH);
+        file.setMimetype(MimeType.DIRECTORY);
+        file.setParentId(FileDataStorageManager.ROOT_PARENT_ID);
+        saveFile(file);
+        return file;
+    }
+
+    private OCFile createDir(String dirName) {
+        OCFile file = new OCFile(dirName);
         file.setMimetype(MimeType.DIRECTORY);
         file.setParentId(FileDataStorageManager.ROOT_PARENT_ID);
         saveFile(file);

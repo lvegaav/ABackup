@@ -19,10 +19,10 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"/>
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
             app:srcCompat="@drawable/ic_sip_v_logo"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"/>

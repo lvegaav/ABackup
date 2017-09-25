@@ -3,19 +3,14 @@ package com.americavoice.backup.explorer.presenter;
 
 import android.accounts.Account;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.webkit.MimeTypeMap;
 
-import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
-import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.PerActivity;
-import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.explorer.ui.FileListView;
 import com.americavoice.backup.files.service.FileUploader;
@@ -26,11 +21,11 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.operations.UploadFileOperation;
+import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.FileStorageUtils;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.DownloadRemoteFileOperation;
 import com.owncloud.android.lib.resources.files.FileUtils;
 import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
@@ -198,17 +193,17 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         final Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(mContext.getContentResolver());
         switch (mPath) {
-            case Const.Documents:
+            case BaseConstants.DOCUMENTS_REMOTE_FOLDER:
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
                         FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL,
                         String.valueOf(size));
                 break;
-            case Const.Photos:
+            case BaseConstants.PHOTOS_REMOTE_FOLDER:
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
                         FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL,
                         String.valueOf(size));
                 break;
-            case Const.Videos:
+            case BaseConstants.VIDEOS_REMOTE_FOLDER:
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
                         FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL,
                         String.valueOf(size));

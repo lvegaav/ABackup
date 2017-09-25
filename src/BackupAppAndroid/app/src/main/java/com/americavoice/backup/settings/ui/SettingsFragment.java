@@ -5,55 +5,37 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.RoundRectShape;
-import android.graphics.drawable.shapes.Shape;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
-import com.americavoice.backup.explorer.Const;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
-import com.americavoice.backup.utils.DisplayUtils;
-import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
-import com.github.mikephil.charting.utils.MPPointF;
+import com.americavoice.backup.utils.BaseConstants;
+import com.americavoice.backup.utils.ConnectivityUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -257,6 +239,11 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
+        // check if there is no connectivity
+        if (!ConnectivityUtils.isAppConnected(getContext())) {
+            showToastMessage(getString(R.string.common_connectivity_error));
+            return;
+        }
         this.mPresenter.initialize();
     }
 
@@ -347,12 +334,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @Override
     public void showPercent(HashMap<String, BigDecimal> sizes, BigDecimal total, BigDecimal totalAvailable) {
-        float photoPercent = getPercent(sizes.get(Const.Photos),total);
-        float videoPercent = getPercent(sizes.get(Const.Videos),total);
-        float contactPercent = getPercent(sizes.get(Const.Contacts),total);
-        float documentPercent = getPercent(sizes.get(Const.Documents),total);
-        float smsPercent = getPercent(sizes.get(Const.Sms), total);
-        float callsPercent = getPercent(sizes.get(Const.Calls),total);
+        float photoPercent = getPercent(sizes.get(BaseConstants.PHOTOS_REMOTE_FOLDER),total);
+        float videoPercent = getPercent(sizes.get(BaseConstants.VIDEOS_REMOTE_FOLDER),total);
+        float contactPercent = getPercent(sizes.get(BaseConstants.CONTACTS_REMOTE_FOLDER),total);
+        float documentPercent = getPercent(sizes.get(BaseConstants.DOCUMENTS_REMOTE_FOLDER),total);
+        float smsPercent = getPercent(sizes.get(BaseConstants.SMS_BACKUP_FOLDER), total);
+        float callsPercent = getPercent(sizes.get(BaseConstants.CALLS_BACKUP_FOLDER),total);
         float availablePercent = getPercent(totalAvailable, total);
         Log.v("percents", String.format("%s %s %s %s %s", photoPercent, videoPercent, contactPercent,
                 documentPercent, availablePercent));
