@@ -15,9 +15,13 @@
         <RelativeLayout
             android:id="@+id/rl_root_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
 
             <include layout="@layout/view_header" />
+
             <ImageButton
                 android:id="@+id/tv_logout"
                 android:layout_alignParentTop="true"
@@ -28,335 +32,331 @@
                 android:scaleType="fitXY"
                 android:layout_centerHorizontal="true"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:srcCompat="@drawable/ic_power_settings" />
+                app:srcCompat="@drawable/ic_button_power" />
+        </RelativeLayout>
 
-            <TextView
-                android:id="@+id/settings_subtitle"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/settings.subtitle"
-                android:textSize="15sp"
-                android:layout_below="@id/tv_hello"
-                android:layout_marginTop="60dp"
-                android:textColor="@color/white"/>
+        <TextView
+            android:id="@+id/settings_subtitle"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/settings.subtitle"
+            android:textSize="15sp"
+            android:layout_below="@id/tv_hello"
+            android:layout_marginTop="60dp"
+            android:textColor="@color/white"/>
 
+        <LinearLayout
+            android:id="@+id/wifi_options"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/settings_subtitle"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp">
 
-
-            <LinearLayout
-                android:id="@+id/wifi_options"
-                android:layout_below="@id/settings_subtitle"
-                android:orientation="vertical"
-                android:padding="15dp"
+            <android.support.v7.widget.SwitchCompat
+                style="@style/SettingsMenuOption"
+                android:id="@+id/use_mobile_data"
+                app:switchMinWidth="50sp"
+                android:text="@string/settings.use_mobile_data"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <android.support.v7.widget.SwitchCompat
-                    style="@style/SettingsMenuOption"
-                    android:id="@+id/use_mobile_data"
-                    app:switchMinWidth="50sp"
-                    android:text="@string/settings.use_mobile_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white"
-                    />
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/SettingsMenuOption"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:text="@string/settings.payment_options" />
-                    <ImageButton
-                        android:id="@+id/payment_button"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        app:srcCompat="@drawable/ic_wrench"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white"
-                    />
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/SettingsMenuOption"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:text="@string/settings.contact_us" />
-                    <ImageButton
-                        android:id="@+id/contact_us_button"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        app:srcCompat="@drawable/ic_email_send"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
-                </LinearLayout>
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white"
-                    />
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/SettingsMenuOption"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:text="@string/settings.news_info" />
-                    <ImageButton
-                        android:id="@+id/news_info_button"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        app:srcCompat="@drawable/ic_newspaper"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white"
-                    />
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/SettingsMenuOption"
-                        android:layout_weight="3"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:text="@string/settings.version" />
-                    <TextView
-                        style="@style/SettingsMenuOption"
-                        android:id="@+id/tv_version_name"
-                        android:gravity="end"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_sync_files"
-                android:layout_below="@+id/wifi_options"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/white"
-                android:textColor="@color/white"
-                android:inputType="none"
-                android:textAlignment="center"
-                android:gravity="center"
-                android:textSize="18sp"
-                android:text="@string/settings.sync_files"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"/>
-            <TextView
-                android:id="@+id/capacity_text"
-                android:textColor="@color/white"
-
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-
-                android:layout_alignBaseline="@id/tv_sync_files"
-                android:textSize="23sp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:theme="@style/Switch"/>
 
             <View
-                android:id="@+id/ratios"
-                android:layout_below="@id/tv_sync_files"
                 android:layout_width="match_parent"
-                android:layout_marginTop="25dp"
-                android:layout_height="15dp" />
+                android:layout_height="1dp"
+                android:background="@color/white"
+                />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/SettingsMenuOption"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/settings.payment_options" />
+                <ImageButton
+                    android:id="@+id/payment_button"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:srcCompat="@drawable/ic_wrench"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white"
+                />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/SettingsMenuOption"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/settings.contact_us" />
+                <ImageButton
+                    android:id="@+id/contact_us_button"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:srcCompat="@drawable/ic_email_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white"
+                />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/SettingsMenuOption"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/settings.news_info" />
+                <ImageButton
+                    android:id="@+id/news_info_button"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:srcCompat="@drawable/ic_newspaper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    style="@style/SettingsMenuOption"
+                    android:layout_weight="3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="@string/settings.version" />
+                <TextView
+                    style="@style/SettingsMenuOption"
+                    android:id="@+id/tv_version_name"
+                    android:gravity="end"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_sync_files"
+            android:layout_below="@+id/wifi_options"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:inputType="none"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:text="@string/settings.sync_files"
+            android:padding="10dp"
+            android:drawablePadding="10dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"/>
+
+        <TextView
+            android:id="@+id/capacity_text"
+            android:textColor="@color/white"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignBaseline="@id/tv_sync_files"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:id="@+id/ratios"
+            android:layout_below="@id/tv_sync_files"
+            android:layout_width="match_parent"
+            android:layout_marginTop="25dp"
+            android:layout_height="15dp" />
+
+        <LinearLayout
+            android:id="@+id/ll_space_description"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@id/ratios"
+            android:orientation="horizontal"
+            android:weightSum="6"
+            android:visibility="gone">
 
             <LinearLayout
-                android:id="@+id/rl_space_description"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_below="@id/ratios"
-                android:orientation="horizontal"
-                android:weightSum="6">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <com.flyco.roundview.RoundLinearLayout
-                        style="@style/RatioCircle"
-                        app:rv_backgroundColor="@color/photos_ratio"
-                        app:rv_cornerRadius="50dp"
-                        >
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            app:srcCompat="@drawable/ic_photos" />
-                    </com.flyco.roundview.RoundLinearLayout>
-                    <TextView
-                        android:id="@+id/tv_images"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0%"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <com.flyco.roundview.RoundLinearLayout
-                        style="@style/RatioCircle"
-                        app:rv_backgroundColor="@color/videos_ratio"
-                        app:rv_cornerRadius="50dp" >
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            app:srcCompat="@drawable/ic_videos" />
-                    </com.flyco.roundview.RoundLinearLayout>
-                    <TextView
-                        android:id="@+id/tv_videos"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <com.flyco.roundview.RoundLinearLayout
-                        style="@style/RatioCircle"
-                        app:rv_backgroundColor="@color/contacts_ratio"
-                        app:rv_cornerRadius="50dp" >
-
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:scaleType="fitXY"
-                            app:srcCompat="@drawable/ic_contacts" />
-                    </com.flyco.roundview.RoundLinearLayout>
-
-                    <TextView
-                        android:id="@+id/tv_contacts"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <com.flyco.roundview.RoundLinearLayout
-                        style="@style/RatioCircle"
-                        app:rv_backgroundColor="@color/documents_ratio"
-                        app:rv_cornerRadius="50dp" >
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            app:srcCompat="@drawable/ic_documents" />
-                    </com.flyco.roundview.RoundLinearLayout>
-                    <TextView
-                        android:id="@+id/tv_files"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <com.flyco.roundview.RoundLinearLayout
-                        style="@style/RatioCircle"
-                        app:rv_backgroundColor="@color/sms_ratio"
-                        app:rv_cornerRadius="50dp" >
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            app:srcCompat="@drawable/ic_sms" />
-                    </com.flyco.roundview.RoundLinearLayout>
-
-                    <TextView
-                        android:id="@+id/tv_sms"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0%"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:gravity="center">
-
-                    <com.flyco.roundview.RoundLinearLayout
-                        style="@style/RatioCircle"
-                        app:rv_backgroundColor="@color/calls_ratio"
-                        app:rv_cornerRadius="50dp" >
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            app:srcCompat="@drawable/ic_call_log" />
-                    </com.flyco.roundview.RoundLinearLayout>
-
-                    <TextView
-                        android:id="@+id/tv_calls"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="0%"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <com.flyco.roundview.RoundLinearLayout
+                    style="@style/RatioCircle"
+                    app:rv_backgroundColor="@color/photos_ratio"
+                    app:rv_cornerRadius="50dp"
+                    >
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:srcCompat="@drawable/ic_photos" />
+                </com.flyco.roundview.RoundLinearLayout>
+                <TextView
+                    android:id="@+id/tv_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
             </LinearLayout>
-        </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <com.flyco.roundview.RoundLinearLayout
+                    style="@style/RatioCircle"
+                    app:rv_backgroundColor="@color/videos_ratio"
+                    app:rv_cornerRadius="50dp" >
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:srcCompat="@drawable/ic_videos" />
+                </com.flyco.roundview.RoundLinearLayout>
+                <TextView
+                    android:id="@+id/tv_videos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <com.flyco.roundview.RoundLinearLayout
+                    style="@style/RatioCircle"
+                    app:rv_backgroundColor="@color/contacts_ratio"
+                    app:rv_cornerRadius="50dp" >
+
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/ic_contacts" />
+                </com.flyco.roundview.RoundLinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_contacts"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <com.flyco.roundview.RoundLinearLayout
+                    style="@style/RatioCircle"
+                    app:rv_backgroundColor="@color/documents_ratio"
+                    app:rv_cornerRadius="50dp" >
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:srcCompat="@drawable/ic_documents" />
+                </com.flyco.roundview.RoundLinearLayout>
+                <TextView
+                    android:id="@+id/tv_files"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+                <com.flyco.roundview.RoundLinearLayout
+                    style="@style/RatioCircle"
+                    app:rv_backgroundColor="@color/sms_ratio"
+                    app:rv_cornerRadius="50dp" >
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:srcCompat="@drawable/ic_sms" />
+                </com.flyco.roundview.RoundLinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_sms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <com.flyco.roundview.RoundLinearLayout
+                    style="@style/RatioCircle"
+                    app:rv_backgroundColor="@color/calls_ratio"
+                    app:rv_cornerRadius="50dp" >
+                    <ImageView
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        app:srcCompat="@drawable/ic_call_log" />
+                </com.flyco.roundview.RoundLinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_calls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -135,32 +135,32 @@ public class CallsBackupJob extends Job {
             }
             String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
             Cursor managedCursor = getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, strOrder);
-
-
+            if (managedCursor == null) {
+                return;
+            }
             int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
             int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
             int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
             int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-            while (managedCursor.moveToNext())
-            {
+
+            while (managedCursor.moveToNext()) {
                 String phoneNumber = managedCursor.getString(number);
                 String callType = managedCursor.getString(type);
                 String callDate = managedCursor.getString(date);
                 String callDuration = managedCursor.getString(duration);
                 calls.add(new Call(phoneNumber, callType, callDate, callDuration).ToJson());
             }
-
-            if (calls.size() == 0)
-            {
-                return;
-            }
-
+            managedCursor.close();
 
             // store total
             ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
             arbitraryDataProvider.storeOrUpdateKeyValue(account,
                     CallsBackupFragment.PREFERENCE_CALLS_LAST_TOTAL,
                     String.valueOf(calls.size()));
+
+            if (calls.size() == 0) {
+                return;
+            }
 
             String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
             Log_OC.d(TAG, "Storing: " + filename);

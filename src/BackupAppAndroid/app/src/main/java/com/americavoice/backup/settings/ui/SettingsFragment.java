@@ -24,6 +24,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
@@ -103,6 +105,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @BindView(R.id.ratios)
     View mRatios;
+
+    @BindView(R.id.ll_space_description)
+    LinearLayout llSpaceDescription;
 
     @BindString(R.string.main_photos)
     String photos;
@@ -370,7 +375,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         tvFiles.setText(String.format(Locale.US, "%.1f %%", documentPercent));
         tvSms.setText(String.format(Locale.US, "%.1f %%", smsPercent));
         tvCalls.setText(String.format(Locale.US, "%.1f %%", callsPercent));
-        mCapacityView.setText(String.format(Locale.US, "%d GB", sizeGb));
+        mCapacityView.setText(String.format(Locale.US, "%dGB", sizeGb));
+        llSpaceDescription.setVisibility(View.VISIBLE);
     }
 
     @OnCheckedChanged(R.id.use_mobile_data)

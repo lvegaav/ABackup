@@ -48,6 +48,7 @@ import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sms.ui.model.Sms;
 import com.americavoice.backup.utils.BaseConstants;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -130,30 +131,26 @@ public class SmsBackupJob extends Job {
 
             Cursor c = getContext().getContentResolver().query(message, null, null, null, null);
             if (c != null) {
+                c.moveToFirst();
+
                 int totalSMS = c.getCount();
 
-                if (c.moveToFirst()) {
-                    for (int i = 0; i < totalSMS; i++) {
+                for (int i = 0; i < totalSMS; i++) {
 
-                        Sms objSms = new Sms();
-                        objSms.setAddress(c.getString(c
-                                .getColumnIndexOrThrow("address")));
-                        objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
-                        objSms.setReadState(c.getString(c.getColumnIndex("read")));
-                        objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
-                        if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
-                            objSms.setFolderName("inbox");
-                        } else {
-                            objSms.setFolderName("sent");
-                        }
-
-                        smsList.add(objSms.toJson());
-                        c.moveToNext();
+                    Sms objSms = new Sms();
+                    objSms.setAddress(c.getString(c
+                            .getColumnIndexOrThrow("address")));
+                    objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
+                    objSms.setReadState(c.getString(c.getColumnIndex("read")));
+                    objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
+                    if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
+                        objSms.setFolderName("inbox");
+                    } else {
+                        objSms.setFolderName("sent");
                     }
-                } else {
-                    c.close();
-                    Log_OC.d(TAG, "You have no SMS");
-                    return;
+
+                    smsList.add(objSms.toJson());
+                    c.moveToNext();
                 }
                 c.close();
 
@@ -162,7 +159,9 @@ public class SmsBackupJob extends Job {
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
                         SmsBackupFragment.PREFERENCE_SMS_LAST_TOTAL,
                         String.valueOf(smsList.size()));
-
+                if (smsList.size() == 0) {
+                    return;
+                }
                 String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
                 Log_OC.d(TAG, "Storing: " + filename);
                 File file = new File(getContext().getCacheDir(), filename);
@@ -197,7 +196,8 @@ public class SmsBackupJob extends Job {
                 );
             }
         } catch (Exception e) {
-            Log_OC.d(TAG, e.getMessage());
+            Log_OC.e(TAG, e.getMessage());
+            Crashlytics.logException(e);
         }
     }
 
