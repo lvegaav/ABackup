@@ -22,7 +22,7 @@
             android:padding="15dp"
             app:srcCompat="@drawable/ic_back_white"/>
 
-        <com.americavoice.backup.main.ui.widget.CustomTextView
+        <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -32,8 +32,7 @@
             tools:text="Neque"
             android:gravity="center"
             android:textColor="#fff"
-            android:textSize="20sp"
-            app:font="fonts/Lato-Regular.ttf"/>
+            android:textSize="20sp"/>
 
     </RelativeLayout>
 

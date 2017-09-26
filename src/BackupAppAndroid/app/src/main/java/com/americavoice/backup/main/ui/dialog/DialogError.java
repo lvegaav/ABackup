@@ -15,7 +15,7 @@ import com.americavoice.backup.R;
  */
 
 public class DialogError extends DialogFragment {
-    private static final String ARGUMENT_MESSAGE = "gt.kilo.kiloapp.ARGUMENT_MESSAGE";
+    private static final String ARGUMENT_MESSAGE = "io.secureip.backup.ARGUMENT_MESSAGE";
 
     public static DialogError newInstance(String message)
     {
@@ -34,7 +34,7 @@ public class DialogError extends DialogFragment {
         View rootView = inflater.inflate(R.layout.dialog_error, container,
                 false);
         ((TextView)rootView.findViewById(R.id.tv_text)).setText(getArguments().getString(ARGUMENT_MESSAGE));
-        getDialog().setTitle("Kilo");
+        getDialog().setTitle(getString(R.string.app_name));
         // Do something else
         return rootView;
     }
