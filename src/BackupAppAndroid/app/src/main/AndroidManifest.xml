@@ -102,6 +102,8 @@
         </activity>
         <activity android:name=".settings.ui.ContactUsActivity"
             android:theme="@style/Theme.OptionsDialog" />
+        <activity android:name=".news.ui.NewsActivity"
+            android:theme="@style/AppTheme.NoActionBar.WhiteText" />
 
         <receiver
             android:name=".files.service.ConnectivityActionReceiver"
