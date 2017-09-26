@@ -25,6 +25,7 @@ import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.sync.ui.SyncView;
+import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.FileStorageUtils;
 import com.americavoice.backup.utils.MimeType;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
@@ -91,10 +92,10 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
 //        mStorageManager = new FileDataStorageManager(account, context);
         mView.showLoading();
 
-        mReadRemotePhotosOperation = new ReadRemoteFolderOperation("/Photos/");
+        mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
         mReadRemotePhotosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
 
-        mReadRemoteVideosOperation = new ReadRemoteFolderOperation("/Videos/");
+        mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
         mReadRemoteVideosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
 
     }
@@ -136,6 +137,7 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
                 mView.totalVideos(pendingFiles.size());
             }
         } else {
+            mView.showNoFiles();
             if (mView.getContext() != null)
                 mView.showError(mView.getContext().getString(R.string.network_error_socket_exception));
         }

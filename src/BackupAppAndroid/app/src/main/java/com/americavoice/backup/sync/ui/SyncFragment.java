@@ -136,8 +136,7 @@ public class SyncFragment extends BaseFragment implements SyncView {
         // check if there is no connectivity
         if (!ConnectivityUtils.isAppConnected(getContext())) {
             showError(getString(R.string.common_connectivity_error));
-            tvSyncPhotos.setText(getString(R.string.sync_no_files_to_backup, getString(R.string.main_photos)));
-            tvSyncVideos.setText(getString(R.string.sync_no_files_to_backup, getString(R.string.main_videos)));
+            showNoFiles();
             return;
         }
         this.mPresenter.initialize(getContext(), mContainerActivity.getAccount());
@@ -243,6 +242,12 @@ public class SyncFragment extends BaseFragment implements SyncView {
         }
         else
             tvSyncVideos.setText(getString(R.string.sync_no_files_to_backup, getString(R.string.main_videos)));
+    }
+
+    @Override
+    public void showNoFiles() {
+        tvSyncPhotos.setText(getString(R.string.sync_no_files_to_backup, getString(R.string.main_photos)));
+        tvSyncVideos.setText(getString(R.string.sync_no_files_to_backup, getString(R.string.main_videos)));
     }
 
 }
