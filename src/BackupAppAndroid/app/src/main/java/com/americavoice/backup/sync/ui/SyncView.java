@@ -11,4 +11,5 @@ public interface SyncView extends ILoadDataView {
     void syncJob(List<String> pendingPhotos, List<String> pendingVideos);
     void totalImages(int count);
     void totalVideos(int count);
+    void showNoFiles();
 }

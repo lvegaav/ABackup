@@ -137,6 +137,7 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
                 mView.totalVideos(pendingFiles.size());
             }
         } else {
+            mView.showNoFiles();
             if (mView.getContext() != null)
                 mView.showError(mView.getContext().getString(R.string.network_error_socket_exception));
         }
