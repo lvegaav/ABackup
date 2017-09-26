@@ -37,8 +37,12 @@ public class NewsTabsAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-            default:
-                return "News feed";
+                return "All";
+            case 1:
+                return "Read";
+            case 2:
+                return "Bookmarked";
         }
+        throw new IllegalStateException("No index defined");
     }
 }

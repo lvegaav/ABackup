@@ -157,5 +157,6 @@
     <string name="sync.videos">%1$d Videos</string>
 
     <string name="news.title">News &amp; Info</string>
+    <string name="news_detail.title">News &amp; Info</string>
 
 </resources>
