@@ -142,4 +142,6 @@
     <string name="sync.photos">%1$d Fotos</string>
     <string name="sync.videos">%1$d Videos</string>
 
+    <string name="news.title">Noticias</string>
+
 </resources>
