@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +41,7 @@ import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseFragment;
+import com.americavoice.backup.news.ui.NewsActivity;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
@@ -473,7 +475,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         }
 
         Toast.makeText(getContext(), messageId, Toast.LENGTH_LONG).show();
-
+    }
+  
+    @OnClick(R.id.news_info_button)
+    public void onNewsInfoClick() {
+        Intent intent = new Intent(getActivity(), NewsActivity.class);
+        startActivity(intent);
     }
 }
 
