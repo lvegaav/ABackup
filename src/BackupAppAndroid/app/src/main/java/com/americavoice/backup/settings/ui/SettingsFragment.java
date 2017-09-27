@@ -16,6 +16,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
@@ -25,21 +26,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.calls.ui.CallsBackupFragment;
+import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
+import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
+import com.americavoice.backup.sms.ui.SmsBackupFragment;
+import com.americavoice.backup.sync.service.SyncBackupJob;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.WifiUtils;
+import com.evernote.android.job.JobRequest;
+import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -70,7 +80,6 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
      */
     public interface Listener {
         void onBackSettingsClicked();
-        void onRestoreClicked();
     }
 
     @Inject
@@ -256,11 +265,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @Override
     public void showLoading() {
-        if (mProgress != null) {
-            mProgress.hide();
-            mProgress.dismiss();
-            mProgress = null;
-        }
+        hideLoading();
         mProgress = ProgressDialog.show(getActivity(),
                 getResources().getString(R.string.app_name),
                 getResources().getString(R.string.common_loading),
@@ -275,6 +280,16 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
             mProgress.dismiss();
             mProgress = null;
         }
+    }
+
+    @Override
+    public void showGettingPending() {
+        hideLoading();
+        mProgress = ProgressDialog.show(getActivity(),
+                getResources().getString(R.string.app_name),
+                getResources().getString(R.string.sync_getting_pending_files),
+                true,
+                false);
     }
 
     @Override
@@ -327,10 +342,45 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     }
 
     @OnClick(R.id.tv_sync_files)
-    public void sync()
-    {
-        if (this.mListener != null) this.mListener.onRestoreClicked();
+    public void sync() {
+        if (this.mPresenter != null) this.mPresenter.getPendingFiles();
     }
+
+    @Override
+    public void showSyncDialog(int pendingPhotos, int pendingVideos) {
+        String textToDisplay = "";
+        if (pendingPhotos == 0 && pendingVideos == 0) {
+            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+                textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, getString(R.string.sync_warning_mobile_data_on));
+            } else {
+                textToDisplay = getString(R.string.sync_backup_no_files_pending);
+            }
+        } else {
+            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, getString(R.string.sync_warning_mobile_data_on));
+            } else {
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos);
+            }
+        }
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (mPresenter != null) {
+                            mPresenter.scheduleSync();
+                        }
+                    }
+                })
+                .title(R.string.app_name)
+                .content(textToDisplay)
+                .positiveText(R.string.sync_backup_now)
+                .negativeText(R.string.common_cancel);
+
+        MaterialDialog dialog = builder.build();
+        dialog.show();
+    }
+
     private float getPercent(BigDecimal value, BigDecimal size) {
         float x = value != null ? value.floatValue() * 100 : 0;
         float x1 = x / size.floatValue();
@@ -392,6 +442,38 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     public void onContactUsClick() {
         Intent intent = new Intent(getActivity(), ContactUsActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void scheduleSyncJob(List<String> pendingPhotos, List<String> pendingVideos) {
+        final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+        if (pendingPhotos.size() > 0 || pendingVideos.size() > 0) {
+            PersistableBundleCompat bundle = new PersistableBundleCompat();
+            bundle.putString(SyncBackupJob.ACCOUNT, account.name);
+            bundle.putStringArray(SyncBackupJob.PENDING_PHOTOS, pendingPhotos.toArray(new String[pendingPhotos.size()]));
+            bundle.putStringArray(SyncBackupJob.PENDING_VIDEOS, pendingVideos.toArray(new String[pendingVideos.size()]));
+            bundle.putBoolean(SyncBackupJob.FORCE, true);
+
+            new JobRequest.Builder(SyncBackupJob.TAG)
+                    .setExtras(bundle)
+                    .setExecutionWindow(3_000L, 10_000L)
+                    .setRequiresCharging(false)
+                    .setPersisted(false)
+                    .setUpdateCurrent(false)
+                    .build()
+                    .schedule();
+        }
+        ContactsBackupFragment.startForcedContactBackupJob(account);
+        SmsBackupFragment.startForcedSmsBackupJob(account);
+        CallsBackupFragment.startForcedCallBackupJob(account);
+        int messageId = R.string.sync_preferences_backup_scheduled;
+
+        if (!PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+            messageId = R.string.sync_preferences_backup_scheduled_on_wifi;
+        }
+
+        Toast.makeText(getContext(), messageId, Toast.LENGTH_LONG).show();
+
     }
 }
 

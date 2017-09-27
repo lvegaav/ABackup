@@ -329,6 +329,22 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
                 .schedule();
     }
 
+    public static void startForcedContactBackupJob(Account account) {
+
+        PersistableBundleCompat bundle = new PersistableBundleCompat();
+        bundle.putString(ContactsBackupJob.ACCOUNT, account.name);
+        bundle.putBoolean(ContactsBackupJob.FORCE, true);
+
+        new JobRequest.Builder(ContactsBackupJob.TAG)
+                .setExtras(bundle)
+                .setRequiresCharging(false)
+                .setPersisted(true)
+                .setUpdateCurrent(true)
+                .setPeriodic(24 * 60 * 60 * 1000)
+                .build()
+                .schedule();
+    }
+
     private void startContactsBackupJob() {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
 

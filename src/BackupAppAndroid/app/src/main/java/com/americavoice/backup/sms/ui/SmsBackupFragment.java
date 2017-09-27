@@ -337,6 +337,22 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
                 .schedule();
     }
 
+    public static void startForcedSmsBackupJob(Account account) {
+
+        PersistableBundleCompat bundle = new PersistableBundleCompat();
+        bundle.putString(SmsBackupJob.ACCOUNT, account.name);
+        bundle.putBoolean(SmsBackupJob.FORCE, true);
+
+        new JobRequest.Builder(SmsBackupJob.TAG)
+                .setExtras(bundle)
+                .setRequiresCharging(false)
+                .setPersisted(true)
+                .setUpdateCurrent(true)
+                .setPeriodic(24 * 60 * 60 * 1000)
+                .build()
+                .schedule();
+    }
+
     private void startSmsBackupJob() {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
 
