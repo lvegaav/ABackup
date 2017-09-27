@@ -1,26 +1,46 @@
 
 package com.americavoice.backup.main.ui;
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.americavoice.backup.Const;
 import com.americavoice.backup.R;
+import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.calls.ui.CallsBackupFragment;
+import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
+import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.presenter.MainPresenter;
+import com.americavoice.backup.settings.presenter.SettingsPresenter;
+import com.americavoice.backup.settings.ui.SettingsView;
+import com.americavoice.backup.sms.ui.SmsBackupFragment;
+import com.americavoice.backup.sync.service.SyncBackupJob;
+import com.americavoice.backup.utils.ConnectivityUtils;
+import com.evernote.android.job.JobRequest;
+import com.evernote.android.job.util.support.PersistableBundleCompat;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.w3c.dom.Text;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -32,7 +52,101 @@ import butterknife.Unbinder;
 /**
  * Fragment that shows details of a certain political party.
  */
-public class MainFragment extends BaseFragment implements MainView {
+public class MainFragment extends BaseFragment implements MainView, SettingsView {
+
+    @Override
+    public void showPercent(HashMap<String, BigDecimal> sizes, BigDecimal total, BigDecimal totalAvailable) {
+
+    }
+
+    @Override
+    public void showDefaultError() {
+        showToastMessage(getString(R.string.exception_message_generic));
+    }
+
+    @Override
+    public void showGettingPending() {
+        hideLoading();
+        mProgress = ProgressDialog.show(getActivity(),
+                getResources().getString(R.string.app_name),
+                getResources().getString(R.string.sync_getting_pending_files),
+                true,
+                false);
+    }
+
+    @Override
+    public void showSyncDialog(int pendingPhotos, int pendingVideos) {
+        String textToDisplay = "";
+        if (pendingPhotos == 0 && pendingVideos == 0) {
+            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+                textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, getString(R.string.sync_warning_mobile_data_on));
+            } else {
+                textToDisplay = getString(R.string.sync_backup_no_files_pending);
+            }
+        } else {
+            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, getString(R.string.sync_warning_mobile_data_on));
+            } else {
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos);
+            }
+        }
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (mSettingsPresenter != null) {
+                            mSettingsPresenter.scheduleSync();
+                        }
+                    }
+                })
+                .onAny(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        if (mSettingsPresenter != null) {
+                            mSettingsPresenter.setFirstTimeFalse();
+                        }
+                    }
+                })
+                .title(R.string.app_name)
+                .content(textToDisplay)
+                .positiveText(R.string.sync_backup_now)
+                .negativeText(R.string.common_cancel);
+
+        MaterialDialog dialog = builder.build();
+        dialog.show();
+    }
+
+    @Override
+    public void scheduleSyncJob(List<String> pendingPhotos, List<String> pendingVideos) {
+        final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+        if (pendingPhotos.size() > 0 || pendingVideos.size() > 0) {
+            PersistableBundleCompat bundle = new PersistableBundleCompat();
+            bundle.putString(SyncBackupJob.ACCOUNT, account.name);
+            bundle.putStringArray(SyncBackupJob.PENDING_PHOTOS, pendingPhotos.toArray(new String[pendingPhotos.size()]));
+            bundle.putStringArray(SyncBackupJob.PENDING_VIDEOS, pendingVideos.toArray(new String[pendingVideos.size()]));
+            bundle.putBoolean(SyncBackupJob.FORCE, true);
+
+            new JobRequest.Builder(SyncBackupJob.TAG)
+                    .setExtras(bundle)
+                    .setExecutionWindow(3_000L, 10_000L)
+                    .setRequiresCharging(false)
+                    .setPersisted(false)
+                    .setUpdateCurrent(false)
+                    .build()
+                    .schedule();
+        }
+        ContactsBackupFragment.startForcedContactBackupJob(account);
+        SmsBackupFragment.startForcedSmsBackupJob(account);
+        CallsBackupFragment.startForcedCallBackupJob(account);
+        int messageId = R.string.sync_preferences_backup_scheduled;
+
+        if (!PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+            messageId = R.string.sync_preferences_backup_scheduled_on_wifi;
+        }
+
+        Toast.makeText(getContext(), messageId, Toast.LENGTH_LONG).show();
+    }
 
     public interface Listener {
         void viewPhotos();
@@ -45,6 +159,9 @@ public class MainFragment extends BaseFragment implements MainView {
         void viewSync();
         void onMainBackPressed();
     }
+
+    @Inject
+    SettingsPresenter mSettingsPresenter;
 
     @Inject
     MainPresenter mPresenter;
@@ -103,6 +220,7 @@ public class MainFragment extends BaseFragment implements MainView {
     public void onResume() {
         super.onResume();
         this.mPresenter.resume();
+        this.mSettingsPresenter.showSyncAtFirst();
     }
 
     @Override
@@ -126,6 +244,7 @@ public class MainFragment extends BaseFragment implements MainView {
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
+        this.mSettingsPresenter.setView(this);
         this.mPresenter.initialize(getContext(), getString(R.string.main_title));
     }
 

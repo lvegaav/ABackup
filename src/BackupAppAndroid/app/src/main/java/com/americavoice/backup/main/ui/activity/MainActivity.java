@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.americavoice.backup.R;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
@@ -296,11 +297,6 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     @Override
     public void onBackSettingsClicked() {
         replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
-    }
-
-    @Override
-    public void onRestoreClicked() {
-        replaceFragment(R.id.fl_fragment, SyncFragment.newInstance(), true, true);
     }
 
     @Override

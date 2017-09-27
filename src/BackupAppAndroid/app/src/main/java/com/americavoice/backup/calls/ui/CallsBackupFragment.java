@@ -339,6 +339,22 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
                 .schedule();
     }
 
+    public static void startForcedCallBackupJob(Account account) {
+
+        PersistableBundleCompat bundle = new PersistableBundleCompat();
+        bundle.putString(CallsBackupJob.ACCOUNT, account.name);
+        bundle.putBoolean(CallsBackupJob.FORCE, true);
+
+        new JobRequest.Builder(CallsBackupJob.TAG)
+                .setExtras(bundle)
+                .setRequiresCharging(false)
+                .setPersisted(true)
+                .setUpdateCurrent(true)
+                .setPeriodic(24 * 60 * 60 * 1000)
+                .build()
+                .schedule();
+    }
+
     private void startCallsBackupJob() {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
 

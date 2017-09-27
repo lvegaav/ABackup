@@ -45,9 +45,6 @@ public class MainPresenter extends BasePresenter implements IPresenter {
     @Override
     public void resume() {
         initBadges();
-        if (mSharedPrefsUtils.getBooleanPreference(NetworkProvider.KEY_FIRST_TIME, false)) {
-            mView.showSync();
-        }
     }
 
     @Override
