@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#0093D2</color>
     <color name="colorAccent">#FF7F2F</color>
     <color name="white">#FFF</color>
+    <color name="darkText">#333</color>
     <color name="blackOpacity">#0D000000</color>
     <color name="filelist_icon_backgorund">#DDDDDD</color>
     <color name="selected_item_background">#ECECEC</color>

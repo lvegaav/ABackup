@@ -15,8 +15,6 @@ import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.explorer.ui.FileListView;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
-import com.americavoice.backup.main.exception.ErrorBundle;
-import com.americavoice.backup.main.exception.ErrorMessageFactory;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
@@ -26,11 +24,9 @@ import com.americavoice.backup.utils.FileStorageUtils;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.DownloadRemoteFileOperation;
 import com.owncloud.android.lib.resources.files.FileUtils;
 import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
 import com.owncloud.android.lib.resources.files.RemoteFile;
-import com.owncloud.android.lib.resources.files.UploadRemoteFileOperation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,7 +87,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
                 account,
                 upFile.getAbsolutePath(),
                 mPath + FileUtils.PATH_SEPARATOR + upFile.getName(),
-                FileUploader.LOCAL_BEHAVIOUR_MOVE,
+                FileUploader.LOCAL_BEHAVIOUR_FORGET,
                 null,
                 true,
                 UploadFileOperation.CREATED_BY_USER
@@ -104,7 +100,6 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         mContext = context;
         mPath = path;
         mHandler = new Handler();
-        mView.showLoading();
         mAccount = account;
         mStorageManager = new FileDataStorageManager(account, context);
 
@@ -121,46 +116,28 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
             //Check cache
             if (remoteFile.isDown()) {
                 mView.viewDetail(remoteFile);
-                return;
+            } else {
+                mView.downloadFile(remoteFile);
             }
-
-            mView.downloadFile(remoteFile);
         }
-    }
-
-    private void showErrorMessage(ErrorBundle errorBundle) {
-        String errorMessage = ErrorMessageFactory.create(this.mView.getContext(),
-                errorBundle.getException());
-        this.mView.showError(errorMessage);
     }
 
     @Override
     public void onRemoteOperationFinish(RemoteOperation operation, RemoteOperationResult result) {
         mView.hideLoading();
-        mView.hideDLoading();
-
         if (!result.isSuccess()) {
             mView.showRetry();
         } else if (operation instanceof ReadRemoteFolderOperation) {
-            onSuccessfulRefresh((ReadRemoteFolderOperation)operation, result);
-        } else if (operation instanceof DownloadRemoteFileOperation) {
-            onSuccessfulDownload((DownloadRemoteFileOperation)operation, result);
-        }  else if (operation instanceof UploadRemoteFileOperation) {
-            onSuccessfulUpload((UploadRemoteFileOperation)operation, result);
+            onSuccessfulRefresh((ReadRemoteFolderOperation) operation, result);
         }
 
     }
 
-    private void onSuccessfulUpload(UploadRemoteFileOperation operation, RemoteOperationResult result) {
-        mView.hideLoading();
-        mView.hideDLoading();
-        initialize(mContext, mPath, mAccount);
-    }
-
-    private void onSuccessfulDownload(DownloadRemoteFileOperation operation, RemoteOperationResult result) {
-        mView.viewDetail(mRemoteFile);
-        mView.notifyDataSetChanged();
-        mRemoteFile = null;
+    public void onSuccessfulDownload() {
+        if (mRemoteFile != null) {
+            mView.viewDetail(mRemoteFile);
+            mRemoteFile = null;
+        }
     }
 
     private void onSuccessfulRefresh(ReadRemoteFolderOperation operation, RemoteOperationResult result) {

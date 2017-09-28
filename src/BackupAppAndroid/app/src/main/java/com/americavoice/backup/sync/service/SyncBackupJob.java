@@ -105,7 +105,7 @@ public class SyncBackupJob extends Job {
                             account,
                             file.getAbsolutePath(),
                             BaseConstants.PHOTOS_REMOTE_FOLDER + getFileName(item),
-                            FileUploader.LOCAL_BEHAVIOUR_MOVE,
+                            FileUploader.LOCAL_BEHAVIOUR_FORGET,
                             null,
                             true,
                             UploadFileOperation.CREATED_BY_USER
@@ -126,7 +126,7 @@ public class SyncBackupJob extends Job {
                             account,
                             file.getAbsolutePath(),
                             BaseConstants.VIDEOS_REMOTE_FOLDER + getFileName(item),
-                            FileUploader.LOCAL_BEHAVIOUR_MOVE,
+                            FileUploader.LOCAL_BEHAVIOUR_FORGET,
                             null,
                             true,
                             UploadFileOperation.CREATED_BY_USER

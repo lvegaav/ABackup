@@ -440,7 +440,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         PreferenceManager.setInstantUploadUsingMobileData(getContext(), mUseMobileData.isChecked());
     }
 
-    @OnClick(R.id.contact_us_button)
+    @OnClick(R.id.ll_contact_us)
     public void onContactUsClick() {
         Intent intent = new Intent(getActivity(), ContactUsActivity.class);
         startActivity(intent);
@@ -477,7 +477,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         Toast.makeText(getContext(), messageId, Toast.LENGTH_LONG).show();
     }
   
-    @OnClick(R.id.news_info_button)
+    @OnClick(R.id.ll_news_info)
     public void onNewsInfoClick() {
         Intent intent = new Intent(getActivity(), NewsActivity.class);
         startActivity(intent);

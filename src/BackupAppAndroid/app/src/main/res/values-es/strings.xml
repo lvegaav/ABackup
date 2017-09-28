@@ -14,11 +14,14 @@
     <string name="common.download">Descargar</string>
     <string name="common.delete">Eliminar</string>
     <string name="common.empty">Vacío</string>
+    <string name="common.wrong_credentials">Check credentials, please try again</string>
+    <string name="common.account_error">Couldn\'t create the account, please try again</string>
     <string name="common.logout">Cerrar Sesión</string>
     <string name="common.select">Seleccionar</string>
     <string name="common.file_will_download">El archivo será descargado, por favor espera.</string>
     <string name="common.write_external_storage">Write external storage</string>
     <string name="common.read_contacts">Read contacts</string>
+    <string name="common.read_sms">Read sms</string>
     <string name="common.read_call_log">Read call log</string>
     <string name="common.connectivity_error">No hay red disponible, por favor revisa tu conectividad</string>
 
@@ -138,17 +141,25 @@
     <string name="settings.title">Información y opciones</string>
     <string name="settings.subtitle">Presione para configurar</string>
     <string name="settings.sync_files">Sincronizar</string>
+    <string name="settings.use_mobile_data">Usar red móvil</string>
     <string name="settings.version">Versión</string>
     <string name="settings.contact_us">Contáctenos</string>
-    <string name="settings.use_mobile_data">Usar red móvil</string>
     <string name="settings.payment_options">Opciones de pago</string>
     <string name="settings.news_info">Noticias</string>
+
+    <string name="contact_us.title">Contact us</string>
+    <string name="contact_us.customer_service">Customer service</string>
+    <string name="contact_us.facebook">Facebook</string>
+    <string name="contact_us.phone">+123456789</string>
+    <string name="contact_us.facebook_link">https://facebook.com</string>
 
     <string name="sync.title">Sincronizar Archivos</string>
     <string name="sync.sync">Sincronizar</string>
     <string name="sync.photos">%1$d Fotos</string>
     <string name="sync.videos">%1$d Videos</string>
+    <string name="sync.string_files">Files</string>
 
     <string name="news.title">Noticias</string>
+    <string name="news_detail.title">Noticias</string>
 
 </resources>

@@ -2,8 +2,6 @@ package com.americavoice.backup.explorer.ui;
 
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.main.ui.ILoadDataView;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.resources.files.RemoteFile;
 
 import java.util.List;
 
@@ -17,7 +15,5 @@ public interface FileListView extends ILoadDataView {
     void viewFolder(String path);
     void renderEmpty();
     void showUploading();
-    void showDownloading();
-    void hideDLoading();
     void notifyDataSetChanged();
 }

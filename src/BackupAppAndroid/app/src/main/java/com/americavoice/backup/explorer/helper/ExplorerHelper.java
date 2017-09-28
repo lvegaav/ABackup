@@ -9,7 +9,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
-public class FilesHelper {
+public class ExplorerHelper {
 
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access

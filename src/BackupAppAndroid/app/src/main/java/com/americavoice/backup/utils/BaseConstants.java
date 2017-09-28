@@ -12,15 +12,19 @@ public class BaseConstants {
     public static final String FILE_PROVIDER_AUTHORITY = Const.FILE_PROVIDER_AUTHORITY;
     public static final String DATA_FOLDER = Const.DATA_FOLDER;
 
-    public static final String VIDEOS_REMOTE_FOLDER = "/Videos/";
     public static final String PHOTOS_REMOTE_FOLDER = "/Photos/";
-    public static final String CONTACTS_REMOTE_FOLDER = "/Contacts/";
+    public static final String VIDEOS_REMOTE_FOLDER = "/Videos/";
     public static final String DOCUMENTS_REMOTE_FOLDER = "/Documents/";
-    public static final String CALLS_REMOTE_FOLDER = "/Calls/";
+    public static final String CONTACTS_REMOTE_FOLDER = "/Contacts/";
     public static final String SMS_REMOTE_FOLDER = "/Sms/";
+    public static final String CALLS_REMOTE_FOLDER = "/Calls/";
+
+    public static final String PHOTOS_BACKUP_FOLDER = "/Photos";
+    public static final String VIDEOS_BACKUP_FOLDER = "/Videos";
     public static final String CONTACTS_BACKUP_FOLDER = "/Contacts";
-    public static final String CALLS_BACKUP_FOLDER = "/Calls";
     public static final String SMS_BACKUP_FOLDER = "/Sms";
+    public static final String CALLS_BACKUP_FOLDER = "/Calls";
+
     public static final Integer CONTACTS_BACKUP_EXPLIRE = -1;
     public static final Integer CALLS_BACKUP_EXPLIRE = -1;
     public static final Integer SMS_BACKUP_EXPIRE = -1;

@@ -70,6 +70,7 @@
                 android:background="@color/white"
                 />
             <LinearLayout
+                android:id="@+id/ll_payment_options"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -79,9 +80,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="@string/settings.payment_options" />
-                <ImageButton
+                <ImageView
                     android:id="@+id/payment_button"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     app:srcCompat="@drawable/ic_wrench"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
@@ -92,6 +92,7 @@
                 android:background="@color/white"
                 />
             <LinearLayout
+                android:id="@+id/ll_contact_us"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -101,9 +102,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="@string/settings.contact_us" />
-                <ImageButton
+                <ImageView
                     android:id="@+id/contact_us_button"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     app:srcCompat="@drawable/ic_email_send"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
@@ -114,6 +114,7 @@
                 android:background="@color/white"
                 />
             <LinearLayout
+                android:id="@+id/ll_news_info"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -123,9 +124,8 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:text="@string/settings.news_info" />
-                <ImageButton
+                <ImageView
                     android:id="@+id/news_info_button"
-                    android:background="?attr/selectableItemBackgroundBorderless"
                     app:srcCompat="@drawable/ic_newspaper"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent" />
