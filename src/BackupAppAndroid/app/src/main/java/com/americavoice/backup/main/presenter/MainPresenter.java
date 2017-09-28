@@ -63,7 +63,7 @@ public class MainPresenter extends BasePresenter implements IPresenter {
         mContext = context;
     }
 
-    public void initBadges() {
+    private void initBadges() {
         Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(mContext.getContentResolver());
 

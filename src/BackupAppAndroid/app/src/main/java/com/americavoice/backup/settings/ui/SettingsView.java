@@ -15,4 +15,5 @@ public interface SettingsView extends ILoadDataView {
     void showGettingPending();
     void showSyncDialog(int pendingPhotos, int pendingVideos);
     void scheduleSyncJob(List<String> pendingPhotos, List<String> pendingVideos);
+    void showRequestPermissionDialog();
 }

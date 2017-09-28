@@ -161,7 +161,7 @@ public class ContactsBackupJob extends Job {
                     account,
                     file.getAbsolutePath(),
                     backupFolder + filename,
-                    FileUploader.LOCAL_BEHAVIOUR_MOVE,
+                    FileUploader.LOCAL_BEHAVIOUR_FORGET,
                     null,
                     true,
                     UploadFileOperation.CREATED_BY_USER

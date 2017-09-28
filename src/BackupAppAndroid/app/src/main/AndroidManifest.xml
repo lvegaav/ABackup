@@ -103,9 +103,11 @@
         <activity android:name=".settings.ui.ContactUsActivity"
             android:theme="@style/Theme.OptionsDialog" />
         <activity android:name=".news.ui.NewsActivity"
-            android:theme="@style/AppTheme.NoActionBar.WhiteText" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".news.ui.NewsDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar.WhiteText" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
             android:name=".files.service.ConnectivityActionReceiver"
@@ -115,7 +117,7 @@
                  <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".files.InstantUploadBroadcastReceiver">
+        <receiver android:name=".files.service.InstantUploadBroadcastReceiver">
             <intent-filter>
 
                 <!-- unofficially supported by many Android phones but not by HTC devices: -->
@@ -137,7 +139,7 @@
             android:authorities="@string/authority"
             android:enabled="true"
             android:exported="true"
-            android:label="@string/sync_string_files"
+            android:label="@string/sync.string_files"
             android:syncable="true" />
 
         <service

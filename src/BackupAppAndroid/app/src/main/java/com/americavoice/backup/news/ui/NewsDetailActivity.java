@@ -9,6 +9,10 @@ import android.widget.TextView;
 
 import com.americavoice.backup.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 /**
  * Created by javier on 9/26/17.
  */
@@ -18,23 +22,28 @@ public class NewsDetailActivity extends AppCompatActivity {
     public static final String TITLE = "title";
     public static final String DATE = "date";
     public static final String CONTENT = "content";
+    @BindView(R.id.news_title)
+    TextView mTitle;
+    @BindView(R.id.news_date)
+    TextView mDate;
+    @BindView(R.id.news_content)
+    TextView mContent;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
-    private TextView mTitle;
-    private TextView mDate;
-    private TextView mContent;
-    private Toolbar mToolbar;
+    private Unbinder mUnBind;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
-        mTitle = findViewById(R.id.news_title);
-        mDate = findViewById(R.id.news_date);
-        mContent = findViewById(R.id.news_content);
-        mToolbar = findViewById(R.id.toolbar);
+        mUnBind = ButterKnife.bind(this);
+
         mToolbar.setTitle(getString(R.string.news_detail_title));
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationIcon(R.drawable.ic_back_white);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -43,12 +52,20 @@ public class NewsDetailActivity extends AppCompatActivity {
         });
 
         Bundle bundle = getIntent().getExtras();
-        String title = bundle.getString(TITLE, "");
-        String content = bundle.getString(CONTENT, "");
-        String date = bundle.getString(DATE, "");
+        if (bundle != null) {
+            String title = bundle.getString(TITLE, "");
+            String content = bundle.getString(CONTENT, "");
+            String date = bundle.getString(DATE, "");
 
-        mTitle.setText(title);
-        mContent.setText(content);
-        mDate.setText(date);
+            mTitle.setText(title);
+            mContent.setText(content);
+            mDate.setText(date);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mUnBind.unbind();
     }
 }

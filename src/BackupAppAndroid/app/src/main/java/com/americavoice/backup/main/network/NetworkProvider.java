@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 
 import com.americavoice.backup.Const;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -31,7 +32,6 @@ public class NetworkProvider {
     private static final String KEY_PREFS = "com.americavoice.backup.KEY_PREFS";
     public static final String KEY_PHONE_NUMBER = "com.americavoice.backup.KEY_PHONE_NUMBER";
     public static final String KEY_FIRST_TIME = "com.americavoice.backup.KEY_FIRST_TIME";
-    private final SharedPreferences mPref;
     private final AndroidServiceClient mClient;
     private final Context mContext;
 
@@ -47,7 +47,6 @@ public class NetworkProvider {
 
     @Inject
     public NetworkProvider(Context context) {
-        mPref = context.getSharedPreferences(KEY_PREFS, Context.MODE_PRIVATE);
         mClient = new AndroidServiceClient(baseUrl + "/api");
         mContext = context;
 
@@ -133,9 +132,9 @@ public class NetworkProvider {
             // Create Hex String
             StringBuilder hexString = new StringBuilder();
             for (byte aMessageDigest : messageDigest) {
-                String h = Integer.toHexString(0xFF & aMessageDigest);
+                StringBuilder h = new StringBuilder(Integer.toHexString(0xFF & aMessageDigest));
                 while (h.length() < 2)
-                    h = "0" + h;
+                    h.insert(0, "0");
                 hexString.append(h);
             }
             return hexString.toString();

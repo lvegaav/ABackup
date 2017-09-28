@@ -42,6 +42,7 @@ import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.files.service.FileUploader;
+import com.americavoice.backup.files.utils.FileUtils;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
@@ -65,20 +66,18 @@ import java.util.Vector;
  */
 
 public class SyncBackupJob extends Job {
+
     public static final String TAG = "SyncBackupJob";
     public static final String ACCOUNT = "account";
     public static final String PENDING_VIDEOS = "PENDING_VIDEOS";
     public static final String PENDING_PHOTOS = "PENDING_PHOTOS";
     public static final String FORCE = "force";
 
-
     @NonNull
     @Override
     protected Result onRunJob(Params params) {
 
         PersistableBundleCompat bundle = params.getExtras();
-
-        boolean force = bundle.getBoolean(FORCE, false);
 
         final Context context = getContext();
 
@@ -88,57 +87,9 @@ public class SyncBackupJob extends Job {
 
         final String[] pendingVideos = bundle.getStringArray(PENDING_VIDEOS);
 
-        backup(account, pendingPhotos, pendingVideos);
+        FileUtils.backupPendingFiles(getContext(), account, pendingPhotos, pendingVideos);
 
         return Result.SUCCESS;
     }
 
-    private void backup(Account account, String[] pendingPhotos, String[] pendingVideos) {
-
-        if (pendingPhotos != null) {
-            for (String item : pendingPhotos) {
-                try {
-                    File file = new File(item);
-                    FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
-                    requester.uploadNewFile(
-                            getContext(),
-                            account,
-                            file.getAbsolutePath(),
-                            BaseConstants.PHOTOS_REMOTE_FOLDER + getFileName(item),
-                            FileUploader.LOCAL_BEHAVIOUR_MOVE,
-                            null,
-                            true,
-                            UploadFileOperation.CREATED_BY_USER
-                    );
-                } catch (Exception e){
-                    Crashlytics.logException(e);
-                }
-            }
-        }
-
-        if (pendingVideos != null) {
-            for (String item : pendingVideos) {
-                try {
-                    File file = new File(item);
-                    FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
-                    requester.uploadNewFile(
-                            getContext(),
-                            account,
-                            file.getAbsolutePath(),
-                            BaseConstants.VIDEOS_REMOTE_FOLDER + getFileName(item),
-                            FileUploader.LOCAL_BEHAVIOUR_MOVE,
-                            null,
-                            true,
-                            UploadFileOperation.CREATED_BY_USER
-                    );
-                } catch (Exception e){
-                    Crashlytics.logException(e);
-                }
-            }
-        }
-    }
-
-    private String getFileName(String path) {
-        return path.substring(path.lastIndexOf('/') + 1);
-    }
 }

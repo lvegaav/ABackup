@@ -13,8 +13,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.MimeTypeMap;
@@ -25,11 +23,12 @@ import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.explorer.ui.FileListFragment;
+import com.americavoice.backup.files.utils.FileUtils;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.utils.ComponentsGetter;
 import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.ThemeUtils;
-import com.owncloud.android.lib.resources.files.RemoteFile;
+import com.crashlytics.android.Crashlytics;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -153,17 +152,29 @@ public class FileListActivity extends FileActivity implements HasComponent<AppCo
 
     @Override
     public void onFileClicked(OCFile remoteFile) {
-        //File downFolder = new File(getExternalCacheDir(), getString(R.string.download_folder_path) + "/" + mTempRemoteFile.getRemotePath().substring(0, mTempRemoteFile.getRemotePath().lastIndexOf('/') - 1));
-        File downFolder = new File(remoteFile.getStoragePath());
+        try {
+            File file;
+            if (remoteFile.getStoragePath() != null){
+                file = new File(remoteFile.getStoragePath());
+            } else {
+                file = new File( FileUtils.EXTERNAL_FILES_PATH + OCFile.PATH_SEPARATOR + remoteFile.getFileName());
+            }
+            if (file.exists()) {
+                Uri selectedUri = Uri.fromFile(file.getAbsoluteFile());
+                //Get file extension and mime type
+                String fileExtension =  MimeTypeMap.getFileExtensionFromUrl(selectedUri.toString());
+                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
+                //Start Activity to view the selected file
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(selectedUri, mimeType);
+                startActivity(Intent.createChooser(intent, "Open File..."));
+            }
 
-        //Get file extension and mime type
-        Uri selectedUri = Uri.fromFile(downFolder.getAbsoluteFile());
-        String fileExtension =  MimeTypeMap.getFileExtensionFromUrl(selectedUri.toString());
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
-        //Start Activity to view the selected file
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(selectedUri, mimeType);
-        startActivity(Intent.createChooser(intent, "Open File..."));
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+            e.printStackTrace();
+        }
+
     }
 
     @Override

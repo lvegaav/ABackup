@@ -1,14 +1,16 @@
 
 package com.americavoice.backup.settings.presenter;
 
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
+import android.Manifest;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Handler;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.di.PerActivity;
+import com.americavoice.backup.files.utils.FileUtils;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.presenter.BasePresenter;
@@ -16,6 +18,7 @@ import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.settings.ui.SettingsView;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.MimeType;
+import com.americavoice.backup.utils.PermissionUtil;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -77,7 +80,13 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
 
     public void showSyncAtFirst() {
         if (mSharedPrefsUtils.getBooleanPreference(NetworkProvider.KEY_FIRST_TIME, false)) {
-            getPendingFiles();
+            if (mView != null) {
+                if (PermissionUtil.checkSelfPermission(mView.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    getPendingFiles();
+                } else {
+                    mView.showRequestPermissionDialog();
+                }
+            }
         }
     }
     /**
@@ -126,15 +135,15 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
         if ( isPhotos || isVideos ) {
             processRemoteFiles(result.getData(), isPhotos, isVideos);
 
-            localFiles = isPhotos ? getAllShownImagesPath(mView.getContext()) : getAllShownVideosPath(mView.getContext());
+            localFiles = isPhotos ? FileUtils.getListOfCameraImages(mView.getContext()) : FileUtils.getListOfCameraVideos(mView.getContext());
 
             for (String item : localFiles) {
                 if (isPhotos) {
-                    if (!mRemotePhotosMap.containsKey(getFileName(item))) {
+                    if (!mRemotePhotosMap.containsKey(FileUtils.getFileName(item))) {
                         mPendingPhotos.add(item);
                     }
                 } else {
-                    if (!mRemoteVideosMap.containsKey(getFileName(item))) {
+                    if (!mRemoteVideosMap.containsKey(FileUtils.getFileName(item))) {
                         mPendingVideos.add(item);
                     }
                 }
@@ -188,64 +197,12 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
             RemoteFile remoteFile = (RemoteFile) obj;
             if (remoteFile.getMimeType() != null && !remoteFile.getMimeType().equals(MimeType.DIRECTORY)){
                 if (isPhoto) {
-                    mRemotePhotosMap.put(getFileName(remoteFile.getRemotePath()), remoteFile);
+                    mRemotePhotosMap.put(FileUtils.getFileName(remoteFile.getRemotePath()), remoteFile);
                 } else if (isVideo){
-                    mRemoteVideosMap.put(getFileName(remoteFile.getRemotePath()), remoteFile);
+                    mRemoteVideosMap.put(FileUtils.getFileName(remoteFile.getRemotePath()), remoteFile);
                 }
             }
         }
-    }
-
-    private static ArrayList<String> getAllShownImagesPath(Context context) {
-        Uri uri;
-        Cursor cursor;
-        ArrayList<String> listOfAllImages = new ArrayList<String>();
-        uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-
-        String[] projection = { MediaStore.MediaColumns.DATA,
-                MediaStore.Images.Media.BUCKET_DISPLAY_NAME };
-
-        cursor = context.getContentResolver().query(uri, projection, null,
-                null, null);
-        if (cursor != null) {
-            int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            while (cursor.moveToNext()) {
-                // Getting the absolute path of the image.
-                listOfAllImages.add(cursor.getString(column_index_data));
-            }
-            cursor.close();
-        }
-
-        return listOfAllImages;
-    }
-
-    private ArrayList<String> getAllShownVideosPath(Context context) {
-        Uri uri;
-        Cursor cursor;
-        ArrayList<String> listOfAllVideos = new ArrayList<>();
-        uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-
-        String[] projection = {MediaStore.MediaColumns.DATA, MediaStore.Video.Media.BUCKET_DISPLAY_NAME, MediaStore.Video.Media._ID, MediaStore.Video.Thumbnails.DATA};
-
-        final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
-        cursor = context.getContentResolver().query(uri, projection, null, null, orderBy + " DESC");
-
-        if (cursor != null) {
-            int column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-            while (cursor.moveToNext()) {
-                // Getting the absolute path of the video.
-                listOfAllVideos.add(cursor.getString(column_index_data));
-            }
-
-            cursor.close();
-        }
-
-        return listOfAllVideos;
-    }
-
-    private String getFileName(String path)
-    {
-        return path.substring(path.lastIndexOf('/') + 1);
     }
 
     public void setFirstTimeFalse() {

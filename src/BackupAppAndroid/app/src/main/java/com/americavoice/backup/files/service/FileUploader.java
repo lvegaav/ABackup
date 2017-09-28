@@ -54,9 +54,7 @@ import com.americavoice.backup.datamodel.UploadsStorageManager;
 import com.americavoice.backup.datamodel.UploadsStorageManager.UploadStatus;
 import com.americavoice.backup.db.OCUpload;
 import com.americavoice.backup.db.UploadResult;
-import com.americavoice.backup.main.ui.activity.FileListActivity;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
-import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.utils.BaseConstants;
@@ -568,7 +566,7 @@ public class FileUploader extends Service
                     null,
                     upload,
                     chunked,
-                    upload.isForceOverwrite(),  // TODO should be read from DB?
+                    true,  // TODO should be read from DB?
                     upload.getLocalAction(),    // TODO should be read from DB?
                     this
             );

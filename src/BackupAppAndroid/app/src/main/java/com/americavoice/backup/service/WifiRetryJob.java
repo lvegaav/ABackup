@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.americavoice.backup.Const;
 import com.americavoice.backup.utils.JobSchedulerUtils;
 import com.americavoice.backup.utils.WifiUtils;
 
@@ -26,7 +27,7 @@ public class WifiRetryJob extends JobService {
 
     static {
         JOB_INFO = new JobInfo.Builder(JobIds.WIFI_RETRY_JOB,
-                new ComponentName("com.americavoice.backup", WifiRetryJob.class.getName()))
+                new ComponentName(Const.AUTHORITY, WifiRetryJob.class.getName()))
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED)
             .build();
     }

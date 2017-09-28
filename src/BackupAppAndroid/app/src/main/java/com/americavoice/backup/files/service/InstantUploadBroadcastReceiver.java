@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.americavoice.backup.files;
+package com.americavoice.backup.files.service;
 
 import android.Manifest;
 import android.accounts.Account;
@@ -34,11 +34,10 @@ import android.provider.MediaStore.Video;
 import android.support.v4.content.ContextCompat;
 
 
-import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.db.PreferenceManager;
-import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
+import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.FileStorageUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -138,7 +137,7 @@ public class InstantUploadBroadcastReceiver extends BroadcastReceiver {
 
         int behaviour = getUploadBehaviour(context);
         Boolean subfolderByDate = PreferenceManager.instantPictureUploadPathUseSubfolders(context);
-        String uploadPath = context.getString(R.string.files_instant_upload_photo_path);
+        String uploadPath = BaseConstants.PHOTOS_BACKUP_FOLDER;
 
         FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
         requester.uploadNewFile(

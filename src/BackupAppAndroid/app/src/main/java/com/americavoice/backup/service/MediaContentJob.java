@@ -19,11 +19,14 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import com.americavoice.backup.R;
+import com.americavoice.backup.Const;
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.files.service.FileUploader;
+import com.americavoice.backup.files.utils.FileUtils;
 import com.americavoice.backup.operations.UploadFileOperation;
+import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.FileStorageUtils;
 import com.americavoice.backup.utils.JobSchedulerUtils;
 import com.crashlytics.android.Crashlytics;
@@ -60,16 +63,17 @@ public class MediaContentJob extends JobService {
     private static final String TAG = MediaContentJob.class.getName();
 
     static {
-        JobInfo.Builder builder = new JobInfo.Builder(JobIds.PHOTOS_CONTENT_JOB,
-                new ComponentName("com.americavoice.backup", MediaContentJob.class.getName()));
+        JobInfo.Builder builder = new JobInfo.Builder(JobIds.MEDIA_CONTENT_JOB,
+                new ComponentName(Const.AUTHORITY, MediaContentJob.class.getName()));
         // Look for specific changes to images in the provider.
-        builder
-                .addTriggerContentUri(new JobInfo.TriggerContentUri(
+        builder.addTriggerContentUri(new JobInfo.TriggerContentUri(
                         MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                        JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS))
+                        JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS)
+                )
                 .addTriggerContentUri(new JobInfo.TriggerContentUri(
                         MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                        JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS));
+                        JobInfo.TriggerContentUri.FLAG_NOTIFY_FOR_DESCENDANTS)
+                );
         // Also look for general reports of changes in the overall provider.
         builder.addTriggerContentUri(new JobInfo.TriggerContentUri(MEDIA_URI, 0));
         JOB_INFO = builder.build();
@@ -93,12 +97,12 @@ public class MediaContentJob extends JobService {
 
     // Check whether this job is currently scheduled.
     public static boolean isScheduled(Context context) {
-        return JobSchedulerUtils.isScheduled(context, JobIds.PHOTOS_CONTENT_JOB);
+        return JobSchedulerUtils.isScheduled(context, JobIds.MEDIA_CONTENT_JOB);
     }
 
     // Cancel this job, if currently scheduled.
     public static void cancelJob(Context context) {
-        JobSchedulerUtils.cancelJob(context, JobIds.PHOTOS_CONTENT_JOB);
+        JobSchedulerUtils.cancelJob(context, JobIds.MEDIA_CONTENT_JOB);
     }
 
     @Override
@@ -202,7 +206,6 @@ public class MediaContentJob extends JobService {
 
     private void handleNewFileAction(Context context, Uri fileUri) {
         try {
-
             Cursor c;
             String file_path;
             String file_name;
@@ -216,6 +219,7 @@ public class MediaContentJob extends JobService {
                 Log_OC.w(TAG, "No account found for instant upload, aborting");
                 return;
             }
+
             String data, displayName, mimeType, size;
             if (!isVideoContentUri(fileUri.toString())) {
                 data = MediaStore.Images.Media.DATA;
@@ -260,6 +264,10 @@ public class MediaContentJob extends JobService {
 
             Log_OC.d(TAG, "Path: " + file_path + "");
 
+            if (file_path.startsWith(FileUtils.EXTERNAL_FILES_PATH)){
+                return;
+            }
+
             new FileUploader.UploadRequester();
 
             int behaviour = FileUploader.LOCAL_BEHAVIOUR_FORGET;
@@ -267,10 +275,10 @@ public class MediaContentJob extends JobService {
             String uploadPath;
             int createdBy;
             if (isVideoContentUri(fileUri.toString())) {
-                uploadPath = context.getString(R.string.files_instant_upload_video_path);
+                uploadPath = BaseConstants.VIDEOS_BACKUP_FOLDER;
                 createdBy = UploadFileOperation.CREATED_AS_INSTANT_VIDEO;
             } else {
-                uploadPath = context.getString(R.string.files_instant_upload_photo_path);
+                uploadPath = BaseConstants.PHOTOS_BACKUP_FOLDER;
                 createdBy = UploadFileOperation.CREATED_AS_INSTANT_PICTURE;
             }
 

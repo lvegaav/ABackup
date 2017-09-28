@@ -3,7 +3,6 @@ package com.americavoice.backup.explorer.ui;
 
 import android.accounts.Account;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,7 +29,7 @@ import android.widget.Toast;
 import com.americavoice.backup.R;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.components.AppComponent;
-import com.americavoice.backup.explorer.helper.FilesHelper;
+import com.americavoice.backup.explorer.helper.ExplorerHelper;
 import com.americavoice.backup.explorer.presenter.FileListPresenter;
 import com.americavoice.backup.explorer.ui.adapter.FileAdapter;
 import com.americavoice.backup.explorer.ui.adapter.FileLayoutManager;
@@ -42,6 +41,7 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.operations.RemoveFileOperation;
+import com.americavoice.backup.operations.SynchronizeFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.RecyclerItemClickListener;
@@ -353,25 +353,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     }
 
     @Override
-    public void showDownloading() {
-        hideLoading();
-        mProgress = ProgressDialog.show(getActivity(),
-                getResources().getString(R.string.app_name),
-                getResources().getString(R.string.common_downloading),
-                true,
-                false);
-    }
-
-    @Override
-    public void hideDLoading() {
-        if (mProgress != null) {
-            mProgress.hide();
-            mProgress.dismiss();
-            mProgress = null;
-        }
-    }
-
-    @Override
     public void showError(String message) {
         this.showToastMessage(message);
     }
@@ -383,10 +364,13 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     @Override
     public void notifyDataSetChanged() {
-        this.mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) {
+            this.mAdapter.notifyDataSetChanged();
+        }
     }
 
     private void loadList() {
+        showLoading();
         mPath = getArguments().getString(ARGUMENT_KEY_PATH, "/");
         switch (mPath) {
             case BaseConstants.CONTACTS_REMOTE_FOLDER:
@@ -427,10 +411,14 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     @OnClick(R.id.fab_upload)
     void onFabUpload() {
         if (mPath.startsWith(BaseConstants.PHOTOS_REMOTE_FOLDER)) {
-            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            Intent i = new Intent();
+            i.setType("image/*");
+            i.setAction(Intent.ACTION_PICK);
             startActivityForResult(i, SELECT_PHOTO);
         } else if (mPath.startsWith(BaseConstants.VIDEOS_REMOTE_FOLDER)) {
-            Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+            Intent i = new Intent();
+            i.setType("video/*");
+            i.setAction(Intent.ACTION_PICK);
             startActivityForResult(i, SELECT_VIDEO);
         } else if (mPath.startsWith(BaseConstants.DOCUMENTS_REMOTE_FOLDER)) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -443,7 +431,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         String selectedPath = null;
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SELECT_PHOTO || requestCode == SELECT_VIDEO || requestCode == SELECT_DOCUMENT)
-                selectedPath = FilesHelper.getPath(getContext(), data.getData());
+                selectedPath = ExplorerHelper.getPath(getContext(), data.getData());
             if(selectedPath != null)
                 if (mPresenter != null) mPresenter.onFileUpload(selectedPath);
         }
@@ -470,7 +458,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                         FileUploader.EXTRA_UPLOAD_RESULT,
                         false);
                 if (uploadWasFine) {
-                    loadList();
+                    if (mPresenter != null ) mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
                 }
 
             } finally {
@@ -492,7 +480,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-                if (mPresenter != null ) mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
+                if (mPresenter != null ) mPresenter.onSuccessfulDownload();
             } finally {
                 if (intent != null) {
                     getContext().removeStickyBroadcast(intent);
@@ -579,17 +567,13 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                 operationsServiceBinder = (OperationsService.OperationsServiceBinder) service;
                 operationsServiceBinder.addOperationListener(FileListFragment.this, mHandler);
                 Account account = mContainerActivity.getAccount();
-                for (OCFile file : mFiles)
-                {
-                    switch (mAction)
-                    {
+                for (OCFile file : mFiles) {
+                    switch (mAction) {
                         case R.id.action_delete:
                             delete(file, account);
                         case R.id.action_download:
                             download(file, account);
                     }
-
-
                 }
                 getContext().unbindService(operationsServiceConnection);
             }
@@ -643,6 +627,8 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                     mPresenter.refreshTotal(mAdapter.getItemCount());
                 }
             }
+        } else if (remoteOperation instanceof SynchronizeFileOperation) {
+            if (mPresenter != null ) mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
         }
     }
 

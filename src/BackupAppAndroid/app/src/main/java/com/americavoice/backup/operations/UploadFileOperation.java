@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.americavoice.backup.datamodel.OCFile;
+import com.americavoice.backup.datamodel.ThumbnailsCacheManager;
 import com.americavoice.backup.db.OCUpload;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.files.service.FileUploader;
@@ -846,9 +847,9 @@ public class UploadFileOperation extends SyncOperation {
         mContext.sendBroadcast(intent);
 
         // generate new Thumbnail
-//        final ThumbnailsCacheManager.ThumbnailGenerationTask task =
-//            new ThumbnailsCacheManager.ThumbnailGenerationTask(getStorageManager(), mAccount);
-//        task.execute(file);
+        final ThumbnailsCacheManager.ThumbnailGenerationTask task =
+            new ThumbnailsCacheManager.ThumbnailGenerationTask(getStorageManager(), mAccount);
+        task.execute(file);
     }
 
     private void updateOCFile(OCFile file, RemoteFile remoteFile) {
