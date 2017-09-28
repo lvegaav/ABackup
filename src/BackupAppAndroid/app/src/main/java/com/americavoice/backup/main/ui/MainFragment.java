@@ -1,14 +1,19 @@
 
 package com.americavoice.backup.main.ui;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,15 +28,20 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
+import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.presenter.MainPresenter;
+import com.americavoice.backup.main.ui.activity.MainActivity;
+import com.americavoice.backup.service.MediaContentJob;
+import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.settings.ui.SettingsView;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sync.service.SyncBackupJob;
 import com.americavoice.backup.utils.ConnectivityUtils;
+import com.americavoice.backup.utils.PermissionUtil;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 
@@ -39,6 +49,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -120,13 +131,79 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
         super.onActivityCreated(savedInstanceState);
         showKeyboard(false);
         this.initialize();
+        requestPermissions();
+    }
+
+    public void requestPermissions() {
+        List<String> permissionsNeeded = new ArrayList<>();
+
+        final List<String> permissionsList = new ArrayList<>();
+
+        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            permissionsNeeded.add(getString(R.string.common_write_external_storage));
+        if (!addPermission(permissionsList, Manifest.permission.READ_CONTACTS))
+            permissionsNeeded.add(getString(R.string.common_read_contacts));
+        if (!addPermission(permissionsList, Manifest.permission.READ_SMS))
+            permissionsNeeded.add(getString(R.string.common_read_sms));
+        if (!addPermission(permissionsList, Manifest.permission.READ_CALL_LOG))
+            permissionsNeeded.add(getString(R.string.common_read_call_log));
+
+        if (permissionsList.size() > 0) {
+            if (permissionsNeeded.size() > 0) {
+                // Need Rationale
+                StringBuilder message = new StringBuilder("You need to grant access to " + permissionsNeeded.get(0));
+                for (int i = 1; i < permissionsNeeded.size(); i++)
+                    message.append(", ").append(permissionsNeeded.get(i));
+
+                showMessageOKCancel(message.toString(),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                PermissionUtil.requestMultiplePermission(getActivity(), permissionsList.toArray(new String[permissionsList.size()]));
+                            }
+                        });
+                return;
+            }
+            PermissionUtil.requestMultiplePermission(getActivity(), permissionsList.toArray(new String[permissionsList.size()]));
+        }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.common_ok), okListener)
+                .setNegativeButton(getString(R.string.common_cancel), null)
+                .create()
+                .show();
+    }
+
+    private boolean addPermission(List<String> permissionsList, String permission) {
+        if (!PermissionUtil.checkSelfPermission(getActivity(), permission)) {
+            permissionsList.add(permission);
+            // Check for Rationale Option
+            if (PermissionUtil.shouldShowRequestPermissionRationale(getActivity(), permission))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void showRequestPermissionDialog() {
+        StringBuilder message = new StringBuilder("You need to grant access to " + getString(R.string.common_write_external_storage));
+        showMessageOKCancel(message.toString(),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PermissionUtil.requestWriteExternalStoragePermission(getActivity());
+                    }
+                });
     }
 
     @Override
     public void onResume() {
         super.onResume();
         this.mPresenter.resume();
-//        this.mSettingsPresenter.showSyncAtFirst();
+        this.mSettingsPresenter.showSyncAtFirst();
     }
 
     @Override

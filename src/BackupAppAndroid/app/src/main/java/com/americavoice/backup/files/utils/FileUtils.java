@@ -1,5 +1,6 @@
 package com.americavoice.backup.files.utils;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -7,8 +8,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 import com.americavoice.backup.datamodel.OCFile;
+import com.americavoice.backup.files.service.FileUploader;
+import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.utils.BaseConstants;
+import com.crashlytics.android.Crashlytics;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -73,5 +78,50 @@ public class FileUtils {
 
     public static String getFileName(String path) {
         return path.substring(path.lastIndexOf('/') + 1);
+    }
+
+    public static void backupPendingFiles(Context context, Account account, String[] pendingPhotos, String[] pendingVideos) {
+
+        if (pendingPhotos != null) {
+            for (String item : pendingPhotos) {
+                try {
+                    File file = new File(item);
+                    FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+                    requester.uploadNewFile(
+                            context,
+                            account,
+                            file.getAbsolutePath(),
+                            BaseConstants.PHOTOS_REMOTE_FOLDER + FileUtils.getFileName(item),
+                            FileUploader.LOCAL_BEHAVIOUR_FORGET,
+                            null,
+                            true,
+                            UploadFileOperation.CREATED_BY_USER
+                    );
+                } catch (Exception e){
+                    Crashlytics.logException(e);
+                }
+            }
+        }
+
+        if (pendingVideos != null) {
+            for (String item : pendingVideos) {
+                try {
+                    File file = new File(item);
+                    FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+                    requester.uploadNewFile(
+                            context,
+                            account,
+                            file.getAbsolutePath(),
+                            BaseConstants.VIDEOS_REMOTE_FOLDER + FileUtils.getFileName(item),
+                            FileUploader.LOCAL_BEHAVIOUR_FORGET,
+                            null,
+                            true,
+                            UploadFileOperation.CREATED_BY_USER
+                    );
+                } catch (Exception e){
+                    Crashlytics.logException(e);
+                }
+            }
+        }
     }
 }

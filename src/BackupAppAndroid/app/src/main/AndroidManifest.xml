@@ -117,7 +117,7 @@
                  <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".files.InstantUploadBroadcastReceiver">
+        <receiver android:name=".files.service.InstantUploadBroadcastReceiver">
             <intent-filter>
 
                 <!-- unofficially supported by many Android phones but not by HTC devices: -->

@@ -1,9 +1,14 @@
 
 package com.americavoice.backup.settings.presenter;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.files.utils.FileUtils;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
@@ -13,6 +18,7 @@ import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.settings.ui.SettingsView;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.MimeType;
+import com.americavoice.backup.utils.PermissionUtil;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -74,7 +80,13 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
 
     public void showSyncAtFirst() {
         if (mSharedPrefsUtils.getBooleanPreference(NetworkProvider.KEY_FIRST_TIME, false)) {
-            getPendingFiles();
+            if (mView != null) {
+                if (PermissionUtil.checkSelfPermission(mView.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    getPendingFiles();
+                } else {
+                    mView.showRequestPermissionDialog();
+                }
+            }
         }
     }
     /**

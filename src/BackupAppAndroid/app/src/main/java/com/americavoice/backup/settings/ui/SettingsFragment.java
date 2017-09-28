@@ -5,6 +5,7 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
@@ -49,6 +51,7 @@ import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sync.service.SyncBackupJob;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
+import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.WifiUtils;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
@@ -481,6 +484,28 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     public void onNewsInfoClick() {
         Intent intent = new Intent(getActivity(), NewsActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void showRequestPermissionDialog() {
+        StringBuilder message = new StringBuilder("You need to grant access to " + getString(R.string.common_write_external_storage));
+        showMessageOKCancel(message.toString(),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        PermissionUtil.requestWriteExternalStoragePermission(getActivity());
+                    }
+                });
+    }
+
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.common_ok), okListener)
+                .setNegativeButton(getString(R.string.common_cancel), null)
+                .create()
+                .show();
     }
 }
 

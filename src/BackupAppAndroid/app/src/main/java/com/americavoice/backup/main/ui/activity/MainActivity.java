@@ -1,6 +1,7 @@
 package com.americavoice.backup.main.ui.activity;
 
 import android.Manifest;
+import android.accounts.Account;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.americavoice.backup.R;
+import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
@@ -21,6 +23,8 @@ import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.MainFragment;
+import com.americavoice.backup.service.MediaContentJob;
+import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sync.ui.SyncFragment;
@@ -62,94 +66,6 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     @Override
     public void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
-        List<String> permissionsNeeded = new ArrayList<>();
-
-        final List<String> permissionsList = new ArrayList<>();
-
-        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
-            permissionsNeeded.add(getString(R.string.common_write_external_storage));
-        if (!addPermission(permissionsList, Manifest.permission.READ_CONTACTS))
-            permissionsNeeded.add(getString(R.string.common_read_contacts));
-        if (!addPermission(permissionsList, Manifest.permission.READ_SMS))
-            permissionsNeeded.add(getString(R.string.common_read_sms));
-        if (!addPermission(permissionsList, Manifest.permission.READ_CALL_LOG))
-            permissionsNeeded.add(getString(R.string.common_read_call_log));
-
-        if (permissionsList.size() > 0) {
-            if (permissionsNeeded.size() > 0) {
-                // Need Rationale
-                String message = "You need to grant access to " + permissionsNeeded.get(0);
-                for (int i = 1; i < permissionsNeeded.size(); i++)
-                    message = message + ", " + permissionsNeeded.get(i);
-
-                showMessageOKCancel(message,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                PermissionUtil.requestMultiplePermission(MainActivity.this, permissionsList.toArray(new String[permissionsList.size()]));
-                            }
-                        });
-                return;
-            }
-            PermissionUtil.requestMultiplePermission(this, permissionsList.toArray(new String[permissionsList.size()]));
-        }
-    }
-
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(MainActivity.this)
-                .setMessage(message)
-                .setPositiveButton("OK", okListener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
-    }
-
-    private boolean addPermission(List<String> permissionsList, String permission) {
-        if (!PermissionUtil.checkSelfPermission(this, permission)) {
-            permissionsList.add(permission);
-            // Check for Rationale Option
-            if (PermissionUtil.shouldShowRequestPermissionRationale(this, permission))
-                return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContentResolver());
-        if (requestCode == PermissionUtil.PERMISSIONS_MULTIPLE) {
-            if (permissions.length > 0 && grantResults.length > 0 && mAccountWasSet) {
-                for (int i = 0; i < permissions.length; i++) {
-                    // permission was granted
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        switch (permissions[i]) {
-                            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                    scheduleMediaJob();
-                                    scheduleWifiJob();
-                                }
-                                break;
-                            case Manifest.permission.READ_CONTACTS:
-                                arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(true));
-                                ContactsBackupFragment.startContactBackupJob(mCurrentAccount);
-                                break;
-                            case Manifest.permission.READ_SMS:
-                                arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, SmsBackupFragment.PREFERENCE_SMS_AUTOMATIC_BACKUP, String.valueOf(true));
-                                SmsBackupFragment.startSmsBackupJob(mCurrentAccount);
-                                break;
-                            case Manifest.permission.READ_CALL_LOG:
-                                arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, CallsBackupFragment.PREFERENCE_CALLS_AUTOMATIC_BACKUP, String.valueOf(true));
-                                CallsBackupFragment.startCallBackupJob(mCurrentAccount);
-                                break;
-                        }
-                    }
-                }
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
     }
 
     /**
@@ -302,5 +218,48 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     @Override
     public void onBackSyncClicked() {
         replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContentResolver());
+        Account currentAccount = AccountUtils.getCurrentOwnCloudAccount(this);
+        if (requestCode == PermissionUtil.PERMISSIONS_MULTIPLE) {
+            if (permissions.length > 0 && grantResults.length > 0 && currentAccount != null) {
+                for (int i = 0; i < permissions.length; i++) {
+                    // permission was granted
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        switch (permissions[i]) {
+                            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    MediaContentJob.scheduleJob(this);
+                                    WifiRetryJob.scheduleJob(this);
+                                }
+                                break;
+                            case Manifest.permission.READ_CONTACTS:
+                                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                ContactsBackupFragment.startContactBackupJob(currentAccount);
+                                break;
+                            case Manifest.permission.READ_SMS:
+                                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, SmsBackupFragment.PREFERENCE_SMS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                SmsBackupFragment.startSmsBackupJob(currentAccount);
+                                break;
+                            case Manifest.permission.READ_CALL_LOG:
+                                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, CallsBackupFragment.PREFERENCE_CALLS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                CallsBackupFragment.startCallBackupJob(currentAccount);
+                                break;
+                        }
+                    }
+                }
+            }
+        } else if (requestCode == PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                MediaContentJob.scheduleJob(this);
+                WifiRetryJob.scheduleJob(this);
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

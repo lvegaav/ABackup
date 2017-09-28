@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.americavoice.backup.files;
+package com.americavoice.backup.files.service;
 
 import android.Manifest;
 import android.accounts.Account;
@@ -34,10 +34,8 @@ import android.provider.MediaStore.Video;
 import android.support.v4.content.ContextCompat;
 
 
-import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.db.PreferenceManager;
-import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.FileStorageUtils;
