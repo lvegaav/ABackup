@@ -1,6 +1,8 @@
 package com.americavoice.backup.utils;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.americavoice.backup.db.UploadResult;
 import com.americavoice.backup.files.service.FileUploader;
@@ -30,5 +32,12 @@ public class WifiUtils {
                 null,
                 UploadResult.DELAYED_FOR_WIFI       // for the rest of enqueued when Wifi fell
         );
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        //should check null because in airplane mode it will be null
+        return (netInfo != null && netInfo.isConnected());
     }
 }

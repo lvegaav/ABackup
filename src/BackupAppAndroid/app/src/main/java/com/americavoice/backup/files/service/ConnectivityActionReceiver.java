@@ -54,14 +54,7 @@ public class ConnectivityActionReceiver extends BroadcastReceiver {
         // LOG ALL EVENTS:
         Log_OC.v(TAG, "action: " + intent.getAction());
         Log_OC.v(TAG, "component: " + intent.getComponent());
-        if (isOnline(context)) WifiUtils.wifiConnected(context);
-    }
-
-    private boolean isOnline(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        //should check null because in airplane mode it will be null
-        return (netInfo != null && netInfo.isConnected());
+        if (WifiUtils.isOnline(context)) WifiUtils.wifiConnected(context);
     }
 
 

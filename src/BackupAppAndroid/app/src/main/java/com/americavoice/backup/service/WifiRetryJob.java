@@ -35,6 +35,10 @@ public class WifiRetryJob extends JobService {
 
     // Schedule this job, replace any existing one.
     public static void scheduleJob(Context context) {
+        if (WifiUtils.isOnline(context)) {
+            Log.i(TAG, "Connectivity is up, retrying now");
+            WifiUtils.wifiConnected(context);
+        }
         JobSchedulerUtils.scheduleJob(context, JOB_INFO);
     }
 

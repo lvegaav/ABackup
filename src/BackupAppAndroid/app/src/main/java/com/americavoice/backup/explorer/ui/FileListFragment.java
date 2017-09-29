@@ -45,6 +45,7 @@ import com.americavoice.backup.operations.SynchronizeFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.RecyclerItemClickListener;
+import com.americavoice.backup.utils.WifiUtils;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -459,6 +460,8 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                         false);
                 if (uploadWasFine) {
                     if (mPresenter != null ) mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
+                } else if (WifiUtils.isOnline(context)) {
+                    WifiUtils.wifiConnected(context);
                 }
 
             } finally {
