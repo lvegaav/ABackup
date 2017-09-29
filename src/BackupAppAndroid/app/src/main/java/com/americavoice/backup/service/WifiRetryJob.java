@@ -12,6 +12,7 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.americavoice.backup.Const;
+import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.JobSchedulerUtils;
 import com.americavoice.backup.utils.WifiUtils;
 
@@ -35,7 +36,7 @@ public class WifiRetryJob extends JobService {
 
     // Schedule this job, replace any existing one.
     public static void scheduleJob(Context context) {
-        if (WifiUtils.isOnline(context)) {
+        if (ConnectivityUtils.isAppConnected(context)) {
             Log.i(TAG, "Connectivity is up, retrying now");
             WifiUtils.wifiConnected(context);
         }
