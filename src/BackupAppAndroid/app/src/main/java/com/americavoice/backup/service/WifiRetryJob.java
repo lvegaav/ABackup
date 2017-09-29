@@ -2,17 +2,14 @@ package com.americavoice.backup.service;
 
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;
-import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import com.americavoice.backup.Const;
-import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.JobSchedulerUtils;
 import com.americavoice.backup.utils.WifiUtils;
 
@@ -36,10 +33,6 @@ public class WifiRetryJob extends JobService {
 
     // Schedule this job, replace any existing one.
     public static void scheduleJob(Context context) {
-        if (ConnectivityUtils.isAppConnected(context)) {
-            Log.i(TAG, "Connectivity is up, retrying now");
-            WifiUtils.wifiConnected(context);
-        }
         JobSchedulerUtils.scheduleJob(context, JOB_INFO);
     }
 

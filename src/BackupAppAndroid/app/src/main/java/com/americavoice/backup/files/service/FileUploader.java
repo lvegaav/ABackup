@@ -58,8 +58,10 @@ import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.utils.BaseConstants;
+import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.ErrorMessageAdapter;
 import com.americavoice.backup.utils.NotificationUtils;
+import com.americavoice.backup.utils.WifiUtils;
 import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
@@ -976,7 +978,11 @@ public class FileUploader extends Service
                         WifiRetryJob.scheduleJob(getApplicationContext());
                     }
                 }
-
+                if (uploadResult != null) {
+                    if (!uploadResult.isSuccess() && ConnectivityUtils.isAppConnected(getApplicationContext())) {
+                        WifiUtils.wifiConnected(getApplicationContext());
+                    }
+                }
                 sendBroadcastUploadFinished(mCurrentUpload, uploadResult, removeResult.second);
 
             }
