@@ -21,6 +21,7 @@ import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
+import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.MainFragment;
 import com.americavoice.backup.service.MediaContentJob;
@@ -235,6 +236,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     MediaContentJob.scheduleJob(this);
                                     WifiRetryJob.scheduleJob(this);
+                                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_FILES_AUTOMATIC_BACKUP, String.valueOf(true));
                                 }
                                 break;
                             case Manifest.permission.READ_CONTACTS:

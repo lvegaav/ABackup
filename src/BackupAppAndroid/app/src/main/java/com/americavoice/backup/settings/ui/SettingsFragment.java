@@ -15,12 +15,14 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
@@ -113,13 +115,10 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     TextView tvVersionName;
     @BindView(R.id.capacity_text)
     TextView mCapacityView;
-
     @BindView(R.id.use_mobile_data)
     SwitchCompat mUseMobileData;
-
     @BindView(R.id.ratios)
     View mRatios;
-
     @BindView(R.id.ll_space_description)
     LinearLayout llSpaceDescription;
 
@@ -506,6 +505,14 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
                 .setNegativeButton(getString(R.string.common_cancel), null)
                 .create()
                 .show();
+    }
+    @OnClick(R.id.btn_share)
+    public void onShare() {
+        final String appPackageName = getContext().getPackageName();
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, "Check this app at: https://play.google.com/store/apps/details?id=" + appPackageName);
+        intent.setType("text/plain");
+        startActivity(intent);
     }
 }
 

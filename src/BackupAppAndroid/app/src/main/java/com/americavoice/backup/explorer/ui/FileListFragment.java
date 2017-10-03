@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,11 +23,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.explorer.helper.ExplorerHelper;
@@ -66,8 +71,9 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     public static final String PREFERENCE_PHOTOS_LAST_TOTAL = "PREFERENCE_PHOTOS_LAST_TOTAL";
     public static final String PREFERENCE_VIDEOS_LAST_TOTAL = "PREFERENCE_VIDEOS_LAST_TOTAL";
-    public static final String PREFERENCE_DOCUMENTS_LAST_TOTAL = "PREFERENCE_DOCUMENTS_LAST_TOTAL";
+    public static final String PREFERENCE_FILES_AUTOMATIC_BACKUP = "PREFERENCE_FILES_AUTOMATIC_BACKUP";
 
+    public static final String PREFERENCE_DOCUMENTS_LAST_TOTAL = "PREFERENCE_DOCUMENTS_LAST_TOTAL";
     private static final String ARGUMENT_KEY_PATH = "com.americavoice.backup.ARGUMENT_KEY_PATH";
     private static final int SELECT_VIDEO = 1000;
     private static final int SELECT_PHOTO = 1001;
@@ -77,6 +83,8 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     private UploadFinishReceiver mUploadFinishReceiver;
     private DownloadFinishReceiver mDownloadFinishReceiver;
 
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
+    private ArbitraryDataProvider arbitraryDataProvider;
 
     /**
      * Interface for listening file list events.
@@ -101,6 +109,10 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     TextView tvEmpty;
     @BindView(R.id.fab_upload)
     FloatingActionButton fabUpload;
+    @BindView(R.id.ll_automatic_backup)
+    LinearLayout llAutomaticBackup;
+    @BindView(R.id.files_automatic_backup)
+    public SwitchCompat backupSwitch;
 
     private Handler mHandler;
     private BaseOwncloudActivity mContainerActivity;
@@ -201,6 +213,37 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         if (mPresenter != null) this.mPresenter.setView(this);
+
+        this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
+
+        final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+        backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_FILES_AUTOMATIC_BACKUP));
+        onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        setAutomaticBackup(true);
+                    } else {
+                        setAutomaticBackup(false);
+                    }
+                }
+        };
+
+        backupSwitch.setOnCheckedChangeListener(onCheckedChangeListener);
+    }
+
+    private void setAutomaticBackup(final boolean bool) {
+
+        final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+
+        if (bool) {
+//            startFilesBackupJob(account);
+        } else {
+//            cancelFilesBackupJobForAccount(getContext(), account);
+        }
+
+        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_FILES_AUTOMATIC_BACKUP,
+                String.valueOf(bool));
     }
 
     private void setupUI() {
@@ -210,6 +253,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                 case BaseConstants.DOCUMENTS_REMOTE_FOLDER:
                     this.rvFiles.setLayoutManager(new FileLayoutManager(getContext()));
                     this.rvFiles.addItemDecoration(new SimpleDividerItemDecoration(getContext()));
+                    this.llAutomaticBackup.setVisibility(View.GONE);
                     break;
                 default:
                     this.rvFiles.setLayoutManager(new GridLayoutManager(getActivity(), 4));
