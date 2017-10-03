@@ -446,21 +446,10 @@ public class UploadFileOperation extends SyncOperation {
                     temporalFile.delete();
                 }
                 mFile.setStoragePath("");
-                boolean saveSuccess = saveUploadedFile(client);
-                if (!saveSuccess) {
-                    // File was not correctly uploaded
-                    result = new RemoteOperationResult(new RuntimeException("Save result was incorrect"));
-                }
-
 
             } else if (mLocalBehaviour == FileUploader.LOCAL_BEHAVIOUR_DELETE) {
                 originalFile.delete();
                 getStorageManager().deleteFileInMediaScan(originalFile.getAbsolutePath());
-                boolean saveSuccess = saveUploadedFile(client);
-                if (!saveSuccess) {
-                    // File was not correctly uploaded
-                    result = new RemoteOperationResult(new RuntimeException("Save result was incorrect"));
-                }
             } else {
 
                 if (temporalFile != null) {         // FileUploader.LOCAL_BEHAVIOUR_COPY
@@ -478,15 +467,17 @@ public class UploadFileOperation extends SyncOperation {
                     getStorageManager().deleteFileInMediaScan(originalFile.getAbsolutePath());
                 }
                 mFile.setStoragePath(expectedFile.getAbsolutePath());
-                boolean saveSuccess = saveUploadedFile(client);
-                if (!saveSuccess) {
-                    // File was not correctly uploaded
-                    result = new RemoteOperationResult(new RuntimeException("Save result was incorrect"));
-                }
                 Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                 intent.setData(Uri.fromFile(new File(expectedFile.getAbsolutePath())));
                 mContext.sendBroadcast(intent);
             }
+
+            boolean saveSuccess = saveUploadedFile(client);
+            if (!saveSuccess) {
+                // File was not correctly uploaded
+                result = new RemoteOperationResult(new RuntimeException("Save result was incorrect"));
+            }
+
         } else if (result.getCode() == ResultCode.SYNC_CONFLICT) {
             getStorageManager().saveConflict(mFile, mFile.getEtagInConflict());
         }
