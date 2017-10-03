@@ -259,6 +259,7 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 MediaContentJob.scheduleJob(this);
                 WifiRetryJob.scheduleJob(this);
+                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_FILES_AUTOMATIC_BACKUP, String.valueOf(true));
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
