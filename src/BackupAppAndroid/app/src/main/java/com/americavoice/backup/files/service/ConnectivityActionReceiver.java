@@ -31,6 +31,7 @@ import android.os.Bundle;
 
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.db.UploadResult;
+import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.WifiUtils;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -54,14 +55,7 @@ public class ConnectivityActionReceiver extends BroadcastReceiver {
         // LOG ALL EVENTS:
         Log_OC.v(TAG, "action: " + intent.getAction());
         Log_OC.v(TAG, "component: " + intent.getComponent());
-        if (isOnline(context)) WifiUtils.wifiConnected(context);
-    }
-
-    private boolean isOnline(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        //should check null because in airplane mode it will be null
-        return (netInfo != null && netInfo.isConnected());
+        if (ConnectivityUtils.isAppConnected(context)) WifiUtils.wifiConnected(context);
     }
 
 

@@ -446,13 +446,10 @@ public class UploadFileOperation extends SyncOperation {
                     temporalFile.delete();
                 }
                 mFile.setStoragePath("");
-                saveUploadedFile(client);
-
 
             } else if (mLocalBehaviour == FileUploader.LOCAL_BEHAVIOUR_DELETE) {
                 originalFile.delete();
                 getStorageManager().deleteFileInMediaScan(originalFile.getAbsolutePath());
-                saveUploadedFile(client);
             } else {
 
                 if (temporalFile != null) {         // FileUploader.LOCAL_BEHAVIOUR_COPY
@@ -470,11 +467,17 @@ public class UploadFileOperation extends SyncOperation {
                     getStorageManager().deleteFileInMediaScan(originalFile.getAbsolutePath());
                 }
                 mFile.setStoragePath(expectedFile.getAbsolutePath());
-                saveUploadedFile(client);
                 Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                 intent.setData(Uri.fromFile(new File(expectedFile.getAbsolutePath())));
                 mContext.sendBroadcast(intent);
             }
+
+            boolean saveSuccess = saveUploadedFile(client);
+            if (!saveSuccess) {
+                // File was not correctly uploaded
+                result = new RemoteOperationResult(new RuntimeException("Save result was incorrect"));
+            }
+
         } else if (result.getCode() == ResultCode.SYNC_CONFLICT) {
             getStorageManager().saveConflict(mFile, mFile.getEtagInConflict());
         }
@@ -806,7 +809,8 @@ public class UploadFileOperation extends SyncOperation {
      * (where available)
      * <p/>
      */
-    private void saveUploadedFile(OwnCloudClient client) {
+    private boolean saveUploadedFile(OwnCloudClient client) {
+        boolean success = true;
         OCFile file = mFile;
         if (file.fileExists()) {
             file = getStorageManager().getFileById(file.getFileId());
@@ -825,6 +829,7 @@ public class UploadFileOperation extends SyncOperation {
             file.setLastSyncDateForProperties(syncDate);
         } else {
             Log_OC.e(TAG, "Error reading properties of file after successful upload; this is gonna hurt...");
+            success = false;
         }
 
         if (mWasRenamed) {
@@ -850,6 +855,7 @@ public class UploadFileOperation extends SyncOperation {
         final ThumbnailsCacheManager.ThumbnailGenerationTask task =
             new ThumbnailsCacheManager.ThumbnailGenerationTask(getStorageManager(), mAccount);
         task.execute(file);
+        return success;
     }
 
     private void updateOCFile(OCFile file, RemoteFile remoteFile) {

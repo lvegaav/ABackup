@@ -1,6 +1,8 @@
 package com.americavoice.backup.utils;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 import com.americavoice.backup.db.UploadResult;
 import com.americavoice.backup.files.service.FileUploader;
