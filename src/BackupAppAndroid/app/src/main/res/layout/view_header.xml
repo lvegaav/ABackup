@@ -8,8 +8,7 @@
         android:id="@+id/rl_header"
         android:layout_width="match_parent"
         android:background="@color/colorPrimary"
-        android:layout_height="48dp">
-
+        android:layout_height="?attr/actionBarSize">
 
         <ImageView
             android:id="@+id/btn_back"
@@ -18,9 +17,10 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_height="?attr/actionBarSize"
             android:padding="15dp"
-            app:srcCompat="@drawable/ic_back_white"/>
+            app:srcCompat="@drawable/ic_back_white"
+            android:focusable="true" />
 
         <TextView
             android:id="@+id/tv_title"

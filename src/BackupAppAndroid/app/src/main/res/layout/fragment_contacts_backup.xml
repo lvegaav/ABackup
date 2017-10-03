@@ -64,7 +64,7 @@
                     android:layout_margin="@dimen/default_margin"
                     android:layout_weight="1"
                     android:text="@string/contacts.backup_button"
-                    android:theme="@style/Button.Primary"/>
+                    android:theme="@style/Button.Secondary"/>
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/contacts_datepicker"
                     android:layout_width="0dp"
@@ -72,7 +72,7 @@
                     android:layout_margin="@dimen/default_margin"
                     android:layout_weight="1"
                     android:text="@string/contacts.preference_restore_backup"
-                    android:theme="@style/Button"/>
+                    android:theme="@style/Button.Secondary"/>
             </LinearLayout>
 
         </LinearLayout>
