@@ -4,12 +4,17 @@ import android.accounts.Account;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.VectorDrawable;
+import android.media.Image;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +37,7 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.RemoteFile;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -105,6 +111,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         return new TransactionViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(TransactionViewHolder holder, final int position) {
         final OCFile model = this.mCollection.get(position);
@@ -119,6 +126,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
 
         if (model.isDown()) {
 
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Drawable photoFromCloud = ContextCompat.getDrawable(mContext, R.drawable.ic_photo_from_cloud);
                 holder.ivLocalFileIndicator.setImageDrawable(photoFromCloud);
@@ -130,6 +138,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
 
             holder.ivLocalFileIndicator.setVisibility(View.VISIBLE);
         } else
+
         {
             holder.ivLocalFileIndicator.setVisibility(View.GONE);
         }
@@ -139,6 +148,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
             holder.ivIcon.setImageResource(
                     MimeTypeUtil.getFolderTypeIconId());
         } else if (model.getRemotePath().contains("Photos") || model.getRemotePath().contains("Videos")) {
+            boolean success = false;
+
             // Thumbnail in Cache?
             Bitmap thumbnail = ThumbnailsCacheManager.getBitmapFromDiskCache(model.getRemoteId());
             if (thumbnail != null) {
@@ -148,8 +159,31 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
                 } else {
                     holder.ivIcon.setImageBitmap(thumbnail);
                 }
-            } else {
-                // generate new Thumbnail
+                success = true;
+            }
+
+            // File is Down?
+            if (!success && model.isDown())
+            {
+                Bitmap localThumbnail = null;
+                if (MimeTypeUtil.isVideo(model.getMimetype())) {
+                    localThumbnail = ThumbnailUtils.createVideoThumbnail(model.getStoragePath(), MediaStore.Video.Thumbnails.MICRO_KIND);
+                    if (localThumbnail != null) {
+                        holder.ivIcon.setImageBitmap(ThumbnailsCacheManager.addVideoOverlay(localThumbnail));
+                        success = true;
+                    }
+                } else {
+                    localThumbnail = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(model.getStoragePath()),
+                            256, 256);
+                    if (localThumbnail != null) {
+                        holder.ivIcon.setImageBitmap(localThumbnail);
+                        success = true;
+                    }
+                }
+            }
+
+            if (!success)
+            {
                 if (ThumbnailsCacheManager.cancelPotentialThumbnailWork(model, holder.ivIcon)) {
                     try {
                         final ThumbnailsCacheManager.ThumbnailGenerationTask task =
