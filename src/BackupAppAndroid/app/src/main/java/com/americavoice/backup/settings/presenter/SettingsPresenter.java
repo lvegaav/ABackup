@@ -50,8 +50,8 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
     private ReadRemoteFolderOperation mReadRemoteOperation;
     private ReadRemoteFolderOperation mReadRemotePhotosOperation;
     private ReadRemoteFolderOperation mReadRemoteVideosOperation;
-    private List<String> mPendingPhotos = new ArrayList<>();
-    private List<String> mPendingVideos = new ArrayList<>();
+    private List<String> mPendingPhotos;
+    private List<String> mPendingVideos;
 
     private boolean mPhotosRemoteDone;
     private boolean mVideosRemoteDone;
@@ -109,6 +109,10 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
 
     public void getPendingFiles() {
         mView.showGettingPending();
+
+        mPendingPhotos = new ArrayList<>();
+        mPendingVideos = new ArrayList<>();
+
         mPhotosRemoteDone = false;
         mVideosRemoteDone = false;
 
@@ -121,6 +125,7 @@ public class SettingsPresenter extends BasePresenter implements IPresenter, OnRe
 
     @Override
     public void onRemoteOperationFinish(RemoteOperation remoteOperation, RemoteOperationResult result) {
+
         boolean isPhotos = remoteOperation.equals(mReadRemotePhotosOperation);
         boolean isVideos = remoteOperation.equals(mReadRemoteVideosOperation);
         boolean isRefresh = remoteOperation.equals(mReadRemoteOperation);
