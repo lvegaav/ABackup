@@ -35,7 +35,9 @@ import android.support.v4.content.ContextCompat;
 
 
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.db.PreferenceManager;
+import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.FileStorageUtils;
@@ -95,6 +97,12 @@ public class InstantUploadBroadcastReceiver extends BroadcastReceiver {
         Account account = AccountUtils.getCurrentOwnCloudAccount(context);
         if (account == null) {
             Log_OC.w(TAG, "No account found for instant upload, aborting");
+            return;
+        }
+        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(context.getContentResolver());
+        final boolean photosBackupEnabled = arbitraryDataProvider.getBooleanValue(account, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP);
+        if (!photosBackupEnabled){
+            Log_OC.w(TAG, "No automatic backup for photos, aborting");
             return;
         }
 
@@ -181,6 +189,13 @@ public class InstantUploadBroadcastReceiver extends BroadcastReceiver {
         Account account = AccountUtils.getCurrentOwnCloudAccount(context);
         if (account == null) {
             Log_OC.w(TAG, "No account found for instant upload, aborting");
+            return;
+        }
+
+        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(context.getContentResolver());
+        final boolean videosBackupEnabled = arbitraryDataProvider.getBooleanValue(account, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP);
+        if (!videosBackupEnabled){
+            Log_OC.w(TAG, "No automatic backup for videos, aborting");
             return;
         }
 

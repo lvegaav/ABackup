@@ -15,7 +15,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,7 +28,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +41,6 @@ import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
-import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.news.ui.NewsActivity;
 import com.americavoice.backup.service.MediaContentJob;
@@ -121,7 +118,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     View mRatios;
     @BindView(R.id.ll_space_description)
     LinearLayout llSpaceDescription;
-
+    @BindView(R.id.btn_share)
+    AppCompatButton btnShare;
     @BindString(R.string.main_photos)
     String photos;
     @BindString(R.string.main_videos)
@@ -173,9 +171,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tvSyncFiles.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_sync, 0, 0, 0);
+            btnShare.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_share, 0, 0, 0);
         } else {
-            Drawable draw = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.ic_sync);
-            tvSyncFiles.setCompoundDrawablesWithIntrinsicBounds(draw, null, null, null);
+            Drawable syncDrawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.ic_sync);
+            tvSyncFiles.setCompoundDrawablesWithIntrinsicBounds(syncDrawable, null, null, null);
+            Drawable shareDrawable = AppCompatDrawableManager.get().getDrawable(getContext(), R.drawable.ic_share);
+            btnShare.setCompoundDrawablesWithIntrinsicBounds(shareDrawable, null, null, null);
         }
 
 

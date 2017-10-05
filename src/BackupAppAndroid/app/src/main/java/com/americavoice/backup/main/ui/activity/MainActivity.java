@@ -3,16 +3,13 @@ package com.americavoice.backup.main.ui.activity;
 import android.Manifest;
 import android.accounts.Account;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
@@ -34,9 +31,6 @@ import com.americavoice.backup.utils.PermissionUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 
@@ -236,7 +230,8 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     MediaContentJob.scheduleJob(this);
                                     WifiRetryJob.scheduleJob(this);
-                                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_FILES_AUTOMATIC_BACKUP, String.valueOf(true));
+                                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
                                 }
                                 break;
                             case Manifest.permission.READ_CONTACTS:
@@ -259,7 +254,8 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 MediaContentJob.scheduleJob(this);
                 WifiRetryJob.scheduleJob(this);
-                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_FILES_AUTOMATIC_BACKUP, String.valueOf(true));
+                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);

@@ -146,6 +146,7 @@
     <string name="settings.contact_us">Contáctenos</string>
     <string name="settings.payment_options">Opciones de pago</string>
     <string name="settings.news_info">Noticias</string>
+    <string name="settings.share_this_app">Comparte esta aplicación</string>
 
     <string name="contact_us.title">Contact us</string>
     <string name="contact_us.customer_service">Customer service</string>

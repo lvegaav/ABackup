@@ -49,6 +49,7 @@ import com.americavoice.backup.operations.RemoveFileOperation;
 import com.americavoice.backup.operations.SynchronizeFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
+import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.RecyclerItemClickListener;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -71,7 +72,8 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     public static final String PREFERENCE_PHOTOS_LAST_TOTAL = "PREFERENCE_PHOTOS_LAST_TOTAL";
     public static final String PREFERENCE_VIDEOS_LAST_TOTAL = "PREFERENCE_VIDEOS_LAST_TOTAL";
-    public static final String PREFERENCE_FILES_AUTOMATIC_BACKUP = "PREFERENCE_FILES_AUTOMATIC_BACKUP";
+    public static final String PREFERENCE_PHOTOS_AUTOMATIC_BACKUP = "PREFERENCE_PHOTOS_AUTOMATIC_BACKUP";
+    public static final String PREFERENCE_VIDEOS_AUTOMATIC_BACKUP = "PREFERENCE_VIDEOS_AUTOMATIC_BACKUP";
 
     public static final String PREFERENCE_DOCUMENTS_LAST_TOTAL = "PREFERENCE_DOCUMENTS_LAST_TOTAL";
     private static final String ARGUMENT_KEY_PATH = "com.americavoice.backup.ARGUMENT_KEY_PATH";
@@ -213,11 +215,26 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         if (mPresenter != null) this.mPresenter.setView(this);
+        if (!ConnectivityUtils.isAppConnected(getContext())) {
+            showToastMessage(getString(R.string.common_connectivity_error));
+            return;
+        }
 
         this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
 
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_FILES_AUTOMATIC_BACKUP));
+        boolean backupEnabled = false;
+        switch (mPath) {
+            case BaseConstants.PHOTOS_REMOTE_FOLDER:
+                backupEnabled = arbitraryDataProvider.getBooleanValue(account, PREFERENCE_PHOTOS_AUTOMATIC_BACKUP);
+                break;
+            case BaseConstants.VIDEOS_REMOTE_FOLDER:
+                backupEnabled = arbitraryDataProvider.getBooleanValue(account, PREFERENCE_VIDEOS_AUTOMATIC_BACKUP);
+                break;
+            default:
+                break;
+        }
+        backupSwitch.setChecked(backupEnabled);
         onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -235,15 +252,38 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     private void setAutomaticBackup(final boolean bool) {
 
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-
-        if (bool) {
-//            startFilesBackupJob(account);
-        } else {
-//            cancelFilesBackupJobForAccount(getContext(), account);
+        switch (mPath) {
+            case BaseConstants.PHOTOS_REMOTE_FOLDER:
+                if (bool) {
+                    startPhotosBackupJob(account);
+                } else {
+                    cancelPhotosBackupJobForAccount(getContext(), account);
+                }
+                arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(bool));
+                break;
+            case BaseConstants.VIDEOS_REMOTE_FOLDER:
+                if (bool) {
+                    startVideosBackupJob(account);
+                } else {
+                    cancelVideosBackupJobForAccount(getContext(), account);
+                }
+                arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(bool));
+                break;
+            default:
+                break;
         }
+    }
 
-        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_FILES_AUTOMATIC_BACKUP,
-                String.valueOf(bool));
+    private void startPhotosBackupJob(Account account) {
+    }
+
+    private void cancelPhotosBackupJobForAccount(Context context, Account account) {
+    }
+
+    private void startVideosBackupJob(Account account) {
+    }
+
+    private void cancelVideosBackupJobForAccount(Context context, Account account) {
     }
 
     private void setupUI() {
@@ -261,28 +301,28 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                     this.rvFiles.addItemDecoration(new SpacesItemDecoration(spacingInPixels));
                     break;
             }
-        }
-        rvFiles.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), rvFiles, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                if (isMultiSelect)
-                    multiSelect(position);
-                else {
-                    OCFile file = mAdapter.getCollection().get(position);
-                    if (FileListFragment.this.mPresenter != null && file != null) {
-                        //Download file
-                        FileListFragment.this.mPresenter.onFileClicked(getContext(), mAdapter.getCollection().get(position));
+            rvFiles.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), rvFiles, new RecyclerItemClickListener.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    if (isMultiSelect)
+                        multiSelect(position);
+                    else {
+                        OCFile file = mAdapter.getCollection().get(position);
+                        if (FileListFragment.this.mPresenter != null && file != null) {
+                            //Download file
+                            FileListFragment.this.mPresenter.onFileClicked(getContext(), mAdapter.getCollection().get(position));
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onItemLongClick(View view, int position) {
-                startActionMode();
-                multiSelect(position);
+                @Override
+                public void onItemLongClick(View view, int position) {
+                    startActionMode();
+                    multiSelect(position);
 
-            }
-        }));
+                }
+            }));
+        }
     }
 
     @Override
@@ -437,6 +477,10 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     @OnClick(R.id.bt_retry)
     void onButtonRetryClick() {
+        if (!ConnectivityUtils.isAppConnected(getContext())) {
+            showToastMessage(getString(R.string.common_connectivity_error));
+            return;
+        }
         hideRetry();
         loadList();
     }

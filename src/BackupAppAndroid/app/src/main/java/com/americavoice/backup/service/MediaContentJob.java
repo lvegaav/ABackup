@@ -21,8 +21,9 @@ import android.util.Log;
 
 import com.americavoice.backup.Const;
 import com.americavoice.backup.authentication.AccountUtils;
-import com.americavoice.backup.datamodel.OCFile;
+import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.db.PreferenceManager;
+import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.files.utils.FileUtils;
 import com.americavoice.backup.operations.UploadFileOperation;
@@ -219,18 +220,28 @@ public class MediaContentJob extends JobService {
                 Log_OC.w(TAG, "No account found for instant upload, aborting");
                 return;
             }
-
+            ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContentResolver());
+            final boolean photosBackupEnabled = arbitraryDataProvider.getBooleanValue(account, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP);
+            final boolean videosBackupEnabled = arbitraryDataProvider.getBooleanValue(account, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP);
             String data, displayName, mimeType, size;
             if (!isVideoContentUri(fileUri.toString())) {
                 data = MediaStore.Images.Media.DATA;
                 displayName = MediaStore.Images.Media.DISPLAY_NAME;
                 mimeType = MediaStore.Images.Media.MIME_TYPE;
                 size = MediaStore.Images.Media.SIZE;
+                if (!photosBackupEnabled){
+                    Log_OC.w(TAG, "No automatic backup for photos, aborting");
+                    return;
+                }
             } else {
                 data = MediaStore.Video.Media.DATA;
                 displayName = MediaStore.Video.Media.DISPLAY_NAME;
                 mimeType = MediaStore.Video.Media.MIME_TYPE;
                 size = MediaStore.Video.Media.SIZE;
+                if (!videosBackupEnabled){
+                    Log_OC.w(TAG, "No automatic backup for videos, aborting");
+                    return;
+                }
             }
 
 

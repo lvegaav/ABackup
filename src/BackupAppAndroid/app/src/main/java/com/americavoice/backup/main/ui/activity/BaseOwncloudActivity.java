@@ -18,6 +18,7 @@ import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
+import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
@@ -131,6 +132,8 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
             mAccountWasRestored = (savedAccount || mCurrentAccount.equals(oldAccount));
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContentResolver());
+                arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
                 arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(true));
                 ContactsBackupFragment.startContactBackupJob(mCurrentAccount);
                 arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, SmsBackupFragment.PREFERENCE_SMS_AUTOMATIC_BACKUP, String.valueOf(true));
