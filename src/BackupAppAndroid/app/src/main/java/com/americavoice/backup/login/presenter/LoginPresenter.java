@@ -105,40 +105,47 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                     }
                     @Override
                     public void error(Exception ex) {
-                        Crashlytics.setString("SendResetPasswordSms", mNetworkProvider.getUserName(phoneNumberWithCode));
-                        Crashlytics.logException(ex);
-                        if (ex instanceof WebServiceException) {
-                            WebServiceException webEx = (WebServiceException) ex;
-                            if (webEx.getErrorCode().equals("UserNotFound")) {
-                                mView.hideLoading();
-                                mView.showPhoneNumberInvalid();
-                                return;
-                            }
-                            if (webEx.getErrorCode().equals("UserNotRegister")) {
-                                dtos.CustomRegister request = new dtos.CustomRegister();
-                                request.setCompanyId(Const.COMPANY_ID);
-                                request.setPhoneNumber(phoneNumberWithCode);
-                                mNetworkProvider.CustomRegister(request, new AsyncResult<dtos.CustomRegisterResponse>() {
-                                    @Override
-                                    public void success(dtos.CustomRegisterResponse response) {
-                                        mView.hideLoading();
-                                        mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
-                                        mView.viewValidation();
-                                    }
+                        try {
+                            Crashlytics.setString("SendResetPasswordSms", mNetworkProvider.getUserName(phoneNumberWithCode));
+                            Crashlytics.logException(ex);
+                            if (ex instanceof WebServiceException) {
+                                WebServiceException webEx = (WebServiceException) ex;
+                                if (webEx.getErrorCode().equals("UserNotFound")) {
+                                    mView.hideLoading();
+                                    mView.showPhoneNumberInvalid();
+                                    return;
+                                }
+                                if (webEx.getErrorCode().equals("UserNotRegister")) {
+                                    dtos.CustomRegister request = new dtos.CustomRegister();
+                                    request.setCompanyId(Const.COMPANY_ID);
+                                    request.setPhoneNumber(phoneNumberWithCode);
+                                    mNetworkProvider.CustomRegister(request, new AsyncResult<dtos.CustomRegisterResponse>() {
+                                        @Override
+                                        public void success(dtos.CustomRegisterResponse response) {
+                                            mView.hideLoading();
+                                            mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
+                                            mView.viewValidation();
+                                        }
 
-                                    @Override
-                                    public void error(Exception ex) {
-                                        mView.hideLoading();
-                                        mView.showPhoneNumberInvalid();
-                                    }
-                                });
+                                        @Override
+                                        public void error(Exception ex) {
+                                            mView.hideLoading();
+                                            mView.showPhoneNumberInvalid();
+                                        }
+                                    });
+                                }
+                            } else {
+                                mView.hideLoading();
+                                if (mView.getContext() != null) {
+                                    mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                                }
                             }
-                        } else {
+                        } catch (Exception e) {
                             mView.hideLoading();
-                            if (mView.getContext() != null) {
-                                mView.showError(mView.getContext().getString(R.string.exception_message_generic));
-                            }
+                            mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                            Crashlytics.logException(e);
                         }
+
                     }
                 });
             }

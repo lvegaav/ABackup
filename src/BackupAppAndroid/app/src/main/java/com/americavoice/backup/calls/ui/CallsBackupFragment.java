@@ -566,6 +566,9 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
         AsyncTask<String, Integer, Boolean> task = new AsyncTask<String, Integer, Boolean>() {
             @Override
             protected Boolean doInBackground(String... path) {
+                if (getContext() == null) {
+                    return false;
+                }
                 FileDataStorageManager storageManager = new FileDataStorageManager(account, getContext());
 
                 OCFile folder = storageManager.getFileByPath(path[0]);
