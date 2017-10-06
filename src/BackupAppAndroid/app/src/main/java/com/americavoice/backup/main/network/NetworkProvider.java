@@ -1,13 +1,16 @@
 package com.americavoice.backup.main.network;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 
 import com.americavoice.backup.Const;
+import com.americavoice.backup.authentication.AccountUtils;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
@@ -32,6 +35,7 @@ public class NetworkProvider {
     private static final String KEY_PREFS = "com.americavoice.backup.KEY_PREFS";
     public static final String KEY_PHONE_NUMBER = "com.americavoice.backup.KEY_PHONE_NUMBER";
     public static final String KEY_FIRST_TIME = "com.americavoice.backup.KEY_FIRST_TIME";
+    private final SharedPreferences mPref;
     private final AndroidServiceClient mClient;
     private final Context mContext;
 
@@ -47,6 +51,7 @@ public class NetworkProvider {
 
     @Inject
     public NetworkProvider(Context context) {
+        mPref = PreferenceManager.getDefaultSharedPreferences(context);
         mClient = new AndroidServiceClient(baseUrl + "/api");
         mContext = context;
 
@@ -74,8 +79,18 @@ public class NetworkProvider {
         }
     }
 
-    public OwnCloudClient getCloudClient(String phoneNumber)
-    {
+    public OwnCloudClient getCloudClient(String phoneNumber) {
+        if (phoneNumber == null) {
+            Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+            int lastIndex = account.name.indexOf("@");
+            if (lastIndex == -1) {
+                lastIndex = account.name.length();
+            }
+            phoneNumber = account.name.substring(getUserName("").length(), lastIndex);
+            SharedPreferences.Editor editor = mPref.edit();
+            editor.putString(NetworkProvider.KEY_PHONE_NUMBER, phoneNumber);
+            editor.apply();
+        }
         if (mCloudClient == null) {
             Uri serverUri = Uri.parse(baseUrlOwnCloud);
             mCloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
@@ -93,6 +108,9 @@ public class NetworkProvider {
     }
 
     public void logout() {
+        // Logout from account manager
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+        AccountUtils.removeAccount(mContext, account);
         mClient.clearCookies();    //Logout server
     }
 

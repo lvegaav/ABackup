@@ -263,17 +263,17 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
         }
     }
 
-    public static class AuthenticatorException extends Exception {
+    static class AuthenticatorException extends Exception {
         private static final long serialVersionUID = 1L;
         private Bundle mFailureBundle;
 
-        public AuthenticatorException(int code, String errorMsg) {
+        AuthenticatorException(int code, String errorMsg) {
             mFailureBundle = new Bundle();
             mFailureBundle.putInt(AccountManager.KEY_ERROR_CODE, code);
             mFailureBundle.putString(AccountManager.KEY_ERROR_MESSAGE, errorMsg);
         }
 
-        public Bundle getFailureBundle() {
+        Bundle getFailureBundle() {
             return mFailureBundle;
         }
     }
@@ -281,7 +281,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public static class UnsupportedAccountTypeException extends AuthenticatorException {
         private static final long serialVersionUID = 1L;
 
-        public UnsupportedAccountTypeException() {
+        UnsupportedAccountTypeException() {
             super(AccountManager.ERROR_CODE_UNSUPPORTED_OPERATION,
                     "Unsupported account type");
         }
@@ -290,7 +290,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     public static class UnsupportedAuthTokenTypeException extends AuthenticatorException {
         private static final long serialVersionUID = 1L;
 
-        public UnsupportedAuthTokenTypeException() {
+        UnsupportedAuthTokenTypeException() {
             super(AccountManager.ERROR_CODE_UNSUPPORTED_OPERATION,
                     "Unsupported auth token type");
         }
