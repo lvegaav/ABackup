@@ -110,7 +110,9 @@ public class NetworkProvider {
     public void logout() {
         // Logout from account manager
         Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
-        AccountUtils.removeAccount(mContext, account);
+        if (account != null) {
+            AccountUtils.removeAccount(mContext, account);
+        }
         mClient.clearCookies();    //Logout server
     }
 
