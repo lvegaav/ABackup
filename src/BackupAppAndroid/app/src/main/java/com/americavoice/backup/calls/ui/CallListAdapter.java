@@ -58,14 +58,15 @@ public class CallListAdapter extends RecyclerView.Adapter<CallListFragment.CallI
 
         if (item != null) {
             holder.getName().setText(getContactDisplayNameByNumber(item.getPhoneNumber()));
-            long millis = Long.parseLong(item.getCallDuration()) * 1000;
+            long millis = (item.getCallDuration() != null? Long.parseLong(item.getCallDuration()):0) * 1000;
+
             TimeZone tz = TimeZone.getTimeZone("UTC");
             SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
             df.setTimeZone(tz);
             String time = df.format(new Date(millis));
 
 
-            millis = Long.parseLong(item.getCallDate());
+            millis = item.getCallDate() != null ? Long.parseLong(item.getCallDate()): 0;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             sdf.setTimeZone(TimeZone.getDefault());
             String date = sdf.format(new Date(millis));
