@@ -131,39 +131,17 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
         super.onActivityCreated(savedInstanceState);
         showKeyboard(false);
         this.initialize();
-        requestPermissions();
     }
 
     public void requestPermissions() {
-        List<String> permissionsNeeded = new ArrayList<>();
-
         final List<String> permissionsList = new ArrayList<>();
-
-        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
-            permissionsNeeded.add(getString(R.string.common_write_external_storage));
-        if (!addPermission(permissionsList, Manifest.permission.READ_CONTACTS))
-            permissionsNeeded.add(getString(R.string.common_read_contacts));
-        if (!addPermission(permissionsList, Manifest.permission.READ_SMS))
-            permissionsNeeded.add(getString(R.string.common_read_sms));
-        if (!addPermission(permissionsList, Manifest.permission.READ_CALL_LOG))
-            permissionsNeeded.add(getString(R.string.common_read_call_log));
-
+        addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        addPermission(permissionsList, Manifest.permission.READ_CONTACTS);
+        addPermission(permissionsList, Manifest.permission.READ_SMS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            addPermission(permissionsList, Manifest.permission.READ_CALL_LOG);
+        }
         if (permissionsList.size() > 0) {
-            if (permissionsNeeded.size() > 0) {
-                // Need Rationale
-                StringBuilder message = new StringBuilder("You need to grant access to " + permissionsNeeded.get(0));
-                for (int i = 1; i < permissionsNeeded.size(); i++)
-                    message.append(", ").append(permissionsNeeded.get(i));
-
-                showMessageOKCancel(message.toString(),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                PermissionUtil.requestMultiplePermission(getActivity(), permissionsList.toArray(new String[permissionsList.size()]));
-                            }
-                        });
-                return;
-            }
             PermissionUtil.requestMultiplePermission(getActivity(), permissionsList.toArray(new String[permissionsList.size()]));
         }
     }
@@ -177,14 +155,10 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
                 .show();
     }
 
-    private boolean addPermission(List<String> permissionsList, String permission) {
+    private void addPermission(List<String> permissionsList, String permission) {
         if (!PermissionUtil.checkSelfPermission(getActivity(), permission)) {
             permissionsList.add(permission);
-            // Check for Rationale Option
-            if (PermissionUtil.shouldShowRequestPermissionRationale(getActivity(), permission))
-                return false;
         }
-        return true;
     }
 
     @Override
@@ -202,8 +176,11 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
     @Override
     public void onResume() {
         super.onResume();
-        this.mPresenter.resume();
-        this.mSettingsPresenter.showSyncAtFirst();
+        if (AccountUtils.getCurrentOwnCloudAccount(getContext()) != null){
+            requestPermissions();
+            this.mPresenter.resume();
+//            this.mSettingsPresenter.showSyncAtFirst();
+        }
     }
 
     @Override

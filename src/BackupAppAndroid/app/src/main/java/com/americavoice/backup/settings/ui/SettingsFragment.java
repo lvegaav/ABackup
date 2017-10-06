@@ -335,8 +335,6 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @OnClick(R.id.tv_logout)
     public void logout(){
-        Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        AccountUtils.removeAccount(getContext(), account);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             // cancel job makes the isScheduled validation
             MediaContentJob.cancelJob(getContext());

@@ -44,11 +44,11 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
     private static final String REMOTE_PATH = "/";
     private static final boolean SUCCESS_IF_ABSENT = false;
 
-    private Context mContext;
+    private WeakReference<Context> mContextReference;
     private final WeakReference<OnAuthenticatorTaskListener> mListener;
 
     public AuthenticatorAsyncTask(Fragment fragment) {
-        mContext = fragment.getContext();
+        mContextReference = new WeakReference<>(fragment.getContext());
         mListener = new WeakReference<>((OnAuthenticatorTaskListener) fragment);
     }
 
@@ -57,18 +57,18 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
 
         RemoteOperationResult result;
         if (params!= null && params.length==2) {
+            Context context = mContextReference.get();
             String url = (String)params[0];
             OwnCloudCredentials credentials = (OwnCloudCredentials)params[1];
 
             // Client
             Uri uri = Uri.parse(url);
-            OwnCloudClient client = OwnCloudClientFactory.createOwnCloudClient(uri, mContext, true);
+            OwnCloudClient client = OwnCloudClientFactory.createOwnCloudClient(uri, context, true);
             client.setCredentials(credentials);
 
             // Operation - try credentials
             ExistenceCheckRemoteOperation operation = new ExistenceCheckRemoteOperation(
                     REMOTE_PATH,
-                    mContext,
                     SUCCESS_IF_ABSENT
             );
             result = operation.execute(client);
@@ -79,12 +79,6 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
                 result.setLastPermanentLocation(permanentLocation);
             }
 
-            // Operation - get display name
-//            if (result.isSuccess()) {
-//                GetRemoteUserInfoOperation remoteUserNameOperation = new GetRemoteUserInfoOperation();
-//                result = remoteUserNameOperation.execute(client);
-//            }
-
         } else {
             result = new RemoteOperationResult(RemoteOperationResult.ResultCode.UNKNOWN_ERROR);
         }
@@ -94,9 +88,7 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
 
     @Override
     protected void onPostExecute(RemoteOperationResult result) {
-
-        if (result!= null)
-        {
+        if (result!= null) {
             OnAuthenticatorTaskListener listener = mListener.get();
             if (listener!= null) {
                 listener.onAuthenticatorTaskCallback(result);
@@ -107,7 +99,6 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
      * Interface to retrieve data from recognition task
      */
     public interface OnAuthenticatorTaskListener{
-
         void onAuthenticatorTaskCallback(RemoteOperationResult result);
     }
 }
