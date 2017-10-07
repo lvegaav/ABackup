@@ -76,8 +76,4 @@ public class PermissionUtil {
                 new String[]{Manifest.permission.READ_CALL_LOG},
                 PERMISSIONS_READ_CALLS_AUTOMATIC);
     }
-
-    public static void requestMultiplePermission(Activity activity, String[] permissions) {
-        ActivityCompat.requestPermissions(activity, permissions, PERMISSIONS_MULTIPLE);
-    }
 }

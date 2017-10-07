@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
+import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.presenter.MainPresenter;
 import com.americavoice.backup.main.ui.activity.MainActivity;
@@ -42,6 +44,7 @@ import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sync.service.SyncBackupJob;
 import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.PermissionUtil;
+import com.americavoice.backup.utils.ThemeUtils;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 
@@ -133,16 +136,40 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
         this.initialize();
     }
 
-    public void requestPermissions() {
+    public void requestMultiplePermissions() {
+        List<String> permissionsNeeded = new ArrayList<>();
         final List<String> permissionsList = new ArrayList<>();
-        addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        addPermission(permissionsList, Manifest.permission.READ_CONTACTS);
-        addPermission(permissionsList, Manifest.permission.READ_SMS);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            addPermission(permissionsList, Manifest.permission.READ_CALL_LOG);
-        }
+        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            permissionsNeeded.add(getString(R.string.common_write_external_storage));
+        if (!addPermission(permissionsList, Manifest.permission.READ_CONTACTS))
+            permissionsNeeded.add(getString(R.string.common_read_contacts));
+        if (!addPermission(permissionsList, Manifest.permission.READ_SMS))
+            permissionsNeeded.add(getString(R.string.common_read_sms));
+        if (!addPermission(permissionsList, Manifest.permission.READ_CALL_LOG))
+            permissionsNeeded.add(getString(R.string.common_read_call_log));
+
         if (permissionsList.size() > 0) {
-            PermissionUtil.requestMultiplePermission(getActivity(), permissionsList.toArray(new String[permissionsList.size()]));
+            if (permissionsNeeded.size() > 0) {
+                // Show explanation to the user and then request permission
+//                StringBuilder message = new StringBuilder("You need to grant access to " + permissionsNeeded.get(0));
+//                for (int i = 1; i < permissionsNeeded.size(); i++)
+//                    message.append(", ").append(permissionsNeeded.get(i));
+//                Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.rl_main_view),
+//                        R.string.contacts_read_permission,
+//                        Snackbar.LENGTH_INDEFINITE)
+//                        .setAction(R.string.common_ok, new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),  PermissionUtil.PERMISSIONS_MULTIPLE);
+//                            }
+//                        });
+//
+//                ThemeUtils.colorSnackbar(getActivity(), snackbar);
+//
+//                snackbar.show();
+                return;
+            }
+            requestPermissions(permissionsList.toArray(new String[permissionsList.size()]), PermissionUtil.PERMISSIONS_MULTIPLE);
         }
     }
 
@@ -155,31 +182,94 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
                 .show();
     }
 
-    private void addPermission(List<String> permissionsList, String permission) {
+    private boolean addPermission(List<String> permissionsList, String permission) {
         if (!PermissionUtil.checkSelfPermission(getActivity(), permission)) {
             permissionsList.add(permission);
+            // Check for Rationale Option
+            if (PermissionUtil.shouldShowRequestPermissionRationale(getActivity(), permission))
+                return false;
         }
+        return true;
     }
 
     @Override
     public void showRequestPermissionDialog() {
-        StringBuilder message = new StringBuilder("You need to grant access to " + getString(R.string.common_write_external_storage));
+        StringBuilder message = new StringBuilder("We are trying to get your pending files. You need to grant access to " + getString(R.string.common_write_external_storage));
         showMessageOKCancel(message.toString(),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        PermissionUtil.requestWriteExternalStoragePermission(getActivity());
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
                     }
                 });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
+        Account currentAccount = AccountUtils.getCurrentOwnCloudAccount(getContext());
+        if (requestCode == PermissionUtil.PERMISSIONS_MULTIPLE) {
+            if (permissions.length > 0 && grantResults.length > 0 && currentAccount != null) {
+                for (int i = 0; i < permissions.length; i++) {
+                    // permission was granted
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        switch (permissions[i]) {
+                            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    MediaContentJob.scheduleJob(getContext());
+                                    WifiRetryJob.scheduleJob(getContext());
+                                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                }
+                                break;
+                            case Manifest.permission.READ_CONTACTS:
+                                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                ContactsBackupFragment.startContactBackupJob(currentAccount);
+                                break;
+                            case Manifest.permission.READ_SMS:
+                                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, SmsBackupFragment.PREFERENCE_SMS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                SmsBackupFragment.startSmsBackupJob(currentAccount);
+                                break;
+                            case Manifest.permission.READ_CALL_LOG:
+                                arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, CallsBackupFragment.PREFERENCE_CALLS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                CallsBackupFragment.startCallBackupJob(currentAccount);
+                                break;
+                        }
+                    }
+                }
+                mSettingsPresenter.showSyncAtFirst();
+            }
+        } else if (requestCode == PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        MediaContentJob.scheduleJob(getContext());
+                        WifiRetryJob.scheduleJob(getContext());
+                    }
+
+                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                    mSettingsPresenter.showSyncAtFirst();
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (AccountUtils.getCurrentOwnCloudAccount(getContext()) != null){
-            requestPermissions();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestMultiplePermissions();
+            } else {
+                this.mSettingsPresenter.showSyncAtFirst();
+            }
             this.mPresenter.resume();
-//            this.mSettingsPresenter.showSyncAtFirst();
         }
     }
 
@@ -374,17 +464,23 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
     @Override
     public void showSyncDialog(int pendingPhotos, int pendingVideos) {
         String textToDisplay = "";
+        String permissionArgument = getString(R.string.sync_backup_photos_and_videos_as_well);
+
+        if (!PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
+                || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)
+                || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG))
+            permissionArgument = getString(R.string.sync_backup_photos_and_videos_when_permission_granted);
         if (pendingPhotos == 0 && pendingVideos == 0) {
             if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
-                textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, getString(R.string.sync_warning_mobile_data_on));
+                textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
-                textToDisplay = getString(R.string.sync_backup_no_files_pending);
+                    textToDisplay = getString(R.string.sync_backup_no_files_pending, permissionArgument);
             }
         } else {
             if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
-                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, getString(R.string.sync_warning_mobile_data_on));
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
-                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos);
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos, permissionArgument);
             }
         }
 

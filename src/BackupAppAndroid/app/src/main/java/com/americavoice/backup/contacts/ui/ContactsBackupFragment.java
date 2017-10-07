@@ -315,9 +315,14 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     }
 
     public static void startContactBackupJob(Account account) {
+        startContactBackupJob(account, false);
+    }
+
+    public static void startContactBackupJob(Account account, Boolean isFromSwitch) {
 
         PersistableBundleCompat bundle = new PersistableBundleCompat();
         bundle.putString(ContactsBackupJob.ACCOUNT, account.name);
+        bundle.putBoolean(ContactsBackupJob.IS_FROM_SWITCH, isFromSwitch);
 
         new JobRequest.Builder(ContactsBackupJob.TAG)
                 .setExtras(bundle)
@@ -384,7 +389,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
 
         if (bool) {
-            startContactBackupJob(account);
+            startContactBackupJob(account, true);
         } else {
             cancelContactBackupJobForAccount(getContext(), account);
         }

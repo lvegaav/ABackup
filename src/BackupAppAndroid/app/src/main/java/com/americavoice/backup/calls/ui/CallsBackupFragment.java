@@ -201,13 +201,8 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
         this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
 
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        if (!arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CALLS_IS_NOT_FIRST_TIME)) {
-            backupSwitch.setChecked(true);
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CALLS_IS_NOT_FIRST_TIME, String.valueOf(true));
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP, String.valueOf(true));
-        } else {
-            backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP));
-        }
+
+        backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP));
 
         onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -325,9 +320,14 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
     }
 
     public static void startCallBackupJob(Account account) {
+        startCallBackupJob(account, false);
+    }
+
+    public static void startCallBackupJob(Account account, boolean isFromSwitch) {
 
         PersistableBundleCompat bundle = new PersistableBundleCompat();
         bundle.putString(CallsBackupJob.ACCOUNT, account.name);
+        bundle.putBoolean(CallsBackupJob.IS_FROM_SWITCH, isFromSwitch);
 
         new JobRequest.Builder(CallsBackupJob.TAG)
                 .setExtras(bundle)
@@ -394,7 +394,7 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
 
         if (bool) {
-            startCallBackupJob(account);
+            startCallBackupJob(account, true);
         } else {
             cancelCallBackupJobForAccount(getContext(), account);
         }

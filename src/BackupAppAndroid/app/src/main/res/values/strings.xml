@@ -101,10 +101,12 @@
     <string name="sync.preferences_backup_scheduled_on_wifi">Backup scheduled and will when wifi is available</string>
     <string name="sync.no_files_to_backup">No %1$s to backup</string>
     <string name="sync.warning_mobile_data_on">Warning: You are connected over mobile data, you should consider to connect to a wifi network to backup all your files.</string>
-    <string name="sync.backup_photos_and_videos">There are %1$d Photos and %2$d Videos pending to upload. Contacts, SMS and Call logs will be backed up as well.</string>
-    <string name="sync.backup_photos_and_videos_warning">There are %1$d Photos and %2$d Videos pending to upload. Contacts, SMS and Call logs will be backed up as well.  \n\n%3$s</string>
-    <string name="sync.backup_no_files_pending">There are no files pending to upload. Contacts, SMS and Call logs will be backed up.</string>
-    <string name="sync.backup_no_files_pending_warning">There are no files pending to upload. Contacts, SMS and Call logs will be backed up. \n\n%1$s</string>
+    <string name="sync.backup_photos_and_videos">There are %1$d Photos and %2$d Videos pending to upload. Contacts, SMS and Call logs will be backed up %3$s</string>
+    <string name="sync.backup_photos_and_videos_as_well">as well.</string>
+    <string name="sync.backup_photos_and_videos_when_permission_granted">when permissions granted.</string>
+    <string name="sync.backup_photos_and_videos_warning">There are %1$d Photos and %2$d Videos pending to upload. Contacts, SMS and Call logs will be backed up %3$s\n\n%4$s</string>
+    <string name="sync.backup_no_files_pending">There are no files pending to upload. Contacts, SMS and Call logs will be backed up %1$s</string>
+    <string name="sync.backup_no_files_pending_warning">There are no files pending to upload. Contacts, SMS and Call logs will be backed up %1$s\n\n%2$s</string>
     <string name="sync.getting_pending_files">Getting pending files</string>
     <string name="sync.backup_now">Backup</string>
 

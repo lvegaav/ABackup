@@ -101,10 +101,12 @@
     <string name="sync.preferences_backup_scheduled_on_wifi">Backup calendarizado empezará cuando estes conectado por wifi</string>
     <string name="sync.no_files_to_backup">No hay %1$s para hacer backup</string>
     <string name="sync.warning_mobile_data_on">Precaución: Estas conectado en plan de datos, deberias considerar conectarte a una red wifi para hacer backup de tus archivos.</string>
-    <string name="sync.backup_photos_and_videos">Hay %1$d fotos y %2$d videos pendientes de subir. Contactos, SMS y registro de llamadas también serán respaldados.</string>
-    <string name="sync.backup_photos_and_videos_warning">Hay %1$d fotos y %2$d videos pendientes de subir. Contactos, SMS y registro de llamadas también serán respaldados.  \n\n%3$s</string>
-    <string name="sync.backup_no_files_pending">No hay archivos pendientes de subir. Contactos, SMS y registro de llamadas también serán respaldados.</string>
-    <string name="sync.backup_no_files_pending_warning">No hay archivos pendientes de subir. Contactos, SMS y registro de llamadas también serán respaldados. \n\n%1$s</string>
+    <string name="sync.backup_photos_and_videos">Hay %1$d fotos y %2$d videos pendientes de subir. Contactos, SMS y registro de llamadas serán respaldados %2$s</string>
+    <string name="sync.backup_photos_and_videos_as_well">también.</string>
+    <string name="sync.backup_photos_and_videos_when_permission_granted">cuando la aplicación tenga permisos.</string>
+    <string name="sync.backup_photos_and_videos_warning">Hay %1$d fotos y %2$d videos pendientes de subir. Contactos, SMS y registro de llamadas serán respaldados  \n\n%3$s</string>
+    <string name="sync.backup_no_files_pending">No hay archivos pendientes de subir. Contactos, SMS y registro de llamadas serán respaldados %1$s</string>
+    <string name="sync.backup_no_files_pending_warning">No hay archivos pendientes de subir. Contactos, SMS y registro de llamadas también serán respaldados %1$s \n\n%2$s</string>
     <string name="sync.getting_pending_files">Obteniendo archivos pendientes de subir</string>
     <string name="sync.backup_now">Backup</string>
 

@@ -27,16 +27,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
@@ -48,6 +51,7 @@ import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.google.gson.Gson;
@@ -81,6 +85,8 @@ public class CallsBackupJob extends Job {
     public static final String TAG = "CallsBackupJob";
     public static final String ACCOUNT = "account";
     public static final String FORCE = "force";
+    public static final String IS_FROM_SWITCH = "is_from_switch";
+    private static final String PREFERENCE_IS_NOT_FIRST_RUN = "PREFERENCE_IS_NOT_FIRST_RUN_CALLS";
     private OperationsServiceConnection operationsServiceConnection;
     private OperationsService.OperationsServiceBinder operationsServiceBinder;
 
@@ -95,6 +101,20 @@ public class CallsBackupJob extends Job {
 
         final Context context = getContext();
 
+        boolean isFromSwitch = bundle.getBoolean(IS_FROM_SWITCH, false);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean isNotFirstRun = sharedPreferences.getBoolean(PREFERENCE_IS_NOT_FIRST_RUN, false);
+
+        if (!isNotFirstRun && !isFromSwitch) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(PREFERENCE_IS_NOT_FIRST_RUN, true);
+            editor.apply();
+            if (!force){
+                return Result.RESCHEDULE;
+            }
+        }
+
         final Account account = AccountUtils.getOwnCloudAccountByName(context, bundle.getString(ACCOUNT, ""));
 
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
@@ -107,7 +127,13 @@ public class CallsBackupJob extends Job {
                     OCFile.PATH_SEPARATOR;
             Integer daysToExpire = BaseConstants.CALLS_BACKUP_EXPLIRE;
 
-            backupCall(account, backupFolder);
+            try {
+                backupCall(account, backupFolder);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+                Crashlytics.logException(e);
+                return Result.FAILURE;
+            }
 
             // bind to Operations Service
             operationsServiceConnection = new OperationsServiceConnection(daysToExpire, backupFolder, account);
@@ -126,77 +152,72 @@ public class CallsBackupJob extends Job {
         return Result.SUCCESS;
     }
 
-    private void backupCall(Account account, String backupFolder) {
+    private void backupCall(Account account, String backupFolder) throws Exception {
+        List<String> calls = new ArrayList<>();
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
+        Cursor managedCursor = getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, strOrder);
+        if (managedCursor == null) {
+            return;
+        }
+        int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
+        int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
+        int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
+        int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
 
+        while (managedCursor.moveToNext()) {
+            String phoneNumber = managedCursor.getString(number);
+            String callType = managedCursor.getString(type);
+            String callDate = managedCursor.getString(date);
+            String callDuration = managedCursor.getString(duration);
+            calls.add(new Call(phoneNumber, callType, callDate, callDuration).ToJson());
+        }
+        managedCursor.close();
+
+        // store total
+        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
+        arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                CallsBackupFragment.PREFERENCE_CALLS_LAST_TOTAL,
+                String.valueOf(calls.size()));
+
+        if (calls.size() == 0) {
+            return;
+        }
+
+        String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
+        Log_OC.d(TAG, "Storing: " + filename);
+        File file = new File(getContext().getCacheDir(), filename);
+
+        FileWriter fw = null;
         try {
-            List<String> calls = new ArrayList<>();
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
-            Cursor managedCursor = getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, strOrder);
-            if (managedCursor == null) {
-                return;
-            }
-            int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
-            int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
-            int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
-            int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-
-            while (managedCursor.moveToNext()) {
-                String phoneNumber = managedCursor.getString(number);
-                String callType = managedCursor.getString(type);
-                String callDate = managedCursor.getString(date);
-                String callDuration = managedCursor.getString(duration);
-                calls.add(new Call(phoneNumber, callType, callDate, callDuration).ToJson());
-            }
-            managedCursor.close();
-
-            // store total
-            ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
-            arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                    CallsBackupFragment.PREFERENCE_CALLS_LAST_TOTAL,
-                    String.valueOf(calls.size()));
-
-            if (calls.size() == 0) {
-                return;
-            }
-
-            String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
-            Log_OC.d(TAG, "Storing: " + filename);
-            File file = new File(getContext().getCacheDir(), filename);
-
-            FileWriter fw = null;
-            try {
-                fw = new FileWriter(file);
-                JSONArray jsArray = new JSONArray(calls);
-                fw.write(jsArray.toString());
-            } catch (IOException e) {
-                Log_OC.d(TAG, "Error ", e);
-            } finally {
-                if (fw != null) {
-                    try {
-                        fw.close();
-                    } catch (IOException e) {
-                        Log_OC.d(TAG, "Error closing file writer ", e);
-                    }
+            fw = new FileWriter(file);
+            JSONArray jsArray = new JSONArray(calls);
+            fw.write(jsArray.toString());
+        } catch (IOException e) {
+            Log_OC.d(TAG, "Error ", e);
+        } finally {
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                    Log_OC.d(TAG, "Error closing file writer ", e);
                 }
             }
-
-            FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
-            requester.uploadNewFile(
-                    getContext(),
-                    account,
-                    file.getAbsolutePath(),
-                    backupFolder + filename,
-                    FileUploader.LOCAL_BEHAVIOUR_FORGET,
-                    null,
-                    true,
-                    UploadFileOperation.CREATED_BY_USER
-            );
-        } catch (Exception e) {
-            Log_OC.d(TAG, e.getMessage());
         }
+
+        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+        requester.uploadNewFile(
+                getContext(),
+                account,
+                file.getAbsolutePath(),
+                backupFolder + filename,
+                FileUploader.LOCAL_BEHAVIOUR_FORGET,
+                null,
+                true,
+                UploadFileOperation.CREATED_BY_USER
+        );
     }
 
     private void expireFiles(Integer daysToExpire, String backupFolderString, Account account) {

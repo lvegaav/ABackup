@@ -27,6 +27,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -36,12 +37,14 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
+import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.OperationsService;
@@ -73,6 +76,8 @@ public class SmsBackupJob extends Job {
     public static final String TAG = "SmsBackupJob";
     public static final String ACCOUNT = "account";
     public static final String FORCE = "force";
+    public static final String IS_FROM_SWITCH = "is_from_switch";
+    private static final String PREFERENCE_IS_NOT_FIRST_RUN = "PREFERENCE_IS_NOT_FIRST_RUN_SMS";
     private OperationsServiceConnection operationsServiceConnection;
     private OperationsService.OperationsServiceBinder operationsServiceBinder;
 
@@ -86,6 +91,19 @@ public class SmsBackupJob extends Job {
         boolean force = bundle.getBoolean(FORCE, false);
 
         final Context context = getContext();
+        boolean isFromSwitch = bundle.getBoolean(IS_FROM_SWITCH, false);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean isNotFirstRun = sharedPreferences.getBoolean(PREFERENCE_IS_NOT_FIRST_RUN, false);
+
+        if (!isNotFirstRun && !isFromSwitch) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(PREFERENCE_IS_NOT_FIRST_RUN, true);
+            editor.apply();
+            if (!force){
+                return Result.RESCHEDULE;
+            }
+        }
 
         final Account account = AccountUtils.getOwnCloudAccountByName(context, bundle.getString(ACCOUNT, ""));
 
@@ -99,7 +117,13 @@ public class SmsBackupJob extends Job {
                     OCFile.PATH_SEPARATOR;
             Integer daysToExpire = BaseConstants.SMS_BACKUP_EXPIRE;
 
-            backupSms(account, backupFolder);
+            try {
+                backupSms(account, backupFolder);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+                Crashlytics.logException(e);
+                return Result.FAILURE;
+            }
 
             // bind to Operations Service
             operationsServiceConnection = new OperationsServiceConnection(daysToExpire, backupFolder, account);
@@ -118,86 +142,80 @@ public class SmsBackupJob extends Job {
         return Result.SUCCESS;
     }
 
-    private void backupSms(Account account, String backupFolder) {
+    private void backupSms(Account account, String backupFolder) throws Exception {
+        List<String> smsList = new ArrayList<>();
 
-        try {
-            List<String> smsList = new ArrayList<>();
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
 
-            if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED) {
+        Uri message = Uri.parse("content://sms/");
+
+        Cursor c = getContext().getContentResolver().query(message, null, null, null, null);
+        if (c != null) {
+            c.moveToFirst();
+
+            int totalSMS = c.getCount();
+
+            for (int i = 0; i < totalSMS; i++) {
+
+                Sms objSms = new Sms();
+                objSms.setAddress(c.getString(c
+                        .getColumnIndexOrThrow("address")));
+                objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
+                objSms.setReadState(c.getString(c.getColumnIndex("read")));
+                objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
+                if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
+                    objSms.setFolderName("inbox");
+                } else {
+                    objSms.setFolderName("sent");
+                }
+
+                smsList.add(objSms.toJson());
+                c.moveToNext();
+            }
+            c.close();
+
+            // store total
+            ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
+            arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                    SmsBackupFragment.PREFERENCE_SMS_LAST_TOTAL,
+                    String.valueOf(smsList.size()));
+            if (smsList.size() == 0) {
                 return;
             }
+            String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
+            Log_OC.d(TAG, "Storing: " + filename);
+            File file = new File(getContext().getCacheDir(), filename);
 
-            Uri message = Uri.parse("content://sms/");
-
-            Cursor c = getContext().getContentResolver().query(message, null, null, null, null);
-            if (c != null) {
-                c.moveToFirst();
-
-                int totalSMS = c.getCount();
-
-                for (int i = 0; i < totalSMS; i++) {
-
-                    Sms objSms = new Sms();
-                    objSms.setAddress(c.getString(c
-                            .getColumnIndexOrThrow("address")));
-                    objSms.setMsg(c.getString(c.getColumnIndexOrThrow("body")));
-                    objSms.setReadState(c.getString(c.getColumnIndex("read")));
-                    objSms.setTime(c.getString(c.getColumnIndexOrThrow("date")));
-                    if (c.getString(c.getColumnIndexOrThrow("type")).contains("1")) {
-                        objSms.setFolderName("inbox");
-                    } else {
-                        objSms.setFolderName("sent");
-                    }
-
-                    smsList.add(objSms.toJson());
-                    c.moveToNext();
-                }
-                c.close();
-
-                // store total
-                ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
-                arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        SmsBackupFragment.PREFERENCE_SMS_LAST_TOTAL,
-                        String.valueOf(smsList.size()));
-                if (smsList.size() == 0) {
-                    return;
-                }
-                String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".data";
-                Log_OC.d(TAG, "Storing: " + filename);
-                File file = new File(getContext().getCacheDir(), filename);
-
-                FileWriter fw = null;
-                try {
-                    fw = new FileWriter(file);
-                    JSONArray jsArray = new JSONArray(smsList);
-                    fw.write(jsArray.toString());
-                } catch (IOException e) {
-                    Log_OC.d(TAG, "Error ", e);
-                } finally {
-                    if (fw != null) {
-                        try {
-                            fw.close();
-                        } catch (IOException e) {
-                            Log_OC.d(TAG, "Error closing file writer ", e);
-                        }
+            FileWriter fw = null;
+            try {
+                fw = new FileWriter(file);
+                JSONArray jsArray = new JSONArray(smsList);
+                fw.write(jsArray.toString());
+            } catch (IOException e) {
+                Log_OC.d(TAG, "Error ", e);
+            } finally {
+                if (fw != null) {
+                    try {
+                        fw.close();
+                    } catch (IOException e) {
+                        Log_OC.d(TAG, "Error closing file writer ", e);
                     }
                 }
-
-                FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
-                requester.uploadNewFile(
-                        getContext(),
-                        account,
-                        file.getAbsolutePath(),
-                        backupFolder + filename,
-                        FileUploader.LOCAL_BEHAVIOUR_FORGET,
-                        null,
-                        true,
-                        UploadFileOperation.CREATED_BY_USER
-                );
             }
-        } catch (Exception e) {
-            Log_OC.e(TAG, e.getMessage());
-            Crashlytics.logException(e);
+
+            FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+            requester.uploadNewFile(
+                    getContext(),
+                    account,
+                    file.getAbsolutePath(),
+                    backupFolder + filename,
+                    FileUploader.LOCAL_BEHAVIOUR_FORGET,
+                    null,
+                    true,
+                    UploadFileOperation.CREATED_BY_USER
+            );
         }
     }
 

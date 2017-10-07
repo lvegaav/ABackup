@@ -26,12 +26,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
@@ -43,6 +46,7 @@ import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -63,7 +67,10 @@ import java.util.Vector;
 public class ContactsBackupJob extends Job {
     public static final String TAG = "ContactsBackupJob";
     public static final String ACCOUNT = "account";
+    public static final String IS_FROM_SWITCH = "is_from_switch";
     public static final String FORCE = "force";
+
+    private static final String PREFERENCE_IS_NOT_FIRST_RUN = "PREFERENCE_IS_NOT_FIRST_RUN_CONTACTS";
     private OperationsServiceConnection operationsServiceConnection;
     private OperationsService.OperationsServiceBinder operationsServiceBinder;
 
@@ -77,6 +84,19 @@ public class ContactsBackupJob extends Job {
         boolean force = bundle.getBoolean(FORCE, false);
 
         final Context context = getContext();
+        boolean isFromSwitch = bundle.getBoolean(IS_FROM_SWITCH, false);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean isNotFirstRun = sharedPreferences.getBoolean(PREFERENCE_IS_NOT_FIRST_RUN, false);
+
+        if (!isNotFirstRun && !isFromSwitch) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(PREFERENCE_IS_NOT_FIRST_RUN, true);
+            editor.apply();
+            if (!force){
+                return Result.RESCHEDULE;
+            }
+        }
 
         final Account account = AccountUtils.getOwnCloudAccountByName(context, bundle.getString(ACCOUNT, ""));
 
@@ -90,7 +110,13 @@ public class ContactsBackupJob extends Job {
                     OCFile.PATH_SEPARATOR;
             Integer daysToExpire = BaseConstants.CONTACTS_BACKUP_EXPLIRE;
 
-            backupContact(account, backupFolder);
+            try {
+                backupContact(account, backupFolder);
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage());
+                Crashlytics.logException(e);
+                return Result.FAILURE;
+            }
 
             // bind to Operations Service
             operationsServiceConnection = new OperationsServiceConnection(daysToExpire, backupFolder, account);
@@ -109,67 +135,61 @@ public class ContactsBackupJob extends Job {
         return Result.SUCCESS;
     }
 
-    private void backupContact(Account account, String backupFolder) {
+    private void backupContact(Account account, String backupFolder) throws Exception {
         ArrayList<String> vCard = new ArrayList<>();
-        try {
+        Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null,
+                null, null, null);
 
-            Cursor cursor = getContext().getContentResolver().query(ContactsContract.Contacts.CONTENT_URI, null,
-                    null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
 
-            if (cursor != null && cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                for (int i = 0; i < cursor.getCount(); i++) {
-
-                    vCard.add(getContactFromCursor(cursor));
-                    cursor.moveToNext();
-                }
+                vCard.add(getContactFromCursor(cursor));
+                cursor.moveToNext();
             }
-
-            // store total
-            ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
-            arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                    ContactsBackupFragment.PREFERENCE_CONTACTS_LAST_TOTAL,
-                    String.valueOf(vCard.size()));
-
-            String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".vcf";
-            Log_OC.d(TAG, "Storing: " + filename);
-            File file = new File(getContext().getCacheDir(), filename);
-
-            FileWriter fw = null;
-            try {
-                fw = new FileWriter(file);
-
-                for (String card : vCard) {
-                    fw.write(card);
-                }
-
-            } catch (IOException e) {
-                Log_OC.d(TAG, "Error ", e);
-            } finally {
-                if (fw != null) {
-                    try {
-                        fw.close();
-                    } catch (IOException e) {
-                        Log_OC.d(TAG, "Error closing file writer ", e);
-                    }
-                }
-            }
-
-            FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
-            requester.uploadNewFile(
-                    getContext(),
-                    account,
-                    file.getAbsolutePath(),
-                    backupFolder + filename,
-                    FileUploader.LOCAL_BEHAVIOUR_FORGET,
-                    null,
-                    true,
-                    UploadFileOperation.CREATED_BY_USER
-            );
-
-        } catch (Exception e) {
-            Log_OC.d(TAG, e.getMessage());
         }
+
+        // store total
+        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
+        arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                ContactsBackupFragment.PREFERENCE_CONTACTS_LAST_TOTAL,
+                String.valueOf(vCard.size()));
+
+        String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".vcf";
+        Log_OC.d(TAG, "Storing: " + filename);
+        File file = new File(getContext().getCacheDir(), filename);
+
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(file);
+
+            for (String card : vCard) {
+                fw.write(card);
+            }
+
+        } catch (IOException e) {
+            Log_OC.d(TAG, "Error ", e);
+        } finally {
+            if (fw != null) {
+                try {
+                    fw.close();
+                } catch (IOException e) {
+                    Log_OC.d(TAG, "Error closing file writer ", e);
+                }
+            }
+        }
+
+        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+        requester.uploadNewFile(
+                getContext(),
+                account,
+                file.getAbsolutePath(),
+                backupFolder + filename,
+                FileUploader.LOCAL_BEHAVIOUR_FORGET,
+                null,
+                true,
+                UploadFileOperation.CREATED_BY_USER
+        );
     }
 
     private void expireFiles(Integer daysToExpire, String backupFolderString, Account account) {

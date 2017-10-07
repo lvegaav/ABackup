@@ -199,13 +199,8 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
         this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
 
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        if (!arbitraryDataProvider.getBooleanValue(account, PREFERENCE_SMS_IS_NOT_FIRST_TIME)) {
-            backupSwitch.setChecked(true);
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_SMS_IS_NOT_FIRST_TIME, String.valueOf(true));
-            arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_SMS_AUTOMATIC_BACKUP, String.valueOf(true));
-        } else {
-            backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_SMS_AUTOMATIC_BACKUP));
-        }
+
+        backupSwitch.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_SMS_AUTOMATIC_BACKUP));
 
         onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -322,10 +317,15 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
         }
     }
 
-    public static void startSmsBackupJob(Account account) {
+    public static void startSmsBackupJob(Account account){
+        startSmsBackupJob(account, false);
+    }
+
+    public static void startSmsBackupJob(Account account, boolean isFromSwitch) {
 
         PersistableBundleCompat bundle = new PersistableBundleCompat();
         bundle.putString(SmsBackupJob.ACCOUNT, account.name);
+        bundle.putBoolean(SmsBackupJob.IS_FROM_SWITCH, isFromSwitch);
 
         new JobRequest.Builder(SmsBackupJob.TAG)
                 .setExtras(bundle)
