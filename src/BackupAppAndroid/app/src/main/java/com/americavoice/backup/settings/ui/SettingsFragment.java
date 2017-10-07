@@ -1,6 +1,7 @@
 
 package com.americavoice.backup.settings.ui;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -40,6 +41,7 @@ import com.americavoice.backup.calls.ui.CallsBackupFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
+import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.news.ui.NewsActivity;
@@ -346,23 +348,34 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @OnClick(R.id.tv_sync_files)
     public void sync() {
-        if (this.mPresenter != null) this.mPresenter.getPendingFiles();
+        if (PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            if (this.mPresenter != null) this.mPresenter.getPendingFiles();
+        } else {
+            showRequestPermissionDialog();
+        }
     }
 
     @Override
     public void showSyncDialog(int pendingPhotos, int pendingVideos) {
         String textToDisplay = "";
+        String permissionArgument = getString(R.string.sync_backup_photos_and_videos_as_well);
+
+        if (!PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
+                || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)
+                || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG))
+            permissionArgument = getString(R.string.sync_backup_photos_and_videos_when_permission_granted);
+
         if (pendingPhotos == 0 && pendingVideos == 0) {
             if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
-                textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, getString(R.string.sync_warning_mobile_data_on));
+                textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
-                textToDisplay = getString(R.string.sync_backup_no_files_pending);
+                textToDisplay = getString(R.string.sync_backup_no_files_pending, permissionArgument);
             }
         } else {
             if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
-                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, getString(R.string.sync_warning_mobile_data_on));
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
-                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos);
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos, permissionArgument);
             }
         }
 
@@ -486,12 +499,13 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @Override
     public void showRequestPermissionDialog() {
-        StringBuilder message = new StringBuilder("You need to grant access to " + getString(R.string.common_write_external_storage));
+        StringBuilder message = new StringBuilder("We are trying to get your pending files. You need to grant access to " + getString(R.string.common_write_external_storage));
         showMessageOKCancel(message.toString(),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        PermissionUtil.requestWriteExternalStoragePermission(getActivity());
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
                     }
                 });
     }
@@ -512,6 +526,24 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         intent.putExtra(Intent.EXTRA_TEXT, "Check this app at: https://play.google.com/store/apps/details?id=" + appPackageName);
         intent.setType("text/plain");
         startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        if (requestCode == PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        MediaContentJob.scheduleJob(getContext());
+                        WifiRetryJob.scheduleJob(getContext());
+                    }
+                    if (this.mPresenter != null) this.mPresenter.getPendingFiles();
+                }
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }
 
