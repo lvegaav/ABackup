@@ -28,6 +28,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected ProgressDialog mProgress;
     protected FirebaseAnalytics mFirebaseAnalytics;
+    protected boolean mDialogIsShowing;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
