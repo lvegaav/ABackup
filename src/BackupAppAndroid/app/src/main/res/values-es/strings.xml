@@ -24,6 +24,9 @@
     <string name="common.read_sms">Read sms</string>
     <string name="common.read_call_log">Read call log</string>
     <string name="common.connectivity_error">No hay red disponible, por favor revisa tu conectividad</string>
+    <string name="common.cloud_storage_full">Espacio en la nube lleno</string>
+    <string name="common_upgrade_now">Actualizar</string>
+    <string name="common.upload_failed">Error en la carga del archivo</string>
 
     <string name="network.error_socket_exception">Un error ocurrió en la conexión con el servidor.</string>
     <string name="network.error_socket_timeout_exception">Un error ocurrió mientras esperamos al servidor. No se pudo completar la operación.</string>
@@ -61,6 +64,8 @@
     <string name="files.uploader_upload_failed_content_single">No se pudo cargar %1$s</string>
     <string name="files.uploader_upload_failed_credentials_error">Carga fallida, tienes que autenticarte de nuevo</string>
     <string name="files.uploader_upload_forbidden_permissions">cargar a esta carpeta</string>
+    <string name="files.uploader_upload_failed_storage_full">Tu archivo no se pudo cargar por que tu espacio en la nube esta lleno.</string>
+    <string name="files.uploader_upgrade_plan">Para poder seguir subiendo archivos por favor actualiza tu plan de almacenamiento o elimina algunos archivos.</string>
     <string name="files.downloader_download_in_progress_ticker">Descargando&#8230;</string>
     <string name="files.downloader_download_in_progress_content">%1$d%% Descargando %2$s</string>
     <string name="files.downloader_download_succeeded_ticker">Descargado</string>

@@ -357,14 +357,15 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @Override
     public void showSyncDialog(int pendingPhotos, int pendingVideos) {
+        if (mDialogIsShowing)
+            return;
+
         String textToDisplay = "";
         String permissionArgument = getString(R.string.sync_backup_photos_and_videos_as_well);
-
         if (!PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
                 || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)
                 || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG))
             permissionArgument = getString(R.string.sync_backup_photos_and_videos_when_permission_granted);
-
         if (pendingPhotos == 0 && pendingVideos == 0) {
             if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
                 textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
@@ -378,8 +379,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
                 textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos, permissionArgument);
             }
         }
-
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+        new MaterialDialog.Builder(getActivity())
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -388,13 +388,17 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
                         }
                     }
                 })
+                .onAny(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        mDialogIsShowing = false;
+                    }
+                })
                 .title(R.string.app_name)
                 .content(textToDisplay)
                 .positiveText(R.string.sync_backup_now)
-                .negativeText(R.string.common_cancel);
-
-        MaterialDialog dialog = builder.build();
-        dialog.show();
+                .negativeText(R.string.common_cancel).build().show();
+        mDialogIsShowing = true;
     }
 
     private float getPercent(BigDecimal value, BigDecimal size) {
@@ -499,26 +503,38 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @Override
     public void showRequestPermissionDialog() {
-        StringBuilder message = new StringBuilder("We are trying to get your pending files. You need to grant access to " + getString(R.string.common_write_external_storage));
-        showMessageOKCancel(message.toString(),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
-                    }
-                });
+        StringBuilder message = new StringBuilder("We are trying to get your pending files. You need to grant access to ")
+                .append(getString(R.string.common_write_external_storage));
+        showMessageOKCancel(message.toString(), new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
+            }
+        });
     }
 
 
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(message)
-                .setPositiveButton(getString(R.string.common_ok), okListener)
-                .setNegativeButton(getString(R.string.common_cancel), null)
-                .create()
-                .show();
+    private void showMessageOKCancel(String message, MaterialDialog.SingleButtonCallback okListener) {
+        if (!mDialogIsShowing){
+            new MaterialDialog.Builder(getActivity())
+                    .onPositive(okListener)
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            mDialogIsShowing = false;
+                        }
+                    })
+                    .title(R.string.app_name)
+                    .content(message)
+                    .positiveText(R.string.common_ok)
+                    .negativeText(R.string.common_cancel)
+                    .build()
+                    .show();
+            mDialogIsShowing = true;
+        }
     }
+
     @OnClick(R.id.btn_share)
     public void onShare() {
         final String appPackageName = getContext().getPackageName();

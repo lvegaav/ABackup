@@ -132,8 +132,14 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Intent intent = getActivity().getIntent();
+        if (intent != null && intent.getExtras() != null) {
+            boolean storageFull = intent.getBooleanExtra(MainActivity.EXTRA_STORAGE_FULL, false);
+            if (storageFull) showStorageFullDialog(true);
+            intent.putExtra(MainActivity.EXTRA_STORAGE_FULL, false);
+        }
         showKeyboard(false);
-        this.initialize();
+        this.initialize(savedInstanceState);
     }
 
     public void requestMultiplePermissions() {
@@ -173,13 +179,24 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
         }
     }
 
-    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(message)
-                .setPositiveButton(getString(R.string.common_ok), okListener)
-                .setNegativeButton(getString(R.string.common_cancel), null)
-                .create()
-                .show();
+    private void showMessageOKCancel(String message, MaterialDialog.SingleButtonCallback okListener) {
+        if (!mDialogIsShowing){
+            new MaterialDialog.Builder(getActivity())
+                    .onPositive(okListener)
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            mDialogIsShowing = false;
+                        }
+                    })
+                    .title(R.string.app_name)
+                    .content(message)
+                    .positiveText(R.string.common_ok)
+                    .negativeText(R.string.common_cancel)
+                    .build()
+                    .show();
+            mDialogIsShowing = true;
+        }
     }
 
     private boolean addPermission(List<String> permissionsList, String permission) {
@@ -194,15 +211,15 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
 
     @Override
     public void showRequestPermissionDialog() {
-        StringBuilder message = new StringBuilder("We are trying to get your pending files. You need to grant access to " + getString(R.string.common_write_external_storage));
-        showMessageOKCancel(message.toString(),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
-                    }
-                });
+        StringBuilder message = new StringBuilder("We are trying to get your pending files. You need to grant access to ")
+                .append(getString(R.string.common_write_external_storage));
+        showMessageOKCancel(message.toString(), new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
+            }
+        });
     }
 
     @Override
@@ -291,7 +308,7 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
         this.mPresenter.destroy();
     }
 
-    private void initialize() {
+    private void initialize(Bundle savedInstanceState) {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
         this.mSettingsPresenter.setView(this);
@@ -392,12 +409,6 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
         if (mListener != null) mListener.onMainBackPressed();
     }
 
-
-    @Override
-    public void render() {
-
-    }
-
     @Override
     public void setBadgePhotos(int size) {
         setBadge(tvBadgePhotos, size);
@@ -462,10 +473,42 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
     }
 
     @Override
+    public void showStorageFullDialog(boolean doesUploadFail) {
+        if (!mDialogIsShowing){
+            String title = getString(R.string.common_cloud_storage_full);
+            String content = getString(R.string.files_uploader_upgrade_plan);
+            if (doesUploadFail) {
+                title = getString(R.string.common_upload_failed);
+                content = getString(R.string.files_uploader_upload_failed_storage_full) + "\n\n" + content;
+            }
+            new MaterialDialog.Builder(getActivity())
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+
+                        }
+                    })
+                    .onAny(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            mDialogIsShowing = false;
+                        }
+                    })
+                    .title(title)
+                    .content(content)
+                    .positiveText(R.string.common_upgrade_now)
+                    .negativeText(R.string.common_cancel).build().show();
+            mDialogIsShowing = true;
+        }
+    }
+
+    @Override
     public void showSyncDialog(int pendingPhotos, int pendingVideos) {
+        if (mDialogIsShowing)
+            return;
+
         String textToDisplay = "";
         String permissionArgument = getString(R.string.sync_backup_photos_and_videos_as_well);
-
         if (!PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
                 || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)
                 || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG))
@@ -483,8 +526,7 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
                 textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos, permissionArgument);
             }
         }
-
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+        new MaterialDialog.Builder(getActivity())
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -499,15 +541,14 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
                         if (mSettingsPresenter != null) {
                             mSettingsPresenter.setFirstTimeFalse();
                         }
+                        mDialogIsShowing = false;
                     }
                 })
                 .title(R.string.app_name)
                 .content(textToDisplay)
                 .positiveText(R.string.sync_backup_now)
-                .negativeText(R.string.common_cancel);
-
-        MaterialDialog dialog = builder.build();
-        dialog.show();
+                .negativeText(R.string.common_cancel).build().show();
+        mDialogIsShowing = true;
     }
 
     @Override

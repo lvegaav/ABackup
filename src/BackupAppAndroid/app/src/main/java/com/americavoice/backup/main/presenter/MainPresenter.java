@@ -17,6 +17,7 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.MainView;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
+import com.americavoice.backup.utils.BaseConstants;
 
 import net.servicestack.client.AsyncResult;
 
@@ -44,6 +45,12 @@ public class MainPresenter extends BasePresenter implements IPresenter {
 
     @Override
     public void resume() {
+        boolean showStorageFullDialog = mSharedPrefsUtils.getBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, false);
+        if (showStorageFullDialog) {
+            if (mView != null) {
+                mView.showStorageFullDialog(false);
+            }
+        }
         initBadges();
     }
 

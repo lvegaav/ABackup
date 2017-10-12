@@ -59,8 +59,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
     private Context mContext;
     private Account mAccount;
 
-    public FileAdapter(Context context, Collection<OCFile> collection,Collection<OCFile> selectedCollection, FileDataStorageManager fileDataStorageManager) {
-        this.validateTransactionCollection(collection);
+    public FileAdapter(Context context, Collection<OCFile> collection, Collection<OCFile> selectedCollection, FileDataStorageManager fileDataStorageManager) {
+
         this.mLayoutInflater =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mCollection = (List<OCFile>) collection;
@@ -71,8 +71,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         mAccount = AccountUtils.getCurrentOwnCloudAccount(mContext);
     }
 
-    public void refresh(List<OCFile> selectedCollection)
-    {
+    public void refresh(List<OCFile> selectedCollection) {
         mSelectedCollection = selectedCollection;
         notifyDataSetChanged();
     }
@@ -125,8 +124,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         }
 
         if (model.isDown()) {
-
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Drawable photoFromCloud = ContextCompat.getDrawable(mContext, R.drawable.ic_photo_from_cloud);
                 holder.ivLocalFileIndicator.setImageDrawable(photoFromCloud);
@@ -134,12 +131,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
                 Drawable photoFromCloud = AppCompatDrawableManager.get().getDrawable(mContext, R.drawable.ic_photo_from_cloud);
                 holder.ivLocalFileIndicator.setImageDrawable(photoFromCloud);
             }
-
-
             holder.ivLocalFileIndicator.setVisibility(View.VISIBLE);
-        } else
-
-        {
+        } else {
             holder.ivLocalFileIndicator.setVisibility(View.GONE);
         }
 
@@ -163,8 +156,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
             }
 
             // File is Down?
-            if (!success && model.isDown())
-            {
+            if (!success && model.isDown()) {
                 Bitmap localThumbnail = null;
                 if (MimeTypeUtil.isVideo(model.getMimetype())) {
                     localThumbnail = ThumbnailUtils.createVideoThumbnail(model.getStoragePath(), MediaStore.Video.Thumbnails.MICRO_KIND);
@@ -182,8 +174,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
                 }
             }
 
-            if (!success)
-            {
+            if (!success) {
                 if (ThumbnailsCacheManager.cancelPotentialThumbnailWork(model, holder.ivIcon)) {
                     try {
                         final ThumbnailsCacheManager.ThumbnailGenerationTask task =
@@ -261,18 +252,14 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         return mSelectedCollection;
     }
 
-    public OCFile getSelectedItem(int position)
-    {
-        if (position < mSelectedCollection.size())
-        {
+    public OCFile getSelectedItem(int position) {
+        if (position < mSelectedCollection.size()) {
             mSelectedCollection.get(position);
         }
         return  null;
-
     }
 
     public void setTransactionCollection(Collection<OCFile> collection) {
-        this.validateTransactionCollection(collection);
         if (this.mCollection == null) {
             this.mCollection = (List<OCFile>) collection;
         } else {
@@ -297,20 +284,9 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         this.notifyDataSetChanged();
     }
 
-    public void removeItem(OCFile file)
-    {
+    public void removeItem(OCFile file) {
         mCollection.remove(file);
         this.notifyDataSetChanged();
-    }
-
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.mOnItemClickListener = onItemClickListener;
-    }
-
-    private void validateTransactionCollection(Collection<OCFile> collection) {
-        if (collection == null) {
-            throw new IllegalArgumentException("The list cannot be null");
-        }
     }
 
     private int getThumbnailDimension(){
@@ -336,7 +312,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.TransactionVie
         @BindView(R.id.ListItemLayout)
         View view;
 
-        public TransactionViewHolder(View itemView) {
+        TransactionViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

@@ -24,6 +24,9 @@
     <string name="common.read_sms">Read sms</string>
     <string name="common.read_call_log">Read call log</string>
     <string name="common.connectivity_error">There is no network available, please check your connectivity</string>
+    <string name="common.cloud_storage_full">Cloud storage is full</string>
+    <string name="common_upgrade_now">Upgrade now</string>
+    <string name="common.upload_failed">File upload failed</string>
 
     <string name="network.error_socket_exception">An error occurred during connection to the server.</string>
     <string name="network.error_socket_timeout_exception">An error occurred while waiting for the server. Could not complete operation.</string>
@@ -61,6 +64,8 @@
     <string name="files.uploader_upload_failed_content_single">Could not upload %1$s</string>
     <string name="files.uploader_upload_failed_credentials_error">Upload failed, you need to log in again</string>
     <string name="files.uploader_upload_forbidden_permissions">to upload to this folder</string>
+    <string name="files.uploader_upload_failed_storage_full">Your upload didn\'t complete because your cloud storage is full.</string>
+    <string name="files.uploader_upgrade_plan">In order to upload more files please upgrade your storage plan or delete some files.</string>
     <string name="files.downloader_download_in_progress_ticker">Downloading &#8230;</string>
     <string name="files.downloader_download_in_progress_content">%1$d%% Downloading %2$s</string>
     <string name="files.downloader_download_succeeded_ticker">Downloaded</string>

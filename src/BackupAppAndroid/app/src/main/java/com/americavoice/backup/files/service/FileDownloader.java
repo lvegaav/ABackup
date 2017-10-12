@@ -167,9 +167,7 @@ public class FileDownloader extends Service
 
         startForeground(FOREGROUND_SERVICE_ID, mNotification);
 
-        if (!intent.hasExtra(EXTRA_ACCOUNT) ||
-                !intent.hasExtra(EXTRA_FILE)
-                ) {
+        if (!intent.hasExtra(EXTRA_ACCOUNT) || !intent.hasExtra(EXTRA_FILE)) {
             Log_OC.e(TAG, "Not enough information provided in intent");
             return START_NOT_STICKY;
         } else {
@@ -375,7 +373,7 @@ public class FileDownloader extends Service
         // possible memory leak
         FileDownloader mService;
 
-        public ServiceHandler(Looper looper, FileDownloader service) {
+        ServiceHandler(Looper looper, FileDownloader service) {
             super(looper);
             if (service == null) {
                 throw new IllegalArgumentException("Received invalid NULL in parameter 'service'");
@@ -420,8 +418,7 @@ public class FileDownloader extends Service
                 RemoteOperationResult downloadResult = null;
                 try {
                     /// prepare client object to send the request to the ownCloud server
-                    if (mCurrentAccount == null ||
-                            !mCurrentAccount.equals(mCurrentDownload.getAccount())) {
+                    if (mCurrentAccount == null || !mCurrentAccount.equals(mCurrentDownload.getAccount())) {
                         mCurrentAccount = mCurrentDownload.getAccount();
                         mStorageManager = new FileDataStorageManager(
                                 mCurrentAccount,
@@ -518,18 +515,6 @@ public class FileDownloader extends Service
                         String.format(getString(R.string.files_downloader_download_in_progress_content), 0,
                                 new File(download.getSavePath()).getName())
                 );
-
-        /// includes a pending intent in the notification showing the details view of the file
-//        Intent showDetailsIntent = null;
-//            showDetailsIntent = new Intent(this, FileDisplayActivity.class);
-//        showDetailsIntent = new Intent(this, FileListActivity.class);
-//        showDetailsIntent.putExtra(FileActivity.EXTRA_FILE, download.getFile());
-//        showDetailsIntent.putExtra(FileActivity.EXTRA_ACCOUNT, download.getAccount());
-//        showDetailsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-//        mNotificationBuilder.setContentIntent(PendingIntent.getActivity(
-//                this, (int) System.currentTimeMillis(), showDetailsIntent, 0
-//        ));
 
         mNotificationManager.notify(R.string.files_downloader_download_in_progress_ticker, mNotificationBuilder.build());
     }

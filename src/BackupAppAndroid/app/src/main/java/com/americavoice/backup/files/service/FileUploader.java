@@ -54,7 +54,9 @@ import com.americavoice.backup.datamodel.UploadsStorageManager;
 import com.americavoice.backup.datamodel.UploadsStorageManager.UploadStatus;
 import com.americavoice.backup.db.OCUpload;
 import com.americavoice.backup.db.UploadResult;
+import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
+import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.utils.BaseConstants;
@@ -497,10 +499,10 @@ public class FileUploader extends Service
             String uploadKey = null;
             UploadFileOperation newUpload = null;
             try {
-                for (int i = 0; i < files.length; i++) {
+                for (OCFile file : files != null ? files : new OCFile[0]) {
 
-                    OCUpload ocUpload = new OCUpload(files[i], account);
-                    ocUpload.setFileSize(files[i].getFileLength());
+                    OCUpload ocUpload = new OCUpload(file, account);
+                    ocUpload.setFileSize(file.getFileLength());
                     ocUpload.setForceOverwrite(forceOverwrite);
                     ocUpload.setCreateRemoteFolder(isCreateRemoteFolder);
                     ocUpload.setCreatedBy(createdBy);
@@ -511,7 +513,7 @@ public class FileUploader extends Service
 
                     newUpload = new UploadFileOperation(
                             account,
-                            files[i],
+                            file,
                             ocUpload,
                             chunked,
                             forceOverwrite,
@@ -529,7 +531,7 @@ public class FileUploader extends Service
 
                     Pair<String, String> putResult = mPendingUploads.putIfAbsent(
                             account.name,
-                            files[i].getRemotePath(),
+                            file.getRemotePath(),
                             newUpload
                     );
                     if (putResult != null) {
@@ -874,7 +876,7 @@ public class FileUploader extends Service
         // warn about a possible memory leak
         FileUploader mService;
 
-        public ServiceHandler(Looper looper, FileUploader service) {
+        ServiceHandler(Looper looper, FileUploader service) {
             super(looper);
             if (service == null) {
                 throw new IllegalArgumentException("Received invalid NULL in parameter 'service'");
@@ -1081,6 +1083,11 @@ public class FileUploader extends Service
             tickerId = (needsToUpdateCredentials) ?
                     R.string.files_uploader_upload_failed_credentials_error : tickerId;
 
+            boolean storageFull = (uploadResult.getHttpCode() == 507);
+            SharedPrefsUtils sharedPrefsUtils = new SharedPrefsUtils(getApplicationContext());
+            sharedPrefsUtils.setBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, storageFull);
+            tickerId = (storageFull) ? R.string.files_uploader_upload_failed_storage_full : tickerId;
+
             mNotificationBuilder
                     .setTicker(getString(tickerId))
                     .setContentTitle(getString(tickerId))
@@ -1113,19 +1120,18 @@ public class FileUploader extends Service
                         PendingIntent.FLAG_ONE_SHOT
                 ));
 
-            } else {
+            }  else {
                 mNotificationBuilder.setContentText(content);
             }
 
-//            if (!uploadResult.isSuccess() && !needsToUpdateCredentials ) {
-                //in case of failure, do not show details file view (because there is no file!)
-//                Intent showUploadListIntent = new Intent(this, FileListActivity.class);
-//                showUploadListIntent.putExtra(FileActivity.EXTRA_FILE, upload.getFile());
-//                showUploadListIntent.putExtra(FileActivity.EXTRA_ACCOUNT, upload.getAccount());
-//                showUploadListIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                mNotificationBuilder.setContentIntent(PendingIntent.getActivity(this, (int) System.currentTimeMillis(),
-//                        showUploadListIntent, 0));
-//            }
+            if (!uploadResult.isSuccess() && storageFull ) {
+                Intent showMainActivityWithErrorMessage = new Intent(this, MainActivity.class);
+                showMainActivityWithErrorMessage.putExtra(MainActivity.EXTRA_ACCOUNT, upload.getAccount());
+                showMainActivityWithErrorMessage.putExtra(MainActivity.EXTRA_STORAGE_FULL,  true);
+                showMainActivityWithErrorMessage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mNotificationBuilder.setContentIntent(PendingIntent.getActivity(this, (int) System.currentTimeMillis(),
+                        showMainActivityWithErrorMessage, 0));
+            }
 
             mNotificationBuilder.setContentText(content);
             mNotificationManager.notify(tickerId, mNotificationBuilder.build());
@@ -1164,8 +1170,7 @@ public class FileUploader extends Service
      *
      * @param upload Finished upload operation
      */
-    private void sendBroadcastUploadStarted(
-            UploadFileOperation upload) {
+    private void sendBroadcastUploadStarted(UploadFileOperation upload) {
 
         Intent start = new Intent(getUploadStartMessage());
         start.putExtra(EXTRA_REMOTE_PATH, upload.getRemotePath()); // real remote
