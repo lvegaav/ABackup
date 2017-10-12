@@ -136,6 +136,7 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
         if (intent != null && intent.getExtras() != null) {
             boolean storageFull = intent.getBooleanExtra(MainActivity.EXTRA_STORAGE_FULL, false);
             if (storageFull) showStorageFullDialog(true);
+            intent.putExtra(MainActivity.EXTRA_STORAGE_FULL, false);
         }
         showKeyboard(false);
         this.initialize(savedInstanceState);
