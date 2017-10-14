@@ -169,5 +169,6 @@
 
     <string name="news.title">Noticias</string>
     <string name="news_detail.title">Noticias</string>
+    <string name="settings.storage_percentage">| %s$ Used</string>
 
 </resources>

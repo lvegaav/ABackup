@@ -83,45 +83,38 @@ public class FileUtils {
     public static void backupPendingFiles(Context context, Account account, String[] pendingPhotos, String[] pendingVideos) {
 
         if (pendingPhotos != null) {
-            for (String item : pendingPhotos) {
-                try {
-                    File file = new File(item);
-                    FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
-                    requester.uploadNewFile(
-                            context,
-                            account,
-                            file.getAbsolutePath(),
-                            BaseConstants.PHOTOS_REMOTE_FOLDER + FileUtils.getFileName(item),
-                            FileUploader.LOCAL_BEHAVIOUR_FORGET,
-                            null,
-                            true,
-                            UploadFileOperation.CREATED_BY_USER
-                    );
-                } catch (Exception e){
-                    Crashlytics.logException(e);
-                }
-            }
+            uploadFiles(context, account, pendingPhotos, true);
         }
 
         if (pendingVideos != null) {
-            for (String item : pendingVideos) {
-                try {
-                    File file = new File(item);
-                    FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
-                    requester.uploadNewFile(
-                            context,
-                            account,
-                            file.getAbsolutePath(),
-                            BaseConstants.VIDEOS_REMOTE_FOLDER + FileUtils.getFileName(item),
-                            FileUploader.LOCAL_BEHAVIOUR_FORGET,
-                            null,
-                            true,
-                            UploadFileOperation.CREATED_BY_USER
-                    );
-                } catch (Exception e){
-                    Crashlytics.logException(e);
-                }
+            uploadFiles(context, account, pendingVideos, false);
+        }
+    }
+
+    private static void uploadFiles(Context context, Account account, String[] pendingFiles, boolean isPhoto){
+        ArrayList<String> localPaths = new ArrayList<>();
+        ArrayList<String> remotePaths = new ArrayList<>();
+        String remoteFolder = isPhoto ? BaseConstants.PHOTOS_REMOTE_FOLDER : BaseConstants.VIDEOS_REMOTE_FOLDER;
+        try {
+            for (String item : pendingFiles) {
+                File file = new File(item);
+                localPaths.add(file.getAbsolutePath());
+                remotePaths.add(remoteFolder + FileUtils.getFileName(item));
             }
+
+            FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+            requester.uploadNewFile(
+                    context,
+                    account,
+                    localPaths.toArray(new String[localPaths.size()]),
+                    remotePaths.toArray(new String[localPaths.size()]),
+                    null,
+                    FileUploader.LOCAL_BEHAVIOUR_FORGET,
+                    true,
+                    UploadFileOperation.CREATED_BY_USER
+            );
+        } catch (Exception e){
+            Crashlytics.logException(e);
         }
     }
 }

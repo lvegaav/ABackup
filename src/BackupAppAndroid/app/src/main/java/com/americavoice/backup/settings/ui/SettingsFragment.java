@@ -59,6 +59,7 @@ import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -122,6 +123,11 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     LinearLayout llSpaceDescription;
     @BindView(R.id.btn_share)
     AppCompatButton btnShare;
+    @BindView(R.id.total_capacity_text)
+    TextView tvTotalCapacity;
+    @BindView(R.id.ll_capacity_info)
+    LinearLayout llCapacityInfo;
+
     @BindString(R.string.main_photos)
     String photos;
     @BindString(R.string.main_videos)
@@ -411,6 +417,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @Override
     public void showPercent(HashMap<String, BigDecimal> sizes, BigDecimal total, BigDecimal totalAvailable) {
+        llCapacityInfo.setVisibility(View.VISIBLE);
         float photoPercent = getPercent(sizes.get(BaseConstants.PHOTOS_REMOTE_FOLDER),total);
         float videoPercent = getPercent(sizes.get(BaseConstants.VIDEOS_REMOTE_FOLDER),total);
         float contactPercent = getPercent(sizes.get(BaseConstants.CONTACTS_REMOTE_FOLDER),total);
@@ -421,6 +428,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         Log.v("percents", String.format("%s %s %s %s %s", photoPercent, videoPercent, contactPercent,
                 documentPercent, availablePercent));
         Log.v("Total", total.toString());
+        float totalPercent = photoPercent + videoPercent + contactPercent + documentPercent + smsPercent + callsPercent;
+        tvTotalCapacity.setText(getString(R.string.settings_storage_percentage, String.format(Locale.US, "%.1f", totalPercent)));
 
         List<Integer> colors = Arrays.asList(
                 ContextCompat.getColor(getContext(), R.color.photos_ratio),
@@ -438,14 +447,14 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         );
         createRatioBar(colors, ratios);
 
-        int sizeGb = total.divide(new BigDecimal(1073741824), BigDecimal.ROUND_CEILING).intValue();
+        float sizeGb = total.divide(new BigDecimal(1073741824), 1, BigDecimal.ROUND_HALF_UP).floatValue();
         tvImages.setText(String.format(Locale.US, "%.1f %%", photoPercent));
         tvVideos.setText(String.format(Locale.US, "%.1f %%", videoPercent));
         tvContacts.setText(String.format(Locale.US, "%.1f %%", contactPercent));
         tvFiles.setText(String.format(Locale.US, "%.1f %%", documentPercent));
         tvSms.setText(String.format(Locale.US, "%.1f %%", smsPercent));
         tvCalls.setText(String.format(Locale.US, "%.1f %%", callsPercent));
-        mCapacityView.setText(String.format(Locale.US, "%dGB", sizeGb));
+        mCapacityView.setText(String.format(Locale.US, "%.1f GB", sizeGb));
         llSpaceDescription.setVisibility(View.VISIBLE);
     }
 

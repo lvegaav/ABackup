@@ -151,20 +151,38 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ll_options"
                     android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:layout_marginTop="20dp">
 
-                    <TextView
-                        android:id="@+id/capacity_text"
-                        android:textColor="@color/white"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_centerVertical="true"
-                        android:textSize="23sp"
-                        android:textStyle="bold"
+                    <LinearLayout
+                        android:id="@+id/ll_capacity_info"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"/>
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:background="@drawable/rounded_black_background_opacity"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp">
+
+                        <TextView
+                            android:id="@+id/capacity_text"
+                            android:textColor="@color/white"
+                            android:textSize="23sp"
+                            android:textStyle="bold"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="10dp" />
+
+                        <TextView
+                            android:id="@+id/total_capacity_text"
+                            android:textColor="@color/white"
+                            android:textSize="15sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="10dp"/>
+                    </LinearLayout>
+
+
 
                     <TextView
                         android:id="@+id/tv_sync_files"
@@ -379,26 +397,25 @@
                     android:theme="@style/Button.Secondary"
                     android:text="@string/settings.share_this_app" />
 
-                <LinearLayout
-                    android:layout_below="@+id/btn_share"
-                    android:layout_marginTop="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:text="@string/settings.version" />
-                    <TextView
-                        android:id="@+id/tv_version_name"
-                        android:textColor="@color/white"
-                        android:layout_marginLeft="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
             </RelativeLayout>
         </ScrollView>
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:layout_alignParentBottom="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="@string/settings.version" />
+            <TextView
+                android:id="@+id/tv_version_name"
+                android:textColor="@color/white"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

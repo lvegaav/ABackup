@@ -980,13 +980,13 @@ public class FileUploader extends Service
                         WifiRetryJob.scheduleJob(getApplicationContext());
                     }
                 }
-                if (uploadResult != null) {
-                    if (!uploadResult.isSuccess() && ConnectivityUtils.isAppConnected(getApplicationContext())) {
-                        WifiUtils.wifiConnected(getApplicationContext());
-                    }
-                }
-                sendBroadcastUploadFinished(mCurrentUpload, uploadResult, removeResult.second);
 
+                sendBroadcastUploadFinished(mCurrentUpload, uploadResult, removeResult.second);
+            }
+
+            if (uploadResult != null && uploadResult.getCode() ==  ResultCode.QUOTA_EXCEEDED) {
+                cancelUploadsForAccount(mCurrentUpload.getAccount());
+                return;
             }
 
             // generate new Thumbnail
@@ -1083,7 +1083,7 @@ public class FileUploader extends Service
             tickerId = (needsToUpdateCredentials) ?
                     R.string.files_uploader_upload_failed_credentials_error : tickerId;
 
-            boolean storageFull = (uploadResult.getHttpCode() == 507);
+            boolean storageFull = (uploadResult.getCode() == ResultCode.QUOTA_EXCEEDED);
             SharedPrefsUtils sharedPrefsUtils = new SharedPrefsUtils(getApplicationContext());
             sharedPrefsUtils.setBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, storageFull);
             tickerId = (storageFull) ? R.string.files_uploader_upload_failed_storage_full : tickerId;
