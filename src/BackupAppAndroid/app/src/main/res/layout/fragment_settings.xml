@@ -166,16 +166,17 @@
                         <TextView
                             android:id="@+id/capacity_text"
                             android:textColor="@color/white"
-                            android:textSize="23sp"
+                            android:textSize="20sp"
                             android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text=""
                             android:paddingLeft="10dp" />
 
                         <TextView
                             android:id="@+id/total_capacity_text"
                             android:textColor="@color/white"
-                            android:textSize="15sp"
+                            android:textSize="14sp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="5dp"
@@ -193,7 +194,7 @@
                         android:textColor="@color/white"
                         android:inputType="none"
                         android:gravity="center_vertical"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:text="@string/settings.sync_files"
                         android:paddingLeft="15dp"
                         android:paddingRight="15dp"
