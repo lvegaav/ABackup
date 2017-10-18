@@ -233,14 +233,6 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             calendarPickerOpen = true;
         }
 
-        int accentColor = getResources().getColor(R.color.colorAccent);
-        contactsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        contactsBackupNow.getBackground()
-                .setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-
-        contactsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        contactsDatePickerBtn.setTextColor(getResources().getColor(R.color.white));
-
     }
 
     void onButtonBack() {

@@ -39,7 +39,9 @@ import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
+import com.americavoice.backup.settings.presenter.StorageInfoPresenter;
 import com.americavoice.backup.settings.ui.SettingsView;
+import com.americavoice.backup.settings.ui.StorageInfoView;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sync.service.SyncBackupJob;
 import com.americavoice.backup.utils.ConnectivityUtils;
@@ -66,7 +68,7 @@ import butterknife.Unbinder;
 /**
  * Fragment that shows details of a certain political party.
  */
-public class MainFragment extends BaseFragment implements MainView, SettingsView {
+public class MainFragment extends BaseFragment implements MainView, StorageInfoView {
 
     public interface Listener {
         void viewPhotos();
@@ -81,7 +83,7 @@ public class MainFragment extends BaseFragment implements MainView, SettingsView
     }
 
     @Inject
-    SettingsPresenter mSettingsPresenter;
+    StorageInfoPresenter mSettingsPresenter;
 
     @Inject
     MainPresenter mPresenter;

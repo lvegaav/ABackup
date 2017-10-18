@@ -154,6 +154,8 @@
     <string name="settings.payment_options">Payment options</string>
     <string name="settings.news_info">News &amp; Info</string>
     <string name="settings.share_this_app">Share this app</string>
+    <string name="settings.storage_percentage">%1$s%% Used</string>
+    <string name="settings.storage_and_usage">Storage &amp; Usage</string>
 
     <string name="contact_us.title">Contact us</string>
     <string name="contact_us.customer_service">Customer service</string>
@@ -169,6 +171,12 @@
 
     <string name="news.title">News &amp; Info</string>
     <string name="news_detail.title">News &amp; Info</string>
-    <string name="settings.storage_percentage">| %1$s%% Used</string>
+
+    <string name="storage_info_title">Storage &amp; Usage</string>
+    <string name="storage.your_plan">Your plan</string>
+    <string name="storage.available">Available</string>
+    <string name="storage.used">Used</string>
+    <string name="storage.detail">Detail</string>
+    <string name="storage.upgrade_plan">Upgrade Plan</string>
 
 </resources>
