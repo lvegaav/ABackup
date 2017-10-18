@@ -24,6 +24,7 @@ import com.americavoice.backup.main.ui.MainFragment;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.ui.SettingsFragment;
+import com.americavoice.backup.settings.ui.StorageInfoFragment;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.utils.BaseConstants;
@@ -41,7 +42,8 @@ import static com.americavoice.backup.utils.FirebaseUtils.createFirebaseEvent;
 public class MainActivity extends BaseOwncloudActivity implements HasComponent<AppComponent>,
         SyncFragment.Listener,
         MainFragment.Listener,
-        SettingsFragment.Listener {
+        SettingsFragment.Listener,
+        StorageInfoFragment.Listener{
 
     private AppComponent mAppComponent;
 
@@ -196,6 +198,18 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     }
 
     @Override
+    public void viewStorageInfo(){
+        createFirebaseEvent(
+                mFirebaseAnalytics,
+                "Storage & Usage",
+                "Storage & Usage",
+                MENU_BUTTON_CONTENT_TYPE,
+                FirebaseAnalytics.Event.SELECT_CONTENT
+        );
+        replaceFragment(R.id.fl_fragment, StorageInfoFragment.newInstance(), true, true);
+    }
+
+    @Override
     public void onMainBackPressed() {
         finish();
     }
@@ -213,5 +227,10 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     @Override
     public void onBackSyncClicked() {
         replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
+    }
+
+    @Override
+    public void onBackStorageInfoClicked() {
+        viewSettings();
     }
 }

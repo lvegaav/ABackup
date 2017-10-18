@@ -236,14 +236,6 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
             calendarPickerOpen = true;
         }
 
-        int accentColor = getResources().getColor(R.color.colorAccent);
-        smsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        smsBackupNow.getBackground()
-                .setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-
-        smsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        smsDatePickerBtn.setTextColor(getResources().getColor(R.color.white));
-
     }
 
     void onButtonBack() {

@@ -1,0 +1,407 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorPrimary">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/rl_root_header"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <include layout="@layout/view_header" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_below="@+id/rl_root_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!--Options layout-->
+            <LinearLayout
+                android:id="@+id/ll_options"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:orientation="vertical"
+                android:paddingTop="25dp"
+                android:paddingRight="15dp"
+                android:paddingLeft="15dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/SettingsMenuOption"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/storage.your_plan" />
+
+                    <TextView
+                        android:id="@+id/capacity_text"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/SettingsMenuOption"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/storage.used" />
+
+                    <TextView
+                        android:id="@+id/used_capacity_text"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/SettingsMenuOption"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/storage.available" />
+
+                    <TextView
+                        android:id="@+id/available_capacity_text"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical" />
+                </LinearLayout>
+
+            </LinearLayout>
+            <!--Options layout-->
+            <!--Layout for quota information-->
+            <LinearLayout
+                android:id="@+id/ll_information"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:padding="15dp"
+                android:visibility="gone"
+                android:layout_below="@+id/ll_options">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="@string/storage.detail"/>
+
+                    <TextView
+                        android:id="@+id/used_capacity_percentage"
+                        android:textColor="@color/white"
+                        android:textSize="14sp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="end"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/ratios"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_height="15dp" />
+
+                <LinearLayout
+                    android:id="@+id/ll_space_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="6"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:baselineAligned="false">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <com.flyco.roundview.RoundLinearLayout
+                            style="@style/RatioCircle"
+                            app:rv_backgroundColor="@color/photos_ratio"
+                            app:rv_cornerRadius="50dp">
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                app:srcCompat="@drawable/ic_photos" />
+                        </com.flyco.roundview.RoundLinearLayout>
+                        <TextView
+                            android:id="@+id/tv_images"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <com.flyco.roundview.RoundLinearLayout
+                            style="@style/RatioCircle"
+                            app:rv_backgroundColor="@color/videos_ratio"
+                            app:rv_cornerRadius="50dp" >
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                app:srcCompat="@drawable/ic_videos" />
+                        </com.flyco.roundview.RoundLinearLayout>
+                        <TextView
+                            android:id="@+id/tv_videos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <com.flyco.roundview.RoundLinearLayout
+                            style="@style/RatioCircle"
+                            app:rv_backgroundColor="@color/contacts_ratio"
+                            app:rv_cornerRadius="50dp" >
+
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                android:scaleType="fitXY"
+                                app:srcCompat="@drawable/ic_contacts" />
+                        </com.flyco.roundview.RoundLinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_contacts"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <com.flyco.roundview.RoundLinearLayout
+                            style="@style/RatioCircle"
+                            app:rv_backgroundColor="@color/documents_ratio"
+                            app:rv_cornerRadius="50dp" >
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                app:srcCompat="@drawable/ic_documents" />
+                        </com.flyco.roundview.RoundLinearLayout>
+                        <TextView
+                            android:id="@+id/tv_files"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <com.flyco.roundview.RoundLinearLayout
+                            style="@style/RatioCircle"
+                            app:rv_backgroundColor="@color/sms_ratio"
+                            app:rv_cornerRadius="50dp" >
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                app:srcCompat="@drawable/ic_sms" />
+                        </com.flyco.roundview.RoundLinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_sms"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <com.flyco.roundview.RoundLinearLayout
+                            style="@style/RatioCircle"
+                            app:rv_backgroundColor="@color/calls_ratio"
+                            app:rv_cornerRadius="50dp" >
+                            <ImageView
+                                android:layout_width="15dp"
+                                android:layout_height="15dp"
+                                app:srcCompat="@drawable/ic_call_log" />
+                        </com.flyco.roundview.RoundLinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_calls"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+            <!--/Layout for quota information-->
+            <RelativeLayout
+                android:id="@+id/btn_sync_files"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="290dp"
+                android:layout_marginTop="15dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:layout_marginBottom="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/ll_information"
+                android:background="@android:color/black"
+                android:clickable="true"
+                android:focusable="true"
+                style="?android:attr/buttonStyle">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_sync"
+                        android:paddingRight="10dp"
+                        android:paddingEnd="10dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/settings.sync_files"
+                        android:textColor="@color/white"
+                        android:textAllCaps="true"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn_upgrade"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/blackOpacity"
+            android:layout_centerHorizontal="true"
+            android:clickable="true"
+            android:focusable="true"
+            style="?android:attr/buttonStyle">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_crown"
+                    android:paddingRight="10dp"
+                    android:paddingEnd="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/storage.upgrade_plan"
+                    android:textColor="@color/white"
+                    android:textAllCaps="true"/>
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

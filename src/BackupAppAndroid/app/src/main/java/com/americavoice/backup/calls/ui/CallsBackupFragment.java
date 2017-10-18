@@ -237,15 +237,6 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
             }
             calendarPickerOpen = true;
         }
-
-        int accentColor = getResources().getColor(R.color.colorAccent);
-        callsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        callsBackupNow.getBackground()
-                .setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-
-        callsDatePickerBtn.getBackground().setColorFilter(accentColor, PorterDuff.Mode.SRC_ATOP);
-        callsDatePickerBtn.setTextColor(getResources().getColor(R.color.white));
-
     }
 
     void onButtonBack() {

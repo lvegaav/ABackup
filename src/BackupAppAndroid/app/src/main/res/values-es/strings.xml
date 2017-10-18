@@ -154,6 +154,8 @@
     <string name="settings.payment_options">Opciones de pago</string>
     <string name="settings.news_info">Noticias</string>
     <string name="settings.share_this_app">Comparte esta aplicación</string>
+    <string name="settings.storage_percentage">%1$s%% Usado</string>
+    <string name="settings.storage_and_usage">Almacenamiento &amp; Uso</string>
 
     <string name="contact_us.title">Contact us</string>
     <string name="contact_us.customer_service">Customer service</string>
@@ -169,6 +171,12 @@
 
     <string name="news.title">Noticias</string>
     <string name="news_detail.title">Noticias</string>
-    <string name="settings.storage_percentage">| %1$s%% Usado</string>
+
+    <string name="storage_info_title">Almacenamiento &amp; Uso</string>
+    <string name="storage.your_plan">Tu plan</string>
+    <string name="storage.available">Disponible</string>
+    <string name="storage.used">Usado</string>
+    <string name="storage.detail">Detalle</string>
+    <string name="storage.upgrade_plan">Actualiza tu plan</string>
 
 </resources>
