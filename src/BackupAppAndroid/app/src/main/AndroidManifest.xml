@@ -108,6 +108,9 @@
         <activity android:name=".news.ui.NewsDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".payment.ui.PaymentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
             android:name=".files.service.ConnectivityActionReceiver"

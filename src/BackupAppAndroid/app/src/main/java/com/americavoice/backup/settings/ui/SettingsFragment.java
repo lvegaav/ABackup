@@ -46,6 +46,7 @@ import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.news.ui.NewsActivity;
+import com.americavoice.backup.payment.ui.PaymentActivity;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
@@ -283,6 +284,12 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, "Check this app at: https://play.google.com/store/apps/details?id=" + appPackageName);
         intent.setType("text/plain");
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.payment_button)
+    public void onPaymentClick() {
+        Intent intent = new Intent(getContext(), PaymentActivity.class);
         startActivity(intent);
     }
 
