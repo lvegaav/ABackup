@@ -124,4 +124,13 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
+    <style name="Subscription" />
+    <style name="Subscription.Item">
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:background">@drawable/rounded_white_corner_background</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
 </resources>

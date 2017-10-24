@@ -181,4 +181,6 @@
 
     <string name="payment.title">Payment options</string>
 
+    <string name="subscription.select">Select</string>
+
 </resources>
