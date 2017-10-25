@@ -109,8 +109,8 @@ public class PaymentActivity extends BaseActivity implements PaymentView, Choose
 
     @Override
     public void selectPlan(SubscriptionDummy dummyPlan) {
-        //TODO:
-        finish();
+        showPaymentChoose(dummyPlan);
+//        finish();
     }
 
     @Override
@@ -122,5 +122,15 @@ public class PaymentActivity extends BaseActivity implements PaymentView, Choose
     public void setPaymentMethod(PaymentMethodDummy paymentMethod) {
         //TODO:
         finish();
+    }
+
+    @Override
+    public void paymentMethodBackButton() {
+        finish();
+    }
+
+    @Override
+    public void changeSubscriptionOption() {
+        showPlanChoose();
     }
 }

@@ -1,11 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <include
-        android:id="@+id/selected_subscription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/subscription_list_item" />
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-</LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:padding="10dp"
+        android:layout_height="wrap_content">
+        <include
+            android:id="@+id/selected_subscription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/selected_subscription_box" />
+        <Button
+            android:id="@+id/change_subscription_button"
+            android:text="@string/subscription.change"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            style="@style/SettingsMenuOption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <android.support.design.widget.TabLayout
+            android:id="@+id/payment_type_selector"
+            app:tabTextColor="@color/white"
+            app:tabSelectedTextColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.design.widget.TabItem
+                android:text="@string/payment_method.credit_card"/>
+            <android.support.design.widget.TabItem
+                android:text="@string/payment_method.paypal"/>
+        </android.support.design.widget.TabLayout>
+        <LinearLayout
+            android:id="@+id/credit_card_section"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:hint="@string/credit_card.name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/credit_card_number"
+                android:inputType="number"
+                android:hint="@string/credit_card.number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:hint="@string/credit_card.expiration_month"
+                    android:inputType="number"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:hint="@string/credit_card.expiration_year"
+                    android:inputType="number"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <View
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:hint="@string/credit_card.ccv"
+                    android:inputType="number"
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/credit_card_save_button"
+                style="@style/Button.Secondary"
+                android:background="@color/colorAccent"
+                android:text="@string/credit_card.save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/paypal_section"
+            android:visibility="gone"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</ScrollView>
