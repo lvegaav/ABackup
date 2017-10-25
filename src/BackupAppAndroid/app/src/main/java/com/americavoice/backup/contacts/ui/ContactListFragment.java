@@ -173,7 +173,6 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showKeyboard(false);
         this.initialize(savedInstanceState);
     }
 

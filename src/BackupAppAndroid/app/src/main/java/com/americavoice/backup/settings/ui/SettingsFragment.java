@@ -187,11 +187,6 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
-        // check if there is no connectivity
-        if (!ConnectivityUtils.isAppConnected(getContext())) {
-            showToastMessage(getString(R.string.common_connectivity_error));
-            return;
-        }
         this.mPresenter.initialize();
     }
 

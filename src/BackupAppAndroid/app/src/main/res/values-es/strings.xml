@@ -178,5 +178,7 @@
     <string name="storage.used">Usado</string>
     <string name="storage.detail">Detalle</string>
     <string name="storage.upgrade_plan">Actualiza tu plan</string>
+    <string name="files.cloud_almost_full">Espacio en la nube esta casi lleno</string>
+    <string name="files.getting_pending_no_access">Estamos tratando de obtener tus archivos pendientes. TIenes que darnos permisos para</string>
 
 </resources>

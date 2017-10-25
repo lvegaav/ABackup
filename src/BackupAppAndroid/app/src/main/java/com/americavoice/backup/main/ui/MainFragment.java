@@ -140,7 +140,6 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
             if (storageFull) showStorageFullDialog(true);
             intent.putExtra(MainActivity.EXTRA_STORAGE_FULL, false);
         }
-        showKeyboard(false);
         this.initialize(savedInstanceState);
     }
 
@@ -158,23 +157,6 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
         if (permissionsList.size() > 0) {
             if (permissionsNeeded.size() > 0) {
-                // Show explanation to the user and then request permission
-//                StringBuilder message = new StringBuilder("You need to grant access to " + permissionsNeeded.get(0));
-//                for (int i = 1; i < permissionsNeeded.size(); i++)
-//                    message.append(", ").append(permissionsNeeded.get(i));
-//                Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.rl_main_view),
-//                        R.string.contacts_read_permission,
-//                        Snackbar.LENGTH_INDEFINITE)
-//                        .setAction(R.string.common_ok, new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),  PermissionUtil.PERMISSIONS_MULTIPLE);
-//                            }
-//                        });
-//
-//                ThemeUtils.colorSnackbar(getActivity(), snackbar);
-//
-//                snackbar.show();
                 return;
             }
             requestPermissions(permissionsList.toArray(new String[permissionsList.size()]), PermissionUtil.PERMISSIONS_MULTIPLE);
@@ -213,7 +195,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     @Override
     public void showRequestPermissionDialog() {
-        StringBuilder message = new StringBuilder("We are trying to get your pending files. You need to grant access to ")
+        StringBuilder message = new StringBuilder(getString(R.string.files_getting_pending_no_access))
                 .append(getString(R.string.common_write_external_storage));
         showMessageOKCancel(message.toString(), new MaterialDialog.SingleButtonCallback() {
             @Override
@@ -314,7 +296,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
         this.mSettingsPresenter.setView(this);
-        this.mPresenter.initialize(getContext(), getString(R.string.main_title));
+        this.mPresenter.initialize(getString(R.string.main_title));
     }
 
     @Override

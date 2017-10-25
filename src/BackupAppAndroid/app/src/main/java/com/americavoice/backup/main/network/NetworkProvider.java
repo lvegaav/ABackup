@@ -80,8 +80,8 @@ public class NetworkProvider {
     }
 
     public OwnCloudClient getCloudClient(String phoneNumber) {
-        if (phoneNumber == null) {
-            Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+        if (phoneNumber == null && account != null) {
             int lastIndex = account.name.indexOf("@");
             if (lastIndex == -1) {
                 lastIndex = account.name.length();

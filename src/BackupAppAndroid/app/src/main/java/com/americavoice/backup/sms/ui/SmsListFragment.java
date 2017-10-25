@@ -166,7 +166,6 @@ public class SmsListFragment extends FileFragment implements SmsListView {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showKeyboard(false);
         this.initialize(savedInstanceState);
     }
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
@@ -18,6 +19,7 @@ import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
+import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.FileStorageUtils;
@@ -102,7 +104,11 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         mHandler = new Handler();
         mAccount = account;
         mStorageManager = new FileDataStorageManager(account, context);
-
+        if (mSharedPrefsUtils.getBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, false)) {
+            mView.showPersistenceUpgrade(R.string.common_cloud_storage_full);
+        } else if (mSharedPrefsUtils.getBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, false)){
+            mView.showPersistenceUpgrade(R.string.files_cloud_almost_full);
+        }
         ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(path);
         refreshOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
     }
@@ -188,5 +194,9 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
             default:
                 break;
         }
+    }
+
+    public void updateRefreshFlag() {
+        mSharedPrefsUtils.setBooleanPreference(MainActivity.EXTRA_REFRESH_DATA, true);
     }
 }

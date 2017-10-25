@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -51,6 +52,7 @@ import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.RecyclerItemClickListener;
+import com.americavoice.backup.utils.ThemeUtils;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -74,6 +76,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     public static final String PREFERENCE_VIDEOS_LAST_TOTAL = "PREFERENCE_VIDEOS_LAST_TOTAL";
     public static final String PREFERENCE_PHOTOS_AUTOMATIC_BACKUP = "PREFERENCE_PHOTOS_AUTOMATIC_BACKUP";
     public static final String PREFERENCE_VIDEOS_AUTOMATIC_BACKUP = "PREFERENCE_VIDEOS_AUTOMATIC_BACKUP";
+    public static final String PREFERENCE_STORAGE_ALMOST_FULL = "PREFERENCE_STORAGE_ALMOST_FULL";
 
     public static final String PREFERENCE_DOCUMENTS_LAST_TOTAL = "PREFERENCE_DOCUMENTS_LAST_TOTAL";
     private static final String ARGUMENT_KEY_PATH = "com.americavoice.backup.ARGUMENT_KEY_PATH";
@@ -160,17 +163,16 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mHandler = new Handler();
-        showKeyboard(false);
         if (getActivity() instanceof BaseOwncloudActivity)
             mContainerActivity = ((BaseOwncloudActivity) getActivity());
         this.initialize();
-        this.loadList();
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
+        this.mPresenter.resume();
         // Listen for upload messages
         IntentFilter uploadIntentFilter = new IntentFilter(FileUploader.getUploadFinishMessage());
         mUploadFinishReceiver = new UploadFinishReceiver();
@@ -180,7 +182,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         mDownloadFinishReceiver = new DownloadFinishReceiver();
         getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
 
-        this.mPresenter.resume();
     }
 
     @Override
@@ -215,6 +216,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         if (mPresenter != null) this.mPresenter.setView(this);
+        this.loadList();
         if (!ConnectivityUtils.isAppConnected(getContext())) {
             showToastMessage(getString(R.string.common_connectivity_error));
             return;
@@ -247,6 +249,21 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         };
 
         backupSwitch.setOnCheckedChangeListener(onCheckedChangeListener);
+    }
+
+    @Override
+    public void showPersistenceUpgrade(int message) {
+        Snackbar snackbar = Snackbar.make(
+                getActivity().findViewById(R.id.main_content),
+                getString(message),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.storage_upgrade_plan, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+        snackbar.show();
     }
 
     private void setAutomaticBackup(final boolean bool) {
@@ -498,6 +515,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     @OnClick(R.id.fab_upload)
     void onFabUpload() {
+        mPresenter.updateRefreshFlag();
         if (mPath.startsWith(BaseConstants.PHOTOS_REMOTE_FOLDER)) {
             Intent i = new Intent();
             i.setType("image/*");
@@ -676,6 +694,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     }
 
     private void delete(OCFile file, Account account) {
+        mPresenter.updateRefreshFlag();
         showToastMessage(getString(R.string.common_deleting));
         Intent service = new Intent(getContext(), OperationsService.class);
         service.setAction(OperationsService.ACTION_REMOVE);

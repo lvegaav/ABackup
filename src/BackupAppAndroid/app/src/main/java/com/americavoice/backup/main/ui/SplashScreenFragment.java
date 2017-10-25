@@ -84,7 +84,6 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showKeyboard(false);
         this.initialize();
     }
 

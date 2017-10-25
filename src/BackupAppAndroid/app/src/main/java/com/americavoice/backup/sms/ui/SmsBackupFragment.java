@@ -135,7 +135,6 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showKeyboard(false);
         if (getActivity() instanceof BaseOwncloudActivity)
             mContainerActivity = ((BaseOwncloudActivity) getActivity());
         this.initialize(savedInstanceState);
