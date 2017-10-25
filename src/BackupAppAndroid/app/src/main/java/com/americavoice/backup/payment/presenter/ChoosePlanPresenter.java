@@ -32,14 +32,8 @@ public class ChoosePlanPresenter extends BasePresenter implements IPresenter{
     @Override
     public void resume() {
         mView.showPlans(Arrays.asList(
-                new SubscriptionDummy() {{
-                    description = "5GB / 3 months";
-                    amount = "$10";
-                }},
-                new SubscriptionDummy() {{
-                    description = "10GB / 3 months";
-                    amount = "$15";
-                }}
+                new SubscriptionDummy("$10", "5GB / 3 months"),
+                new SubscriptionDummy("$15", "10GB / 3 months")
         ));
     }
 

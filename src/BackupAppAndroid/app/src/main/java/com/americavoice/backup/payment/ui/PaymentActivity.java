@@ -2,6 +2,7 @@ package com.americavoice.backup.payment.ui;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -13,6 +14,7 @@ import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.activity.BaseActivity;
+import com.americavoice.backup.payment.data.PaymentMethodDummy;
 import com.americavoice.backup.payment.data.SubscriptionDummy;
 import com.americavoice.backup.payment.presenter.PaymentPresenter;
 
@@ -24,7 +26,7 @@ import butterknife.Unbinder;
  * Created by javier on 10/23/17.
  */
 
-public class PaymentActivity extends BaseActivity implements PaymentView, ChoosePlanFragment.Listener, HasComponent<AppComponent> {
+public class PaymentActivity extends BaseActivity implements PaymentView, ChoosePlanFragment.Listener, PaymentMethodFragment.Listener, HasComponent<AppComponent> {
 
 
     PaymentPresenter mPaymentPresenter;
@@ -87,8 +89,12 @@ public class PaymentActivity extends BaseActivity implements PaymentView, Choose
     }
 
     @Override
-    public void showPaymentChoose() {
-
+    public void showPaymentChoose(SubscriptionDummy selectedSubscription) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PaymentMethodFragment.SELECTED_SUBSCRIPTION, selectedSubscription);
+        Fragment fragment = new PaymentMethodFragment();
+        fragment.setArguments(bundle);
+        replaceFragment(R.id.content, fragment, true, false);
     }
 
     @Override
@@ -98,7 +104,6 @@ public class PaymentActivity extends BaseActivity implements PaymentView, Choose
 
     @Override
     public void choosePlanBack() {
-        //TODO:
         finish();
     }
 
@@ -111,5 +116,11 @@ public class PaymentActivity extends BaseActivity implements PaymentView, Choose
     @Override
     public AppComponent getComponent() {
         return mAppComponent;
+    }
+
+    @Override
+    public void setPaymentMethod(PaymentMethodDummy paymentMethod) {
+        //TODO:
+        finish();
     }
 }
