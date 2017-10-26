@@ -43,11 +43,11 @@
                 android:layout_alignParentEnd="true"/>
             <ImageView
                 android:id="@+id/iv_logo"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                app:srcCompat="@drawable/ic_sip_v_logo"
-                android:layout_marginTop="40dp"
-                android:layout_marginRight="10dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/ic_lock_backup_logo_c"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="20dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>
