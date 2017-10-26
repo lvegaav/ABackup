@@ -403,14 +403,11 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
             if (tvEmpty != null) tvEmpty.setVisibility(View.GONE);
             this.mAdapter = new FileAdapter(
                     getContext(),
-                    new ArrayList<OCFile>(),
+                    transactionModelCollection,
                     new ArrayList<OCFile>(),
                     ((BaseOwncloudActivity) getActivity()).getStorageManager()
             );
             this.rvFiles.setAdapter(mAdapter);
-            if (transactionModelCollection != null) {
-                this.mAdapter.setTransactionCollection(transactionModelCollection);
-            }
             setHasOptionsMenu(true);
         }
 
@@ -586,7 +583,13 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-                if (mPresenter != null ) mPresenter.onSuccessfulDownload();
+                if (mPresenter != null ){
+                    mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
+                    if (intent.hasExtra(FileDownloader.EXTRA_FILE_PATH)){
+                        String remorePath = intent.getStringExtra(FileDownloader.EXTRA_FILE_PATH);
+                        mPresenter.onSuccessfulDownload(remorePath);
+                    }
+                }
             } finally {
                 if (intent != null) {
                     getContext().removeStickyBroadcast(intent);
@@ -734,8 +737,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                     mPresenter.refreshTotal(mAdapter.getItemCount());
                 }
             }
-        } else if (remoteOperation instanceof SynchronizeFileOperation) {
-            if (mPresenter != null ) mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
         }
     }
 

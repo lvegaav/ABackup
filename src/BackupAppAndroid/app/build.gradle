@@ -24,7 +24,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
-        versionName "0.27"
+        versionName "0.28"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -95,7 +95,7 @@ dependencies {
 
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'net.servicestack:android:1.0.31'
-    compile 'com.github.nextcloud:android-library:1.0.31'
+    compile 'com.github.nextcloud:android-library:-SNAPSHOT'
     compile 'com.github.evernote:android-job:v1.1.11'
     compile 'com.googlecode.ez-vcard:ez-vcard:0.10.2'
     compile 'com.jakewharton:disklrucache:2.0.2'

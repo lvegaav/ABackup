@@ -114,7 +114,6 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     }
 
     public void onFileClicked(Context context, OCFile remoteFile) {
-        if (mRemoteFile != null) return;
 
         if (remoteFile.isFolder()) {
             mView.viewFolder(remoteFile.getRemotePath());
@@ -139,11 +138,10 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
     }
 
-    public void onSuccessfulDownload() {
-        if (mRemoteFile != null) {
-            mView.viewDetail(mRemoteFile);
-            mRemoteFile = null;
-        }
+    public void onSuccessfulDownload(String remotePath) {
+        OCFile remoteFile = new OCFile(remotePath);
+        mView.viewDetail(remoteFile);
+
     }
 
     private void onSuccessfulRefresh(ReadRemoteFolderOperation operation, RemoteOperationResult result) {

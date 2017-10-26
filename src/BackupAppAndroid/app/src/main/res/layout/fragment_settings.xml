@@ -20,16 +20,19 @@
 
             <include layout="@layout/view_header" />
 
-            <ImageButton
+            <TextView
                 android:id="@+id/tv_logout"
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:layout_width="40dp"
+                android:layout_width="80dp"
                 android:layout_height="40dp"
-                android:scaleType="fitXY"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:srcCompat="@drawable/ic_button_power" />
+                android:gravity="center"
+                android:text="@string/common.logout"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+
         </RelativeLayout>
         <RelativeLayout
             android:layout_below="@+id/rl_root_header"

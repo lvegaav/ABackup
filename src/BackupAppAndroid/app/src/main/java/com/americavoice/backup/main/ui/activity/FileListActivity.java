@@ -156,7 +156,7 @@ public class FileListActivity extends FileActivity implements HasComponent<AppCo
             if (remoteFile.getStoragePath() != null){
                 file = new File(remoteFile.getStoragePath());
             } else {
-                file = new File( FileUtils.EXTERNAL_FILES_PATH + OCFile.PATH_SEPARATOR + remoteFile.getFileName());
+                file = new File( remoteFile.getRemotePath());
             }
             if (file.exists()) {
                 Uri selectedUri = Uri.fromFile(file.getAbsoluteFile());
