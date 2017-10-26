@@ -182,6 +182,7 @@
     <string name="payment.title">Payment options</string>
 
     <string name="subscription.select">Select</string>
+    <string name="subscription.current">Current plan</string>
     <string name="subscription.change">Change plan</string>
 
     <string name="payment_method.paypal">PayPal</string>
@@ -192,6 +193,7 @@
     <string name="credit_card.expiration_month">MM</string>
     <string name="credit_card.expiration_year">YY</string>
     <string name="credit_card.ccv">CCV</string>
+    <string name="credit_card.x">XXXX</string>
     <string name="credit_card.save">Save credit card</string>
 
 

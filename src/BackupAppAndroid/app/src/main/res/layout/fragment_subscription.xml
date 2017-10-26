@@ -1,6 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="10dp"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            app:srcCompat="@drawable/ic_badge_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            style="@style/SettingsMenuOption"
+            android:textSize="20sp"
+            android:text="@string/subscription.current"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/subscription_list_item" />
+    <Button
+        android:id="@+id/change_subscription_button"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:text="@string/subscription.change"
+        style="@style/SettingsMenuOption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/credit_card_background"
+        android:orientation="vertical"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="30dp"
+        android:paddingTop="70dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                style="@style/CreditCardText"
+                android:text="@string/credit_card.x"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                style="@style/CreditCardText"
+                android:text="@string/credit_card.x"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                style="@style/CreditCardText"
+                android:text="@string/credit_card.x"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/credit_card_digits"
+                android:layout_weight="1"
+                style="@style/CreditCardText"
+                android:text="1111"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                style="@style/CreditCardText"
+                android:id="@+id/credit_card_name"
+                android:text="John Doe"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                style="@style/CreditCardText"
+                android:id="@+id/credit_card_expiration"
+                android:text="03/19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+
 
 </LinearLayout>

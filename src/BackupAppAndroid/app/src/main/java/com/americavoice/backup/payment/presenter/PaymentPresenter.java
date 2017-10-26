@@ -5,6 +5,8 @@ import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
+import com.americavoice.backup.payment.data.PaymentMethodDummy;
+import com.americavoice.backup.payment.data.SubscriptionDummy;
 import com.americavoice.backup.payment.ui.PaymentView;
 
 import javax.inject.Inject;
@@ -31,6 +33,11 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
     @Override
     public void resume() {
+//        PaymentMethodDummy paymentMethodDummy = new PaymentMethodDummy();
+//        paymentMethodDummy.method = "credit card";
+//        paymentMethodDummy.digits = "1111";
+//        SubscriptionDummy subscriptionDummy = new SubscriptionDummy("$15", "10GB / 3 months");
+//        mPaymentView.showSubscriptionDetails(subscriptionDummy, paymentMethodDummy);
         mPaymentView.showPlanChoose();
     }
 

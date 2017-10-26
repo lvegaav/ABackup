@@ -135,5 +135,9 @@
     <style name="Subscription.Item.Selected">
         <item name="android:textColor">@color/colorAccent</item>
     </style>
+    <style name="CreditCardText">
+        <item name="android:textSize">22sp</item>
+        <item name="android:gravity">center</item>
+    </style>
 
 </resources>

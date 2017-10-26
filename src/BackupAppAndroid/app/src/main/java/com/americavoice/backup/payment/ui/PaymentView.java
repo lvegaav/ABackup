@@ -1,5 +1,6 @@
 package com.americavoice.backup.payment.ui;
 
+import com.americavoice.backup.payment.data.PaymentMethodDummy;
 import com.americavoice.backup.payment.data.SubscriptionDummy;
 
 /**
@@ -10,6 +11,6 @@ public interface PaymentView {
 
     void showPlanChoose();
     void showPaymentChoose(SubscriptionDummy selectedSubscription);
-    void showPaymentDetails();
+    void showSubscriptionDetails(SubscriptionDummy subscription, PaymentMethodDummy paymentMethod);
 
 }

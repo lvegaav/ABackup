@@ -42,7 +42,7 @@ public class NetworkProvider {
     private OwnCloudClient mCloudClient;
 
     private final String mDeviceId;
-    private static final String baseUrl = "https://backup.secureip.io";
+    private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
     private static final String baseUrlOwnCloud = "https://cloud.secureip.io";
 
     public static String getBaseUrlOwnCloud() {
@@ -137,6 +137,10 @@ public class NetworkProvider {
 
     public void PerformResetPassword(dtos.PerformResetPassword request, AsyncResult<dtos.PerformResetPasswordResponse> result) {
         mClient.postAsync(request, result);
+    }
+
+    public void getPaypalToken(AsyncResult<dtos.GetPayPalTokenResponse> result) {
+        mClient.getAsync(new dtos.GetPayPalToken(), result);
     }
 
 

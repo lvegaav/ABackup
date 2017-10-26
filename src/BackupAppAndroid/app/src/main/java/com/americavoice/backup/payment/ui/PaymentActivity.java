@@ -26,7 +26,9 @@ import butterknife.Unbinder;
  * Created by javier on 10/23/17.
  */
 
-public class PaymentActivity extends BaseActivity implements PaymentView, ChoosePlanFragment.Listener, PaymentMethodFragment.Listener, HasComponent<AppComponent> {
+public class PaymentActivity extends BaseActivity implements PaymentView,
+        ChoosePlanFragment.Listener, PaymentMethodFragment.Listener, SubscriptionFragment.Listener,
+        HasComponent<AppComponent> {
 
 
     PaymentPresenter mPaymentPresenter;
@@ -98,8 +100,13 @@ public class PaymentActivity extends BaseActivity implements PaymentView, Choose
     }
 
     @Override
-    public void showPaymentDetails() {
-
+    public void showSubscriptionDetails(SubscriptionDummy subscription, PaymentMethodDummy paymentMethod) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(SubscriptionFragment.SUBSCRIPTION, subscription);
+        bundle.putParcelable(SubscriptionFragment.PAYMENT_METHOD, paymentMethod);
+        Fragment fragment = new SubscriptionFragment();
+        fragment.setArguments(bundle);
+        replaceFragment(R.id.content, fragment, true, false);
     }
 
     @Override
@@ -132,5 +139,27 @@ public class PaymentActivity extends BaseActivity implements PaymentView, Choose
     @Override
     public void changeSubscriptionOption() {
         showPlanChoose();
+    }
+
+
+    @Override
+    public void onSubscriptionBack() {
+        finish();
+    }
+
+    @Override
+    public void onChangePlan() {
+        showPlanChoose();
+    }
+
+    @Override
+    public void onDeletePaymentMethod() {
+        //TODO:
+    }
+
+    @Override
+    public void onUpdatePaymentMethod() {
+        //TODO:
+        //showPaymentChoose(current);
     }
 }

@@ -10,17 +10,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.payment.data.PaymentMethodDummy;
 import com.americavoice.backup.payment.data.SubscriptionDummy;
+import com.americavoice.backup.payment.presenter.PaymentMethodPresenter;
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
+import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
 import org.greenrobot.eventbus.Subscribe;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,7 +38,8 @@ import butterknife.Unbinder;
  * Created by javier on 10/24/17.
  */
 
-public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnTabSelectedListener {
+public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,
+        PaymentMethodView {
 
     public final static String SELECTED_SUBSCRIPTION = "selected subscription";
     public final static int REQUEST_CODE = 0;
@@ -44,8 +52,10 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
     }
 
     private Listener mListener;
-
     private Unbinder mUnbinder;
+
+    @Inject
+    PaymentMethodPresenter mPresenter;
 
     @BindView(R.id.selected_subscription)
     View mSelectedSubscription;
@@ -76,11 +86,11 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
         if (getActivity() instanceof Listener) {
             mListener = (Listener) getActivity();
         }
+        this.getComponent(AppComponent.class).inject(this);
         View view = inflater.inflate(R.layout.fragment_payment_method, container, false);
         mUnbinder = ButterKnife.bind(this, view);
         initializeSelectedSubscription();
-//        mBrainTreeFragment = BraintreeFragment.newInstance(getActivity(), )
-//        initializeTabListener();
+        initializeTabListener();
 
         return view;
     }
@@ -139,9 +149,7 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
                 mCreditCardSection.setVisibility(View.VISIBLE);
                 break;
             case 1:
-                //TODO: show paypal fragment
-                mPayPalSection.setVisibility(View.VISIBLE);
-                mCreditCardSection.setVisibility(View.GONE);
+                mPresenter.requestAuthorization();
                 break;
         }
     }
@@ -154,6 +162,16 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
 
+    }
+
+    @Override
+    public void setAuthorization(String authorization) {
+        try {
+            mBrainTreeFragment = BraintreeFragment.newInstance(getActivity(), authorization);
+            PayPal.authorizeAccount(mBrainTreeFragment);
+        } catch (InvalidArgumentException e) {
+            Toast.makeText(getContext(), "There was an error", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
