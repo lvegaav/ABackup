@@ -43,7 +43,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         dtos.NewsFeed newsFeed = mNewsFeedList.get(position);
         holder.mTextView.setText(newsFeed.getShortDescription());
 
-        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm",
+        String date = new SimpleDateFormat("MMM dd yyyy HH:mm a",
                 Locale.getDefault()).format(newsFeed.getCreationDate());
 
         holder.mTitle.setText(newsFeed.getTitle());
