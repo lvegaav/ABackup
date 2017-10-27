@@ -33,12 +33,12 @@
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
-                <ImageButton
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    app:srcCompat="@drawable/ic_bookmarked"
-                    android:scaleType="centerInside"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp" />
+                <!--<ImageButton-->
+                    <!--android:background="?attr/selectableItemBackgroundBorderless"-->
+                    <!--app:srcCompat="@drawable/ic_bookmarked"-->
+                    <!--android:scaleType="centerInside"-->
+                    <!--android:layout_width="25dp"-->
+                    <!--android:layout_height="25dp" />-->
             </LinearLayout>
             <TextView
                 android:id="@+id/news_date"

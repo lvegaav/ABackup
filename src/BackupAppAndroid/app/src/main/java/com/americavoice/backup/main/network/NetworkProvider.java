@@ -179,6 +179,13 @@ public class NetworkProvider {
         mClient.postAsync(request, response);
     }
 
+    public void getNewsFeed(AsyncResult<dtos.GetNewsFeedResponse> response) {
+        Log.d("Network", "calling get news feed");
+        dtos.GetNewsFeed request = new dtos.GetNewsFeed();
+        request.setTake(25);
+        mClient.getAsync(request, response);
+    }
+
 
     private String md5(final String s) {
         final String MD5 = "MD5";

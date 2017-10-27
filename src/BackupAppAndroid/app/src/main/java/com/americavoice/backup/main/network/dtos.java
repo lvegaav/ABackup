@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-10-27 13:57:18
+Date: 2017-10-27 14:19:37
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://core-be.development.americavoice.com:8458/api
@@ -905,10 +905,13 @@ public class dtos
     public static class ChargeSubscriptionResponse
     {
         public String paymentReference = null;
+        public BigDecimal chargedAmount = null;
         public ResponseStatus responseStatus = null;
         
         public String getPaymentReference() { return paymentReference; }
         public ChargeSubscriptionResponse setPaymentReference(String value) { this.paymentReference = value; return this; }
+        public BigDecimal getChargedAmount() { return chargedAmount; }
+        public ChargeSubscriptionResponse setChargedAmount(BigDecimal value) { this.chargedAmount = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public ChargeSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
@@ -956,12 +959,21 @@ public class dtos
     {
         public String paymentType = null;
         public String paymentId = null;
+        public String cardNumber = null;
+        public String cardType = null;
+        public String expirationDate = null;
         public ResponseStatus responseStatus = null;
         
         public String getPaymentType() { return paymentType; }
         public GetPaymentMethodResponse setPaymentType(String value) { this.paymentType = value; return this; }
         public String getPaymentId() { return paymentId; }
         public GetPaymentMethodResponse setPaymentId(String value) { this.paymentId = value; return this; }
+        public String getCardNumber() { return cardNumber; }
+        public GetPaymentMethodResponse setCardNumber(String value) { this.cardNumber = value; return this; }
+        public String getCardType() { return cardType; }
+        public GetPaymentMethodResponse setCardType(String value) { this.cardType = value; return this; }
+        public String getExpirationDate() { return expirationDate; }
+        public GetPaymentMethodResponse setExpirationDate(String value) { this.expirationDate = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public GetPaymentMethodResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }

@@ -14,6 +14,7 @@ import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.login.ui.LoginFragment;
 import com.americavoice.backup.main.ui.MainFragment;
 import com.americavoice.backup.main.ui.SplashScreenFragment;
+import com.americavoice.backup.news.ui.NewsFragment;
 import com.americavoice.backup.payment.ui.ChoosePlanFragment;
 import com.americavoice.backup.payment.ui.PaymentMethodFragment;
 import com.americavoice.backup.settings.ui.StorageInfoFragment;
@@ -46,4 +47,5 @@ public interface AppComponent extends ActivityComponent {
     void inject(StorageInfoFragment fragment);
     void inject(ChoosePlanFragment fragment);
     void inject(PaymentMethodFragment fragment);
+    void inject(NewsFragment fragment);
 }
