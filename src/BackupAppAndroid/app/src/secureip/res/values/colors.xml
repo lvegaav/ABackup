@@ -6,6 +6,7 @@
     <color name="white">#FFF</color>
     <color name="darkText">#333</color>
     <color name="blackOpacity">#0D000000</color>
+    <color name="blackOpacity10">#1A000000</color>
     <color name="filelist_icon_backgorund">#DDDDDD</color>
     <color name="selected_item_background">#ECECEC</color>
     <color name="list_divider_background">#eee</color>

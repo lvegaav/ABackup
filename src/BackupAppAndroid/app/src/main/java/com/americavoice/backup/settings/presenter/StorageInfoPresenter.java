@@ -16,6 +16,7 @@ import com.americavoice.backup.settings.ui.StorageInfoView;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.MimeType;
 import com.americavoice.backup.utils.PermissionUtil;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -92,7 +93,8 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
     public void initialize() {
         mView.showLoading();
         mReadRemoteOperation = new ReadRemoteFolderOperation("/");
-        mReadRemoteOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        OwnCloudClient client = mNetworkProvider.getCloudClient(getPhoneNumber());
+        mReadRemoteOperation.execute(client, this, mHandler);
     }
 
     public void logout() {
