@@ -43,7 +43,7 @@ public class NetworkProvider {
 
     private final String mDeviceId;
     private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
-    private static final String baseUrlOwnCloud = "https://cloud.secureip.io";
+    private static final String baseUrlOwnCloud = "http://backapp-eng.development.americavoice.com";
 
     public static String getBaseUrlOwnCloud() {
         return NetworkProvider.baseUrlOwnCloud;
@@ -117,6 +117,7 @@ public class NetworkProvider {
     }
 
     public void login(String phoneNumber, AsyncResult<dtos.AuthenticateResponse> result) {
+        Log.d("Network", "calling login");
         mClient.postAsync(new dtos.Authenticate()
                 .setProvider("credentials")
                 .setUserName(getUserName(phoneNumber))
@@ -128,19 +129,54 @@ public class NetworkProvider {
     }
 
     public void CustomRegister(dtos.CustomRegister request, AsyncResult<dtos.CustomRegisterResponse> result) {
+        Log.d("Network", "calling register");
         mClient.postAsync(request, result);
     }
 
     public void SendResetPasswordSms(dtos.SendResetPasswordSms request, AsyncResult<dtos.SendResetPasswordSmsResponse> result) {
+        Log.d("Network", "calling reset pass");
         mClient.postAsync(request, result);
     }
 
-    public void PerformResetPassword(dtos.PerformResetPassword request, AsyncResult<dtos.PerformResetPasswordResponse> result) {
-        mClient.postAsync(request, result);
+    public void PerformResetPassword(final dtos.PerformResetPassword request, final AsyncResult<dtos.AuthenticateResponse> result) {
+        Log.d("Network", "calling perform reset pass");
+        mClient.postAsync(request, new AsyncResult<dtos.PerformResetPasswordResponse>() {
+            @Override
+            public void success(dtos.PerformResetPasswordResponse response) {
+                login(request.getPhoneNumber(), result);
+            }
+
+            @Override
+            public void error(Exception ex) {
+                result.error(ex);
+            }
+
+            @Override
+            public void complete() {
+                result.complete();
+            }
+        });
+    }
+
+    public void getPaymentMethod(AsyncResult<dtos.GetPaymentMethodResponse> result) {
+        Log.d("Network", "Calling get payment method");
+        mClient.getAsync(new dtos.GetPaymentMethod(), result);
     }
 
     public void getPaypalToken(AsyncResult<dtos.GetPayPalTokenResponse> result) {
+        Log.d("Network", "calling get paypal");
         mClient.getAsync(new dtos.GetPayPalToken(), result);
+    }
+
+    public void sendPayPalNonce(String nonce, AsyncResult<dtos.CreatePayPalPaymentMethodResponse> response) {
+        dtos.CreatePayPalPaymentMethod request = new dtos.CreatePayPalPaymentMethod();
+        request.setNonce(nonce);
+        mClient.postAsync(request, response);
+    }
+
+    public void createCreditCardPaymentMethod(dtos.CreateCreditCardPaymentMethod request,
+                                              AsyncResult<dtos.CreateCreditCardPaymentMethodResponse> response) {
+        mClient.postAsync(request, response);
     }
 
 

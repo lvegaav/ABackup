@@ -15,6 +15,11 @@ public class PaymentMethodDummy implements Parcelable {
 
     }
 
+    public PaymentMethodDummy(String method, String digits) {
+        this.method = method;
+        this.digits = digits;
+    }
+
     public PaymentMethodDummy(Parcel in) {
         method = in.readString();
         digits = in.readString();

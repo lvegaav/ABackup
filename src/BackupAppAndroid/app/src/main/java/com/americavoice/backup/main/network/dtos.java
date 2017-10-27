@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-10-25 18:35:59
+Date: 2017-10-27 09:17:58
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://core-be.development.americavoice.com:8458/api
@@ -363,6 +363,21 @@ public class dtos
         public String getNewPassword() { return newPassword; }
         public UpdateUserPassword setNewPassword(String value) { this.newPassword = value; return this; }
         private static Object responseType = UpdateUserPasswordResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Create subscription
+    */
+    @Route(Path="/subscription", Verbs="POST")
+    @Api(Description="Create subscription")
+    public static class CreateSubscription implements IReturn<CreateSubscriptionResponse>
+    {
+        public String productId = null;
+        
+        public String getProductId() { return productId; }
+        public CreateSubscription setProductId(String value) { this.productId = value; return this; }
+        private static Object responseType = CreateSubscriptionResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -820,6 +835,17 @@ public class dtos
         
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public UpdateUserPasswordResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class CreateSubscriptionResponse
+    {
+        public Subscription subscription = null;
+        public ResponseStatus responseStatus = null;
+        
+        public Subscription getSubscription() { return subscription; }
+        public CreateSubscriptionResponse setSubscription(Subscription value) { this.subscription = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public CreateSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class GetPayPalTokenResponse
@@ -1304,6 +1330,29 @@ public class dtos
         
         public Integer getCompanyId() { return companyId; }
         public UserModel setCompanyId(Integer value) { this.companyId = value; return this; }
+    }
+
+    public static class Subscription
+    {
+        public String accountNumber = null;
+        public String productId = null;
+        public Date startDate = null;
+        public Date expiryDate = null;
+        public Boolean autoRenew = null;
+        public String status = null;
+        
+        public String getAccountNumber() { return accountNumber; }
+        public Subscription setAccountNumber(String value) { this.accountNumber = value; return this; }
+        public String getProductId() { return productId; }
+        public Subscription setProductId(String value) { this.productId = value; return this; }
+        public Date getStartDate() { return startDate; }
+        public Subscription setStartDate(Date value) { this.startDate = value; return this; }
+        public Date getExpiryDate() { return expiryDate; }
+        public Subscription setExpiryDate(Date value) { this.expiryDate = value; return this; }
+        public Boolean isAutoRenew() { return autoRenew; }
+        public Subscription setAutoRenew(Boolean value) { this.autoRenew = value; return this; }
+        public String getStatus() { return status; }
+        public Subscription setStatus(String value) { this.status = value; return this; }
     }
 
     public static class NewsFeed

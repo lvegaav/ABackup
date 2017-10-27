@@ -6,15 +6,17 @@
     android:layout_height="match_parent">
     <LinearLayout
         android:orientation="horizontal"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
             app:srcCompat="@drawable/ic_badge_check"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
         <TextView
             style="@style/SettingsMenuOption"
-            android:textSize="20sp"
+            android:textSize="22sp"
+            android:paddingLeft="10dp"
             android:text="@string/subscription.current"
             android:layout_weight="1"
             android:layout_width="0dp"
@@ -34,65 +36,24 @@
 
     <LinearLayout
         android:id="@+id/credit_card_background"
+        android:background="@drawable/rounded_black_background_opacity"
         android:orientation="vertical"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="30dp"
-        android:paddingTop="70dp"
+        android:padding="30dp"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                style="@style/CreditCardText"
-                android:text="@string/credit_card.x"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-            <TextView
-                style="@style/CreditCardText"
-                android:text="@string/credit_card.x"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-            <TextView
-                style="@style/CreditCardText"
-                android:text="@string/credit_card.x"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:id="@+id/credit_card_digits"
-                android:layout_weight="1"
-                style="@style/CreditCardText"
-                android:text="1111"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                style="@style/CreditCardText"
-                android:id="@+id/credit_card_name"
-                android:text="John Doe"
-                android:layout_weight="1"
-                android:gravity="start"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-            <TextView
-                style="@style/CreditCardText"
-                android:id="@+id/credit_card_expiration"
-                android:text="03/19"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+        <ImageView
+            app:srcCompat="@drawable/ic_wallet"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <Button
+            android:id="@+id/update_payment_method_button"
+            android:background="@color/red"
+            android:padding="10dp"
+            android:layout_margin="15dp"
+            android:text="@string/subscription.change_payment_method"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 

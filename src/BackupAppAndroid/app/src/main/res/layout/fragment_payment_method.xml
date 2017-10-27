@@ -34,17 +34,53 @@
         </android.support.design.widget.TabLayout>
         <LinearLayout
             android:id="@+id/credit_card_section"
+            android:background="@color/blackOpacity"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <EditText
-                android:hint="@string/credit_card.name"
+            <TextView
+                style="@style/SettingsMenuOption"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/credit_card.contact_information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <EditText
-                android:id="@+id/credit_card_number"
-                android:inputType="number"
-                android:hint="@string/credit_card.number"
+                android:id="@+id/phone_number"
+                android:inputType="phone"
+                android:hint="@string/credit_card.phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/address"
+                android:hint="@string/credit_card.address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/city"
+                android:hint="@string/credit_card.city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/state_region"
+                android:hint="@string/credit_card.state_region"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/postal_code"
+                android:hint="@string/credit_card.postal_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@+id/country"
+                android:hint="@string/credit_card.country"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                style="@style/SettingsMenuOption"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/credit_card.credit_card_information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <LinearLayout
@@ -52,12 +88,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <EditText
+                    android:id="@+id/first_name"
+                    android:hint="@string/credit_card.first_name"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <EditText
+                    android:id="@+id/last_name"
+                    android:hint="@string/credit_card.last_name"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <EditText
+                android:id="@+id/credit_card_number"
+                android:inputType="number"
+                android:hint="@string/credit_card.number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                style="@style/SettingsMenuOption"
+                android:textSize="15sp"
+                android:text="@string/credit_card.expiration_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@+id/expiration_month"
                     android:hint="@string/credit_card.expiration_month"
                     android:inputType="number"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
                 <EditText
+                    android:id="@+id/expiration_year"
                     android:hint="@string/credit_card.expiration_year"
                     android:inputType="number"
                     android:layout_weight="1"
@@ -68,6 +135,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
                 <EditText
+                    android:id="@+id/ccv_code"
                     android:hint="@string/credit_card.ccv"
                     android:inputType="number"
                     android:layout_weight="2"
@@ -86,8 +154,12 @@
             android:id="@+id/paypal_section"
             android:visibility="gone"
             android:orientation="vertical"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

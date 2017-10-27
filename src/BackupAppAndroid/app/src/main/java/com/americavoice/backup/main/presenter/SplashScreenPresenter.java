@@ -37,6 +37,15 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
 
     @Override
     public void resume() {
+        String phoneNumber = mSharedPrefsUtils
+                .getStringPreference(NetworkProvider.KEY_PHONE_NUMBER, "");
+
+        mNetworkProvider.login(phoneNumber, new AsyncResult<dtos.AuthenticateResponse>() {
+            @Override
+            public void error(Exception ex) {
+                mNetworkProvider.logout();
+            }
+        });
     }
 
     @Override

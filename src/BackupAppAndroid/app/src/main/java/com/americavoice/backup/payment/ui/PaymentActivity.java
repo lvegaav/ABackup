@@ -159,7 +159,6 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public void onUpdatePaymentMethod() {
-        //TODO:
-        //showPaymentChoose(current);
+        showPaymentChoose(SubscriptionDummy.dummy());
     }
 }

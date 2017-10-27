@@ -22,6 +22,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -49,6 +50,12 @@ public class SubscriptionFragment extends BaseFragment {
     @BindView(R.id.subscription_detail)
     TextView mSubscriptionDetail;
 
+    @BindView(R.id.subscription_start)
+    TextView mSubscriptionStart;
+
+    @BindView(R.id.subscription_next_payment)
+    TextView mSubscriptionNextPayment;
+
     @BindView(R.id.credit_card_background)
     View mCreditCardBackground;
 
@@ -59,7 +66,6 @@ public class SubscriptionFragment extends BaseFragment {
         mUnbinder = ButterKnife.bind(this, view);
         initializeListener();
         initializeSubscription();
-        initializePaymentMethod();
         return view;
     }
 
@@ -74,31 +80,35 @@ public class SubscriptionFragment extends BaseFragment {
         SubscriptionDummy subscription = arguments.getParcelable(SUBSCRIPTION);
         mSubscriptionAmount.setText(subscription.amount);
         mSubscriptionDetail.setText(subscription.description);
+        mSubscriptionStart.setVisibility(View.VISIBLE);
+        mSubscriptionStart.setText(getString(R.string.subscription_start_date, subscription.startDate));
+        mSubscriptionNextPayment.setVisibility(View.VISIBLE);
+        mSubscriptionNextPayment.setText(getString(R.string.subscription_next_payment_date, subscription.nextPaymentDate));
     }
 
-    private void initializePaymentMethod() {
-        ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
-            @Override
-            public Shader resize(int i, int i1) {
-                float rel = mCreditCardBackground.getHeight() == 0 ? 0 :
-                        mCreditCardBackground.getWidth() / mCreditCardBackground.getHeight();
-                LinearGradient lg = new LinearGradient(0, 0, mCreditCardBackground.getWidth(),
-                        mCreditCardBackground.getHeight() * rel * 3, new int[] {
-                        ContextCompat.getColor(getContext(), R.color.bt_very_light_gray),
-                        ContextCompat.getColor(getContext(), R.color.bt_very_light_gray),
-                        ContextCompat.getColor(getContext(), R.color.white),
-                        ContextCompat.getColor(getContext(), R.color.white)},
-                        new float[] {0, 0.1f, 0.1f, 1},
-                        Shader.TileMode.REPEAT);
-
-                return lg;
-            }
-        };
-        PaintDrawable paintDrawable = new PaintDrawable();
-        paintDrawable.setShape(new RoundRectShape(new float[]{20,20,20,20,20,20,20,20}, null, null));
-        paintDrawable.setShaderFactory(sf);
-        mCreditCardBackground.setBackground(paintDrawable);
-    }
+//    private void initializePaymentMethod() {
+//        ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
+//            @Override
+//            public Shader resize(int i, int i1) {
+//                float rel = mCreditCardBackground.getHeight() == 0 ? 0 :
+//                        mCreditCardBackground.getWidth() / mCreditCardBackground.getHeight();
+//                LinearGradient lg = new LinearGradient(0, 0, mCreditCardBackground.getWidth(),
+//                        mCreditCardBackground.getHeight() * rel * 3, new int[] {
+//                        ContextCompat.getColor(getContext(), R.color.bt_very_light_gray),
+//                        ContextCompat.getColor(getContext(), R.color.bt_very_light_gray),
+//                        ContextCompat.getColor(getContext(), R.color.white),
+//                        ContextCompat.getColor(getContext(), R.color.white)},
+//                        new float[] {0, 0.1f, 0.1f, 1},
+//                        Shader.TileMode.REPEAT);
+//
+//                return lg;
+//            }
+//        };
+//        PaintDrawable paintDrawable = new PaintDrawable();
+//        paintDrawable.setShape(new RoundRectShape(new float[]{20,20,20,20,20,20,20,20}, null, null));
+//        paintDrawable.setShaderFactory(sf);
+//        mCreditCardBackground.setBackground(paintDrawable);
+//    }
 
     @Override
     public void onDestroyView() {
@@ -111,5 +121,15 @@ public class SubscriptionFragment extends BaseFragment {
         if (mListener != null) {
             mListener.onSubscriptionBack();
         }
+    }
+
+    @OnClick(R.id.change_subscription_button)
+    public void onChangePlan() {
+        mListener.onChangePlan();
+    }
+
+    @OnClick(R.id.update_payment_method_button)
+    public void onChangePaymentMethod() {
+        mListener.onUpdatePaymentMethod();
     }
 }

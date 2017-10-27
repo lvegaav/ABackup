@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +28,10 @@ import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
+import com.braintreepayments.api.models.PaymentMethodNonce;
+
+import net.servicestack.client.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -39,7 +47,7 @@ import butterknife.Unbinder;
  */
 
 public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,
-        PaymentMethodView {
+        PaymentMethodView, PaymentMethodNonceCreatedListener {
 
     public final static String SELECTED_SUBSCRIPTION = "selected subscription";
     public final static int REQUEST_CODE = 0;
@@ -78,6 +86,34 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
     @BindView(R.id.paypal_section)
     View mPayPalSection;
 
+    // credit card fields
+    @BindView(R.id.first_name)
+    EditText mFirstName;
+    @BindView(R.id.last_name)
+    EditText mLastName;
+    @BindView(R.id.phone_number)
+    EditText mPhoneNumber;
+    @BindView(R.id.address)
+    EditText mAddress;
+    @BindView(R.id.city)
+    EditText mCity;
+    @BindView(R.id.state_region)
+    EditText mStateRegion;
+    @BindView(R.id.postal_code)
+    EditText mPostalCode;
+    @BindView(R.id.country)
+    EditText mCountry;
+    @BindView(R.id.credit_card_number)
+    EditText mCardNumber;
+    @BindView(R.id.expiration_month)
+    EditText mExpirationMonth;
+    @BindView(R.id.expiration_year)
+    EditText mExpirationYear;
+    @BindView(R.id.ccv_code)
+    EditText mCcvCode;
+
+
+
     BraintreeFragment mBrainTreeFragment;
 
     @Nullable
@@ -86,7 +122,7 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
         if (getActivity() instanceof Listener) {
             mListener = (Listener) getActivity();
         }
-        this.getComponent(AppComponent.class).inject(this);
+        initializePresenter();
         View view = inflater.inflate(R.layout.fragment_payment_method, container, false);
         mUnbinder = ButterKnife.bind(this, view);
         initializeSelectedSubscription();
@@ -95,19 +131,9 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
         return view;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE) {
-            if (resultCode == Activity.RESULT_OK) {
-                DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-                // send to server result
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                // canceled
-            } else {
-                // exception
-            }
-        }
-
+    private void initializePresenter() {
+        this.getComponent(AppComponent.class).inject(this);
+        mPresenter.setView(this);
     }
 
     private void initializeSelectedSubscription() {
@@ -149,6 +175,8 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
                 mCreditCardSection.setVisibility(View.VISIBLE);
                 break;
             case 1:
+                mPayPalSection.setVisibility(View.VISIBLE);
+                mCreditCardSection.setVisibility(View.GONE);
                 mPresenter.requestAuthorization();
                 break;
         }
@@ -168,11 +196,59 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
     public void setAuthorization(String authorization) {
         try {
             mBrainTreeFragment = BraintreeFragment.newInstance(getActivity(), authorization);
+            mBrainTreeFragment.addListener(this);
             PayPal.authorizeAccount(mBrainTreeFragment);
         } catch (InvalidArgumentException e) {
             Toast.makeText(getContext(), "There was an error", Toast.LENGTH_SHORT).show();
         }
     }
 
+    @Override
+    public BraintreeFragment getBraintreeFragment() {
+        return mBrainTreeFragment;
+    }
 
+    @Override
+    public void showPayPalError(Exception e) {
+        Log.e("Paypal", "error", e);
+        Toast.makeText(getContext(), "PayPal not set up", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+        mPresenter.onNonceCreated(paymentMethodNonce);
+    }
+
+    @OnClick(R.id.credit_card_save_button)
+    public void onCreditCardButtonClick() {
+        String
+                firstName = mFirstName.getText().toString(),
+                lastName = mLastName.getText().toString(),
+                phoneNumber = mPhoneNumber.getText().toString(),
+                address = mAddress.getText().toString(),
+                city = mCity.getText().toString(),
+                stateRegion = mStateRegion.getText().toString(),
+                postalCode = mPostalCode.getText().toString(),
+                country = mCountry.getText().toString(),
+                ccvCode = mCcvCode.getText().toString(),
+                cardNumber = mCardNumber.getText().toString(),
+                expirationMonth = mExpirationMonth.getText().toString(),
+                expirationYear = mExpirationYear.getText().toString();
+        if (Utils.isEmpty(firstName) || Utils.isEmpty(lastName) || Utils.isEmpty(phoneNumber) ||
+                Utils.isEmpty(address) || Utils.isEmpty(city) || Utils.isEmpty(stateRegion) ||
+                Utils.isEmpty(postalCode) || Utils.isEmpty(country) || Utils.isEmpty(ccvCode) ||
+                Utils.isEmpty(cardNumber) || Utils.isEmpty(expirationMonth) ||
+                Utils.isEmpty(expirationYear)) {
+            new AlertDialog.Builder(getActivity(), R.style.WhiteDialog)
+                    .setTitle("Missing fields")
+                    .setMessage("Please fill the missing fields")
+                    .setPositiveButton("Ok", null)
+                    .show();
+        } else {
+            String cardExpiry = "" + expirationMonth + expirationYear;
+            mPresenter.onCreditCardCreate(firstName, lastName, phoneNumber, address, city,
+                    stateRegion, postalCode, country, cardNumber, cardExpiry, ccvCode);
+        }
+
+    }
 }

@@ -110,7 +110,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".payment.ui.PaymentActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppThemeDark.NoActionBar" />
 
         <activity android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity"
             android:launchMode="singleTask">

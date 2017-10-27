@@ -10,15 +10,27 @@ import android.os.Parcelable;
 public class SubscriptionDummy implements Parcelable {
     public String amount;
     public String description;
+    public String startDate;
+    public String nextPaymentDate;
 
-    public SubscriptionDummy(String amount, String description) {
+    public static SubscriptionDummy dummy() {
+        return new SubscriptionDummy("$50", "50 GB / month", "2017-01-01", "2018-01-01");
+    }
+
+    public SubscriptionDummy(String amount, String description, String startDate,
+                             String nextPaymentDate) {
+
         this.amount = amount;
         this.description = description;
+        this.startDate = startDate;
+        this.nextPaymentDate = nextPaymentDate;
     }
 
     public SubscriptionDummy(Parcel in) {
         amount = in.readString();
         description = in.readString();
+        startDate = in.readString();
+        nextPaymentDate = in.readString();
     }
 
     @Override
@@ -30,6 +42,8 @@ public class SubscriptionDummy implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(amount);
         parcel.writeString(description);
+        parcel.writeString(startDate);
+        parcel.writeString(nextPaymentDate);
     }
 
     public static final Parcelable.Creator<SubscriptionDummy> CREATOR =

@@ -1,13 +1,19 @@
 package com.americavoice.backup.payment.presenter;
 
+import android.util.Log;
+
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
+import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.payment.data.PaymentMethodDummy;
 import com.americavoice.backup.payment.data.SubscriptionDummy;
 import com.americavoice.backup.payment.ui.PaymentView;
+
+import net.servicestack.client.AsyncResult;
+import net.servicestack.client.WebServiceException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -29,16 +35,39 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
     public void setView(PaymentView view) {
         mPaymentView = view;
+        initialize();
+    }
+
+    public void initialize() {
+        mNetworkProvider.getPaymentMethod(new AsyncResult<dtos.GetPaymentMethodResponse>() {
+            @Override
+            public void success(dtos.GetPaymentMethodResponse response) {
+                //TODO:
+                // Existing payment method. Check subscription
+                Log.d("Payment", response.getPaymentId());
+                mPaymentView.showSubscriptionDetails(
+                        new SubscriptionDummy("$10", "15 GB / month", "2017-01-01", "2018-01-01"),
+                        new PaymentMethodDummy("Credit card", "1111"));
+            }
+
+            @Override
+            public void error(Exception ex) {
+                if (ex instanceof WebServiceException) {
+                    WebServiceException webServiceException = (WebServiceException) ex;
+                    if (webServiceException.getStatusCode() == 404) {
+                        // no payment method. Show subscription list
+                        mPaymentView.showPlanChoose();
+                        return;
+                    }
+                }
+                Log.e("Payment", "Error getting payment method");
+                ex.printStackTrace();
+            }
+        });
     }
 
     @Override
     public void resume() {
-//        PaymentMethodDummy paymentMethodDummy = new PaymentMethodDummy();
-//        paymentMethodDummy.method = "credit card";
-//        paymentMethodDummy.digits = "1111";
-//        SubscriptionDummy subscriptionDummy = new SubscriptionDummy("$15", "10GB / 3 months");
-//        mPaymentView.showSubscriptionDetails(subscriptionDummy, paymentMethodDummy);
-        mPaymentView.showPlanChoose();
     }
 
     @Override

@@ -183,13 +183,26 @@
 
     <string name="subscription.select">Select</string>
     <string name="subscription.current">Current plan</string>
+    <string name="subscription.start_date">Started on %s</string>
+    <string name="subscription.next_payment_date">Next charge on %s</string>
     <string name="subscription.change">Change plan</string>
+    <string name="subscription.change_payment_method">Update payment method</string>
 
     <string name="payment_method.paypal">PayPal</string>
     <string name="payment_method.credit_card">Credit card</string>
 
-    <string name="credit_card.name">Name</string>
+    <string name="credit_card.contact_information">Billing Information</string>
+    <string name="credit_card.credit_card_information">Credit card Information</string>
+    <string name="credit_card.phone_number">Phone number</string>
+    <string name="credit_card.address">Address</string>
+    <string name="credit_card.city">City</string>
+    <string name="credit_card.state_region">State/Region</string>
+    <string name="credit_card.postal_code">Postal Code</string>
+    <string name="credit_card.country">Country</string>
+    <string name="credit_card.first_name">First name</string>
+    <string name="credit_card.last_name">Last name</string>
     <string name="credit_card.number">Credit card number</string>
+    <string name="credit_card.expiration_title">Expiration date</string>
     <string name="credit_card.expiration_month">MM</string>
     <string name="credit_card.expiration_year">YY</string>
     <string name="credit_card.ccv">CCV</string>
