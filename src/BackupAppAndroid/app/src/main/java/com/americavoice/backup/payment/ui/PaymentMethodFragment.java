@@ -8,6 +8,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import net.servicestack.client.Utils;
+import net.servicestack.client.WebServiceException;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -54,9 +56,10 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
 
 
     public interface Listener {
-        void setPaymentMethod(PaymentMethodDummy paymentMethod);
+        void setPaymentMethod();
         void paymentMethodBackButton();
         void changeSubscriptionOption();
+        void onPayPalError();
     }
 
     private Listener mListener;
@@ -137,6 +140,15 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
     }
 
     private void initializeSelectedSubscription() {
+        mExpirationMonth.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (mExpirationMonth.getText().toString().length() == 2) {
+                    mExpirationYear.requestFocus();
+                }
+                return false;
+            }
+        });
         Bundle arguments = getArguments();
         SubscriptionDummy subscription = arguments.getParcelable(SELECTED_SUBSCRIPTION);
         mSubscriptionAmount.setText(subscription.amount);
@@ -210,8 +222,11 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
 
     @Override
     public void showPayPalError(Exception e) {
+        if (e instanceof WebServiceException) {
+            Log.e("Paypal", "Status: " + ((WebServiceException) e).getStatusCode() + "," + ((WebServiceException) e).getErrorMessage());
+        }
         Log.e("Paypal", "error", e);
-        Toast.makeText(getContext(), "PayPal not set up", Toast.LENGTH_LONG).show();
+        mListener.onPayPalError();
     }
 
     @Override
@@ -250,5 +265,10 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
                     stateRegion, postalCode, country, cardNumber, cardExpiry, ccvCode);
         }
 
+    }
+
+    @Override
+    public void onPaymentMethodUpdated() {
+        mListener.setPaymentMethod();
     }
 }

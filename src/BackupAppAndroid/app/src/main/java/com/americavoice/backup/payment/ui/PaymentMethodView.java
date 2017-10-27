@@ -10,4 +10,5 @@ public interface PaymentMethodView {
     void setAuthorization(String authorization);
     BraintreeFragment getBraintreeFragment();
     void showPayPalError(Exception e);
+    void onPaymentMethodUpdated();
 }

@@ -74,6 +74,7 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
             @Override
             public void success(dtos.CreatePayPalPaymentMethodResponse response) {
                 Log.d("PayPal", "Payment method created " + response.getPaymentId());
+                mView.onPaymentMethodUpdated();
                 //TODO: set selected subscription
             }
 

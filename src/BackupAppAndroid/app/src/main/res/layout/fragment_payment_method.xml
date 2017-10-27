@@ -34,7 +34,8 @@
         </android.support.design.widget.TabLayout>
         <LinearLayout
             android:id="@+id/credit_card_section"
-            android:background="@color/blackOpacity"
+            android:background="@drawable/rounded_black_background_opacity_30"
+            android:padding="10dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -120,12 +121,14 @@
                     android:id="@+id/expiration_month"
                     android:hint="@string/credit_card.expiration_month"
                     android:inputType="number"
+                    android:maxLength="2"
                     android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content" />
                 <EditText
                     android:id="@+id/expiration_year"
                     android:hint="@string/credit_card.expiration_year"
+                    android:maxLength="2"
                     android:inputType="number"
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -144,6 +147,7 @@
             </LinearLayout>
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/credit_card_save_button"
+                android:layout_margin="10dp"
                 style="@style/Button.Secondary"
                 android:background="@color/colorAccent"
                 android:text="@string/credit_card.save"

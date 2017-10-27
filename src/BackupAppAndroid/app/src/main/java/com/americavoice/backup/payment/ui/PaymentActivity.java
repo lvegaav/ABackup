@@ -1,8 +1,10 @@
 package com.americavoice.backup.payment.ui;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -126,9 +128,8 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     }
 
     @Override
-    public void setPaymentMethod(PaymentMethodDummy paymentMethod) {
-        //TODO:
-        finish();
+    public void setPaymentMethod() {
+        showSubscriptionDetails(SubscriptionDummy.dummy(), new PaymentMethodDummy("credit card", "1111"));
     }
 
     @Override
@@ -161,4 +162,20 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     public void onUpdatePaymentMethod() {
         showPaymentChoose(SubscriptionDummy.dummy());
     }
+
+    @Override
+    public void onPayPalError() {
+        new AlertDialog.Builder(this, R.style.WhiteDialog)
+                .setTitle("Error")
+                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setMessage("The PayPal account could not be registered, please try again")
+                .create().show();
+    }
+
+
 }

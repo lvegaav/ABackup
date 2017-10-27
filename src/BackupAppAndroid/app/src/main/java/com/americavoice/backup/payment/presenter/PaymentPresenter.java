@@ -59,6 +59,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                         mPaymentView.showPlanChoose();
                         return;
                     }
+                    Log.e("Payment", webServiceException.getErrorCode() + ":" + webServiceException.getErrorMessage());
                 }
                 Log.e("Payment", "Error getting payment method");
                 ex.printStackTrace();
