@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-10-27 09:17:58
+Date: 2017-10-27 13:57:18
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://core-be.development.americavoice.com:8458/api
@@ -382,6 +382,24 @@ public class dtos
     }
 
     /**
+    * Charge subscription
+    */
+    @Route(Path="/subscription/charge", Verbs="POST")
+    @Api(Description="Charge subscription")
+    public static class ChargeSubscription implements IReturn<ChargeSubscriptionResponse>
+    {
+        public String accountNumber = null;
+        public String productId = null;
+        
+        public String getAccountNumber() { return accountNumber; }
+        public ChargeSubscription setAccountNumber(String value) { this.accountNumber = value; return this; }
+        public String getProductId() { return productId; }
+        public ChargeSubscription setProductId(String value) { this.productId = value; return this; }
+        private static Object responseType = ChargeSubscriptionResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
     * Get PayPal token.
     */
     @Route(Path="/paypal/token", Verbs="GET")
@@ -472,8 +490,26 @@ public class dtos
     @Api(Description="Get news feed for backup platform.")
     public static class GetNewsFeed implements IReturn<GetNewsFeedResponse>
     {
+        public Integer take = null;
         
+        public Integer getTake() { return take; }
+        public GetNewsFeed setTake(Integer value) { this.take = value; return this; }
         private static Object responseType = GetNewsFeedResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get news feed by Id
+    */
+    @Route(Path="/news/{Id}", Verbs="GET")
+    @Api(Description="Get news feed by Id")
+    public static class GetNewsFeedById implements IReturn<GetNewsFeedByIdResponse>
+    {
+        public String id = null;
+        
+        public String getId() { return id; }
+        public GetNewsFeedById setId(String value) { this.id = value; return this; }
+        private static Object responseType = GetNewsFeedByIdResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -597,6 +633,24 @@ public class dtos
         public String getAccountNumber() { return accountNumber; }
         public GetAccountUsage setAccountNumber(String value) { this.accountNumber = value; return this; }
         private static Object responseType = GetAccountUsageResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Update remote storage account. Currently the Nexcloud account
+    */
+    @Route(Path="/accounts/{AccountNumber}/remote-account", Verbs="PUT")
+    @Api(Description="Update remote storage account. Currently the Nexcloud account")
+    public static class UpdateRemoteAccount implements IReturn<UpdateRemoteAccountResponse>
+    {
+        public String accountNumber = null;
+        public Boolean enabled = null;
+        
+        public String getAccountNumber() { return accountNumber; }
+        public UpdateRemoteAccount setAccountNumber(String value) { this.accountNumber = value; return this; }
+        public Boolean isEnabled() { return enabled; }
+        public UpdateRemoteAccount setEnabled(Boolean value) { this.enabled = value; return this; }
+        private static Object responseType = UpdateRemoteAccountResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -848,6 +902,17 @@ public class dtos
         public CreateSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
+    public static class ChargeSubscriptionResponse
+    {
+        public String paymentReference = null;
+        public ResponseStatus responseStatus = null;
+        
+        public String getPaymentReference() { return paymentReference; }
+        public ChargeSubscriptionResponse setPaymentReference(String value) { this.paymentReference = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public ChargeSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
     public static class GetPayPalTokenResponse
     {
         public String token = null;
@@ -912,6 +977,17 @@ public class dtos
         public GetNewsFeedResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
+    public static class GetNewsFeedByIdResponse
+    {
+        public NewsFeed newsFeed = null;
+        public ResponseStatus responseStatus = null;
+        
+        public NewsFeed getNewsFeed() { return newsFeed; }
+        public GetNewsFeedByIdResponse setNewsFeed(NewsFeed value) { this.newsFeed = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetNewsFeedByIdResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
     public static class GetCompanyResponse
     {
         public CompanyModel company = null;
@@ -964,6 +1040,14 @@ public class dtos
         public GetAccountUsageResponse setUsedStorage(ArrayList<UsedStorage> value) { this.usedStorage = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public GetAccountUsageResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class UpdateRemoteAccountResponse
+    {
+        public ResponseStatus responseStatus = null;
+        
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public UpdateRemoteAccountResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     @DataContract
