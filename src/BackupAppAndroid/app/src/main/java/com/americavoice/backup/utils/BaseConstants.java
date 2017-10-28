@@ -35,6 +35,7 @@ public class BaseConstants {
     public static class PreferenceKeys {
         public static final String STORAGE_PATH = "storage_path";
         public static final String STORAGE_FULL = "STORAGE_FULL";
+        public static final String STORAGE_CACHE_INVALIDATED = "STORAGE_CACHE_INVALIDATED";
     }
 
 }

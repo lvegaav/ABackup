@@ -54,9 +54,9 @@ public class FileListActivity extends FileActivity implements HasComponent<AppCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_list);
-        this.initializeActivity(savedInstanceState);
         this.initializeInjector();
         this.initializeView();
+        this.initializeActivity(savedInstanceState);
     }
 
     @Override
@@ -119,7 +119,6 @@ public class FileListActivity extends FileActivity implements HasComponent<AppCo
                                 PermissionUtil.requestWriteExternalStoragePermission(FileListActivity.this);
                             }
                         });
-                ThemeUtils.colorSnackbar(this, snackbar);
                 snackbar.show();
             } else {
                 // No explanation needed, request the permission.
@@ -157,7 +156,7 @@ public class FileListActivity extends FileActivity implements HasComponent<AppCo
             if (remoteFile.getStoragePath() != null){
                 file = new File(remoteFile.getStoragePath());
             } else {
-                file = new File( FileUtils.EXTERNAL_FILES_PATH + OCFile.PATH_SEPARATOR + remoteFile.getFileName());
+                file = new File( remoteFile.getRemotePath());
             }
             if (file.exists()) {
                 Uri selectedUri = Uri.fromFile(file.getAbsoluteFile());

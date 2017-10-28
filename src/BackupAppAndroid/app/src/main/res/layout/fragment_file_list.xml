@@ -11,24 +11,34 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/ll_automatic_backup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/contacts.automatic_backup"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@android:color/black"
+                android:layout_margin="@dimen/default_margin"
+                android:layout_centerVertical="true"/>
+
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/files_automatic_backup"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/default_margin"
                 android:layout_marginRight="@dimen/default_margin"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:text="@string/contacts.automatic_backup"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_list"

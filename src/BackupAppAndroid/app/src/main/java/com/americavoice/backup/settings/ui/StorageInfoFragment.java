@@ -376,8 +376,7 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
         float x = value != null ? value.floatValue() * 100 : 0;
         float x1 = x / size.floatValue();
         BigDecimal x2= new BigDecimal(x1).setScale(1,BigDecimal.ROUND_HALF_UP);
-        float x3 = x2.floatValue();
-        return x3;
+        return x2.floatValue();
     }
 
     @Override
@@ -419,6 +418,7 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
         tvFiles.setText(String.format(Locale.US, "%.1f %%", documentPercent));
         tvSms.setText(String.format(Locale.US, "%.1f %%", smsPercent));
         tvCalls.setText(String.format(Locale.US, "%.1f %%", callsPercent));
+
         mCapacityView.setText(String.format(Locale.US, "%.1f GB", sizeGb));
         mAvailableView.setText(String.format(Locale.US, "%.1f GB", availableGb));
         mUsedView.setText(String.format(Locale.US, "%.1f GB", usedGb));
@@ -457,7 +457,7 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
 
     @Override
     public void showRequestPermissionDialog() {
-        StringBuilder message = new StringBuilder("We are trying to get your pending files. You need to grant access to ")
+        StringBuilder message = new StringBuilder(getString(R.string.files_getting_pending_no_access))
                 .append(getString(R.string.common_write_external_storage));
         showMessageOKCancel(message.toString(), new MaterialDialog.SingleButtonCallback() {
             @Override

@@ -135,7 +135,6 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showKeyboard(false);
         if (getActivity() instanceof BaseOwncloudActivity)
             mContainerActivity = ((BaseOwncloudActivity) getActivity());
         this.initialize(savedInstanceState);

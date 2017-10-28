@@ -80,8 +80,8 @@ public class NetworkProvider {
     }
 
     public OwnCloudClient getCloudClient(String phoneNumber) {
-        if (phoneNumber == null) {
-            Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+        if (phoneNumber == null && account != null) {
             int lastIndex = account.name.indexOf("@");
             if (lastIndex == -1) {
                 lastIndex = account.name.length();
@@ -91,7 +91,7 @@ public class NetworkProvider {
             editor.putString(NetworkProvider.KEY_PHONE_NUMBER, phoneNumber);
             editor.apply();
         }
-        if (mCloudClient == null) {
+        if (mCloudClient == null && phoneNumber != null) {
             Uri serverUri = Uri.parse(baseUrlOwnCloud);
             mCloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
             mCloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(getUserName(phoneNumber), mDeviceId));

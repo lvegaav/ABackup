@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1B2855</color>
-    <color name="colorPrimaryDark">#0F1A41</color>
+    <color name="colorPrimary">#1F60AB</color>
+    <color name="colorPrimaryDark">#1F60AB</color>
     <color name="colorAccent">#F37236</color>
     <color name="red">#d0011b</color>
     <color name="white">#FFF</color>
     <color name="darkText">#333</color>
     <color name="blackOpacity">#0D000000</color>
+    <color name="blackOpacity10">#1A000000</color>
+    <color name="blackOpacity80">#CC000000</color>
     <color name="filelist_icon_backgorund">#DDDDDD</color>
     <color name="selected_item_background">#ECECEC</color>
     <color name="list_divider_background">#eee</color>
