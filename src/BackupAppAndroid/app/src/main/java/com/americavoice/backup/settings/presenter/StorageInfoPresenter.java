@@ -115,11 +115,14 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
         mPhotosRemoteDone = false;
         mVideosRemoteDone = false;
 
-        mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
-        mReadRemotePhotosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        OwnCloudClient client = mNetworkProvider.getCloudClient(getPhoneNumber());
+        if (client != null) {
+            mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
+            mReadRemotePhotosOperation.execute(client, this, mHandler);
 
-        mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
-        mReadRemoteVideosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+            mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
+            mReadRemoteVideosOperation.execute(client, this, mHandler);
+        }
     }
 
     @Override

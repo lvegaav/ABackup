@@ -1,73 +1,36 @@
 
 package com.americavoice.backup.settings.ui;
 
-import android.Manifest;
-import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.PaintDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatDrawableManager;
 import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.americavoice.backup.R;
-import com.americavoice.backup.authentication.AccountUtils;
-import com.americavoice.backup.calls.ui.CallsBackupFragment;
-import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
-import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.news.ui.NewsActivity;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
-import com.americavoice.backup.sms.ui.SmsBackupFragment;
-import com.americavoice.backup.sync.service.SyncBackupJob;
-import com.americavoice.backup.utils.BaseConstants;
-import com.americavoice.backup.utils.ConnectivityUtils;
-import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.WifiUtils;
-import com.evernote.android.job.JobRequest;
-import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -77,6 +40,9 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 /**
  * Fragment that shows details of a certain political party.
@@ -108,6 +74,15 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
 
     @BindView(R.id.btn_share)
     RelativeLayout btnShare;
+
+    @BindView(R.id.ll_options)
+    LinearLayout llOptions;
+
+    @BindView(R.id.ll_share)
+    LinearLayout llShare;
+
+    private boolean mShowingTour;
+
 
     public SettingsFragment() {
         super();
@@ -188,6 +163,45 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
         this.mPresenter.initialize();
+        showGuidedTour();
+    }
+
+    private void showGuidedTour() {
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500);
+        config.setMaskColor(getResources().getColor(R.color.blackOpacity80));
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "3");
+
+        sequence.setConfig(config);
+
+        sequence.setOnItemShownListener(new MaterialShowcaseSequence.OnSequenceItemShownListener() {
+            @Override
+            public void onShow(MaterialShowcaseView materialShowcaseView, int i) {
+                mShowingTour = true;
+            }
+        });
+
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+                if (i == 1) {
+                    mShowingTour = false;
+                }
+            }
+        });
+
+        sequence.addSequenceItem(llOptions,
+                getString(R.string.tour_settings_options), getString(R.string.tour_got_it));
+
+        sequence.addSequenceItem(llShare,
+                getString(R.string.tour_settings_share), getString(R.string.tour_got_it));
+
+        sequence.start();
+
+
+
     }
 
     @Override
@@ -231,14 +245,13 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     }
 
     @OnClick(R.id.btn_back)
-    void onButtonBack()
-    {
-        if (this.mListener != null) this.mListener.onBackSettingsClicked();
+    void onButtonBack() {
+        if (this.mListener != null && !mShowingTour) this.mListener.onBackSettingsClicked();
     }
 
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
-        if (this.mListener != null) this.mListener.onBackSettingsClicked();
+        onButtonBack();
     }
 
     @OnClick(R.id.tv_logout)

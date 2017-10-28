@@ -23,6 +23,7 @@ import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.FileStorageUtils;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -109,8 +110,11 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         } else if (mSharedPrefsUtils.getBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, false)){
             mView.showPersistenceUpgrade(R.string.files_cloud_almost_full);
         }
-        ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(path);
-        refreshOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        OwnCloudClient client = mNetworkProvider.getCloudClient(getPhoneNumber());
+        if (client != null) {
+            ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(path);
+            refreshOperation.execute(client, this, mHandler);
+        }
     }
 
     public void onFileClicked(Context context, OCFile remoteFile) {

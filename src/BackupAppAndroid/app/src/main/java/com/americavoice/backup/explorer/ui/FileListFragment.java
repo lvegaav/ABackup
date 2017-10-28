@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,12 +46,10 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.operations.RemoveFileOperation;
-import com.americavoice.backup.operations.SynchronizeFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.RecyclerItemClickListener;
-import com.americavoice.backup.utils.ThemeUtils;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -68,6 +65,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 
 public class FileListFragment extends BaseFragment implements FileListView, OnRemoteOperationListener {
@@ -90,6 +90,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
     private ArbitraryDataProvider arbitraryDataProvider;
+    private boolean mShowingTour;
 
     /**
      * Interface for listening file list events.
@@ -115,7 +116,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     @BindView(R.id.fab_upload)
     FloatingActionButton fabUpload;
     @BindView(R.id.ll_automatic_backup)
-    LinearLayout llAutomaticBackup;
+    RelativeLayout llAutomaticBackup;
     @BindView(R.id.files_automatic_backup)
     public SwitchCompat backupSwitch;
 
@@ -249,6 +250,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         };
 
         backupSwitch.setOnCheckedChangeListener(onCheckedChangeListener);
+        showGuidedTour();
     }
 
     @Override
@@ -413,6 +415,43 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     }
 
+    private void showGuidedTour() {
+
+        ShowcaseConfig config = new ShowcaseConfig();
+
+        config.setDelay(500);
+        config.setMaskColor(getResources().getColor(R.color.blackOpacity80));
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "2");
+        sequence.setConfig(config);
+
+        sequence.setOnItemShownListener(new MaterialShowcaseSequence.OnSequenceItemShownListener() {
+            @Override
+            public void onShow(MaterialShowcaseView materialShowcaseView, int i) {
+                mShowingTour = true;
+            }
+        });
+
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+                int numberOfSequences = !mPath.equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER) ? 1 : 0;
+                if (i == numberOfSequences) {
+                    mShowingTour = false;
+                }
+            }
+        });
+
+        if (!mPath.equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER) ) {
+            sequence.addSequenceItem(backupSwitch,
+                    getString(R.string.tour_files_switch), getString(R.string.tour_got_it));
+        }
+        sequence.addSequenceItem(fabUpload,
+                getString(R.string.tour_files_upload), getString(R.string.tour_got_it));
+        sequence.start();
+
+    }
+
     @Override
     public void downloadFile(OCFile file) {
         showToastMessage(getString(R.string.common_file_will_download));
@@ -500,6 +539,9 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     }
 
     void onButtonBack() {
+        if (mShowingTour) {
+            return;
+        }
         String path = null;
         String subPath = mPath.substring(1, mPath.length() -1);
         String[] splits = subPath.split("/");
