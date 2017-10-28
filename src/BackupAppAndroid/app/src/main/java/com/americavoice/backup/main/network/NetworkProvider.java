@@ -91,7 +91,7 @@ public class NetworkProvider {
             editor.putString(NetworkProvider.KEY_PHONE_NUMBER, phoneNumber);
             editor.apply();
         }
-        if (mCloudClient == null) {
+        if (mCloudClient == null && phoneNumber != null) {
             Uri serverUri = Uri.parse(baseUrlOwnCloud);
             mCloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
             mCloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(getUserName(phoneNumber), mDeviceId));

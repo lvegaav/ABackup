@@ -25,7 +25,7 @@
                 android:layout_centerVertical="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
-                android:layout_width="80dp"
+                android:layout_width="60dp"
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:text="@string/common.logout"
@@ -175,9 +175,12 @@
                 android:focusable="true"
                 style="?android:attr/buttonStyle">
                 <LinearLayout
+                    android:id="@+id/ll_share"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="wrap_content"

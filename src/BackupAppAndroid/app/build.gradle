@@ -24,7 +24,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
-        versionName "0.28"
+        versionName "0.29"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -73,14 +73,14 @@ dependencies {
     })
 
     //dagger
-    annotationProcessor 'com.squareup:javapoet:1.7.0'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
-    compile 'com.google.dagger:dagger:2.5'
+    annotationProcessor 'com.squareup:javapoet:1.9.0'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
+    compile 'com.google.dagger:dagger:2.11'
     provided 'javax.annotation:jsr250-api:1.0'
 
     //butterknife
-    compile 'com.jakewharton:butterknife:8.1.0'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.1.0'
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
@@ -95,7 +95,7 @@ dependencies {
 
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'net.servicestack:android:1.0.31'
-    compile 'com.github.nextcloud:android-library:-SNAPSHOT'
+    compile 'com.github.nextcloud:android-library:1.0.31'
     compile 'com.github.evernote:android-job:v1.1.11'
     compile 'com.googlecode.ez-vcard:ez-vcard:0.10.2'
     compile 'com.jakewharton:disklrucache:2.0.2'
@@ -109,6 +109,7 @@ dependencies {
     compile 'com.afollestad.material-dialogs:commons:0.9.4.7'
     compile 'com.android.support:cardview-v7:26.1.0'
     compile 'com.android.support:recyclerview-v7:26.1.0'
+    compile 'com.github.deano2390:MaterialShowcaseView:1.2.0'
 
     testCompile 'junit:junit:4.12'
 
