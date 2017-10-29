@@ -15,16 +15,4 @@ public abstract class BasePresenter {
         mNetworkProvider = networkProvider;
         this.mSharedPrefsUtils = sharedPrefsUtils;
     }
-
-    protected String getPhoneNumber() {
-        return mSharedPrefsUtils.getStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
-    }
-
-    public String getDeviceId() {
-        return mNetworkProvider.getDeviceId();
-    }
-
-    public String getUsername() {
-        return Const.COMPANY_ID + "_" + getPhoneNumber();
-    }
 }

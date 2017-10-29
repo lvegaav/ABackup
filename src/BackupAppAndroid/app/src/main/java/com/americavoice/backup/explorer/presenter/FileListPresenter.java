@@ -110,7 +110,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
             mView.showPersistenceUpgrade(R.string.files_cloud_almost_full);
         }
         ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(path);
-        refreshOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        refreshOperation.execute(mNetworkProvider.getCloudClient(), this, mHandler);
     }
 
     public void onFileClicked(Context context, OCFile remoteFile) {

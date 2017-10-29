@@ -1,8 +1,8 @@
 /* Options:
-Date: 2017-08-28 21:51:19
+Date: 2017-10-28 19:37:00
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
-BaseUrl: http://localhost:52239/api
+BaseUrl: http://localhost:52241/api
 
 Package: com.americavoice.backup.main.network
 GlobalNamespace: dtos
@@ -30,14 +30,290 @@ public class dtos
 {
 
     /**
+    * Time zone information.
+    */
+    @Route(Path="/timezones", Verbs="GET")
+    @Api(Description="Time zone information.")
+    public static class GetTimeZones implements IReturn<GetTimeZonesResponse>
+    {
+        
+        private static Object responseType = GetTimeZonesResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get supported versions of the mobile app.
+    */
+    @Route(Path="/mobileapp/supportedversions", Verbs="GET")
+    @Api(Description="Get supported versions of the mobile app.")
+    public static class GetMobileAppSupportedVersions implements IReturn<GetMobileAppSupportedVersionsResponse>
+    {
+        /**
+        * Tablet (true, false).
+        */
+        @ApiMember(Description="Tablet (true, false).", IsRequired=true, ParameterType="form")
+        public Boolean tablet = null;
+
+        /**
+        * Type (android, ios).
+        */
+        @ApiMember(Description="Type (android, ios).", IsRequired=true, ParameterType="form")
+        public String type = null;
+        
+        public Boolean isTablet() { return tablet; }
+        public GetMobileAppSupportedVersions setTablet(Boolean value) { this.tablet = value; return this; }
+        public String getType() { return type; }
+        public GetMobileAppSupportedVersions setType(String value) { this.type = value; return this; }
+        private static Object responseType = GetMobileAppSupportedVersionsResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Register new customer.
+    */
+    @Route(Path="/register", Verbs="POST")
+    @Api(Description="Register new customer.")
+    public static class CustomRegister implements IReturn<CustomRegisterResponse>
+    {
+        /**
+        * Company Id.
+        */
+        @ApiMember(Description="Company Id.", IsRequired=true, ParameterType="form")
+        public Integer companyId = null;
+
+        /**
+        * Username
+        */
+        @ApiMember(Description="Username", IsRequired=true, ParameterType="form")
+        public String username = null;
+
+        /**
+        * Country Calling Code 
+        */
+        @ApiMember(Description="Country Calling Code ", IsRequired=true, ParameterType="form")
+        public String countryCallingCode = null;
+
+        /**
+        * Valid phone number.
+        */
+        @ApiMember(Description="Valid phone number.", IsRequired=true, ParameterType="form")
+        public String phoneNumber = null;
+
+        /**
+        * Password 
+        */
+        @ApiMember(Description="Password ", IsRequired=true, ParameterType="form")
+        public String password = null;
+        
+        public Integer getCompanyId() { return companyId; }
+        public CustomRegister setCompanyId(Integer value) { this.companyId = value; return this; }
+        public String getUsername() { return username; }
+        public CustomRegister setUsername(String value) { this.username = value; return this; }
+        public String getCountryCallingCode() { return countryCallingCode; }
+        public CustomRegister setCountryCallingCode(String value) { this.countryCallingCode = value; return this; }
+        public String getPhoneNumber() { return phoneNumber; }
+        public CustomRegister setPhoneNumber(String value) { this.phoneNumber = value; return this; }
+        public String getPassword() { return password; }
+        public CustomRegister setPassword(String value) { this.password = value; return this; }
+        private static Object responseType = CustomRegisterResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Send reset password sms.
+    */
+    @Route(Path="/user/send-reset-password-sms", Verbs="POST")
+    @Api(Description="Send reset password sms.")
+    public static class SendPasswordResetCode implements IReturn<SendPasswordResetCodeResponse>
+    {
+        /**
+        * Company Id.
+        */
+        @ApiMember(Description="Company Id.", IsRequired=true, ParameterType="form")
+        public Integer companyId = null;
+
+        /**
+        * Country Calling Code.
+        */
+        @ApiMember(Description="Country Calling Code.", IsRequired=true, ParameterType="form")
+        public String countryCallingCode = null;
+
+        /**
+        * Phone number.
+        */
+        @ApiMember(Description="Phone number.", IsRequired=true, ParameterType="form")
+        public String phoneNumber = null;
+        
+        public Integer getCompanyId() { return companyId; }
+        public SendPasswordResetCode setCompanyId(Integer value) { this.companyId = value; return this; }
+        public String getCountryCallingCode() { return countryCallingCode; }
+        public SendPasswordResetCode setCountryCallingCode(String value) { this.countryCallingCode = value; return this; }
+        public String getPhoneNumber() { return phoneNumber; }
+        public SendPasswordResetCode setPhoneNumber(String value) { this.phoneNumber = value; return this; }
+        private static Object responseType = SendPasswordResetCodeResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Reset password.
+    */
+    @Route(Path="/user/reset-password", Verbs="POST")
+    @Api(Description="Reset password.")
+    public static class PerformResetPassword implements IReturn<PerformResetPasswordResponse>
+    {
+        /**
+        * Company ID
+        */
+        @ApiMember(Description="Company ID", IsRequired=true, ParameterType="form")
+        public Integer companyId = null;
+
+        /**
+        * Country Calling Code
+        */
+        @ApiMember(Description="Country Calling Code", IsRequired=true, ParameterType="form")
+        public String countryCallingCode = null;
+
+        /**
+        * Phone Number.
+        */
+        @ApiMember(Description="Phone Number.", IsRequired=true, ParameterType="form")
+        public String phoneNumber = null;
+
+        /**
+        * Reset password code.
+        */
+        @ApiMember(Description="Reset password code.", IsRequired=true, ParameterType="form")
+        public String resetPasswordCode = null;
+
+        /**
+        * New password.
+        */
+        @ApiMember(Description="New password.", IsRequired=true, ParameterType="form")
+        public String newPassword = null;
+        
+        public Integer getCompanyId() { return companyId; }
+        public PerformResetPassword setCompanyId(Integer value) { this.companyId = value; return this; }
+        public String getCountryCallingCode() { return countryCallingCode; }
+        public PerformResetPassword setCountryCallingCode(String value) { this.countryCallingCode = value; return this; }
+        public String getPhoneNumber() { return phoneNumber; }
+        public PerformResetPassword setPhoneNumber(String value) { this.phoneNumber = value; return this; }
+        public String getResetPasswordCode() { return resetPasswordCode; }
+        public PerformResetPassword setResetPasswordCode(String value) { this.resetPasswordCode = value; return this; }
+        public String getNewPassword() { return newPassword; }
+        public PerformResetPassword setNewPassword(String value) { this.newPassword = value; return this; }
+        private static Object responseType = PerformResetPasswordResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Change password.
+    */
+    @Route(Path="/user/change-password", Verbs="POST")
+    @Api(Description="Change password.")
+    public static class PerformChangePassword implements IReturn<PerformResetPasswordResponse>
+    {
+        /**
+        * Username.
+        */
+        @ApiMember(Description="Username.", IsRequired=true, ParameterType="form")
+        public String username = null;
+
+        /**
+        * New password.
+        */
+        @ApiMember(Description="New password.", IsRequired=true, ParameterType="form")
+        public String newPassword = null;
+        
+        public String getUsername() { return username; }
+        public PerformChangePassword setUsername(String value) { this.username = value; return this; }
+        public String getNewPassword() { return newPassword; }
+        public PerformChangePassword setNewPassword(String value) { this.newPassword = value; return this; }
+        private static Object responseType = PerformResetPasswordResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Send phone verification code to authenticated user.
+    */
+    @Route(Path="/register/send-phonecode", Verbs="POST")
+    @Api(Description="Send phone verification code to authenticated user.")
+    public static class SendPhoneVerificationCode implements IReturn<SendPhoneVerificationCodeResponse>
+    {
+        
+        private static Object responseType = SendPhoneVerificationCodeResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Validate phone verification code for authenticated user.
+    */
+    @Route(Path="/register/validate-phonecode", Verbs="POST")
+    @Api(Description="Validate phone verification code for authenticated user.")
+    public static class ValidatePhoneVerificationCode implements IReturn<ValidatePhoneVerificationCodeResponse>
+    {
+        /**
+        * Verification Code.
+        */
+        @ApiMember(Description="Verification Code.", IsRequired=true, ParameterType="form")
+        public String verificationCode = null;
+        
+        public String getVerificationCode() { return verificationCode; }
+        public ValidatePhoneVerificationCode setVerificationCode(String value) { this.verificationCode = value; return this; }
+        private static Object responseType = ValidatePhoneVerificationCodeResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get authenticated user.
+    */
+    @Route(Path="/user", Verbs="GET")
+    @Api(Description="Get authenticated user.")
+    public static class GetFullUser implements IReturn<GetFullUserResponse>
+    {
+        
+        private static Object responseType = GetFullUserResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
     * Get Current User session.
     */
-    @Route(Path="/authentication/user/session", Verbs="GET")
+    @Route(Path="/user/session", Verbs="GET")
     @Api(Description="Get Current User session.")
     public static class GetSession implements IReturn<GetSessionResponse>
     {
         
         private static Object responseType = GetSessionResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get Account.
+    */
+    @Route(Path="/authorization/users/account", Verbs="GET")
+    @Api(Description="Get Account.")
+    public static class GetUserProfile implements IReturn<GetUserProfileResponse>
+    {
+        
+        private static Object responseType = GetUserProfileResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Update Account
+    */
+    @Route(Path="/authorization/users/", Verbs="PUT")
+    @Api(Description="Update Account")
+    public static class UpdateUserProfile implements IReturn<UpdateUserProfileReponse>
+    {
+        public UserModel user = null;
+        public String newPassword = null;
+        
+        public UserModel getUser() { return user; }
+        public UpdateUserProfile setUser(UserModel value) { this.user = value; return this; }
+        public String getNewPassword() { return newPassword; }
+        public UpdateUserProfile setNewPassword(String value) { this.newPassword = value; return this; }
+        private static Object responseType = UpdateUserProfileReponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -224,32 +500,176 @@ public class dtos
     }
 
     /**
-    * Get Account.
+    * Create subscription
     */
-    @Route(Path="/authorization/users/", Verbs="GET")
-    @Api(Description="Get Account.")
-    public static class GetAccount implements IReturn<GetAccountResponse>
+    @Route(Path="/subscription", Verbs="POST")
+    @Api(Description="Create subscription")
+    public static class CreateSubscription implements IReturn<CreateSubscriptionResponse>
     {
+        public String productId = null;
         
-        private static Object responseType = GetAccountResponse.class;
+        public String getProductId() { return productId; }
+        public CreateSubscription setProductId(String value) { this.productId = value; return this; }
+        private static Object responseType = CreateSubscriptionResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
     /**
-    * Update Account
+    * Charge subscription
     */
-    @Route(Path="/authorization/users/", Verbs="PUT")
-    @Api(Description="Update Account")
-    public static class UpdateAccount implements IReturn<UpdateAccountResponse>
+    @Route(Path="/subscription/charge", Verbs="POST")
+    @Api(Description="Charge subscription")
+    public static class ChargeSubscription implements IReturn<ChargeSubscriptionResponse>
     {
-        public UserModel user = null;
-        public String newPassword = null;
+        public String accountNumber = null;
+        public String productId = null;
         
-        public UserModel getUser() { return user; }
-        public UpdateAccount setUser(UserModel value) { this.user = value; return this; }
-        public String getNewPassword() { return newPassword; }
-        public UpdateAccount setNewPassword(String value) { this.newPassword = value; return this; }
-        private static Object responseType = UpdateAccountResponse.class;
+        public String getAccountNumber() { return accountNumber; }
+        public ChargeSubscription setAccountNumber(String value) { this.accountNumber = value; return this; }
+        public String getProductId() { return productId; }
+        public ChargeSubscription setProductId(String value) { this.productId = value; return this; }
+        private static Object responseType = ChargeSubscriptionResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Renew subscription
+    */
+    @Route(Path="/subscription/{SubscriptionId}/renew", Verbs="POST")
+    @Api(Description="Renew subscription")
+    public static class RenewSubscription implements IReturn<RenewSubscriptionResponse>
+    {
+        public String subscriptionId = null;
+        
+        public String getSubscriptionId() { return subscriptionId; }
+        public RenewSubscription setSubscriptionId(String value) { this.subscriptionId = value; return this; }
+        private static Object responseType = RenewSubscriptionResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get products.
+    */
+    @Route(Path="/products", Verbs="GET")
+    @Api(Description="Get products.")
+    public static class GetProducts implements IReturn<GetProductsResponse>
+    {
+        
+        private static Object responseType = GetProductsResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get PayPal token.
+    */
+    @Route(Path="/paypal/token", Verbs="GET")
+    @Api(Description="Get PayPal token.")
+    public static class GetPayPalToken implements IReturn<GetPayPalTokenResponse>
+    {
+        
+        private static Object responseType = GetPayPalTokenResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Create PayPal payment method.
+    */
+    @Route(Path="/paymentmethod/paypal", Verbs="POST")
+    @Api(Description="Create PayPal payment method.")
+    public static class CreatePayPalPaymentMethod implements IReturn<CreatePayPalPaymentMethodResponse>
+    {
+        public String nonce = null;
+        
+        public String getNonce() { return nonce; }
+        public CreatePayPalPaymentMethod setNonce(String value) { this.nonce = value; return this; }
+        private static Object responseType = CreatePayPalPaymentMethodResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Create Credit Card payment method.
+    */
+    @Route(Path="/paymentmethod/creditcard", Verbs="POST")
+    @Api(Description="Create Credit Card payment method.")
+    public static class CreateCreditCardPaymentMethod implements IReturn<CreateCreditCardPaymentMethodResponse>
+    {
+        public String firstName = null;
+        public String lastName = null;
+        public String phoneNumber = null;
+        public String address = null;
+        public String city = null;
+        public String stateRegion = null;
+        public String postalCode = null;
+        public String country = null;
+        public String cardNumber = null;
+        public String cardExpiry = null;
+        public String ccvCode = null;
+        
+        public String getFirstName() { return firstName; }
+        public CreateCreditCardPaymentMethod setFirstName(String value) { this.firstName = value; return this; }
+        public String getLastName() { return lastName; }
+        public CreateCreditCardPaymentMethod setLastName(String value) { this.lastName = value; return this; }
+        public String getPhoneNumber() { return phoneNumber; }
+        public CreateCreditCardPaymentMethod setPhoneNumber(String value) { this.phoneNumber = value; return this; }
+        public String getAddress() { return address; }
+        public CreateCreditCardPaymentMethod setAddress(String value) { this.address = value; return this; }
+        public String getCity() { return city; }
+        public CreateCreditCardPaymentMethod setCity(String value) { this.city = value; return this; }
+        public String getStateRegion() { return stateRegion; }
+        public CreateCreditCardPaymentMethod setStateRegion(String value) { this.stateRegion = value; return this; }
+        public String getPostalCode() { return postalCode; }
+        public CreateCreditCardPaymentMethod setPostalCode(String value) { this.postalCode = value; return this; }
+        public String getCountry() { return country; }
+        public CreateCreditCardPaymentMethod setCountry(String value) { this.country = value; return this; }
+        public String getCardNumber() { return cardNumber; }
+        public CreateCreditCardPaymentMethod setCardNumber(String value) { this.cardNumber = value; return this; }
+        public String getCardExpiry() { return cardExpiry; }
+        public CreateCreditCardPaymentMethod setCardExpiry(String value) { this.cardExpiry = value; return this; }
+        public String getCcvCode() { return ccvCode; }
+        public CreateCreditCardPaymentMethod setCcvCode(String value) { this.ccvCode = value; return this; }
+        private static Object responseType = CreateCreditCardPaymentMethodResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get payment method.
+    */
+    @Route(Path="/paymentmethod", Verbs="GET")
+    @Api(Description="Get payment method.")
+    public static class GetPaymentMethod implements IReturn<GetPaymentMethodResponse>
+    {
+        
+        private static Object responseType = GetPaymentMethodResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get news feed for backup platform.
+    */
+    @Route(Path="/news", Verbs="GET")
+    @Api(Description="Get news feed for backup platform.")
+    public static class GetNewsFeed implements IReturn<GetNewsFeedResponse>
+    {
+        public Integer take = null;
+        
+        public Integer getTake() { return take; }
+        public GetNewsFeed setTake(Integer value) { this.take = value; return this; }
+        private static Object responseType = GetNewsFeedResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get news feed by Id
+    */
+    @Route(Path="/news/{Id}", Verbs="GET")
+    @Api(Description="Get news feed by Id")
+    public static class GetNewsFeedById implements IReturn<GetNewsFeedByIdResponse>
+    {
+        public String id = null;
+        
+        public String getId() { return id; }
+        public GetNewsFeedById setId(String value) { this.id = value; return this; }
+        private static Object responseType = GetNewsFeedByIdResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -257,10 +677,11 @@ public class dtos
     * Get the company list.
     */
     @Route(Path="/authorization/companies", Verbs="GET")
-    public static class GetCompanies extends ArrayList<CompanyModel> implements IReturn<CompanyModel>
+    @Api(Description="Get the company list.")
+    public static class GetCompanies implements IReturn<ArrayList<CompanyModel>>
     {
         
-        private static Object responseType = CompanyModel.class;
+        private static Object responseType = new TypeToken<ArrayList<CompanyModel>>(){}.getType();
         public Object getResponseType() { return responseType; }
     }
 
@@ -279,11 +700,17 @@ public class dtos
         public Object getResponseType() { return responseType; }
     }
 
+    /**
+    * Create a new company.
+    */
+    @Route(Path="/authorization/companies", Verbs="POST")
+    @Api(Description="Create a new company.")
     public static class CreateCompany implements IReturn<CreateCompanyResponse>
     {
         public String name = null;
         public String logo = null;
         public String quota = null;
+        public Boolean hasAutoRegister = null;
         
         public String getName() { return name; }
         public CreateCompany setName(String value) { this.name = value; return this; }
@@ -291,16 +718,24 @@ public class dtos
         public CreateCompany setLogo(String value) { this.logo = value; return this; }
         public String getQuota() { return quota; }
         public CreateCompany setQuota(String value) { this.quota = value; return this; }
+        public Boolean isHasAutoRegister() { return hasAutoRegister; }
+        public CreateCompany setHasAutoRegister(Boolean value) { this.hasAutoRegister = value; return this; }
         private static Object responseType = CreateCompanyResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
+    /**
+    * Update a company.
+    */
+    @Route(Path="/authorization/companies", Verbs="PUT")
+    @Api(Description="Update a company.")
     public static class UpdateCompany implements IReturn<UpdateCompanyResponse>
     {
         public Integer id = null;
         public String name = null;
         public String logo = null;
         public String quota = null;
+        public Boolean hasAutoRegister = null;
         
         public Integer getId() { return id; }
         public UpdateCompany setId(Integer value) { this.id = value; return this; }
@@ -310,6 +745,8 @@ public class dtos
         public UpdateCompany setLogo(String value) { this.logo = value; return this; }
         public String getQuota() { return quota; }
         public UpdateCompany setQuota(String value) { this.quota = value; return this; }
+        public Boolean isHasAutoRegister() { return hasAutoRegister; }
+        public UpdateCompany setHasAutoRegister(Boolean value) { this.hasAutoRegister = value; return this; }
         private static Object responseType = UpdateCompanyResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -329,135 +766,51 @@ public class dtos
         public Object getResponseType() { return responseType; }
     }
 
-    public static class CreateUserLoginHistory implements IReturn<CreateUserLoginHistoryResponse>
+    /**
+    * Delete all account files in the cloud.
+    */
+    @Route(Path="/accounts/{AccountNumber}/files", Verbs="DELETE")
+    @Api(Description="Delete all account files in the cloud.")
+    public static class DeleteFiles implements IReturn<DeleteFilesResponse>
     {
-        public String userEmail = null;
-        public String userAgent = null;
-        public String userIP = null;
-        public String status = null;
+        public String accountNumber = null;
         
-        public String getUserEmail() { return userEmail; }
-        public CreateUserLoginHistory setUserEmail(String value) { this.userEmail = value; return this; }
-        public String getUserAgent() { return userAgent; }
-        public CreateUserLoginHistory setUserAgent(String value) { this.userAgent = value; return this; }
-        public String getUserIP() { return userIP; }
-        public CreateUserLoginHistory setUserIP(String value) { this.userIP = value; return this; }
-        public String getStatus() { return status; }
-        public CreateUserLoginHistory setStatus(String value) { this.status = value; return this; }
-        private static Object responseType = CreateUserLoginHistoryResponse.class;
+        public String getAccountNumber() { return accountNumber; }
+        public DeleteFiles setAccountNumber(String value) { this.accountNumber = value; return this; }
+        private static Object responseType = DeleteFilesResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
     /**
-    * Time zone information.
+    * Fetch account used storage.
     */
-    @Route(Path="/timezones", Verbs="GET")
-    @Api(Description="Time zone information.")
-    public static class GetTimeZones implements IReturn<GetTimeZonesResponse>
+    @Route(Path="/accounts/{AccountNumber}", Verbs="GET")
+    @Api(Description="Fetch account used storage.")
+    public static class GetAccountUsage implements IReturn<GetAccountUsageResponse>
     {
+        public String accountNumber = null;
         
-        private static Object responseType = GetTimeZonesResponse.class;
+        public String getAccountNumber() { return accountNumber; }
+        public GetAccountUsage setAccountNumber(String value) { this.accountNumber = value; return this; }
+        private static Object responseType = GetAccountUsageResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
     /**
-    * Register new user.
+    * Update remote storage account. Currently the Nexcloud account
     */
-    @Route(Path="/register", Verbs="POST")
-    @Api(Description="Register new user.")
-    public static class CustomRegister implements IReturn<CustomRegisterResponse>
+    @Route(Path="/accounts/{AccountNumber}/remote-account", Verbs="PUT")
+    @Api(Description="Update remote storage account. Currently the Nexcloud account")
+    public static class UpdateRemoteAccount implements IReturn<UpdateRemoteAccountResponse>
     {
-        /**
-        * Company Id.
-        */
-        @ApiMember(Description="Company Id.", IsRequired=true, ParameterType="form")
-        public Integer companyId = null;
-
-        /**
-        * US valid phone number.
-        */
-        @ApiMember(Description="US valid phone number.", IsRequired=true, ParameterType="form")
-        public String phoneNumber = null;
+        public String accountNumber = null;
+        public Boolean enabled = null;
         
-        public Integer getCompanyId() { return companyId; }
-        public CustomRegister setCompanyId(Integer value) { this.companyId = value; return this; }
-        public String getPhoneNumber() { return phoneNumber; }
-        public CustomRegister setPhoneNumber(String value) { this.phoneNumber = value; return this; }
-        private static Object responseType = CustomRegisterResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Send reset password sms.
-    */
-    @Route(Path="/user/send-reset-password-sms", Verbs="POST")
-    @Api(Description="Send reset password sms.")
-    public static class SendResetPasswordSms implements IReturn<SendResetPasswordSmsResponse>
-    {
-        /**
-        * Company Id.
-        */
-        @ApiMember(Description="Company Id.", IsRequired=true, ParameterType="form")
-        public Integer companyId = null;
-
-        /**
-        * Phone number.
-        */
-        @ApiMember(Description="Phone number.", IsRequired=true, ParameterType="form")
-        public String phoneNumber = null;
-        
-        public Integer getCompanyId() { return companyId; }
-        public SendResetPasswordSms setCompanyId(Integer value) { this.companyId = value; return this; }
-        public String getPhoneNumber() { return phoneNumber; }
-        public SendResetPasswordSms setPhoneNumber(String value) { this.phoneNumber = value; return this; }
-        private static Object responseType = SendResetPasswordSmsResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Reset password.
-    */
-    @Route(Path="/user/reset-password", Verbs="POST")
-    @Api(Description="Reset password.")
-    public static class PerformResetPassword implements IReturn<PerformResetPasswordResponse>
-    {
-        /**
-        * Reset password code.
-        */
-        @ApiMember(Description="Reset password code.", IsRequired=true, ParameterType="form")
-        public String resetPasswordCode = null;
-
-        /**
-        * New password.
-        */
-        @ApiMember(Description="New password.", IsRequired=true, ParameterType="form")
-        public String newPassword = null;
-
-        /**
-        * Phone Number.
-        */
-        @ApiMember(Description="Phone Number.", IsRequired=true, ParameterType="form")
-        public String phoneNumber = null;
-        
-        public String getResetPasswordCode() { return resetPasswordCode; }
-        public PerformResetPassword setResetPasswordCode(String value) { this.resetPasswordCode = value; return this; }
-        public String getNewPassword() { return newPassword; }
-        public PerformResetPassword setNewPassword(String value) { this.newPassword = value; return this; }
-        public String getPhoneNumber() { return phoneNumber; }
-        public PerformResetPassword setPhoneNumber(String value) { this.phoneNumber = value; return this; }
-        private static Object responseType = PerformResetPasswordResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Get authenticated user.
-    */
-    @Route(Path="/user", Verbs="GET")
-    @Api(Description="Get authenticated user.")
-    public static class GetFullUser implements IReturn<GetFullUserResponse>
-    {
-        
-        private static Object responseType = GetFullUserResponse.class;
+        public String getAccountNumber() { return accountNumber; }
+        public UpdateRemoteAccount setAccountNumber(String value) { this.accountNumber = value; return this; }
+        public Boolean isEnabled() { return enabled; }
+        public UpdateRemoteAccount setEnabled(Boolean value) { this.enabled = value; return this; }
+        private static Object responseType = UpdateRemoteAccountResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -562,6 +915,82 @@ public class dtos
         public Object getResponseType() { return responseType; }
     }
 
+    public static class GetTimeZonesResponse
+    {
+        public ArrayList<TimeZoneModel> timeZones = null;
+        public ResponseStatus responseStatus = null;
+        
+        public ArrayList<TimeZoneModel> getTimeZones() { return timeZones; }
+        public GetTimeZonesResponse setTimeZones(ArrayList<TimeZoneModel> value) { this.timeZones = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetTimeZonesResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetMobileAppSupportedVersionsResponse
+    {
+        public ArrayList<String> versions = null;
+        
+        public ArrayList<String> getVersions() { return versions; }
+        public GetMobileAppSupportedVersionsResponse setVersions(ArrayList<String> value) { this.versions = value; return this; }
+    }
+
+    public static class CustomRegisterResponse
+    {
+        public String userId = null;
+        public ResponseStatus responseStatus = null;
+        
+        public String getUserId() { return userId; }
+        public CustomRegisterResponse setUserId(String value) { this.userId = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public CustomRegisterResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class SendPasswordResetCodeResponse
+    {
+        public ResponseStatus responseStatus = null;
+        
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public SendPasswordResetCodeResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class PerformResetPasswordResponse
+    {
+        public ResponseStatus responseStatus = null;
+        
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public PerformResetPasswordResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class SendPhoneVerificationCodeResponse
+    {
+        public ResponseStatus responseStatus = null;
+        
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public SendPhoneVerificationCodeResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class ValidatePhoneVerificationCodeResponse
+    {
+        public String valid = null;
+        public ResponseStatus responseStatus = null;
+        
+        public String getValid() { return valid; }
+        public ValidatePhoneVerificationCodeResponse setValid(String value) { this.valid = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public ValidatePhoneVerificationCodeResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetFullUserResponse
+    {
+        public FullUser user = null;
+        public ResponseStatus responseStatus = null;
+        
+        public FullUser getUser() { return user; }
+        public GetFullUserResponse setUser(FullUser value) { this.user = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetFullUserResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
     public static class GetSessionResponse
     {
         public AuthUserSession result = null;
@@ -571,6 +1000,25 @@ public class dtos
         public GetSessionResponse setResult(AuthUserSession value) { this.result = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public GetSessionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetUserProfileResponse
+    {
+        public UserModel user = null;
+        public ResponseStatus responseStatus = null;
+        
+        public UserModel getUser() { return user; }
+        public GetUserProfileResponse setUser(UserModel value) { this.user = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetUserProfileResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class UpdateUserProfileReponse
+    {
+        public ResponseStatus responseStatus = null;
+        
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public UpdateUserProfileReponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class GetUsersResponse
@@ -630,49 +1078,141 @@ public class dtos
         public UpdateUserPasswordResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class GetAccountResponse
+    public static class CreateSubscriptionResponse
     {
-        public UserModel user = null;
+        public Subscription subscription = null;
         public ResponseStatus responseStatus = null;
         
-        public UserModel getUser() { return user; }
-        public GetAccountResponse setUser(UserModel value) { this.user = value; return this; }
+        public Subscription getSubscription() { return subscription; }
+        public CreateSubscriptionResponse setSubscription(Subscription value) { this.subscription = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
-        public GetAccountResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+        public CreateSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class UpdateAccountResponse
+    public static class ChargeSubscriptionResponse
     {
+        public String paymentReference = null;
+        public BigDecimal chargedAmount = null;
         public ResponseStatus responseStatus = null;
         
+        public String getPaymentReference() { return paymentReference; }
+        public ChargeSubscriptionResponse setPaymentReference(String value) { this.paymentReference = value; return this; }
+        public BigDecimal getChargedAmount() { return chargedAmount; }
+        public ChargeSubscriptionResponse setChargedAmount(BigDecimal value) { this.chargedAmount = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
-        public UpdateAccountResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+        public ChargeSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class CompanyModel
+    public static class RenewSubscriptionResponse
     {
-        public Integer id = null;
-        public String name = null;
-        public String logo = null;
-        public Boolean enabled = null;
-        public ArrayList<UserModel> users = null;
-        public HashMap<String,Integer> totals = null;
-        public String quota = null;
+        public String paymentReference = null;
+        public BigDecimal chargedAmount = null;
+        public Date nextExpiryDate = null;
+        public ResponseStatus responseStatus = null;
         
-        public Integer getId() { return id; }
-        public CompanyModel setId(Integer value) { this.id = value; return this; }
-        public String getName() { return name; }
-        public CompanyModel setName(String value) { this.name = value; return this; }
-        public String getLogo() { return logo; }
-        public CompanyModel setLogo(String value) { this.logo = value; return this; }
-        public Boolean isEnabled() { return enabled; }
-        public CompanyModel setEnabled(Boolean value) { this.enabled = value; return this; }
-        public ArrayList<UserModel> getUsers() { return users; }
-        public CompanyModel setUsers(ArrayList<UserModel> value) { this.users = value; return this; }
-        public HashMap<String,Integer> getTotals() { return totals; }
-        public CompanyModel setTotals(HashMap<String,Integer> value) { this.totals = value; return this; }
-        public String getQuota() { return quota; }
-        public CompanyModel setQuota(String value) { this.quota = value; return this; }
+        public String getPaymentReference() { return paymentReference; }
+        public RenewSubscriptionResponse setPaymentReference(String value) { this.paymentReference = value; return this; }
+        public BigDecimal getChargedAmount() { return chargedAmount; }
+        public RenewSubscriptionResponse setChargedAmount(BigDecimal value) { this.chargedAmount = value; return this; }
+        public Date getNextExpiryDate() { return nextExpiryDate; }
+        public RenewSubscriptionResponse setNextExpiryDate(Date value) { this.nextExpiryDate = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public RenewSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetProductsResponse
+    {
+        public ArrayList<Product> products = null;
+        public ResponseStatus responseStatus = null;
+        
+        public ArrayList<Product> getProducts() { return products; }
+        public GetProductsResponse setProducts(ArrayList<Product> value) { this.products = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetProductsResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetPayPalTokenResponse
+    {
+        public String token = null;
+        public ResponseStatus responseStatus = null;
+        
+        public String getToken() { return token; }
+        public GetPayPalTokenResponse setToken(String value) { this.token = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetPayPalTokenResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class CreatePayPalPaymentMethodResponse
+    {
+        public String paymentType = null;
+        public String paymentId = null;
+        public ResponseStatus responseStatus = null;
+        
+        public String getPaymentType() { return paymentType; }
+        public CreatePayPalPaymentMethodResponse setPaymentType(String value) { this.paymentType = value; return this; }
+        public String getPaymentId() { return paymentId; }
+        public CreatePayPalPaymentMethodResponse setPaymentId(String value) { this.paymentId = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public CreatePayPalPaymentMethodResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class CreateCreditCardPaymentMethodResponse
+    {
+        public String paymentType = null;
+        public String paymentId = null;
+        public ResponseStatus responseStatus = null;
+        
+        public String getPaymentType() { return paymentType; }
+        public CreateCreditCardPaymentMethodResponse setPaymentType(String value) { this.paymentType = value; return this; }
+        public String getPaymentId() { return paymentId; }
+        public CreateCreditCardPaymentMethodResponse setPaymentId(String value) { this.paymentId = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public CreateCreditCardPaymentMethodResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetPaymentMethodResponse
+    {
+        public String paymentType = null;
+        public String paymentId = null;
+        public String cardNumber = null;
+        public String cardType = null;
+        public String expirationDate = null;
+        public ResponseStatus responseStatus = null;
+        
+        public String getPaymentType() { return paymentType; }
+        public GetPaymentMethodResponse setPaymentType(String value) { this.paymentType = value; return this; }
+        public String getPaymentId() { return paymentId; }
+        public GetPaymentMethodResponse setPaymentId(String value) { this.paymentId = value; return this; }
+        public String getCardNumber() { return cardNumber; }
+        public GetPaymentMethodResponse setCardNumber(String value) { this.cardNumber = value; return this; }
+        public String getCardType() { return cardType; }
+        public GetPaymentMethodResponse setCardType(String value) { this.cardType = value; return this; }
+        public String getExpirationDate() { return expirationDate; }
+        public GetPaymentMethodResponse setExpirationDate(String value) { this.expirationDate = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetPaymentMethodResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetNewsFeedResponse
+    {
+        public ArrayList<NewsFeed> newsFeeds = null;
+        public ResponseStatus responseStatus = null;
+        
+        public ArrayList<NewsFeed> getNewsFeeds() { return newsFeeds; }
+        public GetNewsFeedResponse setNewsFeeds(ArrayList<NewsFeed> value) { this.newsFeeds = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetNewsFeedResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetNewsFeedByIdResponse
+    {
+        public NewsFeed newsFeed = null;
+        public ResponseStatus responseStatus = null;
+        
+        public NewsFeed getNewsFeed() { return newsFeed; }
+        public GetNewsFeedByIdResponse setNewsFeed(NewsFeed value) { this.newsFeed = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetNewsFeedByIdResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class GetCompanyResponse
@@ -710,61 +1250,31 @@ public class dtos
         public DeleteCompanyResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class CreateUserLoginHistoryResponse
+    public static class DeleteFilesResponse
     {
         public ResponseStatus responseStatus = null;
         
         public ResponseStatus getResponseStatus() { return responseStatus; }
-        public CreateUserLoginHistoryResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+        public DeleteFilesResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class GetTimeZonesResponse
+    public static class GetAccountUsageResponse
     {
-        public ArrayList<TimeZoneModel> timeZones = null;
+        public ArrayList<UsedStorage> usedStorage = null;
         public ResponseStatus responseStatus = null;
         
-        public ArrayList<TimeZoneModel> getTimeZones() { return timeZones; }
-        public GetTimeZonesResponse setTimeZones(ArrayList<TimeZoneModel> value) { this.timeZones = value; return this; }
+        public ArrayList<UsedStorage> getUsedStorage() { return usedStorage; }
+        public GetAccountUsageResponse setUsedStorage(ArrayList<UsedStorage> value) { this.usedStorage = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
-        public GetTimeZonesResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+        public GetAccountUsageResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class CustomRegisterResponse
-    {
-        public String userId = null;
-        public ResponseStatus responseStatus = null;
-        
-        public String getUserId() { return userId; }
-        public CustomRegisterResponse setUserId(String value) { this.userId = value; return this; }
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public CustomRegisterResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class SendResetPasswordSmsResponse
+    public static class UpdateRemoteAccountResponse
     {
         public ResponseStatus responseStatus = null;
         
         public ResponseStatus getResponseStatus() { return responseStatus; }
-        public SendResetPasswordSmsResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class PerformResetPasswordResponse
-    {
-        public ResponseStatus responseStatus = null;
-        
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public PerformResetPasswordResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
-    }
-
-    public static class GetFullUserResponse
-    {
-        public FullUser user = null;
-        public ResponseStatus responseStatus = null;
-        
-        public FullUser getUser() { return user; }
-        public GetFullUserResponse setUser(FullUser value) { this.user = value; return this; }
-        public ResponseStatus getResponseStatus() { return responseStatus; }
-        public GetFullUserResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+        public UpdateRemoteAccountResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     @DataContract
@@ -815,6 +1325,97 @@ public class dtos
         public AuthenticateResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
         public HashMap<String,String> getMeta() { return meta; }
         public AuthenticateResponse setMeta(HashMap<String,String> value) { this.meta = value; return this; }
+    }
+
+    public static class TimeZoneModel
+    {
+        public String id = null;
+        public String value = null;
+        
+        public String getId() { return id; }
+        public TimeZoneModel setId(String value) { this.id = value; return this; }
+        public String getValue() { return value; }
+        public TimeZoneModel setValue(String value) { this.value = value; return this; }
+    }
+
+    public static class FullUser
+    {
+        public String id = null;
+        public String userName = null;
+        public String email = null;
+        public String countryCallingCode = null;
+        public String phoneNumber = null;
+        public String firstName = null;
+        public String lastName = null;
+        public String company = null;
+        public Date birthDate = null;
+        public String address = null;
+        public String address2 = null;
+        public String city = null;
+        public String state = null;
+        public String country = null;
+        public String culture = null;
+        public String fullName = null;
+        public String gender = null;
+        public String language = null;
+        public String mailAddress = null;
+        public String nickname = null;
+        public String postalCode = null;
+        public String timeZone = null;
+        public Date lastLoginAttempt = null;
+        public Date lockedDate = null;
+        public Boolean phoneNumberVerified = null;
+        
+        public String getId() { return id; }
+        public FullUser setId(String value) { this.id = value; return this; }
+        public String getUserName() { return userName; }
+        public FullUser setUserName(String value) { this.userName = value; return this; }
+        public String getEmail() { return email; }
+        public FullUser setEmail(String value) { this.email = value; return this; }
+        public String getCountryCallingCode() { return countryCallingCode; }
+        public FullUser setCountryCallingCode(String value) { this.countryCallingCode = value; return this; }
+        public String getPhoneNumber() { return phoneNumber; }
+        public FullUser setPhoneNumber(String value) { this.phoneNumber = value; return this; }
+        public String getFirstName() { return firstName; }
+        public FullUser setFirstName(String value) { this.firstName = value; return this; }
+        public String getLastName() { return lastName; }
+        public FullUser setLastName(String value) { this.lastName = value; return this; }
+        public String getCompany() { return company; }
+        public FullUser setCompany(String value) { this.company = value; return this; }
+        public Date getBirthDate() { return birthDate; }
+        public FullUser setBirthDate(Date value) { this.birthDate = value; return this; }
+        public String getAddress() { return address; }
+        public FullUser setAddress(String value) { this.address = value; return this; }
+        public String getAddress2() { return address2; }
+        public FullUser setAddress2(String value) { this.address2 = value; return this; }
+        public String getCity() { return city; }
+        public FullUser setCity(String value) { this.city = value; return this; }
+        public String getState() { return state; }
+        public FullUser setState(String value) { this.state = value; return this; }
+        public String getCountry() { return country; }
+        public FullUser setCountry(String value) { this.country = value; return this; }
+        public String getCulture() { return culture; }
+        public FullUser setCulture(String value) { this.culture = value; return this; }
+        public String getFullName() { return fullName; }
+        public FullUser setFullName(String value) { this.fullName = value; return this; }
+        public String getGender() { return gender; }
+        public FullUser setGender(String value) { this.gender = value; return this; }
+        public String getLanguage() { return language; }
+        public FullUser setLanguage(String value) { this.language = value; return this; }
+        public String getMailAddress() { return mailAddress; }
+        public FullUser setMailAddress(String value) { this.mailAddress = value; return this; }
+        public String getNickname() { return nickname; }
+        public FullUser setNickname(String value) { this.nickname = value; return this; }
+        public String getPostalCode() { return postalCode; }
+        public FullUser setPostalCode(String value) { this.postalCode = value; return this; }
+        public String getTimeZone() { return timeZone; }
+        public FullUser setTimeZone(String value) { this.timeZone = value; return this; }
+        public Date getLastLoginAttempt() { return lastLoginAttempt; }
+        public FullUser setLastLoginAttempt(Date value) { this.lastLoginAttempt = value; return this; }
+        public Date getLockedDate() { return lockedDate; }
+        public FullUser setLockedDate(Date value) { this.lockedDate = value; return this; }
+        public Boolean isPhoneNumberVerified() { return phoneNumberVerified; }
+        public FullUser setPhoneNumberVerified(Boolean value) { this.phoneNumberVerified = value; return this; }
     }
 
     @DataContract
@@ -1045,92 +1646,119 @@ public class dtos
         public UserModel setCompanyId(Integer value) { this.companyId = value; return this; }
     }
 
-    public static class TimeZoneModel
+    public static class Subscription
     {
-        public String id = null;
-        public String value = null;
+        public String accountNumber = null;
+        public String productId = null;
+        public Date startDate = null;
+        public Date expiryDate = null;
+        public Boolean autoRenew = null;
+        public String status = null;
         
-        public String getId() { return id; }
-        public TimeZoneModel setId(String value) { this.id = value; return this; }
-        public String getValue() { return value; }
-        public TimeZoneModel setValue(String value) { this.value = value; return this; }
+        public String getAccountNumber() { return accountNumber; }
+        public Subscription setAccountNumber(String value) { this.accountNumber = value; return this; }
+        public String getProductId() { return productId; }
+        public Subscription setProductId(String value) { this.productId = value; return this; }
+        public Date getStartDate() { return startDate; }
+        public Subscription setStartDate(Date value) { this.startDate = value; return this; }
+        public Date getExpiryDate() { return expiryDate; }
+        public Subscription setExpiryDate(Date value) { this.expiryDate = value; return this; }
+        public Boolean isAutoRenew() { return autoRenew; }
+        public Subscription setAutoRenew(Boolean value) { this.autoRenew = value; return this; }
+        public String getStatus() { return status; }
+        public Subscription setStatus(String value) { this.status = value; return this; }
     }
 
-    public static class FullUser
+    public static class Product
     {
-        public String id = null;
-        public String userName = null;
-        public String email = null;
-        public String phoneNumber = null;
-        public String firstName = null;
-        public String lastName = null;
-        public String company = null;
-        public Date birthDate = null;
-        public String address = null;
-        public String address2 = null;
-        public String city = null;
-        public String state = null;
-        public String country = null;
-        public String culture = null;
-        public String fullName = null;
-        public String gender = null;
-        public String language = null;
-        public String mailAddress = null;
-        public String nickname = null;
-        public String postalCode = null;
-        public String timeZone = null;
-        public Date lastLoginAttempt = null;
-        public Date lockedDate = null;
-        public Boolean phoneNumberVerified = null;
+        public String productId = null;
+        public String name = null;
+        public String periodicity = null;
+        public BigDecimal price = null;
+        public Float storageSize = null;
+        public String storageUnit = null;
         
-        public String getId() { return id; }
-        public FullUser setId(String value) { this.id = value; return this; }
-        public String getUserName() { return userName; }
-        public FullUser setUserName(String value) { this.userName = value; return this; }
-        public String getEmail() { return email; }
-        public FullUser setEmail(String value) { this.email = value; return this; }
-        public String getPhoneNumber() { return phoneNumber; }
-        public FullUser setPhoneNumber(String value) { this.phoneNumber = value; return this; }
-        public String getFirstName() { return firstName; }
-        public FullUser setFirstName(String value) { this.firstName = value; return this; }
-        public String getLastName() { return lastName; }
-        public FullUser setLastName(String value) { this.lastName = value; return this; }
-        public String getCompany() { return company; }
-        public FullUser setCompany(String value) { this.company = value; return this; }
-        public Date getBirthDate() { return birthDate; }
-        public FullUser setBirthDate(Date value) { this.birthDate = value; return this; }
-        public String getAddress() { return address; }
-        public FullUser setAddress(String value) { this.address = value; return this; }
-        public String getAddress2() { return address2; }
-        public FullUser setAddress2(String value) { this.address2 = value; return this; }
-        public String getCity() { return city; }
-        public FullUser setCity(String value) { this.city = value; return this; }
-        public String getState() { return state; }
-        public FullUser setState(String value) { this.state = value; return this; }
-        public String getCountry() { return country; }
-        public FullUser setCountry(String value) { this.country = value; return this; }
-        public String getCulture() { return culture; }
-        public FullUser setCulture(String value) { this.culture = value; return this; }
-        public String getFullName() { return fullName; }
-        public FullUser setFullName(String value) { this.fullName = value; return this; }
-        public String getGender() { return gender; }
-        public FullUser setGender(String value) { this.gender = value; return this; }
-        public String getLanguage() { return language; }
-        public FullUser setLanguage(String value) { this.language = value; return this; }
-        public String getMailAddress() { return mailAddress; }
-        public FullUser setMailAddress(String value) { this.mailAddress = value; return this; }
-        public String getNickname() { return nickname; }
-        public FullUser setNickname(String value) { this.nickname = value; return this; }
-        public String getPostalCode() { return postalCode; }
-        public FullUser setPostalCode(String value) { this.postalCode = value; return this; }
-        public String getTimeZone() { return timeZone; }
-        public FullUser setTimeZone(String value) { this.timeZone = value; return this; }
-        public Date getLastLoginAttempt() { return lastLoginAttempt; }
-        public FullUser setLastLoginAttempt(Date value) { this.lastLoginAttempt = value; return this; }
-        public Date getLockedDate() { return lockedDate; }
-        public FullUser setLockedDate(Date value) { this.lockedDate = value; return this; }
-        public Boolean isPhoneNumberVerified() { return phoneNumberVerified; }
-        public FullUser setPhoneNumberVerified(Boolean value) { this.phoneNumberVerified = value; return this; }
+        public String getProductId() { return productId; }
+        public Product setProductId(String value) { this.productId = value; return this; }
+        public String getName() { return name; }
+        public Product setName(String value) { this.name = value; return this; }
+        public String getPeriodicity() { return periodicity; }
+        public Product setPeriodicity(String value) { this.periodicity = value; return this; }
+        public BigDecimal getPrice() { return price; }
+        public Product setPrice(BigDecimal value) { this.price = value; return this; }
+        public Float getStorageSize() { return storageSize; }
+        public Product setStorageSize(Float value) { this.storageSize = value; return this; }
+        public String getStorageUnit() { return storageUnit; }
+        public Product setStorageUnit(String value) { this.storageUnit = value; return this; }
+    }
+
+    public static class NewsFeed
+    {
+        public Integer id = null;
+        public Date creationDate = null;
+        public Date updateDate = null;
+        public String title = null;
+        public String shortDescription = null;
+        public String description = null;
+        
+        public Integer getId() { return id; }
+        public NewsFeed setId(Integer value) { this.id = value; return this; }
+        public Date getCreationDate() { return creationDate; }
+        public NewsFeed setCreationDate(Date value) { this.creationDate = value; return this; }
+        public Date getUpdateDate() { return updateDate; }
+        public NewsFeed setUpdateDate(Date value) { this.updateDate = value; return this; }
+        public String getTitle() { return title; }
+        public NewsFeed setTitle(String value) { this.title = value; return this; }
+        public String getShortDescription() { return shortDescription; }
+        public NewsFeed setShortDescription(String value) { this.shortDescription = value; return this; }
+        public String getDescription() { return description; }
+        public NewsFeed setDescription(String value) { this.description = value; return this; }
+    }
+
+    public static class CompanyModel
+    {
+        public Integer id = null;
+        public String name = null;
+        public String logo = null;
+        public Boolean enabled = null;
+        public ArrayList<UserModel> users = null;
+        public HashMap<String,Integer> totals = null;
+        public String quota = null;
+        public Boolean hasAutoRegister = null;
+        
+        public Integer getId() { return id; }
+        public CompanyModel setId(Integer value) { this.id = value; return this; }
+        public String getName() { return name; }
+        public CompanyModel setName(String value) { this.name = value; return this; }
+        public String getLogo() { return logo; }
+        public CompanyModel setLogo(String value) { this.logo = value; return this; }
+        public Boolean isEnabled() { return enabled; }
+        public CompanyModel setEnabled(Boolean value) { this.enabled = value; return this; }
+        public ArrayList<UserModel> getUsers() { return users; }
+        public CompanyModel setUsers(ArrayList<UserModel> value) { this.users = value; return this; }
+        public HashMap<String,Integer> getTotals() { return totals; }
+        public CompanyModel setTotals(HashMap<String,Integer> value) { this.totals = value; return this; }
+        public String getQuota() { return quota; }
+        public CompanyModel setQuota(String value) { this.quota = value; return this; }
+        public Boolean isHasAutoRegister() { return hasAutoRegister; }
+        public CompanyModel setHasAutoRegister(Boolean value) { this.hasAutoRegister = value; return this; }
+    }
+
+    public static class UsedStorage
+    {
+        public String name = null;
+        public String usedStorageSize = null;
+        public String usedStorageUnit = null;
+        public Long itemsNumber = null;
+        
+        public String getName() { return name; }
+        public UsedStorage setName(String value) { this.name = value; return this; }
+        public String getUsedStorageSize() { return usedStorageSize; }
+        public UsedStorage setUsedStorageSize(String value) { this.usedStorageSize = value; return this; }
+        public String getUsedStorageUnit() { return usedStorageUnit; }
+        public UsedStorage setUsedStorageUnit(String value) { this.usedStorageUnit = value; return this; }
+        public Long getItemsNumber() { return itemsNumber; }
+        public UsedStorage setItemsNumber(Long value) { this.itemsNumber = value; return this; }
     }
 
     public static interface IAuthTokens

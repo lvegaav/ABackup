@@ -85,7 +85,7 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
 
     private void synchronizeRootFolder() {
         ReadRemoteFolderOperation mReadRemoteOperation = new ReadRemoteFolderOperation("/");
-        mReadRemoteOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        mReadRemoteOperation.execute(mNetworkProvider.getCloudClient(), this, mHandler);
     }
 
     private void initBadges() {

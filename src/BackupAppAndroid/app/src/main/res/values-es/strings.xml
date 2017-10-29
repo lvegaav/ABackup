@@ -34,10 +34,20 @@
     <string name="network.host_not_available">No se pudo completar la operación. Servidor no disponible</string>
     <string name="network.server_maintenance_mode">Servidor en mantenimiento</string>
 
-    <string name="login.hello">Hola \n¿cual es tu número?</string>
+    <string name="login.hello">Bienvenido!</string>
     <string name="login.phonePlaceHolder">Número</string>
+    <string name="login.passwordPlaceHolder">Contraseña</string>
+    <string name="login.loginPlaceHolder">Iniciar Sesión</string>
+    <string name="login.registerPlaceHolder">Registrarse</string>
+    <string name="login.forgotPlaceHolder">Olvidaste tu contraseña?</string>
     <string name="login.validationPhoneNumberRequired">Número requerido</string>
     <string name="login.validationPhoneNumberInvalid">Número inválido</string>
+
+    <string name="login.register.hello">Registrarse</string>
+    <string name="login.register.passwordPlaceHolder">Nueva Contraseña</string>
+    <string name="login.register.passwordConfirmPlaceHolder">Confirmar Contraseña</string>
+    <string name="login.register.now">Registrarse Ahora</string>
+    <string name="login.register.already">Tengo una cuenta!</string>
 
     <string name="confirmation.codePlaceHolder">Código de Confirmación</string>
     <string name="confirmation.hello">Código de Confirmación</string>

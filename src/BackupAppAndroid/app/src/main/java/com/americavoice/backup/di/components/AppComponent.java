@@ -4,14 +4,19 @@ package com.americavoice.backup.di.components;
 
 import com.americavoice.backup.calls.ui.CallListFragment;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
-import com.americavoice.backup.confirmation.ui.ConfirmationFragment;
 import com.americavoice.backup.contacts.ui.ContactListFragment;
 import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.di.modules.ActivityModule;
 import com.americavoice.backup.di.modules.AppModule;
 import com.americavoice.backup.explorer.ui.FileListFragment;
+import com.americavoice.backup.login.ui.LoginConfirmationFragment;
+import com.americavoice.backup.login.ui.LoginConfirmationView;
+import com.americavoice.backup.login.ui.LoginForgotFragment;
 import com.americavoice.backup.login.ui.LoginFragment;
+import com.americavoice.backup.login.ui.LoginNewPasswordFragment;
+import com.americavoice.backup.login.ui.LoginNewPasswordSuccessFragment;
+import com.americavoice.backup.login.ui.LoginRegisterFragment;
 import com.americavoice.backup.main.ui.MainFragment;
 import com.americavoice.backup.main.ui.SplashScreenFragment;
 import com.americavoice.backup.settings.ui.StorageInfoFragment;
@@ -29,8 +34,14 @@ import dagger.Component;
 @Component(dependencies = ApplicationComponent.class, modules = {ActivityModule.class, AppModule.class})
 public interface AppComponent extends ActivityComponent {
     void inject(SplashScreenFragment fragment);
+
     void inject(LoginFragment fragment);
-    void inject(ConfirmationFragment fragment);
+    void inject(LoginConfirmationFragment fragment);
+    void inject(LoginRegisterFragment fragment);
+    void inject(LoginForgotFragment fragment);
+    void inject(LoginNewPasswordFragment fragment);
+    void inject(LoginNewPasswordSuccessFragment fragment);
+
     void inject(SyncFragment fragment);
     void inject(MainFragment fragment);
     void inject(FileListFragment fragment);

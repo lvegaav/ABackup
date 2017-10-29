@@ -93,10 +93,10 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
         mView.showLoading();
 
         mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
-        mReadRemotePhotosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        mReadRemotePhotosOperation.execute(mNetworkProvider.getCloudClient(), this, mHandler);
 
         mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
-        mReadRemoteVideosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        mReadRemoteVideosOperation.execute(mNetworkProvider.getCloudClient(), this, mHandler);
 
     }
 
