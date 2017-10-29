@@ -31,11 +31,11 @@
             android:layout_alignParentRight="true"/>
         <ImageView
             android:id="@+id/iv_logo"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
-            app:srcCompat="@drawable/ic_sip_v_logo"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            app:srcCompat="@drawable/ic_lock_backup_logo_c"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"/>
 
@@ -58,7 +58,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
@@ -156,9 +155,9 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/ll_center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 
@@ -257,7 +256,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="true"
                 android:layout_gravity="center_horizontal"
                 android:orientation="horizontal">
 

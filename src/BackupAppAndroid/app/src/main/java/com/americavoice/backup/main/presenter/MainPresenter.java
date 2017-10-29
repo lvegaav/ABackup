@@ -20,6 +20,7 @@ import com.americavoice.backup.main.ui.MainView;
 import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -84,8 +85,11 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
     }
 
     private void synchronizeRootFolder() {
-        ReadRemoteFolderOperation mReadRemoteOperation = new ReadRemoteFolderOperation("/");
-        mReadRemoteOperation.execute(mNetworkProvider.getCloudClient(), this, mHandler);
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
+        if (client != null) {
+            ReadRemoteFolderOperation mReadRemoteOperation = new ReadRemoteFolderOperation("/");
+            mReadRemoteOperation.execute(client, this, mHandler);
+        }
     }
 
     private void initBadges() {

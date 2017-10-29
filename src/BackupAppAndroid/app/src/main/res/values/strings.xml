@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Backup</string>
+    <string name="app_name">Lock Backup</string>
 
     <string name="common.loading">Loading</string>
     <string name="common.sending">Sending verification code</string>
@@ -213,5 +213,13 @@
     <string name="storage.upgrade_plan">Upgrade Plan</string>
     <string name="files.cloud_almost_full">Cloud Storage is almost full</string>
     <string name="files.getting_pending_no_access">We are trying to get your pending files. You need to grant access to</string>
+    <string name="tour.dashboard">This is your Dashboard, in it you\'ll find access to all your files and logs.</string>
+    <string name="tour.got_it">GOT IT</string>
+    <string name="tour.dashboard_icons">Tapping on the icons of your dashboard will take you to another view. Tap on Photos to see your files.</string>
+    <string name="tour.files_switch">You can turn automatic uploads with this toggle, which means that you don\'t need to do anything to upload your files to the cloud</string>
+    <string name="tour.files_upload">Add more files manualy to your cloud storage by tapping on this button and selecting the files you want to upload.</string>
+    <string name="tour.dashboard_settings">You can manage your settings here</string>
+    <string name="tour.settings_share">Share this app with your friends and family so they can store their contents safely in the cloud.</string>
+    <string name="tour_settings_options">You have several options to configure, also you can see how much storage you have available.</string>
 
 </resources>

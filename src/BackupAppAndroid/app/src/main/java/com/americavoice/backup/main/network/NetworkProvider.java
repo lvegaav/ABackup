@@ -54,10 +54,12 @@ public class NetworkProvider {
         mContext = context;
         mAccountMgr = AccountManager.get(context);
 
+        
         mDeviceInfo = new HashMap<>();
-        mDeviceInfo.put("deviceBrand", Build.MANUFACTURER);
-        mDeviceInfo.put("deviceModel",Build.MODEL);
-        mDeviceInfo.put("osVersion",Build.VERSION.SDK);
+        mDeviceInfo.put("device:brand", Build.MANUFACTURER);
+        mDeviceInfo.put("device:model",Build.MODEL);
+        mDeviceInfo.put("device:os","Android");
+        mDeviceInfo.put("device:osVersion",Build.VERSION.SDK);
 
         //TODO Ignore self-signed certificate
         IgnoreSelfSigned();
@@ -100,6 +102,7 @@ public class NetworkProvider {
         }
         return mCloudClient;
     }
+
     public void logout() {
         // Logout from account manager
         Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);

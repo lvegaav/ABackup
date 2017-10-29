@@ -28,6 +28,7 @@ import com.americavoice.backup.sync.ui.SyncView;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.FileStorageUtils;
 import com.americavoice.backup.utils.MimeType;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -53,8 +54,7 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
     private SyncView mView;
     private Context mContext;
     private Handler mHandler;
-//    private FileDataStorageManager mStorageManager;
-//    private Account mAccount;
+
     private List<String> mPendingPhotos;
     private List<String> mPendingVideos;
 
@@ -91,12 +91,14 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
 //        mAccount = account;
 //        mStorageManager = new FileDataStorageManager(account, context);
         mView.showLoading();
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
+        if (client != null) {
+            mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
+            mReadRemotePhotosOperation.execute(client, this, mHandler);
 
-        mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
-        mReadRemotePhotosOperation.execute(mNetworkProvider.getCloudClient(), this, mHandler);
-
-        mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
-        mReadRemoteVideosOperation.execute(mNetworkProvider.getCloudClient(), this, mHandler);
+            mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
+            mReadRemoteVideosOperation.execute(client, this, mHandler);
+        }
 
     }
 
