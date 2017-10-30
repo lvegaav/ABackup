@@ -19,6 +19,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,11 +67,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 /**
  * Fragment that shows details of a certain political party.
  */
 public class MainFragment extends BaseFragment implements MainView, StorageInfoView {
+
+    private boolean mShowingTour;
 
     public interface Listener {
         void viewPhotos();
@@ -100,6 +108,13 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
     TextView tvBadgeSms;
     @BindView(R.id.badge_call_log)
     TextView tvBadgeCallLog;
+
+    @BindView(R.id.ll_center)
+    LinearLayout llMainView;
+    @BindView(R.id.ll_photos)
+    LinearLayout llPhotos;
+    @BindView(R.id.btn_settings)
+    ImageView btnSettings;
 
     private Listener mListener;
     private Unbinder mUnBind;
@@ -140,7 +155,6 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
             if (storageFull) showStorageFullDialog(true);
             intent.putExtra(MainActivity.EXTRA_STORAGE_FULL, false);
         }
-        showKeyboard(false);
         this.initialize(savedInstanceState);
     }
 
@@ -158,23 +172,6 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
         if (permissionsList.size() > 0) {
             if (permissionsNeeded.size() > 0) {
-                // Show explanation to the user and then request permission
-//                StringBuilder message = new StringBuilder("You need to grant access to " + permissionsNeeded.get(0));
-//                for (int i = 1; i < permissionsNeeded.size(); i++)
-//                    message.append(", ").append(permissionsNeeded.get(i));
-//                Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.rl_main_view),
-//                        R.string.contacts_read_permission,
-//                        Snackbar.LENGTH_INDEFINITE)
-//                        .setAction(R.string.common_ok, new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                requestPermissions(permissionsList.toArray(new String[permissionsList.size()]),  PermissionUtil.PERMISSIONS_MULTIPLE);
-//                            }
-//                        });
-//
-//                ThemeUtils.colorSnackbar(getActivity(), snackbar);
-//
-//                snackbar.show();
                 return;
             }
             requestPermissions(permissionsList.toArray(new String[permissionsList.size()]), PermissionUtil.PERMISSIONS_MULTIPLE);
@@ -189,6 +186,14 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                             mDialogIsShowing = false;
+                        }
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            if (!mShowingTour){
+                                showGuidedTour();
+                            }
                         }
                     })
                     .title(R.string.app_name)
@@ -213,7 +218,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     @Override
     public void showRequestPermissionDialog() {
-        StringBuilder message = new StringBuilder("We are trying to get your pending files. You need to grant access to ")
+        StringBuilder message = new StringBuilder(getString(R.string.files_getting_pending_no_access))
                 .append(getString(R.string.common_write_external_storage));
         showMessageOKCancel(message.toString(), new MaterialDialog.SingleButtonCallback() {
             @Override
@@ -272,6 +277,10 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
                     arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(true));
                     arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
                     mSettingsPresenter.showSyncAtFirst();
+                } else {
+                    if (!mShowingTour){
+                        showGuidedTour();
+                    }
                 }
             }
         } else {
@@ -314,7 +323,46 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
         this.mSettingsPresenter.setView(this);
-        this.mPresenter.initialize(getContext(), getString(R.string.main_title));
+        this.mPresenter.initialize(getString(R.string.main_title));
+    }
+
+    private void showGuidedTour() {
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500);
+        config.setMaskColor(getResources().getColor(R.color.blackOpacity80));
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "1");
+
+        sequence.setConfig(config);
+
+        sequence.setOnItemShownListener(new MaterialShowcaseSequence.OnSequenceItemShownListener() {
+            @Override
+            public void onShow(MaterialShowcaseView materialShowcaseView, int i) {
+                mShowingTour = true;
+            }
+        });
+
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+                if (i == 2) {
+                    mShowingTour = false;
+                }
+            }
+        });
+
+        sequence.addSequenceItem(llMainView,
+                getString(R.string.tour_dashboard), getString(R.string.tour_got_it));
+
+        sequence.addSequenceItem(btnSettings,
+                getString(R.string.tour_dashboard_settings), getString(R.string.tour_got_it));
+
+        sequence.addSequenceItem(llPhotos,
+                getString(R.string.tour_dashboard_icons), getString(R.string.tour_got_it));
+
+        sequence.start();
+
     }
 
     @Override
@@ -408,7 +456,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
-        if (mListener != null) mListener.onMainBackPressed();
+        if (mListener != null && !mShowingTour) mListener.onMainBackPressed();
     }
 
     @Override
@@ -462,6 +510,9 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
     @Override
     public void showDefaultError() {
         showToastMessage(getString(R.string.exception_message_generic));
+        if (!mShowingTour){
+            showGuidedTour();
+        }
     }
 
     @Override
@@ -544,6 +595,9 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
                             mSettingsPresenter.setFirstTimeFalse();
                         }
                         mDialogIsShowing = false;
+                        if (!mShowingTour){
+                            showGuidedTour();
+                        }
                     }
                 })
                 .title(R.string.app_name)

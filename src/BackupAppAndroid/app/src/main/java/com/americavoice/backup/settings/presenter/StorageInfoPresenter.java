@@ -16,6 +16,7 @@ import com.americavoice.backup.settings.ui.StorageInfoView;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.MimeType;
 import com.americavoice.backup.utils.PermissionUtil;
+import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -92,12 +93,12 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
     public void initialize() {
         mView.showLoading();
         mReadRemoteOperation = new ReadRemoteFolderOperation("/");
-        mReadRemoteOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
+        mReadRemoteOperation.execute(client, this, mHandler);
     }
 
     public void logout() {
         mNetworkProvider.logout();
-        mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
     }
 
     public void scheduleSync() {
@@ -113,11 +114,14 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
         mPhotosRemoteDone = false;
         mVideosRemoteDone = false;
 
-        mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
-        mReadRemotePhotosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
+        if (client != null) {
+            mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
+            mReadRemotePhotosOperation.execute(client, this, mHandler);
 
-        mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
-        mReadRemoteVideosOperation.execute(mNetworkProvider.getCloudClient(getPhoneNumber()), this, mHandler);
+            mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
+            mReadRemoteVideosOperation.execute(client, this, mHandler);
+        }
     }
 
     @Override

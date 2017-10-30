@@ -1,8 +1,8 @@
 /* Options:
-Date: 2017-10-27 14:19:37
+Date: 2017-10-28 19:37:00
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
-BaseUrl: http://core-be.development.americavoice.com:8458/api
+BaseUrl: http://localhost:52241/api
 
 Package: com.americavoice.backup.main.network
 GlobalNamespace: dtos
@@ -42,10 +42,37 @@ public class dtos
     }
 
     /**
-    * Register new user.
+    * Get supported versions of the mobile app.
+    */
+    @Route(Path="/mobileapp/supportedversions", Verbs="GET")
+    @Api(Description="Get supported versions of the mobile app.")
+    public static class GetMobileAppSupportedVersions implements IReturn<GetMobileAppSupportedVersionsResponse>
+    {
+        /**
+        * Tablet (true, false).
+        */
+        @ApiMember(Description="Tablet (true, false).", IsRequired=true, ParameterType="form")
+        public Boolean tablet = null;
+
+        /**
+        * Type (android, ios).
+        */
+        @ApiMember(Description="Type (android, ios).", IsRequired=true, ParameterType="form")
+        public String type = null;
+        
+        public Boolean isTablet() { return tablet; }
+        public GetMobileAppSupportedVersions setTablet(Boolean value) { this.tablet = value; return this; }
+        public String getType() { return type; }
+        public GetMobileAppSupportedVersions setType(String value) { this.type = value; return this; }
+        private static Object responseType = GetMobileAppSupportedVersionsResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Register new customer.
     */
     @Route(Path="/register", Verbs="POST")
-    @Api(Description="Register new user.")
+    @Api(Description="Register new customer.")
     public static class CustomRegister implements IReturn<CustomRegisterResponse>
     {
         /**
@@ -55,15 +82,39 @@ public class dtos
         public Integer companyId = null;
 
         /**
-        * US valid phone number.
+        * Username
         */
-        @ApiMember(Description="US valid phone number.", IsRequired=true, ParameterType="form")
+        @ApiMember(Description="Username", IsRequired=true, ParameterType="form")
+        public String username = null;
+
+        /**
+        * Country Calling Code 
+        */
+        @ApiMember(Description="Country Calling Code ", IsRequired=true, ParameterType="form")
+        public String countryCallingCode = null;
+
+        /**
+        * Valid phone number.
+        */
+        @ApiMember(Description="Valid phone number.", IsRequired=true, ParameterType="form")
         public String phoneNumber = null;
+
+        /**
+        * Password 
+        */
+        @ApiMember(Description="Password ", IsRequired=true, ParameterType="form")
+        public String password = null;
         
         public Integer getCompanyId() { return companyId; }
         public CustomRegister setCompanyId(Integer value) { this.companyId = value; return this; }
+        public String getUsername() { return username; }
+        public CustomRegister setUsername(String value) { this.username = value; return this; }
+        public String getCountryCallingCode() { return countryCallingCode; }
+        public CustomRegister setCountryCallingCode(String value) { this.countryCallingCode = value; return this; }
         public String getPhoneNumber() { return phoneNumber; }
         public CustomRegister setPhoneNumber(String value) { this.phoneNumber = value; return this; }
+        public String getPassword() { return password; }
+        public CustomRegister setPassword(String value) { this.password = value; return this; }
         private static Object responseType = CustomRegisterResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -73,7 +124,7 @@ public class dtos
     */
     @Route(Path="/user/send-reset-password-sms", Verbs="POST")
     @Api(Description="Send reset password sms.")
-    public static class SendResetPasswordSms implements IReturn<SendResetPasswordSmsResponse>
+    public static class SendPasswordResetCode implements IReturn<SendPasswordResetCodeResponse>
     {
         /**
         * Company Id.
@@ -82,16 +133,24 @@ public class dtos
         public Integer companyId = null;
 
         /**
+        * Country Calling Code.
+        */
+        @ApiMember(Description="Country Calling Code.", IsRequired=true, ParameterType="form")
+        public String countryCallingCode = null;
+
+        /**
         * Phone number.
         */
         @ApiMember(Description="Phone number.", IsRequired=true, ParameterType="form")
         public String phoneNumber = null;
         
         public Integer getCompanyId() { return companyId; }
-        public SendResetPasswordSms setCompanyId(Integer value) { this.companyId = value; return this; }
+        public SendPasswordResetCode setCompanyId(Integer value) { this.companyId = value; return this; }
+        public String getCountryCallingCode() { return countryCallingCode; }
+        public SendPasswordResetCode setCountryCallingCode(String value) { this.countryCallingCode = value; return this; }
         public String getPhoneNumber() { return phoneNumber; }
-        public SendResetPasswordSms setPhoneNumber(String value) { this.phoneNumber = value; return this; }
-        private static Object responseType = SendResetPasswordSmsResponse.class;
+        public SendPasswordResetCode setPhoneNumber(String value) { this.phoneNumber = value; return this; }
+        private static Object responseType = SendPasswordResetCodeResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -103,6 +162,24 @@ public class dtos
     public static class PerformResetPassword implements IReturn<PerformResetPasswordResponse>
     {
         /**
+        * Company ID
+        */
+        @ApiMember(Description="Company ID", IsRequired=true, ParameterType="form")
+        public Integer companyId = null;
+
+        /**
+        * Country Calling Code
+        */
+        @ApiMember(Description="Country Calling Code", IsRequired=true, ParameterType="form")
+        public String countryCallingCode = null;
+
+        /**
+        * Phone Number.
+        */
+        @ApiMember(Description="Phone Number.", IsRequired=true, ParameterType="form")
+        public String phoneNumber = null;
+
+        /**
         * Reset password code.
         */
         @ApiMember(Description="Reset password code.", IsRequired=true, ParameterType="form")
@@ -113,20 +190,76 @@ public class dtos
         */
         @ApiMember(Description="New password.", IsRequired=true, ParameterType="form")
         public String newPassword = null;
-
-        /**
-        * Phone Number.
-        */
-        @ApiMember(Description="Phone Number.", IsRequired=true, ParameterType="form")
-        public String phoneNumber = null;
         
+        public Integer getCompanyId() { return companyId; }
+        public PerformResetPassword setCompanyId(Integer value) { this.companyId = value; return this; }
+        public String getCountryCallingCode() { return countryCallingCode; }
+        public PerformResetPassword setCountryCallingCode(String value) { this.countryCallingCode = value; return this; }
+        public String getPhoneNumber() { return phoneNumber; }
+        public PerformResetPassword setPhoneNumber(String value) { this.phoneNumber = value; return this; }
         public String getResetPasswordCode() { return resetPasswordCode; }
         public PerformResetPassword setResetPasswordCode(String value) { this.resetPasswordCode = value; return this; }
         public String getNewPassword() { return newPassword; }
         public PerformResetPassword setNewPassword(String value) { this.newPassword = value; return this; }
-        public String getPhoneNumber() { return phoneNumber; }
-        public PerformResetPassword setPhoneNumber(String value) { this.phoneNumber = value; return this; }
         private static Object responseType = PerformResetPasswordResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Change password.
+    */
+    @Route(Path="/user/change-password", Verbs="POST")
+    @Api(Description="Change password.")
+    public static class PerformChangePassword implements IReturn<PerformResetPasswordResponse>
+    {
+        /**
+        * Username.
+        */
+        @ApiMember(Description="Username.", IsRequired=true, ParameterType="form")
+        public String username = null;
+
+        /**
+        * New password.
+        */
+        @ApiMember(Description="New password.", IsRequired=true, ParameterType="form")
+        public String newPassword = null;
+        
+        public String getUsername() { return username; }
+        public PerformChangePassword setUsername(String value) { this.username = value; return this; }
+        public String getNewPassword() { return newPassword; }
+        public PerformChangePassword setNewPassword(String value) { this.newPassword = value; return this; }
+        private static Object responseType = PerformResetPasswordResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Send phone verification code to authenticated user.
+    */
+    @Route(Path="/register/send-phonecode", Verbs="POST")
+    @Api(Description="Send phone verification code to authenticated user.")
+    public static class SendPhoneVerificationCode implements IReturn<SendPhoneVerificationCodeResponse>
+    {
+        
+        private static Object responseType = SendPhoneVerificationCodeResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Validate phone verification code for authenticated user.
+    */
+    @Route(Path="/register/validate-phonecode", Verbs="POST")
+    @Api(Description="Validate phone verification code for authenticated user.")
+    public static class ValidatePhoneVerificationCode implements IReturn<ValidatePhoneVerificationCodeResponse>
+    {
+        /**
+        * Verification Code.
+        */
+        @ApiMember(Description="Verification Code.", IsRequired=true, ParameterType="form")
+        public String verificationCode = null;
+        
+        public String getVerificationCode() { return verificationCode; }
+        public ValidatePhoneVerificationCode setVerificationCode(String value) { this.verificationCode = value; return this; }
+        private static Object responseType = ValidatePhoneVerificationCodeResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -396,6 +529,33 @@ public class dtos
         public String getProductId() { return productId; }
         public ChargeSubscription setProductId(String value) { this.productId = value; return this; }
         private static Object responseType = ChargeSubscriptionResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Renew subscription
+    */
+    @Route(Path="/subscription/{SubscriptionId}/renew", Verbs="POST")
+    @Api(Description="Renew subscription")
+    public static class RenewSubscription implements IReturn<RenewSubscriptionResponse>
+    {
+        public String subscriptionId = null;
+        
+        public String getSubscriptionId() { return subscriptionId; }
+        public RenewSubscription setSubscriptionId(String value) { this.subscriptionId = value; return this; }
+        private static Object responseType = RenewSubscriptionResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get products.
+    */
+    @Route(Path="/products", Verbs="GET")
+    @Api(Description="Get products.")
+    public static class GetProducts implements IReturn<GetProductsResponse>
+    {
+        
+        private static Object responseType = GetProductsResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -766,6 +926,14 @@ public class dtos
         public GetTimeZonesResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
+    public static class GetMobileAppSupportedVersionsResponse
+    {
+        public ArrayList<String> versions = null;
+        
+        public ArrayList<String> getVersions() { return versions; }
+        public GetMobileAppSupportedVersionsResponse setVersions(ArrayList<String> value) { this.versions = value; return this; }
+    }
+
     public static class CustomRegisterResponse
     {
         public String userId = null;
@@ -777,12 +945,12 @@ public class dtos
         public CustomRegisterResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class SendResetPasswordSmsResponse
+    public static class SendPasswordResetCodeResponse
     {
         public ResponseStatus responseStatus = null;
         
         public ResponseStatus getResponseStatus() { return responseStatus; }
-        public SendResetPasswordSmsResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+        public SendPasswordResetCodeResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class PerformResetPasswordResponse
@@ -791,6 +959,25 @@ public class dtos
         
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public PerformResetPasswordResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class SendPhoneVerificationCodeResponse
+    {
+        public ResponseStatus responseStatus = null;
+        
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public SendPhoneVerificationCodeResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class ValidatePhoneVerificationCodeResponse
+    {
+        public String valid = null;
+        public ResponseStatus responseStatus = null;
+        
+        public String getValid() { return valid; }
+        public ValidatePhoneVerificationCodeResponse setValid(String value) { this.valid = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public ValidatePhoneVerificationCodeResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class GetFullUserResponse
@@ -914,6 +1101,34 @@ public class dtos
         public ChargeSubscriptionResponse setChargedAmount(BigDecimal value) { this.chargedAmount = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public ChargeSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class RenewSubscriptionResponse
+    {
+        public String paymentReference = null;
+        public BigDecimal chargedAmount = null;
+        public Date nextExpiryDate = null;
+        public ResponseStatus responseStatus = null;
+        
+        public String getPaymentReference() { return paymentReference; }
+        public RenewSubscriptionResponse setPaymentReference(String value) { this.paymentReference = value; return this; }
+        public BigDecimal getChargedAmount() { return chargedAmount; }
+        public RenewSubscriptionResponse setChargedAmount(BigDecimal value) { this.chargedAmount = value; return this; }
+        public Date getNextExpiryDate() { return nextExpiryDate; }
+        public RenewSubscriptionResponse setNextExpiryDate(Date value) { this.nextExpiryDate = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public RenewSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetProductsResponse
+    {
+        public ArrayList<Product> products = null;
+        public ResponseStatus responseStatus = null;
+        
+        public ArrayList<Product> getProducts() { return products; }
+        public GetProductsResponse setProducts(ArrayList<Product> value) { this.products = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetProductsResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class GetPayPalTokenResponse
@@ -1128,6 +1343,7 @@ public class dtos
         public String id = null;
         public String userName = null;
         public String email = null;
+        public String countryCallingCode = null;
         public String phoneNumber = null;
         public String firstName = null;
         public String lastName = null;
@@ -1156,6 +1372,8 @@ public class dtos
         public FullUser setUserName(String value) { this.userName = value; return this; }
         public String getEmail() { return email; }
         public FullUser setEmail(String value) { this.email = value; return this; }
+        public String getCountryCallingCode() { return countryCallingCode; }
+        public FullUser setCountryCallingCode(String value) { this.countryCallingCode = value; return this; }
         public String getPhoneNumber() { return phoneNumber; }
         public FullUser setPhoneNumber(String value) { this.phoneNumber = value; return this; }
         public String getFirstName() { return firstName; }
@@ -1449,6 +1667,29 @@ public class dtos
         public Subscription setAutoRenew(Boolean value) { this.autoRenew = value; return this; }
         public String getStatus() { return status; }
         public Subscription setStatus(String value) { this.status = value; return this; }
+    }
+
+    public static class Product
+    {
+        public String productId = null;
+        public String name = null;
+        public String periodicity = null;
+        public BigDecimal price = null;
+        public Float storageSize = null;
+        public String storageUnit = null;
+        
+        public String getProductId() { return productId; }
+        public Product setProductId(String value) { this.productId = value; return this; }
+        public String getName() { return name; }
+        public Product setName(String value) { this.name = value; return this; }
+        public String getPeriodicity() { return periodicity; }
+        public Product setPeriodicity(String value) { this.periodicity = value; return this; }
+        public BigDecimal getPrice() { return price; }
+        public Product setPrice(BigDecimal value) { this.price = value; return this; }
+        public Float getStorageSize() { return storageSize; }
+        public Product setStorageSize(Float value) { this.storageSize = value; return this; }
+        public String getStorageUnit() { return storageUnit; }
+        public Product setStorageUnit(String value) { this.storageUnit = value; return this; }
     }
 
     public static class NewsFeed

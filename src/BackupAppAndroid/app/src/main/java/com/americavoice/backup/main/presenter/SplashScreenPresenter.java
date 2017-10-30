@@ -1,6 +1,8 @@
 
 package com.americavoice.backup.main.presenter;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Context;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -37,10 +39,11 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
 
     @Override
     public void resume() {
-        String phoneNumber = mSharedPrefsUtils
-                .getStringPreference(NetworkProvider.KEY_PHONE_NUMBER, "");
-
-        mNetworkProvider.login(phoneNumber, new AsyncResult<dtos.AuthenticateResponse>() {
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mView.getContext());
+        AccountManager accountManager = AccountManager.get(mView.getContext());
+        String password = accountManager.getPassword(account);
+        String name = account.name;
+        mNetworkProvider.login(name, password, new AsyncResult<dtos.AuthenticateResponse>() {
             @Override
             public void error(Exception ex) {
                 mNetworkProvider.logout();

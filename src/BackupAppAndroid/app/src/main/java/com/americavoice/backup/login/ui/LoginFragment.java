@@ -37,6 +37,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -48,8 +49,9 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
      * Interface for listening submit button.
      */
     public interface Listener {
-        void viewHome();
-        void viewValidation();
+        void viewValidation(String username, String device);
+        void viewRegister();
+        void viewForgot();
         void onBackLoginClicked();
     }
 
@@ -58,10 +60,11 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     LoginPresenter mPresenter;
     private Listener mListener;
     private Unbinder mUnBind;
-    @BindView(R.id.et_phone_number)
-    public EditText etPhoneNumber;
-    @BindView(R.id.sp_country)
-    Spinner spCountry;
+    @BindView(R.id.et_username)
+    public EditText etUsername;
+    @BindView(R.id.et_password)
+    public EditText etPassword;
+
 
 
     public LoginFragment() {
@@ -86,18 +89,6 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
 
         View fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
-        etPhoneNumber.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId== EditorInfo.IME_ACTION_DONE) {
-                    if (ConnectivityUtils.isAppConnected(getContext()))
-                        mPresenter.submit(((SpinnerItem) spCountry.getSelectedItem()).getId(), etPhoneNumber.getText().toString());
-                    else
-                        showToastMessage(getString(R.string.common_connectivity_error));
-                }
-                return false;
-            }
-        });
         return fragmentView;
     }
 
@@ -192,36 +183,20 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     }
 
     @Override
-    public void viewHome() {
-        if (mListener != null) mListener.viewHome();
+    public void viewValidation(String username, String device) {
+        if (mListener != null) mListener.viewValidation(username, device);
     }
 
     @Override
-    public void viewValidation() {
-        if (mListener != null) mListener.viewValidation();
+    public void showUsernameRequired() {
+        etUsername.requestFocus();
+        etUsername.setError(getString(R.string.login_validationUsernameRequired));
     }
 
     @Override
-    public void populateCountries(List<SpinnerItem> items) {
-        if (spCountry == null) return;
-
-        spCountry.setAdapter(
-                new SpinnerItemAdapter(
-                        getActivity(),
-                        R.layout.spinner_item,
-                        items));
-    }
-
-    @Override
-    public void showPhoneNumberRequired() {
-        etPhoneNumber.requestFocus();
-        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberRequired));
-    }
-
-    @Override
-    public void showPhoneNumberInvalid() {
-        etPhoneNumber.requestFocus();
-        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberInvalid));
+    public void showPasswordRequired() {
+        etPassword.requestFocus();
+        etPassword.setError(getString(R.string.login_validationPasswordInvalid));
     }
 
     @Override
@@ -233,11 +208,11 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
             boolean success = false;
 
             if (mAction == LoginActivity.ACTION_CREATE) {
-                success = createAccount(result, mPresenter.getUsername(), mPresenter.getDeviceId());
+                success = createAccount(result, etUsername.getText().toString(), etPassword.getText().toString());
 
             } else {
                 try {
-                    updateAccountAuthentication(mPresenter.getDeviceId());
+                    updateAccountAuthentication(etPassword.getText().toString());
                     success = true;
 
                 } catch (com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException e) {
@@ -272,5 +247,27 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
         loginAsyncTask.execute(params);
     }
 
+    @OnClick(R.id.btn_login)
+    public void Login(View v)
+    {
+        if (ConnectivityUtils.isAppConnected(getContext()))
+            mPresenter.submit(
+                    etUsername.getText().toString(),
+                    etPassword.getText().toString());
+        else
+            showToastMessage(getString(R.string.common_connectivity_error));
+    }
+
+    @OnClick(R.id.btn_register)
+    public void Register(View v)
+    {
+        if (this.mListener != null) this.mListener.viewRegister();
+    }
+
+    @OnClick(R.id.tv_forgot)
+    public void Forgot(View v)
+    {
+        if (this.mListener != null) this.mListener.viewForgot();
+    }
 }
 

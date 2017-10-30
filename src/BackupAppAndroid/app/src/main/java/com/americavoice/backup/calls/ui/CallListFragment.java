@@ -173,7 +173,6 @@ public class CallListFragment extends FileFragment implements CallsListView {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        showKeyboard(false);
         this.initialize(savedInstanceState);
     }
 

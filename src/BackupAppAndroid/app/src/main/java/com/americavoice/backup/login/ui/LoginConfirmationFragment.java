@@ -1,5 +1,5 @@
 
-package com.americavoice.backup.confirmation.ui;
+package com.americavoice.backup.login.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,14 +17,13 @@ import android.widget.TextView;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AuthenticatorAsyncTask;
-import com.americavoice.backup.confirmation.presenter.ConfirmationPresenter;
 import com.americavoice.backup.di.components.AppComponent;
+import com.americavoice.backup.login.presenter.LoginConfirmationPresenter;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.utils.FirebaseUtils;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -40,7 +39,12 @@ import butterknife.Unbinder;
 /**
  * Fragment that shows details of a certain political party.
  */
-public class ConfirmationFragment extends BaseAuthenticatorFragment implements ConfirmationView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
+public class LoginConfirmationFragment extends BaseAuthenticatorFragment implements LoginConfirmationView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
+
+    public static final String ARGUMENT_USERNAME = "com.americavoice.backup.ARGUMENT_USERNAME";
+    public static final String ARGUMENT_DEVICE = "com.americavoice.backup.ARGUMENT_DEVICE";
+
+
     @Override
     public void viewHome() {
         if (mListener != null) mListener.viewHome();
@@ -61,20 +65,28 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
 
 
     @Inject
-    ConfirmationPresenter mPresenter;
+    LoginConfirmationPresenter mPresenter;
     private Listener mListener;
     private Unbinder mUnBind;
     @BindView(R.id.et_confirmation_code)
     public EditText etConfirmationCode;
 
 
-    public ConfirmationFragment() {
+    public LoginConfirmationFragment() {
         super();
     }
 
-    public static ConfirmationFragment newInstance() {
-        return new ConfirmationFragment();
+    public static LoginConfirmationFragment newInstance(String username, String device) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ARGUMENT_USERNAME, username);
+        bundle.putString(ARGUMENT_DEVICE, device);
+
+        LoginConfirmationFragment fragment = new LoginConfirmationFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
+
 
     @Override
     public void onAttach(Activity context) {
@@ -88,7 +100,7 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View fragmentView = inflater.inflate(R.layout.fragment_confirmation, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_login_confirmation, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             etConfirmationCode.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_glove, 0, 0, 0);
@@ -141,7 +153,10 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
     private void initialize(Bundle savedInstanceState) {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
-        this.mPresenter.initialize();
+        this.mPresenter.initialize(
+                getArguments().getString(ARGUMENT_USERNAME),
+                getArguments().getString(ARGUMENT_DEVICE)
+        );
         super.initialize();
 
         if (savedInstanceState != null) {
@@ -204,11 +219,11 @@ public class ConfirmationFragment extends BaseAuthenticatorFragment implements C
             boolean success = false;
 
             if (mAction == LoginActivity.ACTION_CREATE) {
-                success = createAccount(result, mPresenter.getUsername(), mPresenter.getDeviceId());
+                success = createAccount(result, getArguments().getString(ARGUMENT_USERNAME), getArguments().getString(ARGUMENT_DEVICE));
 
             } else {
                 try {
-                    updateAccountAuthentication(mPresenter.getDeviceId());
+                    updateAccountAuthentication(getArguments().getString(ARGUMENT_DEVICE));
                     success = true;
 
                 } catch (com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException e) {

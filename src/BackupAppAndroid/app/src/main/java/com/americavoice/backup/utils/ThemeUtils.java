@@ -51,7 +51,7 @@ public class ThemeUtils {
      */
     public static void colorSnackbar(Context context, Snackbar snackbar) {
         // Changing action button text color
-        snackbar.setActionTextColor(ContextCompat.getColor(context, R.color.white));
+        snackbar.setActionTextColor(ContextCompat.getColor(context, R.color.colorAccent));
     }
 
     public static String colorToHexString(int color) {

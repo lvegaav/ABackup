@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/main_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="@color/colorPrimary">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:srcCompat="@drawable/ic_corner_oval"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            app:srcCompat="@drawable/ic_sip_v_logo"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:id="@+id/tv_hello"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="@string/login.forgot.hello"
+            android:textSize="24sp"
+            android:layout_marginTop="51dp"
+            android:textColor="@color/white"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_hello"
+            android:layout_margin="40dp"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <Spinner
+                    android:id="@+id/sp_country"
+                    android:layout_width="115dp"
+                    android:layout_height="57dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/button_border"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="24sp"
+                    android:layout_marginRight="5dp"/>
+
+                <EditText
+                    android:id="@+id/et_phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="57dp"
+                    android:background="@drawable/button_border"
+                    android:hint="@string/login.phonePlaceHolder"
+                    android:imeOptions="actionDone"
+                    android:inputType="phone"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="24sp"
+                    android:layout_toRightOf="@+id/sp_country"
+                    android:layout_toEndOf="@+id/sp_country" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btn_forgot"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_margin="20dp"
+                android:textColor="@android:color/white"
+                android:background="@color/colorAccent"
+                android:text="@string/login.forgot.sendVerificationCode"
+                android:textAllCaps="false"
+                android:gravity="center"
+                android:textSize="14sp"
+                style="?android:attr/buttonBarStyle"
+                />
+
+            <TextView
+                android:id="@+id/tv_forgot"
+                android:padding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="57dp"
+                android:text="@string/login.forgot.label"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+
+        </LinearLayout>
+
+
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

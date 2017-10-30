@@ -63,91 +63,72 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
      */
     public void initialize() {
         mNetworkProvider.logout();    //Logout server
-        List<SpinnerItem> items = new ArrayList<>();
-        items.add(new SpinnerItem("1","+1"));
-        items.add(new SpinnerItem("502","+502"));
-        items.add(new SpinnerItem("503","+503"));
-        mView.populateCountries(items);
     }
 
-    public void submit(final String countryCode, final String phoneNumber) {
+    public void submit(final String username, final String password) {
         boolean hasError = false;
-        if (TextUtils.isEmpty(phoneNumber)) {
+        if (TextUtils.isEmpty(username)) {
             hasError = true;
-            mView.showPhoneNumberRequired();
+            mView.showUsernameRequired();
         }
-        final String phoneNumberWithCode = countryCode + phoneNumber;
+
+        if (TextUtils.isEmpty(password)) {
+            hasError = true;
+            mView.showPasswordRequired();
+        }
         if (hasError) return;
         mView.showLoading();
-        mNetworkProvider.login(phoneNumberWithCode, new AsyncResult<dtos.AuthenticateResponse>() {
+        mNetworkProvider.login(username, password, new AsyncResult<dtos.AuthenticateResponse>() {
             @Override
             public void success(dtos.AuthenticateResponse response) {
-                mView.hideLoading();
-                mView.showGettingServerInfo();
-                mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
-                mView.loginWithCredentials(mNetworkProvider.getCloudClient(phoneNumberWithCode).getCredentials());
-                mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
-            }
-
-            @Override
-            public void error(Exception ex) {
-                Crashlytics.setString("login", phoneNumberWithCode);
-                Crashlytics.logException(ex);
-                dtos.SendResetPasswordSms request = new dtos.SendResetPasswordSms();
-                request.setCompanyId(Const.COMPANY_ID);
-                request.setPhoneNumber(phoneNumberWithCode);
-                mNetworkProvider.SendResetPasswordSms(request, new AsyncResult<dtos.SendResetPasswordSmsResponse>() {
+                //Try To get Full User Information
+                mNetworkProvider.getUser(new AsyncResult<dtos.GetFullUserResponse>() {
                     @Override
-                    public void success(dtos.SendResetPasswordSmsResponse response) {
+                    public void success(dtos.GetFullUserResponse response) {
                         mView.hideLoading();
-                        mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
-                        mView.viewValidation();
+                        mView.showGettingServerInfo();
+                        mView.loginWithCredentials(mNetworkProvider.getLoginCloudClient(username, password).getCredentials());
+                        mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
                     }
+
                     @Override
                     public void error(Exception ex) {
-                        try {
-                            Crashlytics.setString("SendResetPasswordSms", mNetworkProvider.getUserName(phoneNumberWithCode));
-                            Crashlytics.logException(ex);
-                            if (ex instanceof WebServiceException) {
-                                WebServiceException webEx = (WebServiceException) ex;
-                                if (webEx.getErrorCode().equals("UserNotFound")) {
-                                    mView.hideLoading();
-                                    mView.showPhoneNumberInvalid();
-                                    return;
-                                }
-                                if (webEx.getErrorCode().equals("UserNotRegister")) {
-                                    dtos.CustomRegister request = new dtos.CustomRegister();
-                                    request.setCompanyId(Const.COMPANY_ID);
-                                    request.setPhoneNumber(phoneNumberWithCode);
-                                    mNetworkProvider.CustomRegister(request, new AsyncResult<dtos.CustomRegisterResponse>() {
-                                        @Override
-                                        public void success(dtos.CustomRegisterResponse response) {
-                                            mView.hideLoading();
-                                            mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, phoneNumberWithCode);
-                                            mView.viewValidation();
-                                        }
+                        //Send Verification Code
+                        mNetworkProvider.SendPhoneVerificationCode(new AsyncResult<dtos.SendPhoneVerificationCodeResponse>() {
+                            @Override
+                            public void success(dtos.SendPhoneVerificationCodeResponse response) {
+                                mView.hideLoading();
+                                mView.viewValidation(username, password);
+                            }
 
-                                        @Override
-                                        public void error(Exception ex) {
-                                            mView.hideLoading();
-                                            mView.showPhoneNumberInvalid();
-                                        }
-                                    });
-                                }
-                            } else {
+                            @Override
+                            public void error(Exception ex) {
                                 mView.hideLoading();
                                 if (mView.getContext() != null) {
                                     mView.showError(mView.getContext().getString(R.string.exception_message_generic));
                                 }
                             }
-                        } catch (Exception e) {
-                            mView.hideLoading();
-                            mView.showError(mView.getContext().getString(R.string.exception_message_generic));
-                            Crashlytics.logException(e);
-                        }
+                        });
 
                     }
                 });
+            }
+
+            @Override
+            public void error(Exception ex) {
+                if (ex instanceof WebServiceException) {
+                    WebServiceException webEx = (WebServiceException) ex;
+                    if (webEx.getErrorCode() != null && webEx.getErrorCode().equals("Unauthorized")) {
+                        mView.hideLoading();
+                        mView.showError(mView.getContext().getString(R.string.login_validationFailed));
+                        return;
+                    }
+                }
+
+                mView.hideLoading();
+                if (mView.getContext() != null) {
+                    mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                }
             }
         });
     }

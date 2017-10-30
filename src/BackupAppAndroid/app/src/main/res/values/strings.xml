@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Backup</string>
+    <string name="app_name">Lock Backup</string>
 
     <string name="common.loading">Loading</string>
     <string name="common.sending">Sending verification code</string>
@@ -34,10 +34,43 @@
     <string name="network.host_not_available">Could not complete operation. Server unavailable</string>
     <string name="network.server_maintenance_mode">Server in maintenance mode</string>
 
-    <string name="login.hello">Hello What\'s \nYour Number?</string>
+    <string name="login.hello">Welcome!</string>
     <string name="login.phonePlaceHolder">Phone Number</string>
+    <string name="login.passwordPlaceHolder">Password</string>
+    <string name="login.loginPlaceHolder">Login</string>
+    <string name="login.registerPlaceHolder">Register</string>
+    <string name="login.forgotPlaceHolder">Forgot your password?</string>
     <string name="login.validationPhoneNumberRequired">Phone number required.</string>
     <string name="login.validationPhoneNumberInvalid">Invalid phone number.</string>
+    <string name="login.validationUsernameRequired">Username required.</string>
+    <string name="login.validationUsernameInvalid">Invalid username.</string>
+    <string name="login.validationPasswordInvalid">Invalid password.</string>
+    <string name="login.validationNewPasswordInvalid">Invalid new password.</string>
+    <string name="login.validationConfirmPasswordInvalid">Invalid confirm password.</string>
+    <string name="login.validationVerificationCodeInvalid">Invalid verification code.</string>
+
+
+    <string name="login.validationFailed">Login failed. Invalid username or password.</string>
+
+
+    <string name="login.register.hello">Register</string>
+    <string name="login.register.usernamePlaceHolder">Username</string>
+    <string name="login.register.passwordPlaceHolder">New Password</string>
+    <string name="login.register.passwordConfirmPlaceHolder">Confirm Password</string>
+    <string name="login.register.now">Register Now</string>
+    <string name="login.register.already">I have an account already</string>
+
+    <string name="login.forgot.hello">Forgot your password?</string>
+    <string name="login.forgot.sendVerificationCode">Send Verification Code</string>
+    <string name="login.forgot.label">To keep safe your files we will send you a verification code.</string>
+
+    <string name="login.password.hello">Create A New Password</string>
+    <string name="login.password.code">Verification Code</string>
+    <string name="login.password.create">Create My New Password</string>
+
+    <string name="login.password.success.hello">You Have A New Password</string>
+    <string name="login.password.success.label">The new password you have just created is ready to use!</string>
+    <string name="login.password.success.button">Take My To Login Screen</string>
 
     <string name="confirmation.codePlaceHolder">Confirmation Code</string>
     <string name="confirmation.hello">Confirmation Code</string>
@@ -178,6 +211,16 @@
     <string name="storage.used">Used</string>
     <string name="storage.detail">Detail</string>
     <string name="storage.upgrade_plan">Upgrade Plan</string>
+    <string name="files.cloud_almost_full">Cloud Storage is almost full</string>
+    <string name="files.getting_pending_no_access">We are trying to get your pending files. You need to grant access to</string>
+    <string name="tour.dashboard">This is your Dashboard, in it you\'ll find access to all your files and logs.</string>
+    <string name="tour.got_it">GOT IT</string>
+    <string name="tour.dashboard_icons">Tapping on the icons of your dashboard will take you to another view. Tap on Photos to see your files.</string>
+    <string name="tour.files_switch">You can turn automatic uploads with this toggle, which means that you don\'t need to do anything to upload your files to the cloud</string>
+    <string name="tour.files_upload">Add more files manualy to your cloud storage by tapping on this button and selecting the files you want to upload.</string>
+    <string name="tour.dashboard_settings">You can manage your settings here</string>
+    <string name="tour.settings_share">Share this app with your friends and family so they can store their contents safely in the cloud.</string>
+    <string name="tour_settings_options">You have several options to configure, also you can see how much storage you have available.</string>
 
     <string name="payment.title">Payment options</string>
 

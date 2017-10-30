@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -24,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +46,6 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.operations.RemoveFileOperation;
-import com.americavoice.backup.operations.SynchronizeFileOperation;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
@@ -66,6 +65,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 
 public class FileListFragment extends BaseFragment implements FileListView, OnRemoteOperationListener {
@@ -74,6 +76,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     public static final String PREFERENCE_VIDEOS_LAST_TOTAL = "PREFERENCE_VIDEOS_LAST_TOTAL";
     public static final String PREFERENCE_PHOTOS_AUTOMATIC_BACKUP = "PREFERENCE_PHOTOS_AUTOMATIC_BACKUP";
     public static final String PREFERENCE_VIDEOS_AUTOMATIC_BACKUP = "PREFERENCE_VIDEOS_AUTOMATIC_BACKUP";
+    public static final String PREFERENCE_STORAGE_ALMOST_FULL = "PREFERENCE_STORAGE_ALMOST_FULL";
 
     public static final String PREFERENCE_DOCUMENTS_LAST_TOTAL = "PREFERENCE_DOCUMENTS_LAST_TOTAL";
     private static final String ARGUMENT_KEY_PATH = "com.americavoice.backup.ARGUMENT_KEY_PATH";
@@ -87,6 +90,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
     private ArbitraryDataProvider arbitraryDataProvider;
+    private boolean mShowingTour;
 
     /**
      * Interface for listening file list events.
@@ -112,7 +116,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     @BindView(R.id.fab_upload)
     FloatingActionButton fabUpload;
     @BindView(R.id.ll_automatic_backup)
-    LinearLayout llAutomaticBackup;
+    RelativeLayout llAutomaticBackup;
     @BindView(R.id.files_automatic_backup)
     public SwitchCompat backupSwitch;
 
@@ -160,17 +164,16 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mHandler = new Handler();
-        showKeyboard(false);
         if (getActivity() instanceof BaseOwncloudActivity)
             mContainerActivity = ((BaseOwncloudActivity) getActivity());
         this.initialize();
-        this.loadList();
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
+        this.mPresenter.resume();
         // Listen for upload messages
         IntentFilter uploadIntentFilter = new IntentFilter(FileUploader.getUploadFinishMessage());
         mUploadFinishReceiver = new UploadFinishReceiver();
@@ -180,7 +183,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         mDownloadFinishReceiver = new DownloadFinishReceiver();
         getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
 
-        this.mPresenter.resume();
     }
 
     @Override
@@ -215,6 +217,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         if (mPresenter != null) this.mPresenter.setView(this);
+        this.loadList();
         if (!ConnectivityUtils.isAppConnected(getContext())) {
             showToastMessage(getString(R.string.common_connectivity_error));
             return;
@@ -247,6 +250,22 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         };
 
         backupSwitch.setOnCheckedChangeListener(onCheckedChangeListener);
+        showGuidedTour();
+    }
+
+    @Override
+    public void showPersistenceUpgrade(int message) {
+        Snackbar snackbar = Snackbar.make(
+                getActivity().findViewById(R.id.main_content),
+                getString(message),
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.storage_upgrade_plan, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+        snackbar.show();
     }
 
     private void setAutomaticBackup(final boolean bool) {
@@ -386,16 +405,50 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
             if (tvEmpty != null) tvEmpty.setVisibility(View.GONE);
             this.mAdapter = new FileAdapter(
                     getContext(),
-                    new ArrayList<OCFile>(),
+                    transactionModelCollection,
                     new ArrayList<OCFile>(),
                     ((BaseOwncloudActivity) getActivity()).getStorageManager()
             );
             this.rvFiles.setAdapter(mAdapter);
-            if (transactionModelCollection != null) {
-                this.mAdapter.setTransactionCollection(transactionModelCollection);
-            }
             setHasOptionsMenu(true);
         }
+
+    }
+
+    private void showGuidedTour() {
+
+        ShowcaseConfig config = new ShowcaseConfig();
+
+        config.setDelay(500);
+        config.setMaskColor(getResources().getColor(R.color.blackOpacity80));
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "2");
+        sequence.setConfig(config);
+
+        sequence.setOnItemShownListener(new MaterialShowcaseSequence.OnSequenceItemShownListener() {
+            @Override
+            public void onShow(MaterialShowcaseView materialShowcaseView, int i) {
+                mShowingTour = true;
+            }
+        });
+
+        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
+            @Override
+            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
+                int numberOfSequences = !mPath.equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER) ? 1 : 0;
+                if (i == numberOfSequences) {
+                    mShowingTour = false;
+                }
+            }
+        });
+
+        if (!mPath.equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER) ) {
+            sequence.addSequenceItem(backupSwitch,
+                    getString(R.string.tour_files_switch), getString(R.string.tour_got_it));
+        }
+        sequence.addSequenceItem(fabUpload,
+                getString(R.string.tour_files_upload), getString(R.string.tour_got_it));
+        sequence.start();
 
     }
 
@@ -486,6 +539,9 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     }
 
     void onButtonBack() {
+        if (mShowingTour) {
+            return;
+        }
         String path = null;
         String subPath = mPath.substring(1, mPath.length() -1);
         String[] splits = subPath.split("/");
@@ -498,6 +554,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     @OnClick(R.id.fab_upload)
     void onFabUpload() {
+        mPresenter.updateRefreshFlag();
         if (mPath.startsWith(BaseConstants.PHOTOS_REMOTE_FOLDER)) {
             Intent i = new Intent();
             i.setType("image/*");
@@ -568,7 +625,13 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
-                if (mPresenter != null ) mPresenter.onSuccessfulDownload();
+                if (mPresenter != null ){
+                    mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
+                    if (intent.hasExtra(FileDownloader.EXTRA_FILE_PATH)){
+                        String remorePath = intent.getStringExtra(FileDownloader.EXTRA_FILE_PATH);
+                        mPresenter.onSuccessfulDownload(remorePath);
+                    }
+                }
             } finally {
                 if (intent != null) {
                     getContext().removeStickyBroadcast(intent);
@@ -676,6 +739,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     }
 
     private void delete(OCFile file, Account account) {
+        mPresenter.updateRefreshFlag();
         showToastMessage(getString(R.string.common_deleting));
         Intent service = new Intent(getContext(), OperationsService.class);
         service.setAction(OperationsService.ACTION_REMOVE);
@@ -715,8 +779,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                     mPresenter.refreshTotal(mAdapter.getItemCount());
                 }
             }
-        } else if (remoteOperation instanceof SynchronizeFileOperation) {
-            if (mPresenter != null ) mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
         }
     }
 

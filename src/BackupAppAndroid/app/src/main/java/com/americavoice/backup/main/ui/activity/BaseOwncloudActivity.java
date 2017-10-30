@@ -37,6 +37,7 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
     public static final String EXTRA_ACCOUNT = "com.americavoice.backup.main.ui.activity.ACCOUNT";
     public static final String EXTRA_FROM_NOTIFICATION = "com.americavoice.backup.main.ui.activity.FROM_NOTIFICATION";
     public static final String EXTRA_STORAGE_FULL = "EXTRA_STORAGE_FULL";
+    public static final String EXTRA_REFRESH_DATA = "EXTRA_REFRESH_DATA";
 
     /** Flag to signal if the activity is launched by a notification */
     private boolean mFromNotification;
