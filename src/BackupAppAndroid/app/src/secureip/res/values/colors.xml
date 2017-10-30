@@ -3,6 +3,7 @@
     <color name="colorPrimary">#1F60AB</color>
     <color name="colorPrimaryDark">#1F60AB</color>
     <color name="colorAccent">#F37236</color>
+    <color name="red">#d0011b</color>
     <color name="white">#FFF</color>
     <color name="darkText">#333</color>
     <color name="blackOpacity">#0D000000</color>
@@ -12,6 +13,7 @@
     <color name="selected_item_background">#ECECEC</color>
     <color name="list_divider_background">#eee</color>
     <color name="splash_background">@color/colorPrimary</color>
+    <color name="black">#000</color>
 
     <color name="photos_ratio">#f47234</color>
     <color name="videos_ratio">#c25826</color>
