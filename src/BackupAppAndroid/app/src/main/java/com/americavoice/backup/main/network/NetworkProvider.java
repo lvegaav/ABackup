@@ -40,7 +40,7 @@ public class NetworkProvider {
     private HashMap<String, String> mDeviceInfo;
     private OwnCloudClient mCloudClient;
 
-    private static final String baseUrl = "http://192.168.1.7:52241";
+    private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
     private static final String baseUrlOwnCloud = "http://backapp-eng.development.americavoice.com";
 
     public static String getBaseUrlOwnCloud() {
@@ -79,6 +79,7 @@ public class NetworkProvider {
 
     public OwnCloudClient getCloudClient() {
         Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+
         if (account != null) {
             int lastIndex = account.name.indexOf("@");
             if (lastIndex == -1) {
