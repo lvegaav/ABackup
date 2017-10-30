@@ -2,13 +2,12 @@ package com.americavoice.backup.payment.presenter;
 
 import android.util.Log;
 
-import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
-import com.americavoice.backup.payment.data.PaymentMethodDummy;
+import com.americavoice.backup.payment.data.PaymentMethod;
 import com.americavoice.backup.payment.data.SubscriptionDummy;
 import com.americavoice.backup.payment.ui.PaymentView;
 
@@ -45,9 +44,10 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                 //TODO:
                 // Existing payment method. Check subscription
                 Log.d("Payment", response.getPaymentId());
-                mPaymentView.showSubscriptionDetails(
-                        new SubscriptionDummy("$10", "15 GB / month", "2017-01-01", "2018-01-01"),
-                        new PaymentMethodDummy("Credit card", "1111"));
+                checkSubscriptionAndShow();
+//                mPaymentView.showSubscriptionDetails(
+//                        new SubscriptionDummy("$10", "15 GB / month", "2017-01-01", "2018-01-01"),
+//                        new PaymentMethod("credit card", "1111", "01/10"));
             }
 
             @Override
@@ -65,6 +65,10 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                 ex.printStackTrace();
             }
         });
+    }
+
+    private void checkSubscriptionAndShow() {
+
     }
 
     @Override

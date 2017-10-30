@@ -1,12 +1,9 @@
 package com.americavoice.backup.payment.ui;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,13 +18,10 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
-import com.americavoice.backup.payment.data.PaymentMethodDummy;
 import com.americavoice.backup.payment.data.SubscriptionDummy;
 import com.americavoice.backup.payment.presenter.PaymentMethodPresenter;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
-import com.braintreepayments.api.dropin.DropInRequest;
-import com.braintreepayments.api.dropin.DropInResult;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.PaymentMethodNonce;

@@ -16,7 +16,7 @@ import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.activity.BaseActivity;
-import com.americavoice.backup.payment.data.PaymentMethodDummy;
+import com.americavoice.backup.payment.data.PaymentMethod;
 import com.americavoice.backup.payment.data.SubscriptionDummy;
 import com.americavoice.backup.payment.presenter.PaymentPresenter;
 
@@ -102,7 +102,7 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     }
 
     @Override
-    public void showSubscriptionDetails(SubscriptionDummy subscription, PaymentMethodDummy paymentMethod) {
+    public void showSubscriptionDetails(SubscriptionDummy subscription, PaymentMethod paymentMethod) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(SubscriptionFragment.SUBSCRIPTION, subscription);
         bundle.putParcelable(SubscriptionFragment.PAYMENT_METHOD, paymentMethod);
@@ -129,7 +129,7 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public void setPaymentMethod() {
-        showSubscriptionDetails(SubscriptionDummy.dummy(), new PaymentMethodDummy("credit card", "1111"));
+        showSubscriptionDetails(SubscriptionDummy.dummy(), new PaymentMethod("credit card", "1111", "01/10"));
     }
 
     @Override

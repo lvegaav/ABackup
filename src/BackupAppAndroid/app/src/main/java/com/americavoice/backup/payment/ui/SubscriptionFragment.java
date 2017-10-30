@@ -66,6 +66,7 @@ public class SubscriptionFragment extends BaseFragment {
         mUnbinder = ButterKnife.bind(this, view);
         initializeListener();
         initializeSubscription();
+        initializePaymentMethod();
         return view;
     }
 
@@ -84,6 +85,10 @@ public class SubscriptionFragment extends BaseFragment {
         mSubscriptionStart.setText(getString(R.string.subscription_start_date, subscription.startDate));
         mSubscriptionNextPayment.setVisibility(View.VISIBLE);
         mSubscriptionNextPayment.setText(getString(R.string.subscription_next_payment_date, subscription.nextPaymentDate));
+    }
+
+    private void initializePaymentMethod() {
+
     }
 
 //    private void initializePaymentMethod() {
