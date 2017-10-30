@@ -50,7 +50,6 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     private FileListView mView;
     private Handler mHandler;
     private String mPath;
-    private OCFile mRemoteFile;
     private Context mContext;
 
     @Inject
@@ -110,7 +109,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         } else if (mSharedPrefsUtils.getBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, false)){
             mView.showPersistenceUpgrade(R.string.files_cloud_almost_full);
         }
-        OwnCloudClient client = mNetworkProvider.getCloudClient(getPhoneNumber());
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
         if (client != null) {
             ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(path);
             refreshOperation.execute(client, this, mHandler);
@@ -118,7 +117,6 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     }
 
     public void onFileClicked(Context context, OCFile remoteFile) {
-
         if (remoteFile.isFolder()) {
             mView.viewFolder(remoteFile.getRemotePath());
         } else {

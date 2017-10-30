@@ -9,13 +9,10 @@ import java.util.List;
 /**
  * Interface representing a View in a model view presenter (MVP) pattern.
  */
-public interface LoginView extends ILoadDataView {
-    void viewValidation(String username, String device);
+public interface LoginForgotView extends ILoadDataView {
+    void viewLoginNewPassword(String countryCode, String phoneNumber);
+    void populateCountries(List<SpinnerItem> items);
 
-    void loginWithCredentials(OwnCloudCredentials credentials);
-    void showGettingServerInfo();
-    void hideGettingServerInfo();
-    void showUsernameRequired();
-    void showPasswordRequired();
-
+    void showPhoneNumberRequired();
+    void showPhoneNumberInvalid();
 }

@@ -85,7 +85,7 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
     }
 
     private void synchronizeRootFolder() {
-        OwnCloudClient client = mNetworkProvider.getCloudClient(getPhoneNumber());
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
         if (client != null) {
             ReadRemoteFolderOperation mReadRemoteOperation = new ReadRemoteFolderOperation("/");
             mReadRemoteOperation.execute(client, this, mHandler);

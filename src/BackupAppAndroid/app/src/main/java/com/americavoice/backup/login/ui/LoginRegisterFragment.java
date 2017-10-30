@@ -18,6 +18,7 @@ import com.americavoice.backup.authentication.AuthenticatorAsyncTask;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.login.model.SpinnerItem;
 import com.americavoice.backup.login.presenter.LoginPresenter;
+import com.americavoice.backup.login.presenter.LoginRegisterPresenter;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
@@ -43,36 +44,41 @@ import butterknife.Unbinder;
 /**
  * Fragment that shows details of a certain political party.
  */
-public class LoginFragment extends BaseAuthenticatorFragment implements LoginView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
+public class LoginRegisterFragment extends BaseAuthenticatorFragment implements LoginRegisterView {
+
+
 
     /**
      * Interface for listening submit button.
      */
     public interface Listener {
         void viewValidation(String username, String device);
-        void viewRegister();
-        void viewForgot();
-        void onBackLoginClicked();
+        void onBackLoginRegisterClicked();
     }
 
 
     @Inject
-    LoginPresenter mPresenter;
+    LoginRegisterPresenter mPresenter;
     private Listener mListener;
     private Unbinder mUnBind;
+    @BindView(R.id.et_phone_number)
+    public EditText etPhoneNumber;
+    @BindView(R.id.sp_country)
+    public Spinner spCountry;
     @BindView(R.id.et_username)
     public EditText etUsername;
     @BindView(R.id.et_password)
     public EditText etPassword;
+    @BindView(R.id.et_confirm_password)
+    public EditText etConfirmPassword;
 
 
-
-    public LoginFragment() {
+    public LoginRegisterFragment() {
         super();
     }
 
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
+    public static LoginRegisterFragment newInstance() {
+        return new LoginRegisterFragment();
     }
 
     @Override
@@ -87,7 +93,7 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_login_register, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
         return fragmentView;
     }
@@ -157,16 +163,6 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     }
 
     @Override
-    public void showGettingServerInfo() {
-        showDialog(getString(R.string.common_getting_server_info));
-    }
-
-    @Override
-    public void hideGettingServerInfo() {
-        hideDialog();
-    }
-
-    @Override
     public void showError(String message) {
         this.showDialogMessage(message);
     }
@@ -179,7 +175,7 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
 
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
-        if (this.mListener != null) this.mListener.onBackLoginClicked();
+        if (this.mListener != null) this.mListener.onBackLoginRegisterClicked();
     }
 
     @Override
@@ -188,86 +184,67 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     }
 
     @Override
+    public void populateCountries(List<SpinnerItem> items) {
+        if (spCountry == null) return;
+
+        spCountry.setAdapter(
+                new SpinnerItemAdapter(
+                        getActivity(),
+                        R.layout.spinner_item,
+                        items));
+    }
+
+    @Override
+    public void showPhoneNumberRequired() {
+        etPhoneNumber.requestFocus();
+        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberRequired));
+    }
+
+    @Override
+    public void showPhoneNumberInvalid() {
+        etPhoneNumber.requestFocus();
+        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberInvalid));
+    }
+
+    @Override
     public void showUsernameRequired() {
-        etUsername.requestFocus();
-        etUsername.setError(getString(R.string.login_validationUsernameRequired));
+        etPhoneNumber.requestFocus();
+        etPhoneNumber.setError(getString(R.string.login_validationUsernameRequired));
     }
 
     @Override
-    public void showPasswordRequired() {
+    public void showUsernameInvalid() {
+        etPhoneNumber.requestFocus();
+        etPhoneNumber.setError(getString(R.string.login_validationUsernameInvalid));
+    }
+
+    @Override
+    public void showNewPasswordRequired() {
         etPassword.requestFocus();
-        etPassword.setError(getString(R.string.login_validationPasswordInvalid));
+        etPassword.setError(getString(R.string.login_validationNewPasswordInvalid));
     }
 
     @Override
-    public void onAuthenticatorTaskCallback(RemoteOperationResult result) {
-        hideGettingServerInfo();
-        if (result.isSuccess()) {
-            Log_OC.d(TAG, "Successful access - time to save the account");
-
-            boolean success = false;
-
-            if (mAction == LoginActivity.ACTION_CREATE) {
-                success = createAccount(result, etUsername.getText().toString(), etPassword.getText().toString());
-
-            } else {
-                try {
-                    updateAccountAuthentication(etPassword.getText().toString());
-                    success = true;
-
-                } catch (com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException e) {
-                    Log_OC.e(TAG, "Account " + mAccount + " was removed!", e);
-                    showToastMessage(getContext().getString(R.string.auth_account_does_not_exist));
-                    getActivity().finish();
-                }
-            }
-
-            if (success) {
-                FirebaseUtils.createLoginEvent(mFirebaseAnalytics,
-                        FirebaseUtils.LOGIN_METHOD_PHONE_NUMBER);
-                getActivity().finish();
-            } else {
-                showToastMessage(getString(R.string.common_account_error));
-            }
-
-        } else if (result.isServerFail() || result.isException()) {
-            Log_OC.e(TAG, "Something went wrong with the server: " + result.getLogMessage());
-            Crashlytics.logException(result.getException());
-            showToastMessage(getString(R.string.exception_message_generic));
-
-        } else {    // authorization fail due to client side - probably wrong credentials
-            showToastMessage(getString(R.string.common_wrong_credentials));
-        }
+    public void showConfirmPasswordRequired() {
+        etConfirmPassword.requestFocus();
+        etConfirmPassword.setError(getString(R.string.login_validationConfirmPasswordInvalid));
     }
 
     @Override
-    public void loginWithCredentials(OwnCloudCredentials credentials) {
-        AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
-        Object[] params = {NetworkProvider.getBaseUrlOwnCloud(), credentials};
-        loginAsyncTask.execute(params);
+    public void showConfirmPasswordInvalid() {
+        etConfirmPassword.requestFocus();
+        etConfirmPassword.setError(getString(R.string.login_validationConfirmPasswordInvalid));
     }
 
-    @OnClick(R.id.btn_login)
-    public void Login(View v)
-    {
-        if (ConnectivityUtils.isAppConnected(getContext()))
-            mPresenter.submit(
-                    etUsername.getText().toString(),
-                    etPassword.getText().toString());
-        else
-            showToastMessage(getString(R.string.common_connectivity_error));
-    }
-
-    @OnClick(R.id.btn_register)
-    public void Register(View v)
-    {
-        if (this.mListener != null) this.mListener.viewRegister();
-    }
-
-    @OnClick(R.id.tv_forgot)
-    public void Forgot(View v)
-    {
-        if (this.mListener != null) this.mListener.viewForgot();
-    }
+   @OnClick(R.id.btn_register)
+    public void onRegister(View v)
+   {
+       mPresenter.submit(
+               ((SpinnerItem) spCountry.getSelectedItem()).getId(),
+               etPhoneNumber.getText().toString(),
+               etUsername.getText().toString(),
+               etPassword.getText().toString(),
+               etConfirmPassword.getText().toString());
+   }
 }
 

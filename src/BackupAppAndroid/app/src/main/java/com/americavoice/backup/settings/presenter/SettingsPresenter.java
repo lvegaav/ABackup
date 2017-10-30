@@ -74,7 +74,6 @@ public class SettingsPresenter extends BasePresenter implements IPresenter {
 
     public void logout() {
         mNetworkProvider.logout();
-        mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
     }
 
     public void showStorageInfo() {

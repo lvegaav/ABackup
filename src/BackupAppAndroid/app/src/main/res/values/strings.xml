@@ -34,10 +34,43 @@
     <string name="network.host_not_available">Could not complete operation. Server unavailable</string>
     <string name="network.server_maintenance_mode">Server in maintenance mode</string>
 
-    <string name="login.hello">Hello What\'s \nYour Number?</string>
+    <string name="login.hello">Welcome!</string>
     <string name="login.phonePlaceHolder">Phone Number</string>
+    <string name="login.passwordPlaceHolder">Password</string>
+    <string name="login.loginPlaceHolder">Login</string>
+    <string name="login.registerPlaceHolder">Register</string>
+    <string name="login.forgotPlaceHolder">Forgot your password?</string>
     <string name="login.validationPhoneNumberRequired">Phone number required.</string>
     <string name="login.validationPhoneNumberInvalid">Invalid phone number.</string>
+    <string name="login.validationUsernameRequired">Username required.</string>
+    <string name="login.validationUsernameInvalid">Invalid username.</string>
+    <string name="login.validationPasswordInvalid">Invalid password.</string>
+    <string name="login.validationNewPasswordInvalid">Invalid new password.</string>
+    <string name="login.validationConfirmPasswordInvalid">Invalid confirm password.</string>
+    <string name="login.validationVerificationCodeInvalid">Invalid verification code.</string>
+
+
+    <string name="login.validationFailed">Login failed. Invalid username or password.</string>
+
+
+    <string name="login.register.hello">Register</string>
+    <string name="login.register.usernamePlaceHolder">Username</string>
+    <string name="login.register.passwordPlaceHolder">New Password</string>
+    <string name="login.register.passwordConfirmPlaceHolder">Confirm Password</string>
+    <string name="login.register.now">Register Now</string>
+    <string name="login.register.already">I have an account already</string>
+
+    <string name="login.forgot.hello">Forgot your password?</string>
+    <string name="login.forgot.sendVerificationCode">Send Verification Code</string>
+    <string name="login.forgot.label">To keep safe your files we will send you a verification code.</string>
+
+    <string name="login.password.hello">Create A New Password</string>
+    <string name="login.password.code">Verification Code</string>
+    <string name="login.password.create">Create My New Password</string>
+
+    <string name="login.password.success.hello">You Have A New Password</string>
+    <string name="login.password.success.label">The new password you have just created is ready to use!</string>
+    <string name="login.password.success.button">Take My To Login Screen</string>
 
     <string name="confirmation.codePlaceHolder">Confirmation Code</string>
     <string name="confirmation.hello">Confirmation Code</string>

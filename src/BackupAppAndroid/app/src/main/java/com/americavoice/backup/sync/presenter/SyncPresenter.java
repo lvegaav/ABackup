@@ -91,7 +91,7 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
 //        mAccount = account;
 //        mStorageManager = new FileDataStorageManager(account, context);
         mView.showLoading();
-        OwnCloudClient client = mNetworkProvider.getCloudClient(getPhoneNumber());
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
         if (client != null) {
             mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
             mReadRemotePhotosOperation.execute(client, this, mHandler);

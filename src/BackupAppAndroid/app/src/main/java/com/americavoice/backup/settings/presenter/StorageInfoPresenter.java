@@ -93,13 +93,12 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
     public void initialize() {
         mView.showLoading();
         mReadRemoteOperation = new ReadRemoteFolderOperation("/");
-        OwnCloudClient client = mNetworkProvider.getCloudClient(getPhoneNumber());
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
         mReadRemoteOperation.execute(client, this, mHandler);
     }
 
     public void logout() {
         mNetworkProvider.logout();
-        mSharedPrefsUtils.setStringPreference(NetworkProvider.KEY_PHONE_NUMBER, null);
     }
 
     public void scheduleSync() {
@@ -115,7 +114,7 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
         mPhotosRemoteDone = false;
         mVideosRemoteDone = false;
 
-        OwnCloudClient client = mNetworkProvider.getCloudClient(getPhoneNumber());
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
         if (client != null) {
             mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
             mReadRemotePhotosOperation.execute(client, this, mHandler);
