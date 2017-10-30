@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_white_corner_background"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@drawable/highlight_selected"
+        style="@style/Subscription.Item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            xmlns:android="http://schemas.android.com/apk/res/android">
+            <TextView
+                android:id="@+id/subscription_amount"
+                style="@style/SettingsMenuOption"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@+id/subscription_detail"
+                style="@style/SettingsMenuOption"
+                android:gravity="end"
+                android:textSize="20sp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout
+>
+        <TextView
+            android:id="@+id/subscription_start"
+            android:textSize="15sp"
+            android:visibility="gone"
+            android:gravity="end"
+            style="@style/SettingsMenuOption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/subscription_next_payment"
+            android:visibility="gone"
+            android:textSize="15sp"
+            android:gravity="end"
+            style="@style/SettingsMenuOption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</FrameLayout>

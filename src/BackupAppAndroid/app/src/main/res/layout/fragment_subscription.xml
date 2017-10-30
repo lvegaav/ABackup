@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:padding="10dp"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            app:srcCompat="@drawable/ic_badge_check"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
+        <TextView
+            style="@style/SettingsMenuOption"
+            android:textSize="22sp"
+            android:paddingLeft="10dp"
+            android:text="@string/subscription.current"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/subscription_list_item" />
+    <Button
+        android:id="@+id/change_subscription_button"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:text="@string/subscription.change"
+        style="@style/SettingsMenuOption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/credit_card_background"
+        android:background="@drawable/rounded_black_background_opacity"
+        android:orientation="vertical"
+        android:padding="30dp"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            app:srcCompat="@drawable/ic_wallet"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
+        <Button
+            android:id="@+id/update_payment_method_button"
+            android:background="@color/red"
+            android:padding="10dp"
+            android:layout_margin="15dp"
+            android:text="@string/subscription.change_payment_method"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

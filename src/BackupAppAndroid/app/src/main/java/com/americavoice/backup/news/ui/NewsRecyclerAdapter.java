@@ -7,8 +7,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.main.network.dtos;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by javier on 9/26/17.
@@ -17,9 +21,15 @@ import java.util.List;
 
 public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapter.ViewHolder> {
 
-    private List<FakeNews> mFakeNewsList;
-    public NewsRecyclerAdapter(List<FakeNews> fakeNewsList) {
-        mFakeNewsList = fakeNewsList;
+    private List<dtos.NewsFeed> mNewsFeedList;
+
+    public NewsRecyclerAdapter(List<dtos.NewsFeed> NewsFeedList) {
+        mNewsFeedList = NewsFeedList;
+    }
+
+    public void updateList(List<dtos.NewsFeed> newsFeed) {
+        mNewsFeedList = newsFeed;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -30,16 +40,20 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        FakeNews fakeNews = mFakeNewsList.get(position);
-        holder.mTextView.setText(fakeNews.content);
-        holder.mTitle.setText(fakeNews.title);
-        holder.mDate.setText(fakeNews.date);
-        holder.itemView.setTag(fakeNews);
+        dtos.NewsFeed newsFeed = mNewsFeedList.get(position);
+        holder.mTextView.setText(newsFeed.getShortDescription());
+
+        String date = new SimpleDateFormat("MMM dd yyyy HH:mm a",
+                Locale.getDefault()).format(newsFeed.getCreationDate());
+
+        holder.mTitle.setText(newsFeed.getTitle());
+        holder.mDate.setText(date);
+        holder.itemView.setTag(newsFeed);
     }
 
     @Override
     public int getItemCount() {
-        return mFakeNewsList.size();
+        return mNewsFeedList.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{

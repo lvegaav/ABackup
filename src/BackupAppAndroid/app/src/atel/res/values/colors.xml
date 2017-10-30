@@ -22,4 +22,5 @@
     <color name="colorSwitchActivated">#FFFFFF</color>
     <color name="colorSwitchNormal">#BDBDBD</color>
     <color name="colorSwitchForeground">#48FFFFFF</color>
+    <color name="black">#000</color>
 </resources>

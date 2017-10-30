@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.americavoice.backup.authentication.AccountUtils;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -40,7 +41,7 @@ public class NetworkProvider {
     private HashMap<String, String> mDeviceInfo;
     private OwnCloudClient mCloudClient;
 
-    private static final String baseUrl = "http://192.168.1.7:52241";
+    private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
     private static final String baseUrlOwnCloud = "http://backapp-eng.development.americavoice.com";
 
     public static String getBaseUrlOwnCloud() {
@@ -113,7 +114,7 @@ public class NetworkProvider {
     }
 
     public void login(String username, String password, AsyncResult<dtos.AuthenticateResponse> result) {
-
+        Log.d("Network", "calling login");
         mClient.postAsync(new dtos.Authenticate()
                 .setProvider("credentials")
                 .setUserName(username)
@@ -126,6 +127,7 @@ public class NetworkProvider {
     }
 
     public void CustomRegister(dtos.CustomRegister request, AsyncResult<dtos.CustomRegisterResponse> result) {
+        Log.d("Network", "calling register");
         mClient.postAsync(request, result);
     }
 
@@ -134,6 +136,7 @@ public class NetworkProvider {
     }
 
     public void SendPasswordResetCode(dtos.SendPasswordResetCode request, AsyncResult<dtos.SendPasswordResetCodeResponse> result) {
+        Log.d("Network", "calling reset pass");
         mClient.postAsync(request, result);
     }
 
@@ -141,7 +144,60 @@ public class NetworkProvider {
         mClient.postAsync(request, result);
     }
 
+    public void getPaymentMethod(AsyncResult<dtos.GetPaymentMethodResponse> result) {
+        Log.d("Network", "Calling get payment method");
+        mClient.getAsync(new dtos.GetPaymentMethod(), result);
+    }
+
+    public void getPaypalToken(AsyncResult<dtos.GetPayPalTokenResponse> result) {
+        mClient.getAsync(new dtos.GetPayPalToken(), result);
+    }
+
+    public void sendPayPalNonce(String nonce, AsyncResult<dtos.CreatePayPalPaymentMethodResponse> response) {
+        dtos.CreatePayPalPaymentMethod request = new dtos.CreatePayPalPaymentMethod();
+        request.setNonce(nonce);
+        mClient.postAsync(request, response);
+    }
+
+    public void createCreditCardPaymentMethod(dtos.CreateCreditCardPaymentMethod request,
+                                              AsyncResult<dtos.CreateCreditCardPaymentMethodResponse> response) {
+        mClient.postAsync(request, response);
+    }
+
+    public void getNewsFeed(AsyncResult<dtos.GetNewsFeedResponse> response) {
+        Log.d("Network", "calling get news feed");
+        dtos.GetNewsFeed request = new dtos.GetNewsFeed();
+        request.setTake(25);
+        mClient.getAsync(request, response);
+    }
+
     public void ValidatePhoneVerificationCode(dtos.ValidatePhoneVerificationCode request, AsyncResult<dtos.ValidatePhoneVerificationCodeResponse> result) {
         mClient.postAsync(request, result);
+    }
+
+
+    private String md5(final String s) {
+        final String MD5 = "MD5";
+        try {
+            // Create MD5 Hash
+            MessageDigest digest = java.security.MessageDigest
+                    .getInstance(MD5);
+            digest.update(s.getBytes());
+            byte messageDigest[] = digest.digest();
+
+            // Create Hex String
+            StringBuilder hexString = new StringBuilder();
+            for (byte aMessageDigest : messageDigest) {
+                StringBuilder h = new StringBuilder(Integer.toHexString(0xFF & aMessageDigest));
+                while (h.length() < 2)
+                    h.insert(0, "0");
+                hexString.append(h);
+            }
+            return hexString.toString();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 }

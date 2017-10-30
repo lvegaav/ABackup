@@ -95,9 +95,9 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
         request.setNewPassword(mNetworkProvider.getDeviceId());
         request.setResetPasswordCode(code);
         mView.showLoading();
-        mNetworkProvider.PerformResetPassword(request, new AsyncResult<dtos.PerformResetPasswordResponse>() {
+        mNetworkProvider.PerformResetPassword(request, new AsyncResult<dtos.AuthenticateResponse>() {
             @Override
-            public void success(dtos.PerformResetPasswordResponse response) {
+            public void success(dtos.AuthenticateResponse response) {
                 mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
                 mView.hideLoading();
                 mView.showGettingServerInfo();
