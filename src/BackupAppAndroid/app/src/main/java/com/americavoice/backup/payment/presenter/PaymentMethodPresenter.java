@@ -108,7 +108,7 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
 
                     @Override
                     public void success(dtos.CreateCreditCardPaymentMethodResponse response) {
-                        // TODO: set selected subscription
+                        mView.onPaymentMethodUpdated();
                         Log.d("Credit card", "Success creating credit card: " + response.getPaymentId());
                     }
 
@@ -121,6 +121,7 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
                                     " " + exception.getErrorMessage());
                         }
                         Log.e("Credit card", "Error creating credit card", ex);
+                        mView.showPayPalError(ex);
                     }
                 });
     }

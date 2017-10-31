@@ -1,8 +1,8 @@
 /* Options:
-Date: 2017-10-28 19:37:00
+Date: 2017-10-30 11:04:54
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
-BaseUrl: http://localhost:52241/api
+BaseUrl: http://core-be.development.americavoice.com:8458/api
 
 Package: com.americavoice.backup.main.network
 GlobalNamespace: dtos
@@ -201,33 +201,6 @@ public class dtos
         public PerformResetPassword setResetPasswordCode(String value) { this.resetPasswordCode = value; return this; }
         public String getNewPassword() { return newPassword; }
         public PerformResetPassword setNewPassword(String value) { this.newPassword = value; return this; }
-        private static Object responseType = PerformResetPasswordResponse.class;
-        public Object getResponseType() { return responseType; }
-    }
-
-    /**
-    * Change password.
-    */
-    @Route(Path="/user/change-password", Verbs="POST")
-    @Api(Description="Change password.")
-    public static class PerformChangePassword implements IReturn<PerformResetPasswordResponse>
-    {
-        /**
-        * Username.
-        */
-        @ApiMember(Description="Username.", IsRequired=true, ParameterType="form")
-        public String username = null;
-
-        /**
-        * New password.
-        */
-        @ApiMember(Description="New password.", IsRequired=true, ParameterType="form")
-        public String newPassword = null;
-        
-        public String getUsername() { return username; }
-        public PerformChangePassword setUsername(String value) { this.username = value; return this; }
-        public String getNewPassword() { return newPassword; }
-        public PerformChangePassword setNewPassword(String value) { this.newPassword = value; return this; }
         private static Object responseType = PerformResetPasswordResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -515,20 +488,14 @@ public class dtos
     }
 
     /**
-    * Charge subscription
+    * Get subscription.
     */
-    @Route(Path="/subscription/charge", Verbs="POST")
-    @Api(Description="Charge subscription")
-    public static class ChargeSubscription implements IReturn<ChargeSubscriptionResponse>
+    @Route(Path="/subscription", Verbs="GET")
+    @Api(Description="Get subscription.")
+    public static class GetSubscription implements IReturn<GetSubscriptionResponse>
     {
-        public String accountNumber = null;
-        public String productId = null;
         
-        public String getAccountNumber() { return accountNumber; }
-        public ChargeSubscription setAccountNumber(String value) { this.accountNumber = value; return this; }
-        public String getProductId() { return productId; }
-        public ChargeSubscription setProductId(String value) { this.productId = value; return this; }
-        private static Object responseType = ChargeSubscriptionResponse.class;
+        private static Object responseType = GetSubscriptionResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -1089,18 +1056,21 @@ public class dtos
         public CreateSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class ChargeSubscriptionResponse
+    public static class GetSubscriptionResponse
     {
-        public String paymentReference = null;
-        public BigDecimal chargedAmount = null;
+        public Product product = null;
+        public Date startDate = null;
+        public Date nextPaymentDate = null;
         public ResponseStatus responseStatus = null;
         
-        public String getPaymentReference() { return paymentReference; }
-        public ChargeSubscriptionResponse setPaymentReference(String value) { this.paymentReference = value; return this; }
-        public BigDecimal getChargedAmount() { return chargedAmount; }
-        public ChargeSubscriptionResponse setChargedAmount(BigDecimal value) { this.chargedAmount = value; return this; }
+        public Product getProduct() { return product; }
+        public GetSubscriptionResponse setProduct(Product value) { this.product = value; return this; }
+        public Date getStartDate() { return startDate; }
+        public GetSubscriptionResponse setStartDate(Date value) { this.startDate = value; return this; }
+        public Date getNextPaymentDate() { return nextPaymentDate; }
+        public GetSubscriptionResponse setNextPaymentDate(Date value) { this.nextPaymentDate = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
-        public ChargeSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+        public GetSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class RenewSubscriptionResponse
@@ -1651,7 +1621,7 @@ public class dtos
         public String accountNumber = null;
         public String productId = null;
         public Date startDate = null;
-        public Date expiryDate = null;
+        public Date nextExpiryDate = null;
         public Boolean autoRenew = null;
         public String status = null;
         
@@ -1661,8 +1631,8 @@ public class dtos
         public Subscription setProductId(String value) { this.productId = value; return this; }
         public Date getStartDate() { return startDate; }
         public Subscription setStartDate(Date value) { this.startDate = value; return this; }
-        public Date getExpiryDate() { return expiryDate; }
-        public Subscription setExpiryDate(Date value) { this.expiryDate = value; return this; }
+        public Date getNextExpiryDate() { return nextExpiryDate; }
+        public Subscription setNextExpiryDate(Date value) { this.nextExpiryDate = value; return this; }
         public Boolean isAutoRenew() { return autoRenew; }
         public Subscription setAutoRenew(Boolean value) { this.autoRenew = value; return this; }
         public String getStatus() { return status; }

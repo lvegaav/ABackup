@@ -176,6 +176,18 @@ public class NetworkProvider {
         mClient.postAsync(request, result);
     }
 
+    public void getProducts(AsyncResult<dtos.GetProductsResponse> result) {
+        mClient.getAsync(new dtos.GetProducts(), result);
+    }
+
+    public void getCurrentSubscription(AsyncResult<dtos.GetSubscriptionResponse> result) {
+        mClient.getAsync(new dtos.GetSubscription(), result);
+    }
+
+    public void createSubscription(dtos.CreateSubscription request, AsyncResult<dtos.CreateSubscriptionResponse> response) {
+        mClient.postAsync(request, response);
+    }
+
 
     private String md5(final String s) {
         final String MD5 = "MD5";

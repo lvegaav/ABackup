@@ -250,6 +250,7 @@
     <string name="credit_card.expiration_year">YY</string>
     <string name="credit_card.ccv">CCV</string>
     <string name="credit_card.x">XXXX</string>
+    <string name="credit_card.your_card">Your card</string>
     <string name="credit_card.save">Save credit card</string>
 
 
