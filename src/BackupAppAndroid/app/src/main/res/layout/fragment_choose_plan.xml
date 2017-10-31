@@ -5,12 +5,12 @@
     android:padding="10dp"
     android:layout_height="match_parent">
     <LinearLayout
-        android:id="@+id/no_subscription_alert"
         style="@style/Subscription.Item"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:id="@+id/no_current_plan"
             android:gravity="center"
             android:orientation="horizontal"
             android:layout_width="match_parent"

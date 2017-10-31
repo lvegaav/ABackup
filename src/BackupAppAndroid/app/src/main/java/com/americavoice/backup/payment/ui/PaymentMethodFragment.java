@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,10 +26,13 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
+import net.servicestack.client.ResponseError;
 import net.servicestack.client.Utils;
 import net.servicestack.client.WebServiceException;
 
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -54,6 +58,7 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
         void paymentMethodBackButton();
         void changeSubscriptionOption();
         void onPayPalError();
+        void onCreditCardError(String message);
         void onCreditCardError();
     }
 
@@ -225,6 +230,17 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
     @Override
     public void showCreditCardError(Exception e) {
         logError(e);
+        if (e instanceof WebServiceException) {
+            WebServiceException wsException = (WebServiceException) e;
+            if (!TextUtils.isEmpty(wsException.getErrorCode()) && wsException.getErrorCode().equals("PaymentProviderError")) {
+                List<ResponseError> errorList = wsException.getFieldErrors();
+                if (errorList != null && errorList.size() > 0) {
+                    ResponseError responseError = errorList.get(0);
+                    mListener.onCreditCardError(responseError.getMessage());
+                    return;
+                }
+            }
+        }
         mListener.onCreditCardError();
     }
 
@@ -277,5 +293,29 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
     @Override
     public void onPaymentMethodUpdated() {
         mListener.paymentMethodUpdated();
+    }
+
+    @Override
+    public void showLoading() {
+        showDialog(getString(R.string.common_loading));
+    }
+    @Override
+    public void hideLoading() {
+        hideDialog();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+
     }
 }

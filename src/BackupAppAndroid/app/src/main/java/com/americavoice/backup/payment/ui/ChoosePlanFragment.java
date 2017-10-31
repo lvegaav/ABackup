@@ -36,6 +36,7 @@ import butterknife.Unbinder;
 
 public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<dtos.Product>, AdapterView.OnItemClickListener {
 
+    public final static String HAS_PLAN = "has plan";
 
 
     public interface Listener {
@@ -53,6 +54,9 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<d
     @BindView(R.id.subscription_list)
     ListView mSubscriptionList;
 
+    @BindView(R.id.no_current_plan)
+    View mNoCurrentPlanView;
+
     private SubscriptionListAdapter mAdapter;
 
     private dtos.Product selectedItem;
@@ -65,15 +69,32 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<d
         }
         View view = inflater.inflate(R.layout.fragment_choose_plan, container, false);
         mUnbinder = ButterKnife.bind(this, view);
+        initializePresenter();
+        initializeCurrentPlanAlert();
+        initializeSubscriptionList();
+        return view;
+    }
+
+    private void initializePresenter() {
+        this.getComponent(AppComponent.class).inject(this);
+        mPlanPresenter.setView(this);
+    }
+
+    private void initializeSubscriptionList() {
         List<dtos.Product> list = Collections.emptyList();
         mAdapter = new SubscriptionListAdapter(list);
         mSubscriptionList.setAdapter(mAdapter);
         mSubscriptionList.setOnItemClickListener(this);
-        this.getComponent(AppComponent.class).inject(this);
-        mPlanPresenter.setView(this);
-        return view;
     }
 
+
+    private void initializeCurrentPlanAlert() {
+        Bundle bundle = getArguments();
+        boolean hasOptions = bundle.getBoolean(HAS_PLAN);
+        if (hasOptions) {
+            mNoCurrentPlanView.setVisibility(View.GONE);
+        }
+    }
 
 
 

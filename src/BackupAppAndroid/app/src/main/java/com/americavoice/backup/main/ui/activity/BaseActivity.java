@@ -1,12 +1,15 @@
 package com.americavoice.backup.main.ui.activity;
 
 import android.accounts.Account;
+import android.app.ProgressDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ProgressBar;
 
 import com.americavoice.backup.AndroidApplication;
+import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.components.ApplicationComponent;
 import com.americavoice.backup.di.modules.ActivityModule;
@@ -24,6 +27,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected Navigator navigator;
 
     protected FirebaseAnalytics mFirebaseAnalytics;
+
+    private ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,24 @@ public abstract class BaseActivity extends AppCompatActivity {
      */
     protected ActivityModule getActivityModule() {
         return new ActivityModule(this);
+    }
+
+    protected void showDialog(String message) {
+        hideDialog();
+        mProgress = new ProgressDialog(this, R.style.Theme_AppCompat_Light_Dialog);
+        mProgress.setTitle(getResources().getString(R.string.app_name));
+        mProgress.setMessage(message);
+        mProgress.setIndeterminate(true);
+        mProgress.setCancelable(false);
+        mProgress.show();
+    }
+
+    protected void hideDialog() {
+        if (mProgress != null) {
+            mProgress.hide();
+            mProgress.dismiss();
+            mProgress = null;
+        }
     }
 
 }

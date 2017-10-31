@@ -204,6 +204,7 @@
 
     <string name="news.title">News &amp; Info</string>
     <string name="news_detail.title">News &amp; Info</string>
+    <string name="news.empty_list">No news to show</string>
 
     <string name="storage_info_title">Storage &amp; Usage</string>
     <string name="storage.your_plan">Your plan</string>

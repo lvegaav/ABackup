@@ -1,5 +1,6 @@
 package com.americavoice.backup.payment.ui;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -90,8 +91,12 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     }
 
     @Override
-    public void showPlanChoose() {
-        replaceFragment(R.id.content, new ChoosePlanFragment(), true, false);
+    public void showPlanChoose(boolean hasPlan) {
+        Fragment fragment = new ChoosePlanFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ChoosePlanFragment.HAS_PLAN, hasPlan);
+        fragment.setArguments(args);
+        replaceFragment(R.id.content, fragment, true, false);
     }
 
     @Override
@@ -174,10 +179,14 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
        showError("The PayPal account could not be registered, please try again", true);
     }
 
-
     @Override
     public void onCreditCardError() {
-        showError("The credit card is not valid, please verify your data and try again", false);
+        onCreditCardError("The credit card is not valid, please verify your data and try again");
+    }
+
+    @Override
+    public void onCreditCardError(String message) {
+        showError(message, false);
     }
 
     @Override
@@ -194,5 +203,32 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
                 .create().show();
     }
 
+    @Override
+    public void showLoading() {
+        showDialog(getString(R.string.common_loading));
+    }
+    @Override
+    public void hideLoading() {
+        hideDialog();
+    }
 
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+
+    }
+
+    @Override
+    public Context getContext() {
+        return null;
+    }
 }

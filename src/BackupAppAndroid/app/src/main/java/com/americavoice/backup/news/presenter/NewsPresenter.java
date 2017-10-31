@@ -30,6 +30,7 @@ public class NewsPresenter extends BasePresenter implements IPresenter {
 
     public void setView(INewsView view) {
         mView = view;
+        mView.showLoading();
         mNetworkProvider.getNewsFeed(new AsyncResult<dtos.GetNewsFeedResponse>() {
             @Override
             public void success(dtos.GetNewsFeedResponse response) {
@@ -40,6 +41,11 @@ public class NewsPresenter extends BasePresenter implements IPresenter {
             @Override
             public void error(Exception ex) {
                 mView.showErrorAndClose(ex);
+            }
+
+            @Override
+            public void complete() {
+                mView.hideLoading();
             }
         });
     }

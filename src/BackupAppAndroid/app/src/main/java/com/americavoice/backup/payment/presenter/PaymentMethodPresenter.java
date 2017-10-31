@@ -90,6 +90,7 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
                                    String country, String cardNumber, String cardExpiry,
                                    String ccvCode) {
 
+        mView.showLoading();
         dtos.CreateCreditCardPaymentMethod request = new dtos.CreateCreditCardPaymentMethod()
                 .setFirstName(firstName)
                 .setLastName(lastName)
@@ -108,6 +109,7 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
 
                     @Override
                     public void success(dtos.CreateCreditCardPaymentMethodResponse response) {
+                        mView.hideLoading();
                         mView.onPaymentMethodUpdated();
                         Log.d("Credit card", "Success creating credit card: " + response.getPaymentId());
                     }
@@ -115,13 +117,14 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
 
                     @Override
                     public void error(Exception ex) {
+                        mView.hideLoading();
                         if (ex instanceof WebServiceException) {
                             WebServiceException exception = (WebServiceException) ex;
                             Log.e("Credit card", "Status: " + exception.getStatusCode() +
                                     " " + exception.getErrorMessage());
                         }
                         Log.e("Credit card", "Error creating credit card", ex);
-                        mView.showPayPalError(ex);
+                        mView.showCreditCardError(ex);
                     }
                 });
     }

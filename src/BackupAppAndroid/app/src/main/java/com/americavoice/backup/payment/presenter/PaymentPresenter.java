@@ -41,6 +41,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
     }
 
     public void checkPaymentMethodAndShow() {
+        mPaymentView.showLoading();
         mNetworkProvider.getPaymentMethod(new AsyncResult<dtos.GetPaymentMethodResponse>() {
             @Override
             public void success(dtos.GetPaymentMethodResponse response) {
@@ -48,28 +49,31 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                 // Existing payment method. Check subscription
                 Log.d("Payment", response.getPaymentId());
                 mPaymentMethod = new PaymentMethod(response);
-
                 checkSubscriptionAndShow();
             }
 
             @Override
             public void error(Exception ex) {
+                mPaymentView.hideLoading();
                 if (ex instanceof WebServiceException) {
                     WebServiceException webServiceException = (WebServiceException) ex;
                     if (webServiceException.getStatusCode() == 404) {
                         // no payment method. Show subscription list
-                        mPaymentView.showPlanChoose();
+                        mPaymentView.showPlanChoose(subscription != null);
                         return;
                     }
                     Log.e("Payment", webServiceException.getErrorCode() + ":" + webServiceException.getErrorMessage());
                 }
                 Log.e("Payment", "Error getting payment method");
                 ex.printStackTrace();
+                mPaymentView.showError("Could not load data, please try again later", true);
             }
+
         });
     }
 
     public void checkSubscriptionAndShow() {
+        mPaymentView.showLoading();
         mNetworkProvider.getCurrentSubscription(new AsyncResult<dtos.GetSubscriptionResponse>() {
             @Override
             public void success(dtos.GetSubscriptionResponse response) {
@@ -80,13 +84,22 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
             @Override
             public void error(Exception ex) {
+                if (ex instanceof WebServiceException) {
+                    WebServiceException webServiceException = (WebServiceException) ex;
+                    Log.e("Payment", webServiceException.getErrorCode() + ":" + webServiceException.getErrorMessage());
+                }
                 showPlanChoose();
+            }
+
+            @Override
+            public void complete() {
+                mPaymentView.hideLoading();
             }
         });
     }
 
     public void showPlanChoose() {
-        mPaymentView.showPlanChoose();
+        mPaymentView.showPlanChoose(subscription != null);
     }
 
     public void showPaymentChoose() {
