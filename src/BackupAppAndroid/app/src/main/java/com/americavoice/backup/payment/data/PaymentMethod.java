@@ -14,8 +14,8 @@ public class PaymentMethod implements Parcelable {
         CREDIT_CARD,
         PAY_PAL;
 
-        private final static String PAY_PAL_STRING = "pay pal";
-        private final static String CREDIT_CARD_STRING = "credit card";
+        private final static String PAY_PAL_STRING = "PayPal";
+        private final static String CREDIT_CARD_STRING = "Card";
 
         public static PaymentMethodType fromString(String string) {
             if (string.equals(PAY_PAL_STRING)) {
@@ -35,15 +35,17 @@ public class PaymentMethod implements Parcelable {
         }
     }
 
-    public PaymentMethodType paymentMethod;
+    public PaymentMethodType paymentMethodType;
     public String creditCardNumber;
     public String expirationDate;
 
 
-    public PaymentMethod(String paymentMethod, String creditCardNumber, String expirationDate) {
-        this.paymentMethod = PaymentMethodType.fromString(paymentMethod);
+    public PaymentMethod(String paymentMethodType, String creditCardNumber, String expirationDate) {
+        this.paymentMethodType = PaymentMethodType.fromString(paymentMethodType);
         this.creditCardNumber = creditCardNumber;
-        this.expirationDate = expirationDate;
+        if (expirationDate != null) {
+            this.expirationDate = expirationDate.replace("-", " / ");
+        }
     }
 
     public PaymentMethod(Parcel in) {
@@ -61,7 +63,7 @@ public class PaymentMethod implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(paymentMethod.toString());
+        parcel.writeString(paymentMethodType.toString());
         parcel.writeString(creditCardNumber);
         parcel.writeString(expirationDate);
     }

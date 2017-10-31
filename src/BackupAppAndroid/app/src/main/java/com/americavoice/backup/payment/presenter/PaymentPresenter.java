@@ -8,7 +8,7 @@ import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.payment.data.PaymentMethod;
-import com.americavoice.backup.payment.data.SubscriptionDummy;
+import com.americavoice.backup.payment.data.Subscription;
 import com.americavoice.backup.payment.ui.PaymentView;
 
 import net.servicestack.client.AsyncResult;
@@ -26,6 +26,9 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
 
     private PaymentView mPaymentView;
+    private PaymentMethod mPaymentMethod;
+    private dtos.Product selectedProduct;
+    private Subscription subscription;
 
     @Inject
     public PaymentPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
@@ -34,20 +37,19 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
     public void setView(PaymentView view) {
         mPaymentView = view;
-        initialize();
+        checkPaymentMethodAndShow();
     }
 
-    public void initialize() {
+    public void checkPaymentMethodAndShow() {
         mNetworkProvider.getPaymentMethod(new AsyncResult<dtos.GetPaymentMethodResponse>() {
             @Override
             public void success(dtos.GetPaymentMethodResponse response) {
                 //TODO:
                 // Existing payment method. Check subscription
                 Log.d("Payment", response.getPaymentId());
+                mPaymentMethod = new PaymentMethod(response);
+
                 checkSubscriptionAndShow();
-//                mPaymentView.showSubscriptionDetails(
-//                        new SubscriptionDummy("$10", "15 GB / month", "2017-01-01", "2018-01-01"),
-//                        new PaymentMethod("credit card", "1111", "01/10"));
             }
 
             @Override
@@ -67,8 +69,92 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
         });
     }
 
-    private void checkSubscriptionAndShow() {
+    public void checkSubscriptionAndShow() {
+        mNetworkProvider.getCurrentSubscription(new AsyncResult<dtos.GetSubscriptionResponse>() {
+            @Override
+            public void success(dtos.GetSubscriptionResponse response) {
+                subscription = new Subscription(response);
+                selectedProduct = response.product;
+                showCurrentSubscription();
+            }
 
+            @Override
+            public void error(Exception ex) {
+                showPlanChoose();
+            }
+        });
+    }
+
+    public void showPlanChoose() {
+        mPaymentView.showPlanChoose();
+    }
+
+    public void showPaymentChoose() {
+        if (selectedProduct != null) {
+            mPaymentView.showPaymentChoose(selectedProduct);
+        } else {
+            throw new RuntimeException("Not selected product");
+        }
+    }
+
+    public void onProductChoose(dtos.Product product) {
+        this.selectedProduct = product;
+        if (mPaymentMethod != null) {
+            createSubscription();
+        } else {
+            showPaymentChoose();
+        }
+    }
+
+    public void onPaymentChoose() {
+        showPaymentChoose();
+    }
+
+    public void onPaymentChosen() {
+        if (subscription.productId.equals(selectedProduct.getProductId())) {
+            // same product just show subscription
+            checkPaymentMethodAndShow();
+        } else {
+            createSubscription();
+        }
+    }
+
+    public void showCurrentSubscription() {
+        mPaymentView.showSubscriptionDetails(subscription, mPaymentMethod);
+
+    }
+
+    protected void createSubscription() {
+        dtos.CreateSubscription request = new dtos.CreateSubscription()
+                .setProductId(selectedProduct.productId);
+        mNetworkProvider.createSubscription(request, new AsyncResult<dtos.CreateSubscriptionResponse>() {
+            @Override
+            public void success(dtos.CreateSubscriptionResponse response) {
+                checkSubscriptionAndShow();
+            }
+
+            @Override
+            public void error(Exception ex) {
+
+                if (ex instanceof WebServiceException) {
+                    WebServiceException webServiceException = (WebServiceException) ex;
+                    Log.e("Payment", webServiceException.getStatusCode() + ":" +
+                            webServiceException.getErrorMessage(), ex);
+                    if (webServiceException.getStatusCode() == 409) {
+                        // current subscription is the same. ignore
+                        showCurrentSubscription();
+                    } else {
+                        mPaymentView.showError("Could not create a subscription, please try again later", true);
+                    }
+
+                }
+            }
+        });
+    }
+
+    public void onSubscriptionCreated(dtos.GetSubscriptionResponse subscription) {
+        this.subscription = new Subscription(subscription);
+        showCurrentSubscription();
     }
 
     @Override

@@ -52,6 +52,7 @@
             android:layout_width="100dp"
             android:layout_height="100dp" />
         <LinearLayout
+            android:id="@+id/credit_card_section"
             android:orientation="vertical"
             android:background="@drawable/ic_card_bg"
             android:padding="20dp"
@@ -69,7 +70,7 @@
                 style="@style/CreditCardText"
                 android:layout_marginBottom="15dp"
                 android:id="@+id/credit_card_number"
-                android:gravity="start"
+                android:gravity="end"
                 android:textSize="24sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

@@ -1,22 +1,18 @@
 package com.americavoice.backup.payment.ui;
 
-import android.graphics.LinearGradient;
-import android.graphics.Shader;
-import android.graphics.drawable.PaintDrawable;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
-import com.americavoice.backup.payment.data.SubscriptionDummy;
+import com.americavoice.backup.payment.data.PaymentMethod;
+import com.americavoice.backup.payment.data.Subscription;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -56,8 +52,21 @@ public class SubscriptionFragment extends BaseFragment {
     @BindView(R.id.subscription_next_payment)
     TextView mSubscriptionNextPayment;
 
+    @BindView(R.id.credit_card_section)
+    View mCreditCardSection;
+
     @BindView(R.id.credit_card_background)
     View mCreditCardBackground;
+
+    @BindView(R.id.credit_card_number)
+    TextView mCreditCardNumber;
+
+    @BindView(R.id.credit_card_expiration)
+    TextView mCreditCardExpiration;
+
+    @BindView(R.id.ic_wallet)
+    ImageView mWalletIcon;
+
 
     @Nullable
     @Override
@@ -78,7 +87,7 @@ public class SubscriptionFragment extends BaseFragment {
 
     private void initializeSubscription() {
         Bundle arguments = getArguments();
-        SubscriptionDummy subscription = arguments.getParcelable(SUBSCRIPTION);
+        Subscription subscription = arguments.getParcelable(SUBSCRIPTION);
         mSubscriptionAmount.setText(subscription.amount);
         mSubscriptionDetail.setText(subscription.description);
         mSubscriptionStart.setVisibility(View.VISIBLE);
@@ -88,6 +97,16 @@ public class SubscriptionFragment extends BaseFragment {
     }
 
     private void initializePaymentMethod() {
+        Bundle arguments = getArguments();
+        PaymentMethod paymentMethod = arguments.getParcelable(PAYMENT_METHOD);
+        if (paymentMethod.paymentMethodType == PaymentMethod.PaymentMethodType.PAY_PAL) {
+            mWalletIcon.setVisibility(View.VISIBLE);
+            mCreditCardSection.setVisibility(View.GONE);
+        } else {
+            mCreditCardNumber.setText(paymentMethod.creditCardNumber);
+            mCreditCardExpiration.setText(paymentMethod.expirationDate);
+        }
+
 
     }
 

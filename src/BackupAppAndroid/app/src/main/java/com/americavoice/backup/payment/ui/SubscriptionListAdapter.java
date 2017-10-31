@@ -7,8 +7,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
-import com.americavoice.backup.payment.data.SubscriptionDummy;
+import com.americavoice.backup.main.network.dtos;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 /**
@@ -17,13 +18,13 @@ import java.util.List;
 
 public class SubscriptionListAdapter extends BaseAdapter {
 
-    private List<SubscriptionDummy> list;
+    private List<dtos.Product> list;
 
-    public SubscriptionListAdapter(List<SubscriptionDummy> list) {
+    public SubscriptionListAdapter(List<dtos.Product> list) {
         this.list = list;
     }
 
-    public void updateList(List<SubscriptionDummy> list) {
+    public void updateList(List<dtos.Product> list) {
         this.list = list;
         notifyDataSetChanged();
     }
@@ -50,11 +51,19 @@ public class SubscriptionListAdapter extends BaseAdapter {
             view.setTag(R.id.subscription_amount, view.findViewById(R.id.subscription_amount));
             view.setTag(R.id.subscription_detail, view.findViewById(R.id.subscription_detail));
         }
-        SubscriptionDummy item = (SubscriptionDummy) getItem(i);
+        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        NumberFormat oneDecimal = NumberFormat.getInstance();
+        oneDecimal.setMinimumFractionDigits(0);
+        oneDecimal.setMaximumFractionDigits(2);
+        dtos.Product item = (dtos.Product) getItem(i);
+
         TextView amount = (TextView) view.getTag(R.id.subscription_amount);
         TextView detail = (TextView) view.getTag(R.id.subscription_detail);
-        amount.setText(item.amount);
-        detail.setText(item.description);
+
+        String description = item.getName() + " / " + oneDecimal.format(item.getStorageSize()) +
+                item.getStorageUnit() + " / " + item.getPeriodicity();
+        amount.setText(nf.format(item.getPrice()));
+        detail.setText(description);
         return view;
     }
 }

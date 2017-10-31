@@ -15,8 +15,8 @@ import android.widget.ListView;
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
+import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.BaseFragment;
-import com.americavoice.backup.payment.data.SubscriptionDummy;
 import com.americavoice.backup.payment.presenter.ChoosePlanPresenter;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -34,13 +34,13 @@ import butterknife.Unbinder;
  * Created by javier on 10/24/17.
  */
 
-public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<SubscriptionDummy>, AdapterView.OnItemClickListener {
+public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<dtos.Product>, AdapterView.OnItemClickListener {
 
 
 
     public interface Listener {
         void choosePlanBack();
-        void selectPlan(SubscriptionDummy dummyPlan);
+        void selectPlan(dtos.Product dummyPlan);
     }
     private Listener mListener;
 
@@ -55,7 +55,7 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<S
 
     private SubscriptionListAdapter mAdapter;
 
-    private SubscriptionDummy selectedItem;
+    private dtos.Product selectedItem;
 
     @Nullable
     @Override
@@ -65,7 +65,7 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<S
         }
         View view = inflater.inflate(R.layout.fragment_choose_plan, container, false);
         mUnbinder = ButterKnife.bind(this, view);
-        List<SubscriptionDummy> list = Collections.emptyList();
+        List<dtos.Product> list = Collections.emptyList();
         mAdapter = new SubscriptionListAdapter(list);
         mSubscriptionList.setAdapter(mAdapter);
         mSubscriptionList.setOnItemClickListener(this);
@@ -100,7 +100,7 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<S
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Log.d("selection", "" + i);
         view.setSelected(true);
-        setSelectedItem((SubscriptionDummy) adapterView.getItemAtPosition(i));
+        setSelectedItem((dtos.Product) adapterView.getItemAtPosition(i));
     }
 
 
@@ -136,11 +136,11 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<S
     }
 
     @Override
-    public void showPlans(List<SubscriptionDummy> list) {
+    public void showPlans(List<dtos.Product> list) {
         mAdapter.updateList(list);
     }
 
-    protected void setSelectedItem(SubscriptionDummy subscriptionDummy) {
+    protected void setSelectedItem(dtos.Product subscriptionDummy) {
         selectedItem = subscriptionDummy;
         if (selectedItem == null) {
             Log.d("selection", "not selected");

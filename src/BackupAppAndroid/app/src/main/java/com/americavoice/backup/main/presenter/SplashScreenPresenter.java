@@ -39,16 +39,7 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
 
     @Override
     public void resume() {
-        Account account = AccountUtils.getCurrentOwnCloudAccount(mView.getContext());
-        AccountManager accountManager = AccountManager.get(mView.getContext());
-        String password = accountManager.getPassword(account);
-        String name = account.name;
-        mNetworkProvider.login(name, password, new AsyncResult<dtos.AuthenticateResponse>() {
-            @Override
-            public void error(Exception ex) {
-                mNetworkProvider.logout();
-            }
-        });
+
     }
 
     @Override
@@ -63,6 +54,17 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
      * Initializes the presenter
      */
     public void initialize() {
-
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mView.getContext());
+        if (account != null) {
+            AccountManager accountManager = AccountManager.get(mView.getContext());
+            String password = accountManager.getPassword(account);
+            String name = AccountUtils.getAccountUsername(account.name);
+            mNetworkProvider.login(name, password, new AsyncResult<dtos.AuthenticateResponse>() {
+                @Override
+                public void error(Exception ex) {
+                    mNetworkProvider.logout();
+                }
+            });
+        }
     }
 }

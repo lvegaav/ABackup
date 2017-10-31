@@ -18,7 +18,6 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
-import com.americavoice.backup.payment.data.SubscriptionDummy;
 import com.americavoice.backup.payment.presenter.PaymentMethodPresenter;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
@@ -45,15 +44,17 @@ import butterknife.Unbinder;
 public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,
         PaymentMethodView, PaymentMethodNonceCreatedListener {
 
-    public final static String SELECTED_SUBSCRIPTION = "selected subscription";
+    public final static String SELECTED_SUBSCRIPTION_AMOUNT = "selected subscription amount";
+    public final static String SELECTED_SUBSCRIPTION_DETAIL = "selected subscription detail";
     public final static int REQUEST_CODE = 0;
 
 
     public interface Listener {
-        void setPaymentMethod();
+        void paymentMethodUpdated();
         void paymentMethodBackButton();
         void changeSubscriptionOption();
         void onPayPalError();
+        void onCreditCardError();
     }
 
     private Listener mListener;
@@ -144,9 +145,10 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
             }
         });
         Bundle arguments = getArguments();
-        SubscriptionDummy subscription = arguments.getParcelable(SELECTED_SUBSCRIPTION);
-        mSubscriptionAmount.setText(subscription.amount);
-        mSubscriptionDetail.setText(subscription.description);
+        String amount = arguments.getString(SELECTED_SUBSCRIPTION_AMOUNT);
+        String description = arguments.getString(SELECTED_SUBSCRIPTION_DETAIL);
+        mSubscriptionAmount.setText(amount);
+        mSubscriptionDetail.setText(description);
     }
 
     private void initializeTabListener() {
@@ -216,11 +218,22 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
 
     @Override
     public void showPayPalError(Exception e) {
-        if (e instanceof WebServiceException) {
-            Log.e("Paypal", "Status: " + ((WebServiceException) e).getStatusCode() + "," + ((WebServiceException) e).getErrorMessage());
-        }
-        Log.e("Paypal", "error", e);
+        logError(e);
         mListener.onPayPalError();
+    }
+
+    @Override
+    public void showCreditCardError(Exception e) {
+        logError(e);
+        mListener.onCreditCardError();
+    }
+
+    private void logError(Exception e) {
+        if (e instanceof WebServiceException) {
+            Log.e("Payment", "Status: " + ((WebServiceException) e).getStatusCode() + "," + ((WebServiceException) e).getErrorMessage());
+        }
+        Log.e("Payment", "error", e);
+
     }
 
     @Override
@@ -263,6 +276,6 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
 
     @Override
     public void onPaymentMethodUpdated() {
-        mListener.setPaymentMethod();
+        mListener.paymentMethodUpdated();
     }
 }

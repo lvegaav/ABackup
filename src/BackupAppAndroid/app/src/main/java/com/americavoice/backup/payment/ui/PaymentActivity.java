@@ -15,10 +15,12 @@ import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
+import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.activity.BaseActivity;
 import com.americavoice.backup.payment.data.PaymentMethod;
-import com.americavoice.backup.payment.data.SubscriptionDummy;
+import com.americavoice.backup.payment.data.Subscription;
 import com.americavoice.backup.payment.presenter.PaymentPresenter;
+import com.americavoice.backup.payment.utils.ProductUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,16 +95,20 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     }
 
     @Override
-    public void showPaymentChoose(SubscriptionDummy selectedSubscription) {
+    public void showPaymentChoose(dtos.Product selectedSubscription) {
+
         Bundle bundle = new Bundle();
-        bundle.putParcelable(PaymentMethodFragment.SELECTED_SUBSCRIPTION, selectedSubscription);
+        bundle.putString(PaymentMethodFragment.SELECTED_SUBSCRIPTION_AMOUNT,
+                ProductUtils.amountFromProduct(selectedSubscription));
+        bundle.putString(PaymentMethodFragment.SELECTED_SUBSCRIPTION_DETAIL,
+                ProductUtils.detailsFromProduct(selectedSubscription));
         Fragment fragment = new PaymentMethodFragment();
         fragment.setArguments(bundle);
         replaceFragment(R.id.content, fragment, true, false);
     }
 
     @Override
-    public void showSubscriptionDetails(SubscriptionDummy subscription, PaymentMethod paymentMethod) {
+    public void showSubscriptionDetails(Subscription subscription, PaymentMethod paymentMethod) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(SubscriptionFragment.SUBSCRIPTION, subscription);
         bundle.putParcelable(SubscriptionFragment.PAYMENT_METHOD, paymentMethod);
@@ -117,8 +123,8 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     }
 
     @Override
-    public void selectPlan(SubscriptionDummy dummyPlan) {
-        showPaymentChoose(dummyPlan);
+    public void selectPlan(dtos.Product plan) {
+        mPaymentPresenter.onProductChoose(plan);
 //        finish();
     }
 
@@ -128,8 +134,8 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     }
 
     @Override
-    public void setPaymentMethod() {
-        showSubscriptionDetails(SubscriptionDummy.dummy(), new PaymentMethod("credit card", "1111", "01/10"));
+    public void paymentMethodUpdated() {
+        mPaymentPresenter.onPaymentChosen();
     }
 
     @Override
@@ -139,7 +145,7 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public void changeSubscriptionOption() {
-        showPlanChoose();
+        mPaymentPresenter.showPlanChoose();
     }
 
 
@@ -150,7 +156,7 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public void onChangePlan() {
-        showPlanChoose();
+        mPaymentPresenter.showPlanChoose();
     }
 
     @Override
@@ -160,20 +166,31 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public void onUpdatePaymentMethod() {
-        showPaymentChoose(SubscriptionDummy.dummy());
+        mPaymentPresenter.onPaymentChoose();
     }
 
     @Override
     public void onPayPalError() {
+       showError("The PayPal account could not be registered, please try again", true);
+    }
+
+
+    @Override
+    public void onCreditCardError() {
+        showError("The credit card is not valid, please verify your data and try again", false);
+    }
+
+    @Override
+    public void showError(String message, final boolean finish) {
         new AlertDialog.Builder(this, R.style.WhiteDialog)
                 .setTitle("Error")
                 .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
+                        if (finish) finish();
                     }
                 })
-                .setMessage("The PayPal account could not be registered, please try again")
+                .setMessage(message)
                 .create().show();
     }
 
