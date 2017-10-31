@@ -15,6 +15,7 @@ import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
+import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.activity.BaseActivity;
@@ -22,6 +23,8 @@ import com.americavoice.backup.payment.data.PaymentMethod;
 import com.americavoice.backup.payment.data.Subscription;
 import com.americavoice.backup.payment.presenter.PaymentPresenter;
 import com.americavoice.backup.payment.utils.ProductUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -124,7 +127,7 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public void choosePlanBack() {
-        finish();
+        mPaymentPresenter.onChoosePlanBackButton();
     }
 
     @Override
@@ -145,7 +148,7 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public void paymentMethodBackButton() {
-        finish();
+        mPaymentPresenter.onPaymentMethodBackButton();
     }
 
     @Override
@@ -167,6 +170,11 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     @Override
     public void onDeletePaymentMethod() {
         //TODO:
+    }
+
+    @Override
+    public void onDeleteSubscription() {
+        mPaymentPresenter.onDeleteSubscription();
     }
 
     @Override
@@ -229,6 +237,16 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public Context getContext() {
-        return null;
+        return getContext();
+    }
+
+    @Override
+    public void close() {
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        EventBus.getDefault().post(new OnBackPress());
     }
 }

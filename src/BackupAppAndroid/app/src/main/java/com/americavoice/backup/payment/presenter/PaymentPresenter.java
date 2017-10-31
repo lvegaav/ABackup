@@ -209,9 +209,25 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
         }
     }
 
-    public void onSubscriptionCreated(dtos.GetSubscriptionResponse subscription) {
-        this.subscription = new Subscription(subscription);
-        showCurrentSubscription();
+
+    public void onChoosePlanBackButton() {
+        if (subscription != null && mPaymentMethod != null) {
+            showCurrentSubscription();
+        } else {
+            mPaymentView.close();
+        }
+    }
+
+    public void onPaymentMethodBackButton() {
+        if (subscription != null && mPaymentMethod != null) {
+            showCurrentSubscription();
+        } else {
+            mPaymentView.close();
+        }
+    }
+
+    public void onDeleteSubscription() {
+        //TODO: dtos missing method
     }
 
     @Override

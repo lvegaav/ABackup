@@ -231,6 +231,7 @@
     <string name="subscription.next_payment_date">Next charge on %s</string>
     <string name="subscription.change">Change plan</string>
     <string name="subscription.change_payment_method">Update payment method</string>
+    <string name="subscription.cancel_subscription">Cancel subscription</string>
 
     <string name="payment_method.paypal">PayPal</string>
     <string name="payment_method.credit_card">Credit card</string>

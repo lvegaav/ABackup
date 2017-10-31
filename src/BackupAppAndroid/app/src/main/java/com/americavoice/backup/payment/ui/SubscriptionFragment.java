@@ -3,6 +3,9 @@ package com.americavoice.backup.payment.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -31,6 +34,7 @@ public class SubscriptionFragment extends BaseFragment {
         void onSubscriptionBack();
         void onChangePlan();
         void onDeletePaymentMethod();
+        void onDeleteSubscription();
         void onUpdatePaymentMethod();
     }
 
@@ -73,6 +77,7 @@ public class SubscriptionFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_subscription, container, false);
         mUnbinder = ButterKnife.bind(this, view);
+//        setHasOptionsMenu(true);
         initializeListener();
         initializeSubscription();
         initializePaymentMethod();
@@ -107,10 +112,24 @@ public class SubscriptionFragment extends BaseFragment {
             mCreditCardExpiration.setText(paymentMethod.expirationDate);
         }
 
-
     }
 
-//    private void initializePaymentMethod() {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.current_subscription_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_cancel_subscription:
+                mListener.onDeleteSubscription();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //    private void initializePaymentMethod() {
 //        ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
 //            @Override
 //            public Shader resize(int i, int i1) {
