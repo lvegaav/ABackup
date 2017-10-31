@@ -43,7 +43,7 @@ public class Subscription implements Parcelable {
     }
 
     public Subscription(dtos.GetSubscriptionResponse subscription) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm a", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy", Locale.getDefault());
         dtos.Product product = subscription.product;
         productId = product.getProductId();
         amount = ProductUtils.amountFromProduct(product);
