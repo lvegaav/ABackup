@@ -1,12 +1,18 @@
 
 package com.americavoice.backup.main.presenter;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.support.annotation.NonNull;
 
+import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
+import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.SplashScreenView;
+
+import net.servicestack.client.AsyncResult;
 
 import javax.inject.Inject;
 
