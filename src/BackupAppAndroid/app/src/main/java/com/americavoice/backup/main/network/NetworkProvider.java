@@ -188,6 +188,10 @@ public class NetworkProvider {
         mClient.postAsync(request, response);
     }
 
+    public void changeSubscription(dtos.ChangeSubscription request, AsyncResult<dtos.ChangeSubscriptionResponse> response) {
+        mClient.postAsync(request, response);
+    }
+
 
     private String md5(final String s) {
         final String MD5 = "MD5";

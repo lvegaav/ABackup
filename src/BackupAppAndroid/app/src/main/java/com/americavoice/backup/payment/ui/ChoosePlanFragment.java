@@ -94,6 +94,7 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<d
         if (hasOptions) {
             mNoCurrentPlanView.setVisibility(View.GONE);
         }
+
     }
 
 

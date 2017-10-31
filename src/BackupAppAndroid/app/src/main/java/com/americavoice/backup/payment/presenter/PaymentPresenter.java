@@ -138,31 +138,75 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
     }
 
     protected void createSubscription() {
-        dtos.CreateSubscription request = new dtos.CreateSubscription()
-                .setProductId(selectedProduct.productId);
-        mNetworkProvider.createSubscription(request, new AsyncResult<dtos.CreateSubscriptionResponse>() {
-            @Override
-            public void success(dtos.CreateSubscriptionResponse response) {
-                checkSubscriptionAndShow();
-            }
-
-            @Override
-            public void error(Exception ex) {
-
-                if (ex instanceof WebServiceException) {
-                    WebServiceException webServiceException = (WebServiceException) ex;
-                    Log.e("Payment", webServiceException.getStatusCode() + ":" +
-                            webServiceException.getErrorMessage(), ex);
-                    if (webServiceException.getStatusCode() == 409) {
-                        // current subscription is the same. ignore
-                        showCurrentSubscription();
-                    } else {
-                        mPaymentView.showError("Could not create a subscription, please try again later", true);
-                    }
-
+        if (subscription == null) {
+            // it's a create
+            mPaymentView.showLoading();
+            dtos.CreateSubscription request = new dtos.CreateSubscription()
+                    .setProductId(selectedProduct.productId);
+            mNetworkProvider.createSubscription(request, new AsyncResult<dtos.CreateSubscriptionResponse>() {
+                @Override
+                public void success(dtos.CreateSubscriptionResponse response) {
+                    checkSubscriptionAndShow();
                 }
-            }
-        });
+
+                @Override
+                public void error(Exception ex) {
+
+                    if (ex instanceof WebServiceException) {
+                        WebServiceException webServiceException = (WebServiceException) ex;
+                        Log.e("Payment", webServiceException.getStatusCode() + ":" +
+                                webServiceException.getErrorMessage(), ex);
+                        if (webServiceException.getStatusCode() == 409) {
+                            // current subscription is the same. ignore
+                            showCurrentSubscription();
+                        } else {
+                            mPaymentView.showError("Could not create a subscription, please try again later", true);
+                        }
+
+                    }
+                }
+
+                @Override
+                public void complete() {
+                    mPaymentView.hideLoading();
+                }
+            });
+        } else if (!subscription.productId.equals(selectedProduct.productId)) {
+            // it's an update
+            mPaymentView.showLoading();
+            dtos.ChangeSubscription request = new dtos.ChangeSubscription()
+                    .setProductId(selectedProduct.productId);
+            mNetworkProvider.changeSubscription(request, new AsyncResult<dtos.ChangeSubscriptionResponse>() {
+                @Override
+                public void success(dtos.ChangeSubscriptionResponse response) {
+                    checkSubscriptionAndShow();
+                }
+
+                @Override
+                public void error(Exception ex) {
+                    if (ex instanceof WebServiceException) {
+                        WebServiceException webServiceException = (WebServiceException) ex;
+                        Log.e("Payment", webServiceException.getStatusCode() + ":" +
+                                webServiceException.getErrorMessage(), ex);
+                        if (webServiceException.getStatusCode() == 409) {
+                            // current subscription is the same. ignore
+                            showCurrentSubscription();
+                        } else {
+                            mPaymentView.showError("Could not create a subscription, please try again later", true);
+                        }
+
+                    }
+                }
+
+                @Override
+                public void complete() {
+                    mPaymentView.hideLoading();
+                }
+            });
+        } else {
+            // they're the same, showing current subscription
+            checkSubscriptionAndShow();
+        }
     }
 
     public void onSubscriptionCreated(dtos.GetSubscriptionResponse subscription) {

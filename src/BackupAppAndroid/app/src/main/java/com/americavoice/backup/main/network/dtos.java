@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-10-30 11:04:54
+Date: 2017-10-31 14:21:19
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://core-be.development.americavoice.com:8458/api
@@ -514,6 +514,16 @@ public class dtos
         public Object getResponseType() { return responseType; }
     }
 
+    public static class ChangeSubscription implements IReturn<ChangeSubscriptionResponse>
+    {
+        public String productId = null;
+        
+        public String getProductId() { return productId; }
+        public ChangeSubscription setProductId(String value) { this.productId = value; return this; }
+        private static Object responseType = ChangeSubscriptionResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
     /**
     * Get products.
     */
@@ -571,6 +581,7 @@ public class dtos
         public String cardNumber = null;
         public String cardExpiry = null;
         public String ccvCode = null;
+        public String accountNumber = null;
         
         public String getFirstName() { return firstName; }
         public CreateCreditCardPaymentMethod setFirstName(String value) { this.firstName = value; return this; }
@@ -594,6 +605,8 @@ public class dtos
         public CreateCreditCardPaymentMethod setCardExpiry(String value) { this.cardExpiry = value; return this; }
         public String getCcvCode() { return ccvCode; }
         public CreateCreditCardPaymentMethod setCcvCode(String value) { this.ccvCode = value; return this; }
+        public String getAccountNumber() { return accountNumber; }
+        public CreateCreditCardPaymentMethod setAccountNumber(String value) { this.accountNumber = value; return this; }
         private static Object responseType = CreateCreditCardPaymentMethodResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -605,7 +618,10 @@ public class dtos
     @Api(Description="Get payment method.")
     public static class GetPaymentMethod implements IReturn<GetPaymentMethodResponse>
     {
+        public String accountNumber = null;
         
+        public String getAccountNumber() { return accountNumber; }
+        public GetPaymentMethod setAccountNumber(String value) { this.accountNumber = value; return this; }
         private static Object responseType = GetPaymentMethodResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -1088,6 +1104,17 @@ public class dtos
         public RenewSubscriptionResponse setNextExpiryDate(Date value) { this.nextExpiryDate = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public RenewSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class ChangeSubscriptionResponse
+    {
+        public Subscription subscription = null;
+        public ResponseStatus responseStatus = null;
+        
+        public Subscription getSubscription() { return subscription; }
+        public ChangeSubscriptionResponse setSubscription(Subscription value) { this.subscription = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public ChangeSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class GetProductsResponse
