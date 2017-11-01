@@ -92,12 +92,6 @@ public class SplashScreenActivity extends BaseActivity implements HasComponent<A
 
     @Override
     public void onProviderInstalled() {
-        new Handler().postDelayed(new Runnable(){
-            @Override
-            public void run() {
-                showHome();
-            }
-        }, 2000);
     }
 
     @Override

@@ -10,19 +10,27 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.americavoice.backup.authentication.AccountUtils;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 
 import net.servicestack.android.AndroidServiceClient;
 import net.servicestack.client.AsyncResult;
+import net.servicestack.client.ConnectionFilter;
+import net.servicestack.client.JsonSerializers;
+import net.servicestack.client.TimeSpan;
 
+import java.net.HttpURLConnection;
 import java.security.KeyManagementException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,8 +43,10 @@ public class NetworkProvider {
 
     public static final String KEY_FIRST_TIME = "com.americavoice.backup.KEY_FIRST_TIME";
     private final SharedPreferences mPref;
-    private final AndroidServiceClient mClient;
+    private final AndroidServiceClient mClient; //Client with User Authentication
+    private final AndroidServiceClient mAppClient; //Client with JWT Authentication
     private final Context mContext;
+    private Gson mGson;
     private AccountManager mAccountMgr;
     private HashMap<String, String> mDeviceInfo;
     private OwnCloudClient mCloudClient;
@@ -52,15 +62,24 @@ public class NetworkProvider {
     public NetworkProvider(Context context) {
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
         mClient = new AndroidServiceClient(baseUrl + "/api");
+        mAppClient = new AndroidServiceClient(baseUrl + "/api");
         mContext = context;
         mAccountMgr = AccountManager.get(context);
 
-        
         mDeviceInfo = new HashMap<>();
         mDeviceInfo.put("device:brand", Build.MANUFACTURER);
         mDeviceInfo.put("device:model",Build.MODEL);
         mDeviceInfo.put("device:os","Android");
         mDeviceInfo.put("device:osVersion",Build.VERSION.SDK);
+
+        mAppClient.RequestFilter = new ConnectionFilter() {
+            @Override
+            public void exec(HttpURLConnection conn) {
+                String token = mPref.getString("TOKEN", null);
+                conn.setRequestProperty("Authorization",
+                        "Bearer " + token);
+            }
+        };
 
         //TODO Ignore self-signed certificate
         IgnoreSelfSigned();
@@ -76,6 +95,18 @@ public class NetworkProvider {
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
         }
+    }
+
+    private GsonBuilder getGsonBuilder() {
+        return (new GsonBuilder()).registerTypeAdapter(Date.class, JsonSerializers.getDateSerializer()).registerTypeAdapter(Date.class, JsonSerializers.getDateDeserializer()).registerTypeAdapter(TimeSpan.class, JsonSerializers.getTimeSpanSerializer()).registerTypeAdapter(TimeSpan.class, JsonSerializers.getTimeSpanDeserializer()).registerTypeAdapter(UUID.class, JsonSerializers.getGuidSerializer()).registerTypeAdapter(UUID.class, JsonSerializers.getGuidDeserializer());
+    }
+
+    private Gson getGson() {
+        if(this.mGson == null) {
+            this.mGson = this.getGsonBuilder().create();
+        }
+
+        return this.mGson;
     }
 
     public OwnCloudClient getCloudClient() {
@@ -105,6 +136,18 @@ public class NetworkProvider {
         return mCloudClient;
     }
 
+    public void setAppToken(String appToken) {
+        mPref.edit().putString("TOKEN", appToken).apply();
+    }
+
+    public String toJson(Object o) {
+        return this.getGson().toJson(o);
+    }
+
+    public Object fromJson(String json, Class c) {
+        return this.getGson().fromJson(json, c);
+    }
+
     public void logout() {
         // Logout from account manager
         Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
@@ -129,7 +172,7 @@ public class NetworkProvider {
 
     public void CustomRegister(dtos.CustomRegister request, AsyncResult<dtos.CustomRegisterResponse> result) {
         Log.d("Network", "calling register");
-        mClient.postAsync(request, result);
+        mAppClient.postAsync(request, result);
     }
 
     public void SendPhoneVerificationCode(AsyncResult<dtos.SendPhoneVerificationCodeResponse> result) {
@@ -138,11 +181,11 @@ public class NetworkProvider {
 
     public void SendPasswordResetCode(dtos.SendPasswordResetCode request, AsyncResult<dtos.SendPasswordResetCodeResponse> result) {
         Log.d("Network", "calling reset pass");
-        mClient.postAsync(request, result);
+        mAppClient.postAsync(request, result);
     }
 
     public void PerformResetPassword(dtos.PerformResetPassword request, AsyncResult<dtos.PerformResetPasswordResponse> result) {
-        mClient.postAsync(request, result);
+        mAppClient.postAsync(request, result);
     }
 
     public void getPaymentMethod(AsyncResult<dtos.GetPaymentMethodResponse> result) {
@@ -192,29 +235,4 @@ public class NetworkProvider {
         mClient.postAsync(request, response);
     }
 
-
-    private String md5(final String s) {
-        final String MD5 = "MD5";
-        try {
-            // Create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest
-                    .getInstance(MD5);
-            digest.update(s.getBytes());
-            byte messageDigest[] = digest.digest();
-
-            // Create Hex String
-            StringBuilder hexString = new StringBuilder();
-            for (byte aMessageDigest : messageDigest) {
-                StringBuilder h = new StringBuilder(Integer.toHexString(0xFF & aMessageDigest));
-                while (h.length() < 2)
-                    h.insert(0, "0");
-                hexString.append(h);
-            }
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return s;
-    }
 }
