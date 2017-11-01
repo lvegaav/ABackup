@@ -124,11 +124,11 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
     }
 
     public void onPaymentChosen() {
-        if (subscription.productId.equals(selectedProduct.getProductId())) {
+        if (subscription == null || !subscription.productId.equals(selectedProduct.getProductId())) {
+            createSubscription();
+        } else {
             // same product just show subscription
             checkPaymentMethodAndShow();
-        } else {
-            createSubscription();
         }
     }
 
