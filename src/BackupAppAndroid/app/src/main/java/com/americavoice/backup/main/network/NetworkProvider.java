@@ -4,6 +4,8 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -53,9 +55,14 @@ public class NetworkProvider {
 
     private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
     private static final String baseUrlOwnCloud = "http://backapp-eng.development.americavoice.com";
+    private static final String identityUrl = "http://172.22.122.40/connect/token";
 
     public static String getBaseUrlOwnCloud() {
-        return NetworkProvider.baseUrlOwnCloud;
+        return baseUrlOwnCloud;
+    }
+
+    public static String getIdentityUrl() {
+        return identityUrl;
     }
 
     @Inject
@@ -68,9 +75,16 @@ public class NetworkProvider {
 
         mDeviceInfo = new HashMap<>();
         mDeviceInfo.put("device:brand", Build.MANUFACTURER);
-        mDeviceInfo.put("device:model",Build.MODEL);
-        mDeviceInfo.put("device:os","Android");
-        mDeviceInfo.put("device:osVersion",Build.VERSION.SDK);
+        mDeviceInfo.put("device:model", Build.MODEL);
+        mDeviceInfo.put("device:os", "Android");
+        mDeviceInfo.put("device:osVersion", Build.VERSION.RELEASE);
+        PackageInfo pInfo = null;
+        try {
+            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            mDeviceInfo.put("device:appVersion", pInfo.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         mAppClient.RequestFilter = new ConnectionFilter() {
             @Override
