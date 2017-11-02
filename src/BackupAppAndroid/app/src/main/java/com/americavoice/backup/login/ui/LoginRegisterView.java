@@ -20,4 +20,7 @@ public interface LoginRegisterView extends ILoadDataView {
     void showNewPasswordRequired();
     void showConfirmPasswordRequired();
     void showConfirmPasswordInvalid();
+    void showNewPasswordInvalid();
+    void showUsernameExists();
+    void showPhoneNumberExists();
 }

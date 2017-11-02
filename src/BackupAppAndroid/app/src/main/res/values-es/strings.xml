@@ -44,13 +44,14 @@
     <string name="login.registerPlaceHolder">&loginRegisterNow;</string>
     <string name="login.forgotPlaceHolder">Olvidaste tu contraseña?</string>
     <string name="login.validationPhoneNumberRequired">Número requerido</string>
-    <string name="login.validationPhoneNumberInvalid">Número inválido</string>
+    <string name="login.validationPhoneNumberInvalid">Este número ya esta registrado</string>
     <string name="login.validationUsernameRequired">Usuario requerido.</string>
-    <string name="login.validationUsernameInvalid">Usuario inválido.</string>
+    <string name="login.validationUsernameInvalid">Este usuario ya existe.</string>
     <string name="login.validationPasswordInvalid">Contraseña inválida.</string>
     <string name="login.validationNewPasswordInvalid">Nueva Contraseña inválida.</string>
     <string name="login.validationConfirmPasswordInvalid">Confirmación inválida.</string>
     <string name="login.validationVerificationCodeInvalid">Código de verificación inválido.</string>
+    <string name="login_validationNewPasswordMatches">La contraseña debe tener 8 caracteres y contener al menos número</string>
 
 
     <string name="login.register.hello">Registrarse</string>

@@ -5,6 +5,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.support.annotation.NonNull;
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
@@ -20,12 +21,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.crashlytics.android.Crashlytics;
 
 
 /**
@@ -34,11 +37,11 @@ import com.android.volley.toolbox.Volley;
  */
 @PerActivity
 public class SplashScreenPresenter extends BasePresenter implements IPresenter {
-    private static final long SPLASH_DISPLAY_LENGTH = 3000;
+    private static final int SPLASH_DISPLAY_LENGTH = 3000;
     private SplashScreenView mView;
 
     @Inject
-    public SplashScreenPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
+    SplashScreenPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
     }
 
@@ -65,22 +68,30 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
     public void initialize() {
         //Set App Token
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                "https://id.americavoice.com/connect/token",
+                NetworkProvider.getIdentityUrl(),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        TokenModel tokenModel = (TokenModel) mNetworkProvider.fromJson(response, TokenModel.class);
-                        mNetworkProvider.setAppToken(tokenModel.access_token);
-                        doLogin();
+                        try {
+                            TokenModel tokenModel = (TokenModel) mNetworkProvider.fromJson(response, TokenModel.class);
+                            mNetworkProvider.setAppToken(tokenModel.access_token);
+                            doLogin();
+                        } catch (Exception e) {
+                            Crashlytics.logException(e);
+                            mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                            mView.finish();
+                        }
+
                     }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                doLogin();
-            }
-        }) {
-
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        mView.showError(mView.getContext().getString(R.string.network_error_socket_timeout_exception));
+                        mView.finish();
+                    }
+                }
+        ) {
             @Override
             public String getBodyContentType() {
                 return "application/x-www-form-urlencoded; charset=UTF-8";
@@ -97,12 +108,15 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
             }
         };
 
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                SPLASH_DISPLAY_LENGTH,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         RequestQueue queue = Volley.newRequestQueue(mView.getContext());
         queue.add(stringRequest);
     }
 
-    private void doLogin()
-    {
+    private void doLogin() {
         Account account = AccountUtils.getCurrentOwnCloudAccount(mView.getContext());
         if (account != null) {
             AccountManager accountManager = AccountManager.get(mView.getContext());

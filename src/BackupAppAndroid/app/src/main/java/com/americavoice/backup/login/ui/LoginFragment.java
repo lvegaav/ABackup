@@ -196,7 +196,7 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     @Override
     public void showPasswordRequired() {
         etPassword.requestFocus();
-        etPassword.setError(getString(R.string.login_validationPasswordInvalid));
+        etPassword.setError(getString(R.string.login_validationPasswordRequired));
     }
 
     @Override

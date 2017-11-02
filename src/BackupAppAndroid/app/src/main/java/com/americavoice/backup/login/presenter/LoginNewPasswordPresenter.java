@@ -5,11 +5,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.americavoice.backup.Const;
-import com.americavoice.backup.R;
 import com.americavoice.backup.di.PerActivity;
-import com.americavoice.backup.login.model.SpinnerItem;
 import com.americavoice.backup.login.ui.LoginNewPasswordView;
-import com.americavoice.backup.login.ui.LoginRegisterView;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
@@ -18,8 +15,7 @@ import com.americavoice.backup.main.presenter.IPresenter;
 
 import net.servicestack.client.AsyncResult;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -35,7 +31,7 @@ public class LoginNewPasswordPresenter extends BasePresenter implements IPresent
     private LoginNewPasswordView mView;
 
     @Inject
-    public LoginNewPasswordPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
+    LoginNewPasswordPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
     }
 
@@ -75,13 +71,17 @@ public class LoginNewPasswordPresenter extends BasePresenter implements IPresent
             mView.showNewPasswordRequired();
         }
 
+        if (!Pattern.matches("^(?=(.*\\d){1}).{8,50}$", newPassword)) {
+            hasError = true;
+            mView.showNewPasswordInvalid();
+        }
+
         if (TextUtils.isEmpty(confirmPassword)) {
             hasError = true;
             mView.showConfirmPasswordRequired();
         }
 
-        if (!newPassword.equals(confirmPassword))
-        {
+        if (!newPassword.equals(confirmPassword)) {
             hasError = true;
             mView.showConfirmPasswordInvalid();
         }

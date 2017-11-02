@@ -207,6 +207,12 @@ public class LoginNewPasswordFragment extends BaseAuthenticatorFragment implemen
         etConfirmPassword.setError(getString(R.string.login_validationConfirmPasswordInvalid));
     }
 
+    @Override
+    public void showNewPasswordInvalid() {
+        etPassword.requestFocus();
+        etPassword.setError(getString(R.string.login_validationNewPasswordMatches));
+    }
+
    @OnClick(R.id.btn_register)
     public void onRegister(View v)
    {

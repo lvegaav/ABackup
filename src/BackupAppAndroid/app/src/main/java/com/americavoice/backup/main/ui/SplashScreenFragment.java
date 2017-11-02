@@ -41,6 +41,11 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
         if (mListener != null) mListener.showPhoneNumber();
     }
 
+    @Override
+    public void finish() {
+        getActivity().finish();
+    }
+
     /**
      * Interface for listening submit button.
      */

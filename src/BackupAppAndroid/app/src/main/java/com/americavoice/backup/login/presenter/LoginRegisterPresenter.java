@@ -24,6 +24,7 @@ import net.servicestack.client.WebServiceException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -86,13 +87,17 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
             mView.showNewPasswordRequired();
         }
 
+        if (!Pattern.matches("^(?=(.*\\d){1}).{8,50}$", newPassword)) {
+            hasError = true;
+            mView.showNewPasswordInvalid();
+        }
+
         if (TextUtils.isEmpty(confirmPassword)) {
             hasError = true;
             mView.showConfirmPasswordRequired();
         }
 
-        if (!newPassword.equals(confirmPassword))
-        {
+        if (!newPassword.equals(confirmPassword)) {
             hasError = true;
             mView.showConfirmPasswordInvalid();
         }
@@ -132,11 +137,17 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
                     WebServiceException webEx = (WebServiceException) ex;
                     if (webEx.getErrorCode() != null && (webEx.getErrorCode().equals("InvalidPhoneNumber"))) {
                         mView.hideLoading();
-                        mView.showPhoneNumberInvalid();
+                        mView.showPhoneNumberExists();
                         return;
                     }
 
                     if (webEx.getErrorCode() != null && (webEx.getErrorCode().equals("InvalidUsername"))) {
+                        mView.hideLoading();
+                        mView.showUsernameExists();
+                        return;
+                    }
+
+                    if (webEx.getErrorCode() != null && (webEx.getErrorCode().equals("ArgumentException"))) {
                         mView.hideLoading();
                         mView.showUsernameInvalid();
                         return;

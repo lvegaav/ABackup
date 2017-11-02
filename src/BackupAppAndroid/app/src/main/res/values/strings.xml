@@ -45,13 +45,16 @@
     <string name="login.forgotPlaceHolder">Forgot your password?</string>
     <string name="login.validationPhoneNumberRequired">Phone number required.</string>
     <string name="login.validationPhoneNumberInvalid">Invalid phone number.</string>
+    <string name="login.validationPhoneNumberExists">Phone number already registered.</string>
     <string name="login.validationUsernameRequired">Username required.</string>
-    <string name="login.validationUsernameInvalid">Invalid username.</string>
+    <string name="login.validationUsernameInvalid">This username is invalid.</string>
+    <string name="login.validationUsernameExists">This username already exists.</string>
+    <string name="login.validationPasswordRequired">Password required.</string>
     <string name="login.validationPasswordInvalid">Invalid password.</string>
     <string name="login.validationNewPasswordInvalid">Invalid new password.</string>
     <string name="login.validationConfirmPasswordInvalid">Invalid confirm password.</string>
     <string name="login.validationVerificationCodeInvalid">Invalid verification code.</string>
-
+    <string name="login_validationNewPasswordMatches">The password must be 8 characters long and have one number</string>
 
     <string name="login.validationFailed">Login failed. Invalid username or password.</string>
 

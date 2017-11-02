@@ -16,5 +16,5 @@ public interface LoginNewPasswordView extends ILoadDataView {
     void showNewPasswordRequired();
     void showConfirmPasswordRequired();
     void showConfirmPasswordInvalid();
-
+    void showNewPasswordInvalid();
 }

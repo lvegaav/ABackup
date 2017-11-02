@@ -69,7 +69,7 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
         }
         if (hasError) return;
 
-
+        mView.showLoading();
         dtos.ValidatePhoneVerificationCode request = new dtos.ValidatePhoneVerificationCode();
         request.setVerificationCode(code);
         mNetworkProvider.ValidatePhoneVerificationCode(request, new AsyncResult<dtos.ValidatePhoneVerificationCodeResponse>() {
@@ -83,35 +83,12 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
 
             @Override
             public void error(Exception ex) {
-                Crashlytics.setString("PerformResetPassword", mUsername);
+                Crashlytics.setString("ValidatePhoneVerificationCode", mUsername);
                 Crashlytics.logException(ex);
                 mView.hideLoading();
                 mView.showConfirmationCodeInvalid();
             }
         });
-
-        /*dtos.PerformResetPassword request = new dtos.PerformResetPassword();
-        request.setPhoneNumber(mNetworkProvider.getUserName(phoneNumber));
-        request.setNewPassword(mNetworkProvider.getDeviceId());
-        request.setResetPasswordCode(code);
-        mView.showLoading();
-        mNetworkProvider.PerformResetPassword(request, new AsyncResult<dtos.AuthenticateResponse>() {
-            @Override
-            public void success(dtos.AuthenticateResponse response) {
-                mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
-                mView.hideLoading();
-                mView.showGettingServerInfo();
-                mView.loginWithCredentials(mNetworkProvider.getCloudClient(phoneNumber).getCredentials());
-            }
-
-            @Override
-            public void error(Exception ex) {
-                Crashlytics.setString("PerformResetPassword", mNetworkProvider.getUserName(phoneNumber));
-                Crashlytics.logException(ex);
-                mView.hideLoading();
-                mView.showConfirmationCodeInvalid();
-            }
-        });*/
     }
 
     private void showErrorMessage(ErrorBundle errorBundle) {

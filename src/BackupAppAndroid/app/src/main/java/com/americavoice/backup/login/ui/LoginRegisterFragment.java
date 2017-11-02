@@ -220,12 +220,24 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
 
     @Override
     public void showUsernameRequired() {
-        etPhoneNumber.requestFocus();
-        etPhoneNumber.setError(getString(R.string.login_validationUsernameRequired));
+        etUsername.requestFocus();
+        etUsername.setError(getString(R.string.login_validationUsernameRequired));
     }
 
     @Override
     public void showUsernameInvalid() {
+        etUsername.requestFocus();
+        etUsername.setError(getString(R.string.login_validationUsernameInvalid));
+    }
+
+    @Override
+    public void showUsernameExists() {
+        etUsername.requestFocus();
+        etUsername.setError(getString(R.string.login_validationUsernameExists));
+    }
+
+    @Override
+    public void showPhoneNumberExists() {
         etPhoneNumber.requestFocus();
         etPhoneNumber.setError(getString(R.string.login_validationUsernameInvalid));
     }
@@ -248,7 +260,13 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
         etConfirmPassword.setError(getString(R.string.login_validationConfirmPasswordInvalid));
     }
 
-   @OnClick(R.id.btn_register)
+    @Override
+    public void showNewPasswordInvalid() {
+        etPassword.requestFocus();
+        etPassword.setError(getString(R.string.login_validationNewPasswordMatches));
+    }
+
+    @OnClick(R.id.btn_register)
     public void onRegister(View v)
    {
        mPresenter.submit(
