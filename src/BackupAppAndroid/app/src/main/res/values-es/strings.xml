@@ -61,7 +61,7 @@
     <string name="login.register.termsOfService">
         Al hacer click en \"&loginRegisterNow;\" estás aceptando nuestros &lt;b&gt;Términos de servicio&lt;/b&gt;
     </string>
-    <string name="login.register.termsOfServiceUrl">https://secureip.io/lockbackup/terms_of_service.html?lang=es</string>
+    <string name="login.register.termsOfServiceUrl">https://secureip.io/lockbackup/terms_and_privacy_es.html</string>
 
     <string name="confirmation.codePlaceHolder">Código de Confirmación</string>
     <string name="confirmation.hello">Código de Confirmación</string>
