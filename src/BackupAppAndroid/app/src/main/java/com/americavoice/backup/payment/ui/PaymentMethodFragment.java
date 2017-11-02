@@ -20,6 +20,7 @@ import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.payment.presenter.PaymentMethodPresenter;
+import com.americavoice.backup.payment.utils.CreditCardErrors;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
@@ -212,7 +213,7 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
             mBrainTreeFragment.addListener(this);
             PayPal.authorizeAccount(mBrainTreeFragment);
         } catch (InvalidArgumentException e) {
-            Toast.makeText(getContext(), "There was an error", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.paypal_error_token), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -236,7 +237,8 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
                 List<ResponseError> errorList = wsException.getFieldErrors();
                 if (errorList != null && errorList.size() > 0) {
                     ResponseError responseError = errorList.get(0);
-                    mListener.onCreditCardError(responseError.getMessage());
+                    String message = CreditCardErrors.errorMessage(getContext(), responseError);
+                    mListener.onCreditCardError(message);
                     return;
                 }
             }

@@ -20,10 +20,7 @@ public class Subscription implements Parcelable {
     public String startDate;
     public String nextPaymentDate;
 
-    public static Subscription dummy() {
-        return new Subscription("1", "$50", "50 GB / month", "2017-01-01", "2018-01-01");
-    }
-
+    
     public Subscription(String productId, String amount, String description, String startDate,
                         String nextPaymentDate) {
 

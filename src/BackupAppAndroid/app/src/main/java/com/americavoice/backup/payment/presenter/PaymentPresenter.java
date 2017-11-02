@@ -2,6 +2,7 @@ package com.americavoice.backup.payment.presenter;
 
 import android.util.Log;
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
@@ -45,7 +46,6 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
         mNetworkProvider.getPaymentMethod(new AsyncResult<dtos.GetPaymentMethodResponse>() {
             @Override
             public void success(dtos.GetPaymentMethodResponse response) {
-                //TODO:
                 // Existing payment method. Check subscription
                 Log.d("Payment", response.getPaymentId());
                 mPaymentMethod = new PaymentMethod(response);
@@ -66,7 +66,8 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                 }
                 Log.e("Payment", "Error getting payment method");
                 ex.printStackTrace();
-                mPaymentView.showError("Could not load data, please try again later", true);
+
+                mPaymentView.showError(mPaymentView.getContext().getString(R.string.payment_error_loadData), true);
             }
 
         });
@@ -160,7 +161,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                             // current subscription is the same. ignore
                             showCurrentSubscription();
                         } else {
-                            mPaymentView.showError("Could not create a subscription, please try again later", true);
+                            mPaymentView.showError(mPaymentView.getContext().getString(R.string.payment_error_createSubscription), true);
                         }
 
                     }
@@ -192,7 +193,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                             // current subscription is the same. ignore
                             showCurrentSubscription();
                         } else {
-                            mPaymentView.showError("Could not create a subscription, please try again later", true);
+                            mPaymentView.showError(mPaymentView.getContext().getString(R.string.payment_error_createSubscription), true);
                         }
 
                     }
