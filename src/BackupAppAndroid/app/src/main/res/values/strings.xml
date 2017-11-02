@@ -242,6 +242,12 @@
 
     <string name="payment_method.paypal">PayPal</string>
     <string name="payment_method.credit_card">Credit card</string>
+    <string name="payment.error.loadData">Could not load data, please try again later</string>
+    <string name="payment.error.createSubscription">Could not create a subscription, please try again later</string>
+    <string name="payment.error.createPaypal">The PayPal account could not be registered, please try again</string>
+    <string name="payment.error.createCreditCard">There was an error while creating credit card , please try again later</string>
+
+    <string name="paypal.error.token">There was an error starting PayPal service, please try again later</string>
 
     <string name="credit_card.contact_information">Billing Information</string>
     <string name="credit_card.credit_card_information">Credit card Information</string>
@@ -262,7 +268,17 @@
     <string name="credit_card.your_card">Your card</string>
     <string name="credit_card.save">Save credit card</string>
 
-
+    <string name="credit_card.error.PGE0039">Credit or debit card already exists</string>
+    <string name="credit_card.error.PGE0042">You have reached the limit of stored credit or debit cards</string>
+    <string name="credit_card.error.PGE0002">Credit or debit card transaction has been declined. Please contact your bank</string>
+    <string name="credit_card.error.PGE0006">Invalid credit or debit card number</string>
+    <string name="credit_card.error.PGE0007">Card expiration date invalid</string>
+    <string name="credit_card.error.PGE0008">Your credit card has expired. Please try with a new credit  or debit card</string>
+    <string name="credit_card.error.PGE0017">The merchant does not accept this type of credit or debit card</string>
+    <string name="credit_card.error.PGE0019">An error has occurred processing your credit or debit card. Please try again</string>
+    <string name="credit_card.error.PGE0044">Your card security code ccv is invalid</string>
+    <string name="credit_card.error.PGE0045">Address or security code ccv of your card invalid</string>
+    <string name="credit_card.error.PGE0127">The address provided  for your card does not match billing address of cardholder</string>
 
 
 </resources>

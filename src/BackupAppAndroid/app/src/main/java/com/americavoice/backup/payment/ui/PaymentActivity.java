@@ -184,12 +184,13 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public void onPayPalError() {
-       showError("The PayPal account could not be registered, please try again", true);
+
+       showError(getString(R.string.payment_error_createPaypal), true);
     }
 
     @Override
     public void onCreditCardError() {
-        onCreditCardError("The credit card is not valid, please verify your data and try again");
+        onCreditCardError(getString(R.string.payment_error_createCreditCard));
     }
 
     @Override
