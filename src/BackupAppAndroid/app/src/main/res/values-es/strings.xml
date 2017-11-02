@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY loginRegisterNow "Registrarse">
+    ]>
 <resources>
     <string name="app_name">Backup</string>
 
@@ -38,7 +41,7 @@
     <string name="login.phonePlaceHolder">Número</string>
     <string name="login.passwordPlaceHolder">Contraseña</string>
     <string name="login.loginPlaceHolder">Iniciar Sesión</string>
-    <string name="login.registerPlaceHolder">Registrarse</string>
+    <string name="login.registerPlaceHolder">&loginRegisterNow;</string>
     <string name="login.forgotPlaceHolder">Olvidaste tu contraseña?</string>
     <string name="login.validationPhoneNumberRequired">Número requerido</string>
     <string name="login.validationPhoneNumberInvalid">Número inválido</string>
@@ -55,6 +58,10 @@
     <string name="login.register.passwordConfirmPlaceHolder">Confirmar Contraseña</string>
     <string name="login.register.now">Registrarse Ahora</string>
     <string name="login.register.already">Tengo una cuenta!</string>
+    <string name="login.register.termsOfService">
+        Al hacer click en \"&loginRegisterNow;\" estás aceptando nuestros &lt;b&gt;Términos de servicio&lt;/b&gt;
+    </string>
+    <string name="login.register.termsOfServiceUrl">https://secureip.io/lockbackup/terms_of_service.html?lang=es</string>
 
     <string name="confirmation.codePlaceHolder">Código de Confirmación</string>
     <string name="confirmation.hello">Código de Confirmación</string>

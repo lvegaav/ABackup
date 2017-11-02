@@ -3,7 +3,12 @@ package com.americavoice.backup.login.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +76,8 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
     public EditText etPassword;
     @BindView(R.id.et_confirm_password)
     public EditText etConfirmPassword;
+    @BindView(R.id.terms_of_service)
+    TextView mTermsOfService;
 
 
     public LoginRegisterFragment() {
@@ -95,6 +102,7 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
 
         View fragmentView = inflater.inflate(R.layout.fragment_login_register, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
+        initializeTermsOfService();
         return fragmentView;
     }
 
@@ -140,6 +148,10 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
             //TODO:Init Values
         }
 
+    }
+
+    private void initializeTermsOfService() {
+        mTermsOfService.setText(Html.fromHtml(getString(R.string.login_register_termsOfService)));
     }
 
     @Override
@@ -245,6 +257,13 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
                etUsername.getText().toString(),
                etPassword.getText().toString(),
                etConfirmPassword.getText().toString());
+   }
+
+    @OnClick(R.id.terms_of_service)
+    public void onShowTerms() {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.login_register_termsOfServiceUrl)));
+        startActivity(intent);
+
    }
 }
 
