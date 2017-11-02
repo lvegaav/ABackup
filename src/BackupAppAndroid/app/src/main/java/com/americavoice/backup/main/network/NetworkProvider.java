@@ -83,6 +83,7 @@ public class NetworkProvider {
             pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             mDeviceInfo.put("device:appVersion", pInfo.versionName);
         } catch (PackageManager.NameNotFoundException e) {
+            mDeviceInfo.put("device:appVersion", "not found");
             e.printStackTrace();
         }
 
