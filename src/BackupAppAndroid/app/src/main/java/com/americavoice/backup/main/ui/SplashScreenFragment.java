@@ -147,7 +147,7 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
 
     @Override
     public Context getContext() {
-        return getActivity().getApplicationContext();
+        return getActivity();
     }
 
     @Subscribe

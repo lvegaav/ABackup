@@ -156,13 +156,26 @@
         </LinearLayout>
         <LinearLayout
             android:id="@+id/paypal_section"
+            android:background="@drawable/rounded_black_background_opacity_30"
             android:visibility="gone"
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <ProgressBar
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/wallet_button"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/ic_wallet"
+                android:layout_marginTop="50dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+            <Button
+                android:id="@+id/paypal_create_button"
+                style="@style/SettingsMenuOption"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:text="@string/payment_method.paypal.create"
+                android:layout_marginBottom="50dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
