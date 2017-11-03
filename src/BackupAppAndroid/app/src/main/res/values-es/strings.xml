@@ -247,6 +247,7 @@
     <string name="payment.error.loadData">No se pudo cargar la información, por favor intente más tarde</string>
     <string name="payment_method.credit_card">Tarjeta de crédito</string>
     <string name="payment_method.paypal">PayPal</string>
+    <string name="payment_method.paypal.create">Mostrar formulario de PayPal</string>
     <string name="subscription.cancel_subscription">Cancelar suscripción</string>
     <string name="subscription.change_payment_method">Actualizar método de pago</string>
     <string name="subscription.change">Cambiar plan</string>

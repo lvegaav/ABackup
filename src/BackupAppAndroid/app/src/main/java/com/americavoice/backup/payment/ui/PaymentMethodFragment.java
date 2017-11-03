@@ -292,6 +292,12 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
 
     }
 
+    @OnClick({R.id.wallet_button, R.id.paypal_create_button})
+    public void onPayPalRequestClick() {
+        mPresenter.requestAuthorization();
+    }
+
+
     @Override
     public void onPaymentMethodUpdated() {
         mListener.paymentMethodUpdated();

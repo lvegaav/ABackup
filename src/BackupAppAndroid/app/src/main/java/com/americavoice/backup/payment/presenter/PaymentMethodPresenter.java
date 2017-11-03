@@ -51,6 +51,7 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
     }
 
     public void requestAuthorization() {
+        mView.showLoading();
         mNetworkProvider.getPaypalToken(new AsyncResult<dtos.GetPayPalTokenResponse>() {
             @Override
             public void success(dtos.GetPayPalTokenResponse response) {
@@ -61,6 +62,11 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
             public void error(Exception ex) {
                 ex.printStackTrace();
                 Log.e("Paypal", ex.toString());
+            }
+
+            @Override
+            public void complete() {
+                mView.hideLoading();
             }
         });
 
@@ -75,7 +81,6 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
             public void success(dtos.CreatePayPalPaymentMethodResponse response) {
                 Log.d("PayPal", "Payment method created " + response.getPaymentId());
                 mView.onPaymentMethodUpdated();
-                //TODO: set selected subscription
             }
 
             @Override

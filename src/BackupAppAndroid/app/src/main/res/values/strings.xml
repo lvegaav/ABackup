@@ -244,6 +244,7 @@
     <string name="subscription.cancel_subscription">Cancel subscription</string>
 
     <string name="payment_method.paypal">PayPal</string>
+    <string name="payment_method.paypal.create">Show PayPal form</string>
     <string name="payment_method.credit_card">Credit card</string>
     <string name="payment.error.loadData">Could not load data, please try again later</string>
     <string name="payment.error.createSubscription">Could not create a subscription, please try again later</string>
