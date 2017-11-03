@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface SettingsView extends ILoadDataView {
 
+    void showGuidedTour();
 }

@@ -80,7 +80,7 @@
 
     <string name="login.password.success.hello">You Have A New Password</string>
     <string name="login.password.success.label">The new password you have just created is ready to use!</string>
-    <string name="login.password.success.button">Take My To Login Screen</string>
+    <string name="login.password.success.button">Take me to Login Screen</string>
 
     <string name="confirmation.codePlaceHolder">Confirmation Code</string>
     <string name="confirmation.hello">Confirmation Code</string>
@@ -282,6 +282,10 @@
     <string name="credit_card.error.PGE0044">Your card security code ccv is invalid</string>
     <string name="credit_card.error.PGE0045">Address or security code ccv of your card invalid</string>
     <string name="credit_card.error.PGE0127">The address provided  for your card does not match billing address of cardholder</string>
+    <string name="tour_options">Options</string>
+    <string name="tour_share">Share</string>
+    <string name="tour_files">Files</string>
+    <string name="tour_uploads">Uploads</string>
 
 
 </resources>

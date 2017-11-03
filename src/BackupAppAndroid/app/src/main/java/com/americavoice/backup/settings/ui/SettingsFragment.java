@@ -14,6 +14,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,8 @@ import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.utils.WifiUtils;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -41,9 +44,6 @@ import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 /**
  * Fragment that shows details of a certain political party.
@@ -79,8 +79,8 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     @BindView(R.id.ll_options)
     LinearLayout llOptions;
 
-    @BindView(R.id.ll_share)
-    LinearLayout llShare;
+    @BindView(R.id.iv_share)
+    ImageView ivShare;
 
     private boolean mShowingTour;
 
@@ -164,45 +164,50 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
         this.mPresenter.initialize();
-        showGuidedTour();
     }
 
-    private void showGuidedTour() {
+    @Override
+    public void showGuidedTour() {
+        TapTargetSequence sequence = new TapTargetSequence(getActivity())
+                .targets(
+                        TapTarget.forView(mUseMobileData, getString(R.string.tour_options), getString(R.string.tour_settings_options))
+                                .dimColor(android.R.color.black)
+                                .outerCircleColor(R.color.blackOpacity80)
+                                .targetCircleColor(R.color.colorAccent)
+                                .transparentTarget(true)
+                                .textColor(android.R.color.white)
+                                .cancelable(false),
+                        TapTarget.forView(ivShare, getString(R.string.tour_share), getString(R.string.tour_settings_share))
+                                .dimColor(android.R.color.black)
+                                .outerCircleColor(R.color.blackOpacity80)
+                                .targetCircleColor(R.color.colorAccent)
+                                .transparentTarget(true)
+                                .textColor(android.R.color.white)
+                                .cancelable(false))
+                .listener(new TapTargetSequence.Listener() {
+                    // This listener will tell us when interesting(tm) events happen in regards
+                    // to the sequence
+                    @Override
+                    public void onSequenceFinish() {
+                        // Yay
+                        mShowingTour = false;
+                        mPresenter.showCaseFinished();
+                    }
 
-        ShowcaseConfig config = new ShowcaseConfig();
-        config.setDelay(500);
-        config.setMaskColor(getResources().getColor(R.color.blackOpacity80));
+                    @Override
+                    public void onSequenceStep(TapTarget tapTarget, boolean b) {
 
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "3");
+                    }
 
-        sequence.setConfig(config);
-
-        sequence.setOnItemShownListener(new MaterialShowcaseSequence.OnSequenceItemShownListener() {
-            @Override
-            public void onShow(MaterialShowcaseView materialShowcaseView, int i) {
-                mShowingTour = true;
-            }
-        });
-
-        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
-            @Override
-            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
-                if (i == 1) {
-                    mShowingTour = false;
-                }
-            }
-        });
-
-        sequence.addSequenceItem(llOptions,
-                getString(R.string.tour_settings_options), getString(R.string.tour_got_it));
-
-        sequence.addSequenceItem(llShare,
-                getString(R.string.tour_settings_share), getString(R.string.tour_got_it));
-
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        // Boo
+                        mShowingTour = false;
+                        mPresenter.showCaseFinished();
+                    }
+                });
+        mShowingTour = true;
         sequence.start();
-
-
-
     }
 
     @Override

@@ -17,4 +17,5 @@ public interface FileListView extends ILoadDataView {
     void showUploading();
     void notifyDataSetChanged();
     void showPersistenceUpgrade(int message);
+    void showGuidedTour();
 }

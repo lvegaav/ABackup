@@ -51,6 +51,8 @@ import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.RecyclerItemClickListener;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
@@ -66,9 +68,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 
 public class FileListFragment extends BaseFragment implements FileListView, OnRemoteOperationListener {
@@ -251,7 +250,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         };
 
         backupSwitch.setOnCheckedChangeListener(onCheckedChangeListener);
-        showGuidedTour();
     }
 
     @Override
@@ -417,41 +415,51 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     }
 
-    private void showGuidedTour() {
-
-        ShowcaseConfig config = new ShowcaseConfig();
-
-        config.setDelay(500);
-        config.setMaskColor(getResources().getColor(R.color.blackOpacity80));
-
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "2");
-        sequence.setConfig(config);
-
-        sequence.setOnItemShownListener(new MaterialShowcaseSequence.OnSequenceItemShownListener() {
-            @Override
-            public void onShow(MaterialShowcaseView materialShowcaseView, int i) {
-                mShowingTour = true;
-            }
-        });
-
-        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
-            @Override
-            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
-                int numberOfSequences = !mPath.equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER) ? 1 : 0;
-                if (i == numberOfSequences) {
-                    mShowingTour = false;
-                }
-            }
-        });
-
+    @Override
+    public void showGuidedTour() {
+        List<TapTarget> tapTargets = new ArrayList<>();
         if (!mPath.equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER) ) {
-            sequence.addSequenceItem(backupSwitch,
-                    getString(R.string.tour_files_switch), getString(R.string.tour_got_it));
+            tapTargets.add(TapTarget.forView(backupSwitch, getString(R.string.tour_uploads), getString(R.string.tour_files_switch))
+                    .dimColor(android.R.color.black)
+                    .outerCircleColor(R.color.blackOpacity80)
+                    .targetCircleColor(R.color.colorAccent)
+                    .transparentTarget(true)
+                    .textColor(android.R.color.white)
+                    .cancelable(false));
         }
-        sequence.addSequenceItem(fabUpload,
-                getString(R.string.tour_files_upload), getString(R.string.tour_got_it));
-        sequence.start();
+        tapTargets.add(TapTarget.forView(fabUpload, getString(R.string.tour_files), getString(R.string.tour_files_upload))
+                .dimColor(android.R.color.black)
+                .outerCircleColor(R.color.blackOpacity80)
+                .targetCircleColor(R.color.colorAccent)
+                .transparentTarget(true)
+                .textColor(android.R.color.white)
+                .cancelable(false));
+        TapTargetSequence sequence = new TapTargetSequence(getActivity())
+                .targets((tapTargets.toArray(new TapTarget[0])))
+                .listener(new TapTargetSequence.Listener() {
+                    // This listener will tell us when interesting(tm) events happen in regards
+                    // to the sequence
+                    @Override
+                    public void onSequenceFinish() {
+                        // Yay
+                        mShowingTour = false;
+                        mPresenter.showCaseFinished();
+                    }
 
+                    @Override
+                    public void onSequenceStep(TapTarget tapTarget, boolean b) {
+
+                    }
+
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        // Boo
+                        mShowingTour = false;
+                        mPresenter.showCaseFinished();
+                    }
+                });
+        mShowingTour = true;
+        sequence.start();
     }
 
     @Override

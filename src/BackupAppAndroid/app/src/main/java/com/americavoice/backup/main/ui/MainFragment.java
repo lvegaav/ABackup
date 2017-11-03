@@ -6,22 +6,18 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,20 +38,18 @@ import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.payment.ui.PaymentActivity;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
-import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.settings.presenter.StorageInfoPresenter;
-import com.americavoice.backup.settings.ui.SettingsView;
 import com.americavoice.backup.settings.ui.StorageInfoView;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sync.service.SyncBackupJob;
 import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.PermissionUtil;
-import com.americavoice.backup.utils.ThemeUtils;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 
 import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -68,9 +62,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 /**
  * Fragment that shows details of a certain political party.
@@ -329,39 +320,43 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     private void showGuidedTour() {
 
-        ShowcaseConfig config = new ShowcaseConfig();
-        config.setDelay(500);
-        config.setMaskColor(getResources().getColor(R.color.blackOpacity80));
+        TapTargetSequence sequence = new TapTargetSequence(getActivity())
+                .targets(
+                        TapTarget.forView(llPhotos, "Welcome", getString(R.string.tour_dashboard_icons))
+                                .dimColor(android.R.color.black)
+                                .outerCircleColor(R.color.blackOpacity80)
+                                .targetCircleColor(R.color.colorAccent)
+                                .transparentTarget(true)
+                                .textColor(android.R.color.white)
+                                .cancelable(false),
+                        TapTarget.forView(btnSettings, "Settings", getString(R.string.tour_dashboard_settings))
+                                .dimColor(android.R.color.black)
+                                .outerCircleColor(R.color.blackOpacity80)
+                                .targetCircleColor(R.color.colorAccent)
+                                .transparentTarget(true)
+                                .textColor(android.R.color.white)
+                                .cancelable(false))
+                .listener(new TapTargetSequence.Listener() {
+                    // This listener will tell us when interesting(tm) events happen in regards
+                    // to the sequence
+                    @Override
+                    public void onSequenceFinish() {
+                        // Yay
+                        mShowingTour = false;
+                    }
 
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(getActivity(), "1");
+                    @Override
+                    public void onSequenceStep(TapTarget tapTarget, boolean b) {
 
-        sequence.setConfig(config);
+                    }
 
-        sequence.setOnItemShownListener(new MaterialShowcaseSequence.OnSequenceItemShownListener() {
-            @Override
-            public void onShow(MaterialShowcaseView materialShowcaseView, int i) {
-                mShowingTour = true;
-            }
-        });
-
-        sequence.setOnItemDismissedListener(new MaterialShowcaseSequence.OnSequenceItemDismissedListener() {
-            @Override
-            public void onDismiss(MaterialShowcaseView materialShowcaseView, int i) {
-                if (i == 2) {
-                    mShowingTour = false;
-                }
-            }
-        });
-
-        sequence.addSequenceItem(llMainView,
-                getString(R.string.tour_dashboard), getString(R.string.tour_got_it));
-
-        sequence.addSequenceItem(btnSettings,
-                getString(R.string.tour_dashboard_settings), getString(R.string.tour_got_it));
-
-        sequence.addSequenceItem(llPhotos,
-                getString(R.string.tour_dashboard_icons), getString(R.string.tour_got_it));
-
+                    @Override
+                    public void onSequenceCanceled(TapTarget lastTarget) {
+                        // Boo
+                        mShowingTour = false;
+                    }
+                });
+        mShowingTour = true;
         sequence.start();
 
     }

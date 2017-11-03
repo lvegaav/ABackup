@@ -44,6 +44,8 @@ public class SettingsPresenter extends BasePresenter implements IPresenter {
 
     private SettingsView mView;
 
+    public static final String SHOW_CASE_ALREADY = "SETTINGS_SHOW_CASE_ALREADY";
+
     @Inject
     public SettingsPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
@@ -70,6 +72,9 @@ public class SettingsPresenter extends BasePresenter implements IPresenter {
      * Initializes the presenter
      */
     public void initialize() {
+        if (!mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false)) {
+            mView.showGuidedTour();
+        }
     }
 
     public void logout() {
@@ -80,4 +85,7 @@ public class SettingsPresenter extends BasePresenter implements IPresenter {
 
     }
 
+    public void showCaseFinished() {
+        mSharedPrefsUtils.setBooleanPreference(SHOW_CASE_ALREADY, true);
+    }
 }

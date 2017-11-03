@@ -45,6 +45,7 @@ import javax.inject.Inject;
 @PerActivity
 public class FileListPresenter extends BasePresenter implements IPresenter, OnRemoteOperationListener {
 
+    private static final String SHOW_CASE_ALREADY = "FILES_SHOW_CASE_ALREADY";
     private FileDataStorageManager mStorageManager;
     private Account mAccount;
     private FileListView mView;
@@ -113,6 +114,9 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         if (client != null) {
             ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(path);
             refreshOperation.execute(client, this, mHandler);
+        }
+        if (!mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false)) {
+            mView.showGuidedTour();
         }
     }
 
@@ -198,5 +202,9 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
     public void updateRefreshFlag() {
         mSharedPrefsUtils.setBooleanPreference(MainActivity.EXTRA_REFRESH_DATA, true);
+    }
+
+    public void showCaseFinished() {
+        mSharedPrefsUtils.setBooleanPreference(SHOW_CASE_ALREADY, true);
     }
 }
