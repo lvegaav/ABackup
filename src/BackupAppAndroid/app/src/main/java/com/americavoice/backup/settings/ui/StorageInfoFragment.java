@@ -40,6 +40,7 @@ import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.news.ui.NewsActivity;
+import com.americavoice.backup.payment.ui.PaymentActivity;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
@@ -505,6 +506,12 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    @OnClick (R.id.btn_upgrade)
+    public void onUpgrade(){
+        Intent intent = new Intent(getContext(), PaymentActivity.class);
+        startActivity(intent);
     }
 }
 

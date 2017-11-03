@@ -39,6 +39,7 @@ import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.presenter.MainPresenter;
 import com.americavoice.backup.main.ui.activity.MainActivity;
+import com.americavoice.backup.payment.ui.PaymentActivity;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.presenter.SettingsPresenter;
@@ -538,7 +539,8 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
+                            Intent intent = new Intent(getContext(), PaymentActivity.class);
+                            startActivity(intent);
                         }
                     })
                     .onAny(new MaterialDialog.SingleButtonCallback() {

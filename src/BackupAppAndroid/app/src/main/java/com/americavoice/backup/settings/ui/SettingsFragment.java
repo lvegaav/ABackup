@@ -295,7 +295,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         startActivity(intent);
     }
 
-    @OnClick(R.id.payment_button)
+    @OnClick(R.id.ll_payment_options)
     public void onPaymentClick() {
         Intent intent = new Intent(getContext(), PaymentActivity.class);
         startActivity(intent);

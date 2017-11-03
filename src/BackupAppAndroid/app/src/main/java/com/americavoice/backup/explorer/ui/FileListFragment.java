@@ -46,6 +46,7 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.operations.RemoveFileOperation;
+import com.americavoice.backup.payment.ui.PaymentActivity;
 import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
@@ -262,7 +263,8 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                 .setAction(R.string.storage_upgrade_plan, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        Intent intent = new Intent(getContext(), PaymentActivity.class);
+                        startActivity(intent);
                     }
                 });
         snackbar.show();

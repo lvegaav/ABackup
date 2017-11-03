@@ -145,9 +145,12 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
         }
 
         float availablePercentage = getPercent(totalAvailable, total);
-
-        mSharedPrefsUtils.setBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, availablePercentage < 10 && availablePercentage > 0);
-        mSharedPrefsUtils.setBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, availablePercentage <= 1);
+        float totalAvInGB = totalAvailable.divide(new BigDecimal(1073741824), 3, BigDecimal.ROUND_HALF_UP).floatValue();
+        float totalInGB = total.divide(new BigDecimal(1073741824), 3, BigDecimal.ROUND_HALF_UP).floatValue();
+        //percent lower than 10 or total less than 1GB
+        mSharedPrefsUtils.setBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, (availablePercentage < 10 && availablePercentage > 0) || totalInGB < 1);
+        // availablePercentage lower or equal than 1 or total available lower or equal than 0.01 GB
+        mSharedPrefsUtils.setBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, availablePercentage <= 1 || totalAvInGB <= 0.01);
 
         if (mSharedPrefsUtils.getBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, false)) {
             if (mView != null) {
