@@ -28,6 +28,7 @@ import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Build;
 import android.text.Spannable;
@@ -355,5 +356,11 @@ public class DisplayUtils {
             Log_OC.e(TAG, e.getMessage());
         }
         return text.toString();
+    }
+
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }

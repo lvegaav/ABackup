@@ -6,8 +6,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.main.data.SharedPrefsUtils;
+import com.crashlytics.android.Crashlytics;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 /**
@@ -17,21 +21,24 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 
 public class ContactUsActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private View mBlankView;
-    private View mFacebookLink;
-    private View mPhoneLink;
+    SharedPrefsUtils mPrefsUtils;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_us);
-        mBlankView = findViewById(R.id.blank_space);
-        mFacebookLink = findViewById(R.id.facebook_link);
-        mPhoneLink = findViewById(R.id.phone_link);
+        View mBlankView = findViewById(R.id.blank_space);
+        View mFacebookLink = findViewById(R.id.facebook_link);
+        View mPhoneLink = findViewById(R.id.phone_link);
         mBlankView.setOnClickListener(this);
         mFacebookLink.setOnClickListener(this);
         mPhoneLink.setOnClickListener(this);
         setTitle("");
 
+        mPrefsUtils = new SharedPrefsUtils(this);
+
+        TextView tvPhoneNumber = findViewById(R.id.phone_number);
+        String callCenterPhone = mPrefsUtils.getStringPreference("callCenterPhone", "");
+        tvPhoneNumber.setText(callCenterPhone);
     }
 
     @Override
@@ -46,13 +53,23 @@ public class ContactUsActivity extends AppCompatActivity implements View.OnClick
         switch (view.getId()) {
             case R.id.facebook_link:
                 intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(getString(R.string.contact_us_facebook_link)));
-                startActivity(intent);
+                String facebookUrl = mPrefsUtils.getStringPreference("facebookUrl", "");
+                try {
+                    intent.setData(Uri.parse(facebookUrl));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Crashlytics.logException(e);
+                }
                 break;
             case R.id.phone_link:
                 intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + getString(R.string.contact_us_phone)));
-                startActivity(intent);
+                String callCenterPhone = mPrefsUtils.getStringPreference("callCenterPhone", "");
+                try {
+                    intent.setData(Uri.parse("tel:" + callCenterPhone));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Crashlytics.logException(e);
+                }
                 break;
         }
         finish();

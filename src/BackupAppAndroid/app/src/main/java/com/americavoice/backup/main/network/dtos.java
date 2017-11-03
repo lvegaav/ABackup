@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-10-31 14:21:19
+Date: 2017-11-02 20:04:15
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://core-be.development.americavoice.com:8458/api
@@ -42,11 +42,11 @@ public class dtos
     }
 
     /**
-    * Get supported versions of the mobile app.
+    * Get config for the mobile app.
     */
-    @Route(Path="/mobileapp/supportedversions", Verbs="GET")
-    @Api(Description="Get supported versions of the mobile app.")
-    public static class GetMobileAppSupportedVersions implements IReturn<GetMobileAppSupportedVersionsResponse>
+    @Route(Path="/mobileapp/config", Verbs="GET")
+    @Api(Description="Get config for the mobile app.")
+    public static class GetMobileAppConfig implements IReturn<GetMobileAppConfigResponse>
     {
         /**
         * Tablet (true, false).
@@ -61,10 +61,10 @@ public class dtos
         public String type = null;
         
         public Boolean isTablet() { return tablet; }
-        public GetMobileAppSupportedVersions setTablet(Boolean value) { this.tablet = value; return this; }
+        public GetMobileAppConfig setTablet(Boolean value) { this.tablet = value; return this; }
         public String getType() { return type; }
-        public GetMobileAppSupportedVersions setType(String value) { this.type = value; return this; }
-        private static Object responseType = GetMobileAppSupportedVersionsResponse.class;
+        public GetMobileAppConfig setType(String value) { this.type = value; return this; }
+        private static Object responseType = GetMobileAppConfigResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -909,12 +909,24 @@ public class dtos
         public GetTimeZonesResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
-    public static class GetMobileAppSupportedVersionsResponse
+    public static class GetMobileAppConfigResponse
     {
         public ArrayList<String> versions = null;
+        public String facebookUrl = null;
+        public String callCenterPhone = null;
+        public String twitterUrl = null;
+        public HashMap<String,String> termsAndPrivacyUrls = null;
         
         public ArrayList<String> getVersions() { return versions; }
-        public GetMobileAppSupportedVersionsResponse setVersions(ArrayList<String> value) { this.versions = value; return this; }
+        public GetMobileAppConfigResponse setVersions(ArrayList<String> value) { this.versions = value; return this; }
+        public String getFacebookUrl() { return facebookUrl; }
+        public GetMobileAppConfigResponse setFacebookUrl(String value) { this.facebookUrl = value; return this; }
+        public String getCallCenterPhone() { return callCenterPhone; }
+        public GetMobileAppConfigResponse setCallCenterPhone(String value) { this.callCenterPhone = value; return this; }
+        public String getTwitterUrl() { return twitterUrl; }
+        public GetMobileAppConfigResponse setTwitterUrl(String value) { this.twitterUrl = value; return this; }
+        public HashMap<String,String> getTermsAndPrivacyUrls() { return termsAndPrivacyUrls; }
+        public GetMobileAppConfigResponse setTermsAndPrivacyUrls(HashMap<String,String> value) { this.termsAndPrivacyUrls = value; return this; }
     }
 
     public static class CustomRegisterResponse

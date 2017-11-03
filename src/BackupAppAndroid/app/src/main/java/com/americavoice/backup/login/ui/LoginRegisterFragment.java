@@ -24,6 +24,8 @@ import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.login.model.SpinnerItem;
 import com.americavoice.backup.login.presenter.LoginPresenter;
 import com.americavoice.backup.login.presenter.LoginRegisterPresenter;
+import com.americavoice.backup.main.data.SharedPrefsUtils;
+import com.americavoice.backup.main.data.SharedPrefsUtils_Factory;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
@@ -38,6 +40,7 @@ import com.owncloud.android.lib.common.utils.Log_OC;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -279,9 +282,23 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
 
     @OnClick(R.id.terms_of_service)
     public void onShowTerms() {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.login_register_termsOfServiceUrl)));
-        startActivity(intent);
-
+        SharedPrefsUtils prefsUtils = new SharedPrefsUtils(getContext());
+        String language = Locale.getDefault().getLanguage();
+        String termsOfServiceUrl = "";
+        switch (language) {
+            case "es":
+                termsOfServiceUrl = prefsUtils.getStringPreference("esTermsOfService", "");
+                break;
+            default:
+                termsOfServiceUrl = prefsUtils.getStringPreference("enTermsOfService", "");
+                break;
+        }
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(termsOfServiceUrl));
+            startActivity(intent);
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+        }
    }
 }
 

@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.utils.DisplayUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.owncloud.android.lib.common.OwnCloudClient;
@@ -248,6 +249,13 @@ public class NetworkProvider {
 
     public void changeSubscription(dtos.ChangeSubscription request, AsyncResult<dtos.ChangeSubscriptionResponse> response) {
         mClient.postAsync(request, response);
+    }
+
+    public void getAppConfig(AsyncResult<dtos.GetMobileAppConfigResponse> response) {
+        dtos.GetMobileAppConfig request = new dtos.GetMobileAppConfig();
+        request.setTablet(DisplayUtils.isTablet(mContext));
+        request.setType("android");
+        mAppClient.getAsync(request, response);
     }
 
 }
