@@ -145,7 +145,7 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
                         } else {
                             Crashlytics.logException(new Throwable("callCenterPhone configuration is null, please check your configuration"));
                         }
-                        if (!response.getTermsAndPrivacyUrls().isEmpty()){
+                        if (response.getTermsAndPrivacyUrls() != null && !response.getTermsAndPrivacyUrls().isEmpty()){
                             if (response.getTermsAndPrivacyUrls().containsKey("en")){
                                 mSharedPrefsUtils.setStringPreference("enTermsOfService", response.getTermsAndPrivacyUrls().get("en"));
                             }
