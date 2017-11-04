@@ -28,13 +28,14 @@ import android.support.v4.app.Fragment;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
+import com.owncloud.android.lib.common.network.CertificateCombinedException;
+import com.owncloud.android.lib.common.network.NetworkUtils;
 import com.owncloud.android.lib.common.network.RedirectionPath;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
 import com.owncloud.android.lib.resources.files.ExistenceCheckRemoteOperation;
-import com.owncloud.android.lib.resources.users.GetRemoteUserInfoOperation;
-
 import java.lang.ref.WeakReference;
-
+import java.security.cert.X509Certificate;
 
 /**
  * Async Task to verify the credentials of a user
@@ -55,7 +56,7 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
     @Override
     protected RemoteOperationResult doInBackground(Object... params) {
 
-        RemoteOperationResult result;
+        RemoteOperationResult result = new RemoteOperationResult(RemoteOperationResult.ResultCode.UNKNOWN_ERROR);
         if (params!= null && params.length==2) {
             Context context = mContextReference.get();
             String url = (String)params[0];
@@ -71,7 +72,20 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
                     REMOTE_PATH,
                     SUCCESS_IF_ABSENT
             );
+
             result = operation.execute(client);
+            if (result.getException() != null && result.getException() instanceof CertificateCombinedException)
+            {
+                try {
+                    X509Certificate m509Certificate = ((CertificateCombinedException)result.getException()).getServerCertificate();
+                    NetworkUtils.addCertToKnownServersStore(m509Certificate, context);
+                } catch (Exception e) {
+                    Log_OC.e("", "Server certificate could not be saved in the known-servers trust store ", e);
+                } finally {
+                    //Try again
+                    result = operation.execute(client);
+                }
+            }
 
             if (operation.wasRedirected()) {
                 RedirectionPath redirectionPath = operation.getRedirectionPath();
@@ -79,8 +93,6 @@ public class AuthenticatorAsyncTask extends AsyncTask<Object, Void, RemoteOperat
                 result.setLastPermanentLocation(permanentLocation);
             }
 
-        } else {
-            result = new RemoteOperationResult(RemoteOperationResult.ResultCode.UNKNOWN_ERROR);
         }
 
         return result;
