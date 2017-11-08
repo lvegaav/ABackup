@@ -11,6 +11,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.americavoice.backup.BuildConfig;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.google.gson.Gson;
@@ -47,7 +48,7 @@ public class NetworkProvider {
     public static final String KEY_FIRST_TIME = "com.americavoice.backup.KEY_FIRST_TIME";
     private final SharedPreferences mPref;
     private final AndroidServiceClient mClient; //Client with User Authentication
-    private final AndroidServiceClient mAppClient; //Client with JWT Authentication
+    private BearerTokenJsonServiceClient mAppClient; //Client with JWT Authentication
     private final Context mContext;
     private Gson mGson;
     private AccountManager mAccountMgr;
@@ -74,7 +75,7 @@ public class NetworkProvider {
     public NetworkProvider(Context context) {
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
         mClient = new AndroidServiceClient(baseUrl + "/api");
-        mAppClient = new AndroidServiceClient(baseUrl + "/api");
+
         mContext = context;
         mAccountMgr = AccountManager.get(context);
 
@@ -83,26 +84,32 @@ public class NetworkProvider {
         mDeviceInfo.put("device:model", Build.MODEL);
         mDeviceInfo.put("device:os", "Android");
         mDeviceInfo.put("device:osVersion", Build.VERSION.RELEASE);
-        PackageInfo pInfo = null;
-        try {
-            pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            mDeviceInfo.put("device:appVersion", pInfo.versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            mDeviceInfo.put("device:appVersion", "not found");
-            e.printStackTrace();
+        mDeviceInfo.put("device:appVersion", BuildConfig.VERSION_NAME);
+
+        //TODO Ignore self-signed certificate
+        //IgnoreSelfSigned();
+    }
+
+    private BearerTokenJsonServiceClient getAppClient() {
+        if (mAppClient == null) {
+            mAppClient = new BearerTokenJsonServiceClient(
+                    baseUrl + "/api",
+                    mContext,
+                    identityUrl,
+                    "my-test-clien",
+                    "my-test-client",
+                    "backup-api");
         }
 
         mAppClient.RequestFilter = new ConnectionFilter() {
             @Override
             public void exec(HttpURLConnection conn) {
-                String token = mPref.getString("TOKEN", null);
+                String token = mAppClient.getToken().access_token;
                 conn.setRequestProperty("Authorization",
                         "Bearer " + token);
             }
         };
-
-        //TODO Ignore self-signed certificate
-        //IgnoreSelfSigned();
+        return mAppClient;
     }
 
 
@@ -147,8 +154,7 @@ public class NetworkProvider {
     }
 
     public OwnCloudClient getLoginCloudClient(String username, String password) {
-        if (mCloudClient == null)
-        {
+        if (mCloudClient == null) {
             Uri serverUri = Uri.parse(baseUrlOwnCloud);
             mCloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
             mCloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(username, password));
@@ -192,7 +198,7 @@ public class NetworkProvider {
 
     public void CustomRegister(dtos.CustomRegister request, AsyncResult<dtos.CustomRegisterResponse> result) {
         Log.d("Network", "calling register");
-        mAppClient.postAsync(request, result);
+        getAppClient().postAsync(request, result);
     }
 
     public void SendPhoneVerificationCode(AsyncResult<dtos.SendPhoneVerificationCodeResponse> result) {
@@ -201,11 +207,11 @@ public class NetworkProvider {
 
     public void SendPasswordResetCode(dtos.SendPasswordResetCode request, AsyncResult<dtos.SendPasswordResetCodeResponse> result) {
         Log.d("Network", "calling reset pass");
-        mAppClient.postAsync(request, result);
+        getAppClient().postAsync(request, result);
     }
 
     public void PerformResetPassword(dtos.PerformResetPassword request, AsyncResult<dtos.PerformResetPasswordResponse> result) {
-        mAppClient.postAsync(request, result);
+        getAppClient().postAsync(request, result);
     }
 
     public void getPaymentMethod(AsyncResult<dtos.GetPaymentMethodResponse> result) {
@@ -259,7 +265,7 @@ public class NetworkProvider {
         dtos.GetMobileAppConfig request = new dtos.GetMobileAppConfig();
         request.setTablet(DisplayUtils.isTablet(mContext));
         request.setType("android");
-        mAppClient.getAsync(request, response);
+        mClient.getAsync(request, response);
     }
 
 }

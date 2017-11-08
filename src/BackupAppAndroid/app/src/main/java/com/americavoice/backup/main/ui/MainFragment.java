@@ -320,6 +320,10 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     private void showGuidedTour() {
 
+        if (mPresenter.getShowCaseFinished()) {
+            return;
+        }
+
         TapTargetSequence sequence = new TapTargetSequence(getActivity())
                 .targets(
                         TapTarget.forView(llPhotos, "Welcome", getString(R.string.tour_dashboard_icons))
@@ -343,6 +347,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
                     public void onSequenceFinish() {
                         // Yay
                         mShowingTour = false;
+                        mPresenter.showCaseFinished();
                     }
 
                     @Override
@@ -354,6 +359,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
                     public void onSequenceCanceled(TapTarget lastTarget) {
                         // Boo
                         mShowingTour = false;
+                        mPresenter.showCaseFinished();  
                     }
                 });
         mShowingTour = true;

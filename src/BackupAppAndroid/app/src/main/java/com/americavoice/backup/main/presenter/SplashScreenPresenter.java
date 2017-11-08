@@ -70,54 +70,7 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
      * Initializes the presenter
      */
     public void initialize() {
-        //Set App Token
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                NetworkProvider.getIdentityUrl(),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            TokenModel tokenModel = (TokenModel) mNetworkProvider.fromJson(response, TokenModel.class);
-                            mNetworkProvider.setAppToken(tokenModel.access_token);
-                            checkVersionAndConfig();
-                        } catch (Exception e) {
-                            Crashlytics.logException(e);
-                            mView.showError(mView.getContext().getString(R.string.exception_message_generic));
-                            mView.finish();
-                        }
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        mView.showError(mView.getContext().getString(R.string.network_error_socket_timeout_exception));
-                        mView.finish();
-                    }
-                }
-        ) {
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded; charset=UTF-8";
-            }
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("client_id", "my-test-client");
-                params.put("client_secret", "my-test-client");
-                params.put("grant_type", "client_credentials");
-                params.put("scope", "backup-api");
-                return params;
-            }
-        };
-
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                SPLASH_DISPLAY_LENGTH,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue queue = Volley.newRequestQueue(mView.getContext());
-        queue.add(stringRequest);
+        checkVersionAndConfig();
     }
 
     private void checkVersionAndConfig() {

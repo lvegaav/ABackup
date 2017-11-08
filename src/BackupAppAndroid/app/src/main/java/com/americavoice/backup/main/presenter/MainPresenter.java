@@ -43,6 +43,8 @@ import javax.inject.Inject;
 @PerActivity
 public class MainPresenter extends BasePresenter implements IPresenter, OnRemoteOperationListener {
 
+    public static final String SHOW_CASE_ALREADY = "MAIN_SHOW_CASE_ALREADY";
+
     private MainView mView;
     private Handler mHandler;
     private Context mContext;
@@ -167,5 +169,13 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
         float x1 = x / size.floatValue();
         BigDecimal x2= new BigDecimal(x1).setScale(1, BigDecimal.ROUND_HALF_UP);
         return x2.floatValue();
+    }
+
+    public void showCaseFinished() {
+        mSharedPrefsUtils.setBooleanPreference(SHOW_CASE_ALREADY, true);
+    }
+
+    public boolean getShowCaseFinished() {
+        return mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false);
     }
 }

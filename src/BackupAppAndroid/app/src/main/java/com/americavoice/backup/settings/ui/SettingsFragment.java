@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.americavoice.backup.BuildConfig;
 import com.americavoice.backup.R;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
@@ -114,14 +115,7 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
         mUnBind = ButterKnife.bind(this, fragmentView);
 
         tvTitle.setText(getText(R.string.settings_title));
-
-        PackageInfo pInfo = null;
-        try {
-            pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
-            tvVersionName.setText(pInfo.versionName);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        tvVersionName.setText(BuildConfig.VERSION_NAME);
 
         // checkbox initial values
         boolean useMobileData = PreferenceManager.instantUploadWithMobileData(getContext());
