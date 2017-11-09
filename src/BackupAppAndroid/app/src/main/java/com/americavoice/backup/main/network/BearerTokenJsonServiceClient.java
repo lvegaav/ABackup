@@ -3,11 +3,13 @@ package com.americavoice.backup.main.network;
 import android.content.Context;
 
 import com.americavoice.backup.main.model.TokenModel;
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 
@@ -28,7 +30,7 @@ import java.util.concurrent.ExecutionException;
 
 public class BearerTokenJsonServiceClient extends AndroidServiceClient {
 
-    private Map<String, CacheEntry> TokenCache = new HashMap<>();
+    private Map<String, CacheEntry> mTokenCache = new HashMap<>();
 
     private Context mContext;
     private String mOidUrl;
@@ -44,19 +46,37 @@ public class BearerTokenJsonServiceClient extends AndroidServiceClient {
         this.mClientId = clientId;
         this.mClientSecret = clientSecret;
         this.mClientScope = clientScope;
+
+        mCacheKey = baseUrl + oidUrl + clientId + clientSecret + clientScope;
     }
 
-    public TokenModel getToken() {
+    private TokenModel getToken() {
 
         TokenModel tokenModel = null;
-        Map<String, String> params = new HashMap<>();
-        params.put("client_id", mClientId);
-        params.put("client_secret", mClientSecret);
-        params.put("grant_type", "client_credentials");
-        params.put("scope", mClientScope);
 
-        RequestFuture<JSONObject> future = RequestFuture.newFuture();
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, mOidUrl,  new JSONObject(params), future, future);
+        RequestFuture<String> future = RequestFuture.newFuture();
+
+        StringRequest request = new StringRequest(Request.Method.POST,
+                mOidUrl,
+                future,
+                future) {
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=UTF-8";
+            }
+
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("client_id", mClientId);
+                params.put("client_secret", mClientSecret);
+                params.put("grant_type", "client_credentials");
+                params.put("scope", mClientScope);
+                return params;
+            }
+        };
+
+
 
         request.setRetryPolicy(new DefaultRetryPolicy(
                 10000,
@@ -66,8 +86,8 @@ public class BearerTokenJsonServiceClient extends AndroidServiceClient {
         queue.add(request);
 
         try {
-            JSONObject response = future.get();
-            tokenModel = (TokenModel) fromJson(response.toString(), TokenModel.class);
+            String response = future.get();
+            tokenModel = (TokenModel) fromJson(response, TokenModel.class);
         } catch (InterruptedException e) {
             Crashlytics.logException(e);
         } catch (ExecutionException e) {
@@ -79,23 +99,41 @@ public class BearerTokenJsonServiceClient extends AndroidServiceClient {
         return tokenModel;
     }
 
-//    @DataContract
-//    private class Token {
-//
-//        @DataMember(Order = 1, Name = "access_token")
-//        String accessToken;
-//
-//        @DataMember(Order = 2, Name = "expires_in")
-//        int expiresIn;
-//
-//        @DataMember(Order = 3, Name = "token_type")
-//        String tokenType;
-//
-//    }
+    private String getAndCacheBearerToken() {
+        TokenModel token = getToken();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, token.expires_in);
+        Date expirationDate = calendar.getTime();
+        mTokenCache.put(mCacheKey, new CacheEntry(token, expirationDate));
+        return token.access_token;
+    }
+
+    String getBearerToken() {
+        CacheEntry cacheEntry = null;
+        if (mTokenCache.containsKey(mCacheKey)){
+            cacheEntry = mTokenCache.get(mCacheKey);
+            if (cacheEntry.hasExpired()) {
+                mTokenCache.remove(mCacheKey);
+                cacheEntry = null;
+            }
+        }
+
+        return cacheEntry != null ? ((TokenModel) cacheEntry.value).access_token : getAndCacheBearerToken();
+    }
+
     private class CacheEntry {
         Date expiresAt;
-        boolean hasExpired = expiresAt != null && expiresAt.before(Calendar.getInstance().getTime());
-        String value;
+        Object value;
+
+        CacheEntry(Object value, Date expiresAt) {
+            this.value = value;
+            this.expiresAt = expiresAt;
+        }
+
+        boolean hasExpired() {
+            return expiresAt != null && expiresAt.before(Calendar.getInstance().getTime());
+        }
     }
+
 
 }

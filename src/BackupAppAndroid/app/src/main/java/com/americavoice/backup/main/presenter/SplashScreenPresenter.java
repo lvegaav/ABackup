@@ -13,26 +13,14 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
-import com.americavoice.backup.main.model.TokenModel;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.SplashScreenView;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.crashlytics.android.Crashlytics;
 
 
 /**

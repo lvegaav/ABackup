@@ -96,7 +96,7 @@ public class NetworkProvider {
                     baseUrl + "/api",
                     mContext,
                     identityUrl,
-                    "my-test-clien",
+                    "my-test-client",
                     "my-test-client",
                     "backup-api");
         }
@@ -104,7 +104,7 @@ public class NetworkProvider {
         mAppClient.RequestFilter = new ConnectionFilter() {
             @Override
             public void exec(HttpURLConnection conn) {
-                String token = mAppClient.getToken().access_token;
+                String token = mAppClient.getBearerToken();
                 conn.setRequestProperty("Authorization",
                         "Bearer " + token);
             }
