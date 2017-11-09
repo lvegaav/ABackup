@@ -12,6 +12,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.americavoice.backup.BuildConfig;
+import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.google.gson.Gson;
@@ -55,9 +56,9 @@ public class NetworkProvider {
     private HashMap<String, String> mDeviceInfo;
     private OwnCloudClient mCloudClient;
 
-    /*private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
-    private static final String baseUrlOwnCloud = "http://backapp-eng.development.americavoice.com";
-    private static final String identityUrl = "http://172.22.122.40/connect/token";*/
+//    private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
+//    private static final String baseUrlOwnCloud = "http://backapp-eng.development.americavoice.com";
+//    private static final String identityUrl = "http://172.22.122.40/connect/token";
 
     private static final String baseUrl = "https://backup.secureip.io";
     private static final String baseUrlOwnCloud = "https://cloud.secureip.io";
@@ -237,6 +238,7 @@ public class NetworkProvider {
     public void getNewsFeed(AsyncResult<dtos.GetNewsFeedResponse> response) {
         Log.d("Network", "calling get news feed");
         dtos.GetNewsFeed request = new dtos.GetNewsFeed();
+        request.setLanguage(mContext.getString(R.string.common_language));
         request.setTake(25);
         mClient.getAsync(request, response);
     }

@@ -5,6 +5,7 @@
 <resources>
     <string name="app_name">Backup</string>
 
+    <string name="common.language">Es</string>
     <string name="common.loading">Cargando</string>
     <string name="common.sending">Enviando código de verificación</string>
     <string name="common.ok">OK</string>

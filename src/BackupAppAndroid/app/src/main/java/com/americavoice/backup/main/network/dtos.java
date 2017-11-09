@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-11-02 20:04:15
+Date: 2017-11-09 09:14:49
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://core-be.development.americavoice.com:8458/api
@@ -634,9 +634,12 @@ public class dtos
     public static class GetNewsFeed implements IReturn<GetNewsFeedResponse>
     {
         public Integer take = null;
+        public String language = null;
         
         public Integer getTake() { return take; }
         public GetNewsFeed setTake(Integer value) { this.take = value; return this; }
+        public String getLanguage() { return language; }
+        public GetNewsFeed setLanguage(String value) { this.language = value; return this; }
         private static Object responseType = GetNewsFeedResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -649,9 +652,12 @@ public class dtos
     public static class GetNewsFeedById implements IReturn<GetNewsFeedByIdResponse>
     {
         public String id = null;
+        public String language = null;
         
         public String getId() { return id; }
         public GetNewsFeedById setId(String value) { this.id = value; return this; }
+        public String getLanguage() { return language; }
+        public GetNewsFeedById setLanguage(String value) { this.language = value; return this; }
         private static Object responseType = GetNewsFeedByIdResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -771,6 +777,10 @@ public class dtos
     @Api(Description="Fetch account used storage.")
     public static class GetAccountUsage implements IReturn<GetAccountUsageResponse>
     {
+        /**
+        * Account Number.
+        */
+        @ApiMember(Description="Account Number.", IsRequired=true, ParameterType="path")
         public String accountNumber = null;
         
         public String getAccountNumber() { return accountNumber; }
@@ -1269,9 +1279,21 @@ public class dtos
 
     public static class GetAccountUsageResponse
     {
+        public Double totalQuota = null;
+        public Double usedQuota = null;
+        public Double availableQuota = null;
+        public String unitOfMeasure = null;
         public ArrayList<UsedStorage> usedStorage = null;
         public ResponseStatus responseStatus = null;
         
+        public Double getTotalQuota() { return totalQuota; }
+        public GetAccountUsageResponse setTotalQuota(Double value) { this.totalQuota = value; return this; }
+        public Double getUsedQuota() { return usedQuota; }
+        public GetAccountUsageResponse setUsedQuota(Double value) { this.usedQuota = value; return this; }
+        public Double getAvailableQuota() { return availableQuota; }
+        public GetAccountUsageResponse setAvailableQuota(Double value) { this.availableQuota = value; return this; }
+        public String getUnitOfMeasure() { return unitOfMeasure; }
+        public GetAccountUsageResponse setUnitOfMeasure(String value) { this.unitOfMeasure = value; return this; }
         public ArrayList<UsedStorage> getUsedStorage() { return usedStorage; }
         public GetAccountUsageResponse setUsedStorage(ArrayList<UsedStorage> value) { this.usedStorage = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
@@ -1756,18 +1778,15 @@ public class dtos
     public static class UsedStorage
     {
         public String name = null;
-        public String usedStorageSize = null;
+        public Double usedStorageSize = null;
         public String usedStorageUnit = null;
-        public Long itemsNumber = null;
         
         public String getName() { return name; }
         public UsedStorage setName(String value) { this.name = value; return this; }
-        public String getUsedStorageSize() { return usedStorageSize; }
-        public UsedStorage setUsedStorageSize(String value) { this.usedStorageSize = value; return this; }
+        public Double getUsedStorageSize() { return usedStorageSize; }
+        public UsedStorage setUsedStorageSize(Double value) { this.usedStorageSize = value; return this; }
         public String getUsedStorageUnit() { return usedStorageUnit; }
         public UsedStorage setUsedStorageUnit(String value) { this.usedStorageUnit = value; return this; }
-        public Long getItemsNumber() { return itemsNumber; }
-        public UsedStorage setItemsNumber(Long value) { this.itemsNumber = value; return this; }
     }
 
     public static interface IAuthTokens

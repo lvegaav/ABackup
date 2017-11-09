@@ -5,6 +5,7 @@
 <resources>
     <string name="app_name">Lock Backup</string>
 
+    <string name="common.language">En</string>
     <string name="common.loading">Loading</string>
     <string name="common.sending">Sending verification code</string>
     <string name="common.ok">OK</string>
