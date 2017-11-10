@@ -204,6 +204,7 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     public void showError(String message, final boolean finish) {
         new AlertDialog.Builder(this, R.style.WhiteDialog)
                 .setTitle("Error")
+                .setCancelable(false)
                 .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
