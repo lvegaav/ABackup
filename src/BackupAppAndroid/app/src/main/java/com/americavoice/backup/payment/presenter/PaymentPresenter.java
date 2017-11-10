@@ -147,7 +147,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
             mNetworkProvider.createSubscription(request, new AsyncResult<dtos.CreateSubscriptionResponse>() {
                 @Override
                 public void success(dtos.CreateSubscriptionResponse response) {
-                    checkSubscriptionAndShow();
+                    checkPaymentMethodAndShow();
                 }
 
                 @Override
@@ -159,7 +159,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                                 webServiceException.getErrorMessage(), ex);
                         if (webServiceException.getStatusCode() == 409) {
                             // current subscription is the same. ignore
-                            showCurrentSubscription();
+                            checkSubscriptionAndShow();
                         } else {
                             mPaymentView.showError(mPaymentView.getContext().getString(R.string.payment_error_createSubscription), true);
                         }

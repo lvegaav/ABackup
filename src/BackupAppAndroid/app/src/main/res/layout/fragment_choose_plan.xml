@@ -23,14 +23,14 @@
                 style="@style/SettingsMenuOption"
                 android:textSize="25sp"
                 android:padding="10dp"
-                android:text="No current plan"
+                android:text="@string/choose_plan.no_plan"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <TextView
             style="@style/SettingsMenuOption"
-            android:text="Store your most important content on the cloud so you can have access to it event when you lose your device"
+            android:text="@string/choose_plan.instructions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

@@ -240,7 +240,7 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
 
     @Override
     public Context getContext() {
-        return getContext();
+        return this.getApplicationContext();
     }
 
     @Override
