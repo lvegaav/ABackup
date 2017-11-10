@@ -44,7 +44,6 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment impleme
     public static final String ARGUMENT_USERNAME = "com.americavoice.backup.ARGUMENT_USERNAME";
     public static final String ARGUMENT_DEVICE = "com.americavoice.backup.ARGUMENT_DEVICE";
 
-
     @Override
     public void viewHome() {
         if (mListener != null) mListener.viewHome();
@@ -252,7 +251,7 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment impleme
     @Override
     public void loginWithCredentials(OwnCloudCredentials credentials) {
         AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
-        Object[] params = {NetworkProvider.getBaseUrlOwnCloud(), credentials};
+        Object[] params = {getResources().getString(R.string.baseUrlOwnCloud), credentials};
         loginAsyncTask.execute(params);
     }
 }

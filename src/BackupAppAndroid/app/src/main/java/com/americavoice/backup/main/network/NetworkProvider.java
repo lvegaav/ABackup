@@ -4,8 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -29,12 +27,10 @@ import net.servicestack.client.TimeSpan;
 
 import java.net.HttpURLConnection;
 import java.security.KeyManagementException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -56,24 +52,19 @@ public class NetworkProvider {
     private HashMap<String, String> mDeviceInfo;
     private OwnCloudClient mCloudClient;
 
-    private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
-    private static final String baseUrlOwnCloud = "http://backapp-eng.development.americavoice.com";
-    private static final String identityUrl = "http://172.22.122.40/connect/token";
+    private String baseUrl;
+    private String baseUrlOwnCloud;
+    private String identityUrl;
 
-//    private static final String baseUrl = "https://backup.secureip.io";
-//    private static final String baseUrlOwnCloud = "https://cloud.secureip.io";
-//    private static final String identityUrl = "https://id.americavoice.com/connect/token";
-
-    public static String getBaseUrlOwnCloud() {
-        return baseUrlOwnCloud;
-    }
-
-    public static String getIdentityUrl() {
-        return identityUrl;
-    }
 
     @Inject
     public NetworkProvider(Context context) {
+        mContext = context;
+
+        baseUrl = context.getResources().getString(R.string.baseUrl);
+        baseUrlOwnCloud = context.getResources().getString(R.string.baseUrlOwnCloud);
+        identityUrl = context.getResources().getString(R.string.identityUrl);
+
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
         mClient = new AndroidServiceClient(baseUrl + "/api");
 
@@ -87,8 +78,9 @@ public class NetworkProvider {
         mDeviceInfo.put("device:osVersion", Build.VERSION.RELEASE);
         mDeviceInfo.put("device:appVersion", BuildConfig.VERSION_NAME);
 
-        //TODO Ignore self-signed certificate
-        //IgnoreSelfSigned();
+        if (BuildConfig.DEBUG){
+            IgnoreSelfSigned();
+        }
     }
 
     private BearerTokenJsonServiceClient getAppClient() {
@@ -97,9 +89,9 @@ public class NetworkProvider {
                     baseUrl + "/api",
                     mContext,
                     identityUrl,
-                    "my-test-client",
-                    "my-test-client",
-                    "backup-api");
+                    mContext.getResources().getString(R.string.clientId),
+                    mContext.getResources().getString(R.string.clientSecret),
+                    mContext.getResources().getString(R.string.clientScope));
         }
 
         mAppClient.RequestFilter = new ConnectionFilter() {
