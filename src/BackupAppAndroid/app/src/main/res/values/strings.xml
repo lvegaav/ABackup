@@ -56,7 +56,7 @@
     <string name="login.validationConfirmPasswordInvalid">Invalid confirm password.</string>
     <string name="login.validationVerificationCodeInvalid">Invalid verification code.</string>
     <string name="login_validationNewPasswordMatches">The password must be 8 characters long and have one number</string>
-
+    <string name="login.dontHaveAnAccount">Don\'t have an account yet?</string>
     <string name="login.validationFailed">Login failed. Invalid username or password.</string>
 
 

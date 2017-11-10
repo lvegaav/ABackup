@@ -53,7 +53,7 @@
     <string name="login.validationConfirmPasswordInvalid">Confirmación inválida.</string>
     <string name="login.validationVerificationCodeInvalid">Código de verificación inválido.</string>
     <string name="login_validationNewPasswordMatches">La contraseña debe tener 8 caracteres y contener al menos número</string>
-
+    <string name="login.dontHaveAnAccount">¿No tienes una cuenta todavía?</string>
 
     <string name="login.register.hello">Registrarse</string>
     <string name="login.register.passwordPlaceHolder">Nueva Contraseña</string>
