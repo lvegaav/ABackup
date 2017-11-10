@@ -26,7 +26,6 @@
             app:srcCompat="@drawable/ic_lock_backup_logo_c"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"/>
-
         <TextView
             android:id="@+id/tv_hello"
             android:layout_centerHorizontal="true"
@@ -35,99 +34,119 @@
             android:textAlignment="center"
             android:text="@string/login.hello"
             android:textSize="24sp"
-            android:layout_marginTop="51dp"
+            android:layout_marginTop="30dp"
             android:textColor="@color/white"/>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_hello"
-            android:layout_margin="40dp"
-            android:layout_centerHorizontal="true"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/et_username"
-                android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_height="57dp"
-                android:background="@drawable/button_border"
-                android:hint="@string/login.register.usernamePlaceHolder"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="24sp"/>
-
-            <EditText
-                android:id="@+id/et_password"
-                android:layout_width="match_parent"
-                android:layout_marginTop="10dp"
-                android:layout_height="57dp"
-                android:background="@drawable/button_border"
-                android:hint="@string/login.passwordPlaceHolder"
-                android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
-                android:textSize="24sp"/>
-
+            android:layout_centerInParent="true">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:layout_weight="2">
+                android:layout_height="wrap_content"
+                android:paddingRight="25dp"
+                android:paddingLeft="25dp"
+                android:layout_centerHorizontal="true"
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/btn_register"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_margin="5dp"
-                    android:layout_height="match_parent"
-                    android:textColor="@android:color/white"
-                    android:background="@android:color/black"
-                    android:text="@string/login.registerPlaceHolder"
-                    android:textAllCaps="false"
-                    android:gravity="center"
-                    android:textSize="14sp"
-                    style="?android:attr/buttonBarStyle"
-                    />
+                <EditText
+                    android:id="@+id/et_username"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="57dp"
+                    android:background="@drawable/button_border"
+                    android:hint="@string/login.register.usernamePlaceHolder"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="24sp"/>
 
-                <Button
-                    android:id="@+id/btn_login"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="match_parent"
-                    android:layout_margin="5dp"
-                    android:textColor="@android:color/white"
-                    android:background="@color/colorAccent"
-                    android:text="@string/login.loginPlaceHolder"
-                    android:textAllCaps="false"
+                <EditText
+                    android:id="@+id/et_password"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="57dp"
+                    android:background="@drawable/button_border"
+                    android:hint="@string/login.passwordPlaceHolder"
+                    android:imeOptions="actionDone"
+                    android:inputType="textPassword"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="24sp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp"
                     android:gravity="center"
-                    android:textSize="14sp"
-                    style="?android:attr/buttonBarStyle"
-                    />
+                    android:layout_weight="2">
+                    <Button
+                        android:id="@+id/btn_login"
+                        android:layout_width="180dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:textColor="@android:color/white"
+                        android:background="@color/colorAccent"
+                        android:text="@string/login.loginPlaceHolder"
+                        android:textAllCaps="false"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        style="?android:attr/buttonBarStyle"
+                        />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_forgot"
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/login.forgotPlaceHolder"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/login.dontHaveAnAccount"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="0dp"
+                    android:gravity="center">
+                    <Button
+                        android:id="@+id/btn_register"
+                        android:layout_width="180dp"
+                        android:layout_margin="5dp"
+                        android:layout_height="match_parent"
+                        android:textColor="@android:color/white"
+                        android:background="@android:color/black"
+                        android:text="@string/login.registerPlaceHolder"
+                        android:textAllCaps="false"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        style="?android:attr/buttonBarStyle"
+                        />
+
+                </LinearLayout>
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_forgot"
-                android:padding="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="57dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:text="@string/login.forgotPlaceHolder"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="14sp"/>
-
-        </LinearLayout>
-
-
+        </RelativeLayout>
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
