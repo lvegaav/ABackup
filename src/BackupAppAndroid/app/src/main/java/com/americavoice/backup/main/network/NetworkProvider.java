@@ -68,7 +68,6 @@ public class NetworkProvider {
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
         mClient = new AndroidServiceClient(baseUrl + "/api");
 
-        mContext = context;
         mAccountMgr = AccountManager.get(context);
 
         mDeviceInfo = new HashMap<>();
