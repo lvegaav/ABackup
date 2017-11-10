@@ -243,7 +243,7 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     @Override
     public void loginWithCredentials(OwnCloudCredentials credentials) {
         AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
-        Object[] params = {NetworkProvider.getBaseUrlOwnCloud(), credentials};
+        Object[] params = {getResources().getString(R.string.baseUrlOwnCloud), credentials};
         loginAsyncTask.execute(params);
     }
 

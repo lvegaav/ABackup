@@ -47,7 +47,7 @@ public class BaseAuthenticatorFragment extends BaseFragment {
         if (getActivity().getIntent().hasExtra(BaseConstants.EXTRA_ACCOUNT)) {
             mAccount = getActivity().getIntent().getParcelableExtra(BaseConstants.EXTRA_ACCOUNT);
         }
-        mServerInfo.mBaseUrl = NetworkProvider.getBaseUrlOwnCloud();
+        mServerInfo.mBaseUrl = getResources().getString(R.string.baseUrlOwnCloud);
 
     }
 
