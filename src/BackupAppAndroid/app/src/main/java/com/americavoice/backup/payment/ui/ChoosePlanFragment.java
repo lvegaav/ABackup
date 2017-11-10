@@ -1,6 +1,7 @@
 package com.americavoice.backup.payment.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,6 +39,31 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<d
 
     public final static String HAS_PLAN = "has plan";
 
+    @Override
+    public void showLoading() {
+        showDialog(getString(R.string.common_loading));
+    }
+
+    @Override
+    public void hideLoading() {
+        hideDialog();
+    }
+
+    @Override
+    public void showRetry() {
+
+    }
+
+    @Override
+    public void hideRetry() {
+
+    }
+
+    @Override
+    public void showError(String message) {
+
+    }
+
 
     public interface Listener {
         void choosePlanBack();
@@ -63,7 +89,7 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<d
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (getActivity() instanceof Listener) {
             mListener = (Listener) getActivity();
         }
@@ -90,11 +116,12 @@ public class ChoosePlanFragment extends BaseFragment implements ChoosePlanView<d
 
     private void initializeCurrentPlanAlert() {
         Bundle bundle = getArguments();
-        boolean hasOptions = bundle.getBoolean(HAS_PLAN);
-        if (hasOptions) {
-            mNoCurrentPlanView.setVisibility(View.GONE);
+        if (bundle != null && bundle.containsKey(HAS_PLAN)) {
+            boolean hasOptions = bundle.getBoolean(HAS_PLAN);
+            if (hasOptions) {
+                mNoCurrentPlanView.setVisibility(View.GONE);
+            }
         }
-
     }
 
 

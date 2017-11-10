@@ -3,15 +3,23 @@ package com.americavoice.backup.main.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.presenter.SplashScreenPresenter;
+import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApi;
+import com.google.android.gms.security.ProviderInstaller;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -23,7 +31,11 @@ import butterknife.Unbinder;
 /**
  * Fragment that shows details of a certain political party.
  */
-public class SplashScreenFragment extends BaseFragment implements SplashScreenView {
+public class SplashScreenFragment extends BaseFragment implements SplashScreenView,
+        ProviderInstaller.ProviderInstallListener{
+
+    private static final int ERROR_DIALOG_REQUEST_CODE = 1;
+    private boolean mRetryProviderInstall;
 
     @Override
     public void viewHome() {
@@ -96,6 +108,12 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
     public void onResume() {
         super.onResume();
         this.mPresenter.resume();
+
+        if (mRetryProviderInstall) {
+            // We can now safely retry installation.
+            ProviderInstaller.installIfNeededAsync(getContext(), this);
+        }
+        mRetryProviderInstall = false;
     }
 
     @Override
@@ -119,7 +137,10 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
-        this.mPresenter.initialize();
+
+        ProviderInstaller.installIfNeededAsync(getContext(), this);
+
+//        this.mPresenter.initialize();
     }
 
     @Override
@@ -152,6 +173,57 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
 
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
+    }
+
+    @Override
+    public void onProviderInstalled() {
+        this.mPresenter.initialize();
+    }
+
+    @Override
+    public void onProviderInstallFailed(int errorCode, Intent intent) {
+        GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
+        if (googleApiAvailability.isUserResolvableError(errorCode)) {
+            // Recoverable error. Show a dialog prompting the user to
+            // install/update/enable Google Play services.
+
+            googleApiAvailability.showErrorDialogFragment(
+                    getActivity(),
+                    errorCode,
+                    ERROR_DIALOG_REQUEST_CODE,
+                    new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            // The user chose not to take the recovery action
+                            onProviderInstallerNotAvailable();
+                        }
+                    });
+        } else {
+            // Google Play services is not available.
+            onProviderInstallerNotAvailable();
+        }
+    }
+
+    private void onProviderInstallerNotAvailable() {
+        Crashlytics.logException(new Exception("onProviderInstallerNotAvailable"));
+        Toast.makeText(getContext(), "Version no soportada...", Toast.LENGTH_LONG).show();
+        // This is reached if the provider cannot be updated for some reason.
+        // App should consider all HTTP communication to be vulnerable, and take
+        // appropriate action.
+        getActivity().finish();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode,
+                                 Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ERROR_DIALOG_REQUEST_CODE) {
+            // Adding a fragment via GooglePlayServicesUtil.showErrorDialogFragment
+            // before the instance state is restored throws an error. So instead,
+            // set a flag here, which will cause the fragment to delay until
+            // onPostResume.
+            mRetryProviderInstall = true;
+        }
     }
 }
 

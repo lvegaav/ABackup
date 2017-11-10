@@ -17,6 +17,7 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.SplashScreenView;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.security.ProviderInstaller;
 
 import net.servicestack.client.AsyncResult;
 

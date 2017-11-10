@@ -107,31 +107,6 @@
                     android:background="@color/white" />
 
                 <LinearLayout
-                    android:id="@+id/ll_contact_us"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/SettingsMenuOption"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@string/settings.contact_us" />
-
-                    <ImageView
-                        android:id="@+id/contact_us_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        app:srcCompat="@drawable/ic_email_send" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/white" />
-
-                <LinearLayout
                     android:id="@+id/ll_news_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -173,6 +148,31 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         app:srcCompat="@drawable/ic_graph_pie" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:id="@+id/ll_contact_us"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/SettingsMenuOption"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/settings.contact_us" />
+
+                    <ImageView
+                        android:id="@+id/contact_us_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/ic_email_send" />
                 </LinearLayout>
 
             </LinearLayout>

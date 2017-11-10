@@ -28,7 +28,7 @@
     <string name="common.read_sms">Leer mensajes sms</string>
     <string name="common.read_call_log">Leer historial de llamadas</string>
     <string name="common.connectivity_error">No hay red disponible, por favor revisa tu conectividad</string>
-    <string name="common.cloud_storage_full">Espacio en la nube lleno</string>
+    <string name="common.cloud_storage_full">Espacio de Lock Backup esta lleno</string>
     <string name="common_upgrade_now">Actualizar</string>
     <string name="common.upload_failed">Error en la carga del archivo</string>
 
@@ -90,7 +90,7 @@
     <string name="files.uploader_upload_failed_content_single">No se pudo cargar %1$s</string>
     <string name="files.uploader_upload_failed_credentials_error">Carga fallida, tienes que autenticarte de nuevo</string>
     <string name="files.uploader_upload_forbidden_permissions">cargar a esta carpeta</string>
-    <string name="files.uploader_upload_failed_storage_full">Tu archivo no se pudo cargar porque tu espacio en la nube esta lleno.</string>
+    <string name="files.uploader_upload_failed_storage_full">Tu archivo no se pudo cargar porque tu espacio de Lock Backup esta lleno.</string>
     <string name="files.uploader_upgrade_plan">Para poder seguir subiendo archivos por favor actualiza tu plan de almacenamiento o elimina algunos archivos.</string>
     <string name="files.downloader_download_in_progress_ticker">Descargando&#8230;</string>
     <string name="files.downloader_download_in_progress_content">%1$d%% Descargando %2$s</string>
@@ -266,7 +266,7 @@
     <string name="login.validationUsernameExists">Este usuario ya esta registrado</string>
     <string name="login.validationPasswordRequired">Contraseña requerida</string>
     <string name="login.validationFailed">Inicio fallido, por favor revisa tus credenciales</string>
-    <string name="login.register.usernamePlaceHolder">Usuario</string>
+    <string name="login.register.usernamePlaceHolder">Usuario/Email</string>
     <string name="login.forgot.hello">Olvidaste tu contraseña?</string>
     <string name="login.forgot.sendVerificationCode">Enviar código de verificación</string>
     <string name="login.forgot.label">Para mantener tus archivos protegidos te enviaremos un código de verificación</string>

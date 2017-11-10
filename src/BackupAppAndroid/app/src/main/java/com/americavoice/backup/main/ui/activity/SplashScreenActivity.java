@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,22 +24,17 @@ import butterknife.ButterKnife;
 
 
 public class SplashScreenActivity extends BaseActivity implements HasComponent<AppComponent>,
-        SplashScreenFragment.Listener,  ProviderInstaller.ProviderInstallListener  {
+        SplashScreenFragment.Listener  {
 
     private AppComponent mAppComponent;
-    private static final int ERROR_DIALOG_REQUEST_CODE = 1;
-    private boolean mRetryProviderInstall;
-    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_splash_screen);
         this.initializeActivity(savedInstanceState);
         this.initializeInjector();
         this.initializeView();
-        ProviderInstaller.installIfNeededAsync(this, this);
     }
 
     /**
@@ -91,65 +87,10 @@ public class SplashScreenActivity extends BaseActivity implements HasComponent<A
     }
 
     @Override
-    public void onProviderInstalled() {
-    }
-
-    @Override
-    public void onProviderInstallFailed(int errorCode, Intent recoveryIntent) {
-        if (GooglePlayServicesUtil.isUserRecoverableError(errorCode)) {
-            // Recoverable error. Show a dialog prompting the user to
-            // install/update/enable Google Play services.
-            GooglePlayServicesUtil.showErrorDialogFragment(
-                    errorCode,
-                    this,
-                    ERROR_DIALOG_REQUEST_CODE,
-                    new DialogInterface.OnCancelListener() {
-                        @Override
-                        public void onCancel(DialogInterface dialog) {
-                            // The user chose not to take the recovery action
-                            onProviderInstallerNotAvailable();
-                        }
-                    });
-        } else {
-            // Google Play services is not available.
-            onProviderInstallerNotAvailable();
-        }
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode,
-                                    Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ERROR_DIALOG_REQUEST_CODE) {
-            // Adding a fragment via GooglePlayServicesUtil.showErrorDialogFragment
-            // before the instance state is restored throws an error. So instead,
-            // set a flag here, which will cause the fragment to delay until
-            // onPostResume.
-            mRetryProviderInstall = true;
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
-    /**
-     * On resume, check to see if we flagged that we need to reinstall the
-     * provider.
-     */
-
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        if (mRetryProviderInstall) {
-            // We can now safely retry installation.
-            ProviderInstaller.installIfNeededAsync(this, this);
-        }
-        mRetryProviderInstall = false;
-    }
-
-    private void onProviderInstallerNotAvailable() {
-        Crashlytics.logException(new Exception("onProviderInstallerNotAvailable"));
-        Toast.makeText(this, "Version no soportada...", Toast.LENGTH_LONG).show();
-        // This is reached if the provider cannot be updated for some reason.
-        // App should consider all HTTP communication to be vulnerable, and take
-        // appropriate action.
-    }
-
 }

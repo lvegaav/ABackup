@@ -92,24 +92,30 @@ public class SubscriptionFragment extends BaseFragment {
 
     private void initializeSubscription() {
         Bundle arguments = getArguments();
+        if (arguments == null) return;
         Subscription subscription = arguments.getParcelable(SUBSCRIPTION);
-        mSubscriptionAmount.setText(subscription.amount);
-        mSubscriptionDetail.setText(subscription.description);
-        mSubscriptionStart.setVisibility(View.VISIBLE);
-        mSubscriptionStart.setText(getString(R.string.subscription_start_date, subscription.startDate));
-        mSubscriptionNextPayment.setVisibility(View.VISIBLE);
-        mSubscriptionNextPayment.setText(getString(R.string.subscription_next_payment_date, subscription.nextPaymentDate));
+        if (subscription != null) {
+            mSubscriptionAmount.setText(subscription.amount);
+            mSubscriptionDetail.setText(subscription.description);
+            mSubscriptionStart.setVisibility(View.VISIBLE);
+            mSubscriptionStart.setText(getString(R.string.subscription_start_date, subscription.startDate));
+            mSubscriptionNextPayment.setVisibility(View.VISIBLE);
+            mSubscriptionNextPayment.setText(getString(R.string.subscription_next_payment_date, subscription.nextPaymentDate));
+        }
     }
 
     private void initializePaymentMethod() {
         Bundle arguments = getArguments();
+        if (arguments == null) return;
         PaymentMethod paymentMethod = arguments.getParcelable(PAYMENT_METHOD);
-        if (paymentMethod.paymentMethodType == PaymentMethod.PaymentMethodType.PAY_PAL) {
-            mWalletIcon.setVisibility(View.VISIBLE);
-            mCreditCardSection.setVisibility(View.GONE);
-        } else {
-            mCreditCardNumber.setText(paymentMethod.creditCardNumber);
-            mCreditCardExpiration.setText(paymentMethod.expirationDate);
+        if (paymentMethod != null) {
+            if (paymentMethod.paymentMethodType == PaymentMethod.PaymentMethodType.PAY_PAL) {
+                mWalletIcon.setVisibility(View.VISIBLE);
+                mCreditCardSection.setVisibility(View.GONE);
+            } else {
+                mCreditCardNumber.setText(paymentMethod.creditCardNumber);
+                mCreditCardExpiration.setText(paymentMethod.expirationDate);
+            }
         }
 
     }
@@ -128,30 +134,6 @@ public class SubscriptionFragment extends BaseFragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    //    private void initializePaymentMethod() {
-//        ShapeDrawable.ShaderFactory sf = new ShapeDrawable.ShaderFactory() {
-//            @Override
-//            public Shader resize(int i, int i1) {
-//                float rel = mCreditCardBackground.getHeight() == 0 ? 0 :
-//                        mCreditCardBackground.getWidth() / mCreditCardBackground.getHeight();
-//                LinearGradient lg = new LinearGradient(0, 0, mCreditCardBackground.getWidth(),
-//                        mCreditCardBackground.getHeight() * rel * 3, new int[] {
-//                        ContextCompat.getColor(getContext(), R.color.bt_very_light_gray),
-//                        ContextCompat.getColor(getContext(), R.color.bt_very_light_gray),
-//                        ContextCompat.getColor(getContext(), R.color.white),
-//                        ContextCompat.getColor(getContext(), R.color.white)},
-//                        new float[] {0, 0.1f, 0.1f, 1},
-//                        Shader.TileMode.REPEAT);
-//
-//                return lg;
-//            }
-//        };
-//        PaintDrawable paintDrawable = new PaintDrawable();
-//        paintDrawable.setShape(new RoundRectShape(new float[]{20,20,20,20,20,20,20,20}, null, null));
-//        paintDrawable.setShaderFactory(sf);
-//        mCreditCardBackground.setBackground(paintDrawable);
-//    }
 
     @Override
     public void onDestroyView() {

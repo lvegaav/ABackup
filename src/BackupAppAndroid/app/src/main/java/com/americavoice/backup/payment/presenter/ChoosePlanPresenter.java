@@ -7,6 +7,7 @@ import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.payment.ui.ChoosePlanView;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 
@@ -23,12 +24,13 @@ public class ChoosePlanPresenter extends BasePresenter implements IPresenter{
     private ChoosePlanView<dtos.Product> mView;
 
     @Inject
-    public ChoosePlanPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
+    ChoosePlanPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
     }
 
     public void setView(ChoosePlanView<dtos.Product> view) {
         this.mView = view;
+        mView.showLoading();
         mNetworkProvider.getProducts(new AsyncResult<dtos.GetProductsResponse>() {
             @Override
             public void success(dtos.GetProductsResponse response) {
@@ -38,17 +40,19 @@ public class ChoosePlanPresenter extends BasePresenter implements IPresenter{
 
             @Override
             public void error(Exception ex) {
-                super.error(ex);
+                Crashlytics.logException(ex);
+            }
+
+            @Override
+            public void complete() {
+                mView.hideLoading();
             }
         });
     }
 
     @Override
     public void resume() {
-//        mView.showPlans(Arrays.asList(
-//                new Subscription("$10", "5GB / 3 months", "2017-01-01", "2018-01-01"),
-//                new Subscription("$15", "10GB / 3 months", "2017-01-01", "2018-01-01")
-//        ));
+
     }
 
     @Override
