@@ -56,13 +56,13 @@ public class NetworkProvider {
     private HashMap<String, String> mDeviceInfo;
     private OwnCloudClient mCloudClient;
 
-//    private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
-//    private static final String baseUrlOwnCloud = "http://backapp-eng.development.americavoice.com";
-//    private static final String identityUrl = "http://172.22.122.40/connect/token";
+    private static final String baseUrl = "http://core-be.development.americavoice.com:8458";
+    private static final String baseUrlOwnCloud = "http://backapp-eng.development.americavoice.com";
+    private static final String identityUrl = "http://172.22.122.40/connect/token";
 
-    private static final String baseUrl = "https://backup.secureip.io";
-    private static final String baseUrlOwnCloud = "https://cloud.secureip.io";
-    private static final String identityUrl = "https://id.americavoice.com/connect/token";
+//    private static final String baseUrl = "https://backup.secureip.io";
+//    private static final String baseUrlOwnCloud = "https://cloud.secureip.io";
+//    private static final String identityUrl = "https://id.americavoice.com/connect/token";
 
     public static String getBaseUrlOwnCloud() {
         return baseUrlOwnCloud;
