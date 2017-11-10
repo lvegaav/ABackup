@@ -96,7 +96,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected void showDialog(String message) {
         hideDialog();
-        mProgress = new ProgressDialog(this, R.style.Theme_AppCompat_Light_Dialog);
+        mProgress = new ProgressDialog(this, R.style.WhiteDialog);
         mProgress.setTitle(getResources().getString(R.string.app_name));
         mProgress.setMessage(message);
         mProgress.setIndeterminate(true);
