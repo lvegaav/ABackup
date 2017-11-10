@@ -110,13 +110,17 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         } else if (mSharedPrefsUtils.getBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, false)){
             mView.showPersistenceUpgrade(R.string.files_cloud_almost_full);
         }
+        readRemoteFiles(path);
+        if (!mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false)) {
+            mView.showGuidedTour();
+        }
+    }
+
+    public void readRemoteFiles(String path) {
         OwnCloudClient client = mNetworkProvider.getCloudClient();
         if (client != null) {
             ReadRemoteFolderOperation refreshOperation = new ReadRemoteFolderOperation(path);
             refreshOperation.execute(client, this, mHandler);
-        }
-        if (!mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false)) {
-            mView.showGuidedTour();
         }
     }
 

@@ -613,7 +613,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                         FileUploader.EXTRA_UPLOAD_RESULT,
                         false);
                 if (uploadWasFine) {
-                    if (mPresenter != null ) mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
+                    if (mPresenter != null ) mPresenter.readRemoteFiles(mPath);
                 }
 
             } finally {
@@ -636,7 +636,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         public void onReceive(Context context, Intent intent) {
             try {
                 if (mPresenter != null ){
-                    mPresenter.initialize(getContext(), mPath, mContainerActivity.getAccount());
+                    mPresenter.readRemoteFiles(mPath);
                     if (intent.hasExtra(FileDownloader.EXTRA_FILE_PATH)){
                         String remorePath = intent.getStringExtra(FileDownloader.EXTRA_FILE_PATH);
                         mPresenter.onSuccessfulDownload(remorePath);
