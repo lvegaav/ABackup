@@ -278,5 +278,7 @@
     <string name="login.password.success.button">Llévame al inicio</string>
     <string name="news.empty_list">No hay noticias que mostrar</string>
     <string name="credit_card.error.PGE0039">Esta tarjeta de débito o crédito ya existe</string>
+    <string name="choose_plan.no_plan">No tiene un plan</string>
+    <string name="choose_plan.instructions">Guarde su contenido más importante en la nube así puede acceder a él si llega a perder su dispositivo</string>
 
 </resources>

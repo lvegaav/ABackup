@@ -236,6 +236,10 @@
 
     <string name="payment.title">Payment options</string>
 
+
+    <string name="choose_plan.no_plan">No current plan</string>
+    <string name="choose_plan.instructions">Store your most important content on the cloud so you can have access to it event when you lose your device</string>
+
     <string name="subscription.select">Select</string>
     <string name="subscription.current">Current plan</string>
     <string name="subscription.start_date">Started on %s</string>

@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-11-09 09:14:49
+Date: 2017-11-09 15:57:18
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://core-be.development.americavoice.com:8458/api
@@ -1196,6 +1196,8 @@ public class dtos
         public String cardNumber = null;
         public String cardType = null;
         public String expirationDate = null;
+        public String payPalEmail = null;
+        public String payPalImageUrl = null;
         public ResponseStatus responseStatus = null;
         
         public String getPaymentType() { return paymentType; }
@@ -1208,6 +1210,10 @@ public class dtos
         public GetPaymentMethodResponse setCardType(String value) { this.cardType = value; return this; }
         public String getExpirationDate() { return expirationDate; }
         public GetPaymentMethodResponse setExpirationDate(String value) { this.expirationDate = value; return this; }
+        public String getPayPalEmail() { return payPalEmail; }
+        public GetPaymentMethodResponse setPayPalEmail(String value) { this.payPalEmail = value; return this; }
+        public String getPayPalImageUrl() { return payPalImageUrl; }
+        public GetPaymentMethodResponse setPayPalImageUrl(String value) { this.payPalImageUrl = value; return this; }
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public GetPaymentMethodResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
