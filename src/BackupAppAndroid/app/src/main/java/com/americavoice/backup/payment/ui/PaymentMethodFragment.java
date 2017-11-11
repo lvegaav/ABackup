@@ -1,11 +1,11 @@
 package com.americavoice.backup.payment.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
@@ -24,8 +23,10 @@ import com.americavoice.backup.payment.utils.CreditCardErrors;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.ResponseError;
 import net.servicestack.client.Utils;
@@ -47,11 +48,17 @@ import butterknife.Unbinder;
  */
 
 public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,
-        PaymentMethodView, PaymentMethodNonceCreatedListener {
+        PaymentMethodView, PaymentMethodNonceCreatedListener, BraintreeErrorListener {
 
     public final static String SELECTED_SUBSCRIPTION_AMOUNT = "selected subscription amount";
     public final static String SELECTED_SUBSCRIPTION_DETAIL = "selected subscription detail";
     public final static int REQUEST_CODE = 0;
+
+    @Override
+    public void onError(Exception e) {
+        Crashlytics.logException(e);
+        showError(getString(R.string.paypal_error_token));
+    }
 
 
     public interface Listener {
@@ -122,13 +129,14 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_payment_method, container, false);
+        mUnbinder = ButterKnife.bind(this, view);
+
         if (getActivity() instanceof Listener) {
             mListener = (Listener) getActivity();
         }
         initializePresenter();
-        View view = inflater.inflate(R.layout.fragment_payment_method, container, false);
-        mUnbinder = ButterKnife.bind(this, view);
         initializeSelectedSubscription();
         initializeTabListener();
 
@@ -151,10 +159,12 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
             }
         });
         Bundle arguments = getArguments();
-        String amount = arguments.getString(SELECTED_SUBSCRIPTION_AMOUNT);
-        String description = arguments.getString(SELECTED_SUBSCRIPTION_DETAIL);
-        mSubscriptionAmount.setText(amount);
-        mSubscriptionDetail.setText(description);
+        if (arguments != null && arguments.containsKey(SELECTED_SUBSCRIPTION_AMOUNT) && arguments.containsKey(SELECTED_SUBSCRIPTION_DETAIL)) {
+            String amount = arguments.getString(SELECTED_SUBSCRIPTION_AMOUNT);
+            String description = arguments.getString(SELECTED_SUBSCRIPTION_DETAIL);
+            mSubscriptionAmount.setText(amount);
+            mSubscriptionDetail.setText(description);
+        }
     }
 
     private void initializeTabListener() {
@@ -213,7 +223,8 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
             mBrainTreeFragment.addListener(this);
             PayPal.authorizeAccount(mBrainTreeFragment);
         } catch (InvalidArgumentException e) {
-            Toast.makeText(getContext(), getString(R.string.paypal_error_token), Toast.LENGTH_SHORT).show();
+            Crashlytics.logException(e);
+            showError(getString(R.string.paypal_error_token));
         }
     }
 
@@ -224,13 +235,14 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
 
     @Override
     public void showPayPalError(Exception e) {
-        logError(e);
+        Crashlytics.logException(e);
+        showError(getString(R.string.payment_error_createPaypal));
         mListener.onPayPalError();
     }
 
     @Override
     public void showCreditCardError(Exception e) {
-        logError(e);
+        Crashlytics.logException(e);
         if (e instanceof WebServiceException) {
             WebServiceException wsException = (WebServiceException) e;
             if (!TextUtils.isEmpty(wsException.getErrorCode()) && wsException.getErrorCode().equals("PaymentProviderError")) {
@@ -244,14 +256,6 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
             }
         }
         mListener.onCreditCardError();
-    }
-
-    private void logError(Exception e) {
-        if (e instanceof WebServiceException) {
-            Log.e("Payment", "Status: " + ((WebServiceException) e).getStatusCode() + "," + ((WebServiceException) e).getErrorMessage());
-        }
-        Log.e("Payment", "error", e);
-
     }
 
     @Override
@@ -324,6 +328,11 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
 
     @Override
     public void showError(String message) {
-
+        new AlertDialog.Builder(getContext(), R.style.WhiteDialog)
+                .setTitle(getString(R.string.app_name))
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.common_ok), null)
+                .setMessage(message)
+                .create().show();
     }
 }
