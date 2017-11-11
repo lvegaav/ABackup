@@ -9,6 +9,7 @@ import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.news.ui.INewsView;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 
@@ -40,6 +41,7 @@ public class NewsPresenter extends BasePresenter implements IPresenter {
 
             @Override
             public void error(Exception ex) {
+                Crashlytics.logException(ex);
                 mView.showErrorAndClose(ex);
             }
 

@@ -242,7 +242,7 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
     @Override
     public void showPhoneNumberExists() {
         etPhoneNumber.requestFocus();
-        etPhoneNumber.setError(getString(R.string.login_validationUsernameInvalid));
+        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberExists));
     }
 
     @Override

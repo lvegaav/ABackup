@@ -11,6 +11,7 @@ import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.payment.data.PaymentMethod;
 import com.americavoice.backup.payment.data.Subscription;
 import com.americavoice.backup.payment.ui.PaymentView;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 import net.servicestack.client.WebServiceException;
@@ -54,6 +55,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
             @Override
             public void error(Exception ex) {
+                Crashlytics.logException(ex);
                 mPaymentView.hideLoading();
                 if (ex instanceof WebServiceException) {
                     WebServiceException webServiceException = (WebServiceException) ex;
@@ -85,6 +87,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
             @Override
             public void error(Exception ex) {
+                Crashlytics.logException(ex);
                 if (ex instanceof WebServiceException) {
                     WebServiceException webServiceException = (WebServiceException) ex;
                     Log.e("Payment", webServiceException.getErrorCode() + ":" + webServiceException.getErrorMessage());
@@ -152,7 +155,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
                 @Override
                 public void error(Exception ex) {
-
+                    Crashlytics.logException(ex);
                     if (ex instanceof WebServiceException) {
                         WebServiceException webServiceException = (WebServiceException) ex;
                         Log.e("Payment", webServiceException.getStatusCode() + ":" +
@@ -185,6 +188,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
                 @Override
                 public void error(Exception ex) {
+                    Crashlytics.logException(ex);
                     if (ex instanceof WebServiceException) {
                         WebServiceException webServiceException = (WebServiceException) ex;
                         Log.e("Payment", webServiceException.getStatusCode() + ":" +

@@ -125,6 +125,7 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
 
                     @Override
                     public void error(Exception ex) {
+                        Crashlytics.logException(ex);
                         mView.hideLoading();
                         mView.showError(mView.getContext().getString(R.string.exception_message_generic));
                     }
@@ -133,6 +134,7 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
 
             @Override
             public void error(Exception ex) {
+                Crashlytics.logException(ex);
                 if (ex instanceof WebServiceException) {
                     WebServiceException webEx = (WebServiceException) ex;
                     if (webEx.getErrorCode() != null && (webEx.getErrorCode().equals("InvalidPhoneNumber"))) {

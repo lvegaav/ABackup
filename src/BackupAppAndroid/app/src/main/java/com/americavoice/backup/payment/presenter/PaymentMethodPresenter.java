@@ -10,6 +10,7 @@ import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.payment.ui.PaymentMethodView;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 import net.servicestack.client.WebServiceException;
@@ -60,8 +61,9 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
 
             @Override
             public void error(Exception ex) {
-                ex.printStackTrace();
+                Crashlytics.logException(ex);
                 Log.e("Paypal", ex.toString());
+                mView.showPayPalError(ex);
             }
 
             @Override
@@ -85,6 +87,7 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
 
             @Override
             public void error(Exception ex) {
+                Crashlytics.logException(ex);
                 mView.showPayPalError(ex);
             }
         });
@@ -122,6 +125,7 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
 
                     @Override
                     public void error(Exception ex) {
+                        Crashlytics.logException(ex);
                         mView.hideLoading();
                         if (ex instanceof WebServiceException) {
                             WebServiceException exception = (WebServiceException) ex;

@@ -12,6 +12,7 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 
@@ -105,6 +106,7 @@ public class LoginNewPasswordPresenter extends BasePresenter implements IPresent
 
             @Override
             public void error(Exception ex) {
+                Crashlytics.logException(ex);
                 mView.hideLoading();
                 mView.showVerificationCodeRequired();
             }

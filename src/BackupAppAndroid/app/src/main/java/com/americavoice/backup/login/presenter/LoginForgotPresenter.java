@@ -15,6 +15,7 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 import net.servicestack.client.WebServiceException;
@@ -89,6 +90,7 @@ public class LoginForgotPresenter extends BasePresenter implements IPresenter {
 
             @Override
             public void error(Exception ex) {
+                Crashlytics.logException(ex);
                 if (ex instanceof WebServiceException) {
                     WebServiceException webEx = (WebServiceException) ex;
                     if (webEx.getErrorCode() != null && (webEx.getErrorCode().equals("UserNotFound") || webEx.getErrorCode().equals("UserNotRegistered"))) {

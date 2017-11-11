@@ -141,6 +141,7 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
 
                 @Override
                 public void error(Exception ex) {
+                    Crashlytics.logException(ex);
                     mNetworkProvider.logout();
                     mView.viewHome();
                 }
