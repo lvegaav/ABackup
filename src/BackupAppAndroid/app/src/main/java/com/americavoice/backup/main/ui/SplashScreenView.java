@@ -8,5 +8,6 @@ public interface SplashScreenView extends ILoadDataView {
     void viewHome();
     void viewValidation();
     void viewPhoneNumber();
+    void showNoInternetDialog();
     void finish();
 }

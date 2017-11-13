@@ -16,6 +16,7 @@ import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.SplashScreenView;
+import com.americavoice.backup.utils.ConnectivityUtils;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.security.ProviderInstaller;
 
@@ -63,6 +64,12 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
     }
 
     private void checkVersionAndConfig() {
+
+        if (!ConnectivityUtils.isAppConnected(mView.getContext())) {
+            mView.showNoInternetDialog();
+            return;
+        }
+
         mNetworkProvider.getAppConfig(new AsyncResult<dtos.GetMobileAppConfigResponse>() {
             @Override
             public void success(dtos.GetMobileAppConfigResponse response) {

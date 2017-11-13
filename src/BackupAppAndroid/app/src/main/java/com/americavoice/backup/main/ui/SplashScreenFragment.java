@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +52,20 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
     @Override
     public void viewPhoneNumber() {
         if (mListener != null) mListener.showPhoneNumber();
+    }
+
+    @Override
+    public void showNoInternetDialog() {
+        new AlertDialog.Builder(getActivity(), R.style.WhiteDialog)
+                .setTitle(R.string.app_name)
+                .setMessage(R.string.common_connectivity_error)
+                .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
     @Override
