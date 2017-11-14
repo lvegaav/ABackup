@@ -16,6 +16,8 @@ import com.crashlytics.android.Crashlytics;
 import net.servicestack.client.AsyncResult;
 import net.servicestack.client.WebServiceException;
 
+import java.math.BigDecimal;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -39,60 +41,65 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
     public void setView(PaymentView view) {
         mPaymentView = view;
-        checkPaymentMethodAndShow();
+        checkSubscriptionAndShow();
     }
 
-    public void checkPaymentMethodAndShow() {
+    private void checkPaymentMethodAndShow() {
+        if (this.selectedProduct != null && this.selectedProduct.getPrice().equals(new BigDecimal(0))){
+            showCurrentSubscription();
+            return;
+        }
         mPaymentView.showLoading();
         mNetworkProvider.getPaymentMethod(new AsyncResult<dtos.GetPaymentMethodResponse>() {
             @Override
             public void success(dtos.GetPaymentMethodResponse response) {
                 // Existing payment method. Check subscription
-                Log.d("Payment", response.getPaymentId());
                 mPaymentMethod = new PaymentMethod(response);
-                checkSubscriptionAndShow();
+                showCurrentSubscription();
             }
 
             @Override
             public void error(Exception ex) {
-                Crashlytics.logException(ex);
-                mPaymentView.hideLoading();
                 if (ex instanceof WebServiceException) {
                     WebServiceException webServiceException = (WebServiceException) ex;
                     if (webServiceException.getStatusCode() == 404) {
-                        // no payment method. Show subscription list
-                        mPaymentView.showPlanChoose(subscription != null);
+                        showPaymentChoose();
                         return;
                     }
-                    Log.e("Payment", webServiceException.getErrorCode() + ":" + webServiceException.getErrorMessage());
                 }
-                Log.e("Payment", "Error getting payment method");
-                ex.printStackTrace();
-
+                Crashlytics.logException(ex);
                 mPaymentView.showError(mPaymentView.getContext().getString(R.string.payment_error_loadData), true);
             }
 
+            @Override
+            public void complete() {
+                mPaymentView.hideLoading();
+            }
         });
     }
 
-    public void checkSubscriptionAndShow() {
+    private void checkSubscriptionAndShow() {
         mPaymentView.showLoading();
         mNetworkProvider.getCurrentSubscription(new AsyncResult<dtos.GetSubscriptionResponse>() {
             @Override
             public void success(dtos.GetSubscriptionResponse response) {
                 subscription = new Subscription(response);
                 selectedProduct = response.product;
-                showCurrentSubscription();
+                checkPaymentMethodAndShow();
             }
 
             @Override
             public void error(Exception ex) {
-                Crashlytics.logException(ex);
                 if (ex instanceof WebServiceException) {
                     WebServiceException webServiceException = (WebServiceException) ex;
                     Log.e("Payment", webServiceException.getErrorCode() + ":" + webServiceException.getErrorMessage());
+                    if (webServiceException.getStatusCode() == 404) {
+                        showPlanChoose();
+                        return;
+                    }
                 }
-                showPlanChoose();
+                Crashlytics.logException(ex);
+                mPaymentView.showError(mPaymentView.getContext().getString(R.string.payment_error_loadData), true);
             }
 
             @Override
@@ -106,7 +113,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
         mPaymentView.showPlanChoose(subscription != null);
     }
 
-    public void showPaymentChoose() {
+    private void showPaymentChoose() {
         if (selectedProduct != null) {
             mPaymentView.showPaymentChoose(selectedProduct);
         } else {
@@ -116,7 +123,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
     public void onProductChoose(dtos.Product product) {
         this.selectedProduct = product;
-        if (mPaymentMethod != null) {
+        if (selectedProduct.getPrice().equals(new BigDecimal(0)) || mPaymentMethod != null) {
             createSubscription();
         } else {
             showPaymentChoose();
@@ -136,12 +143,11 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
         }
     }
 
-    public void showCurrentSubscription() {
+    private void showCurrentSubscription() {
         mPaymentView.showSubscriptionDetails(subscription, mPaymentMethod);
-
     }
 
-    protected void createSubscription() {
+    private void createSubscription() {
         if (subscription == null) {
             // it's a create
             mPaymentView.showLoading();
@@ -150,12 +156,11 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
             mNetworkProvider.createSubscription(request, new AsyncResult<dtos.CreateSubscriptionResponse>() {
                 @Override
                 public void success(dtos.CreateSubscriptionResponse response) {
-                    checkPaymentMethodAndShow();
+                    checkSubscriptionAndShow();
                 }
 
                 @Override
                 public void error(Exception ex) {
-                    Crashlytics.logException(ex);
                     if (ex instanceof WebServiceException) {
                         WebServiceException webServiceException = (WebServiceException) ex;
                         Log.e("Payment", webServiceException.getStatusCode() + ":" +
@@ -163,11 +168,12 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                         if (webServiceException.getStatusCode() == 409) {
                             // current subscription is the same. ignore
                             checkSubscriptionAndShow();
+                            return;
                         } else {
                             mPaymentView.showError(mPaymentView.getContext().getString(R.string.payment_error_createSubscription), true);
                         }
-
                     }
+                    Crashlytics.logException(ex);
                 }
 
                 @Override
@@ -188,7 +194,6 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
                 @Override
                 public void error(Exception ex) {
-                    Crashlytics.logException(ex);
                     if (ex instanceof WebServiceException) {
                         WebServiceException webServiceException = (WebServiceException) ex;
                         Log.e("Payment", webServiceException.getStatusCode() + ":" +
@@ -196,11 +201,12 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                         if (webServiceException.getStatusCode() == 409) {
                             // current subscription is the same. ignore
                             showCurrentSubscription();
+                            return;
                         } else {
                             mPaymentView.showError(mPaymentView.getContext().getString(R.string.payment_error_createSubscription), true);
                         }
-
                     }
+                    Crashlytics.logException(ex);
                 }
 
                 @Override
@@ -213,7 +219,6 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
             checkSubscriptionAndShow();
         }
     }
-
 
     public void onChoosePlanBackButton() {
         if (subscription != null && mPaymentMethod != null) {

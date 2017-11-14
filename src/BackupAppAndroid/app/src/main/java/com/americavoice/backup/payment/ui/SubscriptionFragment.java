@@ -116,6 +116,8 @@ public class SubscriptionFragment extends BaseFragment {
                 mCreditCardNumber.setText(paymentMethod.creditCardNumber);
                 mCreditCardExpiration.setText(paymentMethod.expirationDate);
             }
+        } else {
+            mCreditCardBackground.setVisibility(View.GONE);
         }
 
     }

@@ -16,6 +16,7 @@ import com.americavoice.backup.settings.ui.StorageInfoView;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.MimeType;
 import com.americavoice.backup.utils.PermissionUtil;
+import com.crashlytics.android.Crashlytics;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
@@ -55,7 +56,7 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
     private boolean mVideosRemoteDone;
 
     @Inject
-    public StorageInfoPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
+    StorageInfoPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
         mHandler = new Handler();
     }
@@ -171,14 +172,12 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
 
                 if (remoteFile.getRemotePath().equals("/")) {
                     try {
-                        Field field =RemoteFile.class.getDeclaredField("mQuotaAvailableBytes");
+                        Field field = RemoteFile.class.getDeclaredField("mQuotaAvailableBytes");
                         field.setAccessible(true);
                         total = (BigDecimal) field.get(remoteFile);
                         totalAvailable = (BigDecimal) field.get(remoteFile);
-                    } catch (NoSuchFieldException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        Crashlytics.logException(e);
                     }
                 }
                 if (remoteFile.getRemotePath().equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER)
