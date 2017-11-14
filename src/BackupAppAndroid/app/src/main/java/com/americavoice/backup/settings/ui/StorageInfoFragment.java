@@ -384,12 +384,12 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
     public void showPercent(HashMap<String, BigDecimal> sizes, BigDecimal total, BigDecimal totalAvailable) {
         llCapacityInfo.setVisibility(View.VISIBLE);
 
-        float photoPercent = getPercent(sizes.get(BaseConstants.PHOTOS_REMOTE_FOLDER),total);
-        float videoPercent = getPercent(sizes.get(BaseConstants.VIDEOS_REMOTE_FOLDER),total);
-        float contactPercent = getPercent(sizes.get(BaseConstants.CONTACTS_REMOTE_FOLDER),total);
-        float documentPercent = getPercent(sizes.get(BaseConstants.DOCUMENTS_REMOTE_FOLDER),total);
-        float smsPercent = getPercent(sizes.get(BaseConstants.SMS_REMOTE_FOLDER), total);
-        float callsPercent = getPercent(sizes.get(BaseConstants.CALLS_REMOTE_FOLDER),total);
+        float photoPercent = getPercent(sizes.get(BaseConstants.PHOTOS_FOLDER),total);
+        float videoPercent = getPercent(sizes.get(BaseConstants.VIDEOS_FOLDER),total);
+        float contactPercent = getPercent(sizes.get(BaseConstants.CONTACTS_FOLDER),total);
+        float documentPercent = getPercent(sizes.get(BaseConstants.DOCUMENTS_FOLDER),total);
+        float smsPercent = getPercent(sizes.get(BaseConstants.SMS_FOLDER), total);
+        float callsPercent = getPercent(sizes.get(BaseConstants.CALLS_FOLDER),total);
         float availablePercent = getPercent(totalAvailable, total);
 
         float totalPercent = photoPercent + videoPercent + contactPercent + documentPercent + smsPercent + callsPercent;

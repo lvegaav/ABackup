@@ -3,9 +3,7 @@ package com.americavoice.backup.main.presenter;
 
 import android.accounts.Account;
 import android.content.Context;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
@@ -20,18 +18,11 @@ import com.americavoice.backup.main.ui.MainView;
 import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
-import com.owncloud.android.lib.resources.files.RemoteFile;
+import com.crashlytics.android.Crashlytics;
 
 import net.servicestack.client.AsyncResult;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -41,18 +32,16 @@ import javax.inject.Inject;
  * layer.
  */
 @PerActivity
-public class MainPresenter extends BasePresenter implements IPresenter, OnRemoteOperationListener {
+public class MainPresenter extends BasePresenter implements IPresenter {
 
-    public static final String SHOW_CASE_ALREADY = "MAIN_SHOW_CASE_ALREADY";
+    private static final String SHOW_CASE_ALREADY = "MAIN_SHOW_CASE_ALREADY";
 
     private MainView mView;
-    private Handler mHandler;
     private Context mContext;
 
     @Inject
     MainPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
-        mHandler = new Handler();
     }
 
     public void setView(@NonNull MainView view) {
@@ -87,11 +76,44 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
     }
 
     private void synchronizeRootFolder() {
-        OwnCloudClient client = mNetworkProvider.getCloudClient();
-        if (client != null) {
-            ReadRemoteFolderOperation mReadRemoteOperation = new ReadRemoteFolderOperation("/");
-            mReadRemoteOperation.execute(client, this, mHandler);
-        }
+
+        mNetworkProvider.getUserAccountUsage(new AsyncResult<dtos.GetAccountUsageResponse>() {
+            @Override
+            public void success(dtos.GetAccountUsageResponse response) {
+                if (response != null) {
+
+                    BigDecimal totalQuota = new BigDecimal(response.getTotalQuota());
+                    BigDecimal availableQuota = new BigDecimal(response.getAvailableQuota());
+
+                    float availablePercentage = getPercent(availableQuota, totalQuota);
+                    float totalAvInGB = availableQuota.divide(new BigDecimal(1073741824), 3, BigDecimal.ROUND_HALF_UP).floatValue();
+                    float totalInGB = totalQuota.divide(new BigDecimal(1073741824), 3, BigDecimal.ROUND_HALF_UP).floatValue();
+                    //percent lower than 10 or total less than 1GB
+                    mSharedPrefsUtils.setBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, (availablePercentage < 10 && availablePercentage > 0) || totalInGB < 1);
+                    // availablePercentage lower or equal than 1 or total available lower or equal than 0.01 GB
+                    mSharedPrefsUtils.setBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, availablePercentage <= 1 || totalAvInGB <= 0.01);
+
+                    if (mSharedPrefsUtils.getBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, false)) {
+                        if (mView != null) {
+                            mView.showStorageFullDialog(false);
+                        }
+                    }
+
+                    mSharedPrefsUtils.setBooleanPreference(MainActivity.EXTRA_REFRESH_DATA, false);
+                }
+
+            }
+
+            @Override
+            public void error(Exception ex) {
+                Crashlytics.logException(ex);
+            }
+
+            @Override
+            public void complete() {
+                mView.hideLoading();
+            }
+        });
     }
 
     private void initBadges() {
@@ -109,59 +131,6 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
         mView.setBadgeContacts(arbitraryDataProvider.getIntegerValue(account, ContactsBackupFragment.PREFERENCE_CONTACTS_LAST_TOTAL));
         mView.setBadgeSms(arbitraryDataProvider.getIntegerValue(account, SmsBackupFragment.PREFERENCE_SMS_LAST_TOTAL));
         mView.setBadgeCallLog(arbitraryDataProvider.getIntegerValue(account, CallsBackupFragment.PREFERENCE_CALLS_LAST_TOTAL));
-    }
-
-    @Override
-    public void onRemoteOperationFinish(RemoteOperation remoteOperation, RemoteOperationResult remoteOperationResult) {
-        if (remoteOperationResult.getData() == null)
-            return;
-
-        BigDecimal total = new BigDecimal(0);
-        BigDecimal totalAvailable = new BigDecimal(0);
-        for(Object obj: remoteOperationResult.getData()) {
-
-            RemoteFile remoteFile = (RemoteFile) obj;
-
-            if (remoteFile.getRemotePath().equals("/")) {
-                try {
-                    Field field = RemoteFile.class.getDeclaredField("mQuotaAvailableBytes");
-                    field.setAccessible(true);
-                    total = (BigDecimal) field.get(remoteFile);
-                    totalAvailable = (BigDecimal) field.get(remoteFile);
-                } catch (NoSuchFieldException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (remoteFile.getRemotePath().equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER)
-                    || remoteFile.getRemotePath().equals(BaseConstants.PHOTOS_REMOTE_FOLDER)
-                    || remoteFile.getRemotePath().equals(BaseConstants.VIDEOS_REMOTE_FOLDER)
-                    || remoteFile.getRemotePath().equals(BaseConstants.CONTACTS_REMOTE_FOLDER)
-                    || remoteFile.getRemotePath().equals(BaseConstants.CALLS_REMOTE_FOLDER)
-                    || remoteFile.getRemotePath().equals(BaseConstants.SMS_REMOTE_FOLDER)) {
-
-                BigDecimal size = BigDecimal.valueOf(remoteFile.getSize());
-                total = total.add(size);
-            }
-        }
-
-        float availablePercentage = getPercent(totalAvailable, total);
-        float totalAvInGB = totalAvailable.divide(new BigDecimal(1073741824), 3, BigDecimal.ROUND_HALF_UP).floatValue();
-        float totalInGB = total.divide(new BigDecimal(1073741824), 3, BigDecimal.ROUND_HALF_UP).floatValue();
-        //percent lower than 10 or total less than 1GB
-        mSharedPrefsUtils.setBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, (availablePercentage < 10 && availablePercentage > 0) || totalInGB < 1);
-        // availablePercentage lower or equal than 1 or total available lower or equal than 0.01 GB
-        mSharedPrefsUtils.setBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, availablePercentage <= 1 || totalAvInGB <= 0.01);
-
-        if (mSharedPrefsUtils.getBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, false)) {
-            if (mView != null) {
-                mView.showStorageFullDialog(false);
-            }
-        }
-
-        mSharedPrefsUtils.setBooleanPreference(MainActivity.EXTRA_REFRESH_DATA, false);
-
     }
 
     private float getPercent(BigDecimal value, BigDecimal size) {

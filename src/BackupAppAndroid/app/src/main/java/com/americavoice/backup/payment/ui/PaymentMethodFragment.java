@@ -23,6 +23,7 @@ import com.americavoice.backup.payment.utils.CreditCardErrors;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.PaymentMethodNonce;
@@ -48,17 +49,11 @@ import butterknife.Unbinder;
  */
 
 public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnTabSelectedListener,
-        PaymentMethodView, PaymentMethodNonceCreatedListener, BraintreeErrorListener {
+        PaymentMethodView, PaymentMethodNonceCreatedListener, BraintreeErrorListener, BraintreeCancelListener {
 
     public final static String SELECTED_SUBSCRIPTION_AMOUNT = "selected subscription amount";
     public final static String SELECTED_SUBSCRIPTION_DETAIL = "selected subscription detail";
     public final static int REQUEST_CODE = 0;
-
-    @Override
-    public void onError(Exception e) {
-        Crashlytics.logException(e);
-        showError(getString(R.string.paypal_error_token));
-    }
 
 
     public interface Listener {
@@ -226,6 +221,17 @@ public class PaymentMethodFragment extends BaseFragment implements TabLayout.OnT
             Crashlytics.logException(e);
             showError(getString(R.string.paypal_error_token));
         }
+    }
+
+    @Override
+    public void onCancel(int i) {
+        hideLoading();
+    }
+
+    @Override
+    public void onError(Exception e) {
+        Crashlytics.logException(e);
+        showError(getString(R.string.paypal_error_token));
     }
 
     @Override

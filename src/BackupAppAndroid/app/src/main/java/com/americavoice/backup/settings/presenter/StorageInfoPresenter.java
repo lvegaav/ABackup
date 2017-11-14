@@ -128,13 +128,6 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
         });
     }
 
-    private float getPercent(BigDecimal value, BigDecimal size) {
-        float x = value != null ? value.floatValue() * 100 : 0;
-        float x1 = x / size.floatValue();
-        BigDecimal x2= new BigDecimal(x1).setScale(1,BigDecimal.ROUND_HALF_UP);
-        return x2.floatValue();
-    }
-
     public void logout() {
         mNetworkProvider.logout();
     }

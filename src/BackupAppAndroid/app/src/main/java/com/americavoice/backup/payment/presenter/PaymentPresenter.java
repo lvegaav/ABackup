@@ -8,6 +8,7 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
+import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.payment.data.PaymentMethod;
 import com.americavoice.backup.payment.data.Subscription;
 import com.americavoice.backup.payment.ui.PaymentView;
@@ -140,6 +141,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
         } else {
             // same product just show subscription
             checkPaymentMethodAndShow();
+            mPaymentView.hideLoading();
         }
     }
 
@@ -148,6 +150,8 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
     }
 
     private void createSubscription() {
+        mPaymentView.hideLoading();
+        mSharedPrefsUtils.setBooleanPreference(MainActivity.EXTRA_REFRESH_DATA, true);
         if (subscription == null) {
             // it's a create
             mPaymentView.showLoading();

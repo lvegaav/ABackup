@@ -28,7 +28,7 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
     private PaymentMethodView mView;
 
     @Inject
-    public PaymentMethodPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
+    PaymentMethodPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
     }
 
@@ -62,27 +62,20 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
             @Override
             public void error(Exception ex) {
                 Crashlytics.logException(ex);
-                Log.e("Paypal", ex.toString());
+                mView.hideLoading();
                 mView.showPayPalError(ex);
             }
 
-            @Override
-            public void complete() {
-                mView.hideLoading();
-            }
         });
 
     }
 
     public void onNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-        Log.d("PayPal", "Nonce received " + paymentMethodNonce.getNonce());
         // Send this nonce to your server
         String nonce = paymentMethodNonce.getNonce();
-        mView.showLoading();
         mNetworkProvider.sendPayPalNonce(nonce, new AsyncResult<dtos.CreatePayPalPaymentMethodResponse>() {
             @Override
             public void success(dtos.CreatePayPalPaymentMethodResponse response) {
-                Log.d("PayPal", "Payment method created " + response.getPaymentId());
                 mView.onPaymentMethodUpdated();
             }
 

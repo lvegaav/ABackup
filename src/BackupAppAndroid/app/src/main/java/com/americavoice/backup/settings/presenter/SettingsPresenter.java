@@ -44,7 +44,7 @@ public class SettingsPresenter extends BasePresenter implements IPresenter {
 
     private SettingsView mView;
 
-    public static final String SHOW_CASE_ALREADY = "SETTINGS_SHOW_CASE_ALREADY";
+    private static final String SHOW_CASE_ALREADY = "SETTINGS_SHOW_CASE_ALREADY";
 
     @Inject
     public SettingsPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
