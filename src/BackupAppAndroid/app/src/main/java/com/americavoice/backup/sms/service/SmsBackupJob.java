@@ -113,8 +113,7 @@ public class SmsBackupJob extends Job {
         if (force || (lastExecution + 24 * 60 * 60 * 1000) < Calendar.getInstance().getTimeInMillis()) {
             Log_OC.d(TAG, "start sms backup job");
 
-            String backupFolder = BaseConstants.SMS_BACKUP_FOLDER +
-                    OCFile.PATH_SEPARATOR;
+            String backupFolder = BaseConstants.SMS_REMOTE_FOLDER;
             Integer daysToExpire = BaseConstants.SMS_BACKUP_EXPIRE;
 
             try {

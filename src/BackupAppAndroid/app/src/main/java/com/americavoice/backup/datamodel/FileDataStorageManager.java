@@ -119,12 +119,12 @@ public class FileDataStorageManager {
         c.close();
         if (file == null && OCFile.ROOT_PATH.equals(path)) {
             return createRootDir(); // root should always exist
-        } else if (file == null && path.equals(BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR)) {
-            return createDir(BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR);
-        } else if (file == null && path.equals(BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR)) {
-            return createDir(BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR);
-        } else if (file == null && path.equals(BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR)) {
-            return createDir(BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR);
+        } else if (file == null && path.equals(BaseConstants.CONTACTS_REMOTE_FOLDER)) {
+            return createDir(BaseConstants.CONTACTS_REMOTE_FOLDER);
+        } else if (file == null && path.equals(BaseConstants.SMS_REMOTE_FOLDER)) {
+            return createDir(BaseConstants.SMS_REMOTE_FOLDER);
+        } else if (file == null && path.equals(BaseConstants.CALLS_REMOTE_FOLDER)) {
+            return createDir(BaseConstants.CALLS_REMOTE_FOLDER);
         }
         return file;
     }

@@ -190,7 +190,7 @@ public class FileStorageUtils {
      * @return String: video file path composed
      */
     public static String getInstantVideoUploadFilePath(Context context, String fileName, long dateTaken) {
-        String uploadVideoPath = BaseConstants.VIDEOS_BACKUP_FOLDER;
+        String uploadVideoPath = OCFile.PATH_SEPARATOR + BaseConstants.VIDEOS_FOLDER;
         String subPath = "";
         if (com.americavoice.backup.db.PreferenceManager.instantVideoUploadPathUseSubfolders(context)) {
             subPath = getSubpathFromDate(dateTaken);

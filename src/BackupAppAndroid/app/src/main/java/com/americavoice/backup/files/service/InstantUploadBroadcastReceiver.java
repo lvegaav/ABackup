@@ -36,6 +36,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
+import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.operations.UploadFileOperation;
@@ -145,7 +146,7 @@ public class InstantUploadBroadcastReceiver extends BroadcastReceiver {
 
         int behaviour = getUploadBehaviour(context);
         Boolean subfolderByDate = PreferenceManager.instantPictureUploadPathUseSubfolders(context);
-        String uploadPath = BaseConstants.PHOTOS_BACKUP_FOLDER;
+        String uploadPath = OCFile.PATH_SEPARATOR + BaseConstants.PHOTOS_FOLDER;
 
         FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
         requester.uploadNewFile(

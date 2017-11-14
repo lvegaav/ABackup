@@ -248,14 +248,11 @@ public class MediaContentJob extends JobService {
             String[] CONTENT_PROJECTION = {
                     data, displayName, mimeType, size};
 
-            // if < Jelly Bean permission must be accepted during installation
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+            int permissionCheck = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE);
 
-                if (android.content.pm.PackageManager.PERMISSION_GRANTED != permissionCheck) {
-                    Log_OC.w(TAG, "Read external storage permission isn't granted, aborting");
-                    return;
-                }
+            if (android.content.pm.PackageManager.PERMISSION_GRANTED != permissionCheck) {
+                Log_OC.w(TAG, "Read external storage permission isn't granted, aborting");
+                return;
             }
 
             c = context.getContentResolver().query(fileUri, CONTENT_PROJECTION, null, null, null);
@@ -286,10 +283,10 @@ public class MediaContentJob extends JobService {
             String uploadPath;
             int createdBy;
             if (isVideoContentUri(fileUri.toString())) {
-                uploadPath = BaseConstants.VIDEOS_BACKUP_FOLDER;
+                uploadPath = BaseConstants.VIDEOS_REMOTE_FOLDER;
                 createdBy = UploadFileOperation.CREATED_AS_INSTANT_VIDEO;
             } else {
-                uploadPath = BaseConstants.PHOTOS_BACKUP_FOLDER;
+                uploadPath = BaseConstants.PHOTOS_REMOTE_FOLDER;
                 createdBy = UploadFileOperation.CREATED_AS_INSTANT_PICTURE;
             }
 

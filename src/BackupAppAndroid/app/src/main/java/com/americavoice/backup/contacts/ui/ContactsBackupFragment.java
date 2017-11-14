@@ -152,7 +152,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             }
         }
 
-        String backupFolderPath = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderPath = BaseConstants.CONTACTS_REMOTE_FOLDER;
         refreshBackupFolder(backupFolderPath);
     }
 
@@ -496,7 +496,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
         selectedDate = new Date(year, month, dayOfMonth);
 
-        String backupFolderString = BaseConstants.CONTACTS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderString = BaseConstants.CONTACTS_REMOTE_FOLDER;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
         Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(
                 backupFolder, false);

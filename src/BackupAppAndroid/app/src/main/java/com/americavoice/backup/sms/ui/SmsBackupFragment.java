@@ -153,7 +153,7 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
                 openDate(null);
             }
         }
-        String backupFolderPath = BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderPath = BaseConstants.SMS_REMOTE_FOLDER;
         refreshBackupFolder(backupFolderPath);
 
     }
@@ -497,7 +497,7 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
 
         selectedDate = new Date(year, month, dayOfMonth);
 
-        String backupFolderString = BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderString = BaseConstants.SMS_REMOTE_FOLDER;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
         Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(
                 backupFolder, false);

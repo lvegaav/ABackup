@@ -123,8 +123,7 @@ public class CallsBackupJob extends Job {
         if (force || (lastExecution + 24 * 60 * 60 * 1000) < Calendar.getInstance().getTimeInMillis()) {
             Log_OC.d(TAG, "start calls backup job");
 
-            String backupFolder = BaseConstants.CALLS_BACKUP_FOLDER +
-                    OCFile.PATH_SEPARATOR;
+            String backupFolder = BaseConstants.CALLS_REMOTE_FOLDER;
             Integer daysToExpire = BaseConstants.CALLS_BACKUP_EXPLIRE;
 
             try {

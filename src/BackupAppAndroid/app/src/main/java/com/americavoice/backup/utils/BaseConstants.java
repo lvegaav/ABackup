@@ -1,6 +1,7 @@
 package com.americavoice.backup.utils;
 
 import com.americavoice.backup.Const;
+import com.americavoice.backup.datamodel.OCFile;
 
 /**
  * Created by angelchanquin on 8/11/17.
@@ -12,18 +13,19 @@ public class BaseConstants {
     public static final String FILE_PROVIDER_AUTHORITY = Const.FILE_PROVIDER_AUTHORITY;
     public static final String DATA_FOLDER = Const.DATA_FOLDER;
 
-    public static final String PHOTOS_REMOTE_FOLDER = "/Photos/";
-    public static final String VIDEOS_REMOTE_FOLDER = "/Videos/";
-    public static final String DOCUMENTS_REMOTE_FOLDER = "/Documents/";
-    public static final String CONTACTS_REMOTE_FOLDER = "/Contacts/";
-    public static final String SMS_REMOTE_FOLDER = "/Sms/";
-    public static final String CALLS_REMOTE_FOLDER = "/Calls/";
+    public static final String PHOTOS_FOLDER = "Photos";
+    public static final String VIDEOS_FOLDER = "Videos";
+    public static final String DOCUMENTS_FOLDER = "Documents";
+    public static final String CONTACTS_FOLDER = "Contacts";
+    public static final String SMS_FOLDER = "Sms";
+    public static final String CALLS_FOLDER = "Calls";
 
-    public static final String PHOTOS_BACKUP_FOLDER = "/Photos";
-    public static final String VIDEOS_BACKUP_FOLDER = "/Videos";
-    public static final String CONTACTS_BACKUP_FOLDER = "/Contacts";
-    public static final String SMS_BACKUP_FOLDER = "/Sms";
-    public static final String CALLS_BACKUP_FOLDER = "/Calls";
+    public static final String PHOTOS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + PHOTOS_FOLDER + OCFile.PATH_SEPARATOR;
+    public static final String VIDEOS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + VIDEOS_FOLDER + OCFile.PATH_SEPARATOR;
+    public static final String DOCUMENTS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + DOCUMENTS_FOLDER + OCFile.PATH_SEPARATOR;
+    public static final String CONTACTS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + CONTACTS_FOLDER + OCFile.PATH_SEPARATOR;
+    public static final String SMS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + SMS_FOLDER + OCFile.PATH_SEPARATOR;
+    public static final String CALLS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + CALLS_FOLDER + OCFile.PATH_SEPARATOR;
 
     public static final Integer CONTACTS_BACKUP_EXPLIRE = -1;
     public static final Integer CALLS_BACKUP_EXPLIRE = -1;

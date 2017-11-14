@@ -155,7 +155,7 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
             }
         }
 
-        String backupFolderPath = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderPath = BaseConstants.CALLS_REMOTE_FOLDER;
         refreshBackupFolder(backupFolderPath);
 
     }
@@ -498,7 +498,7 @@ public class CallsBackupFragment extends BaseFragment implements CallsBackupView
 
         selectedDate = new Date(year, month, dayOfMonth);
 
-        String backupFolderString = BaseConstants.CALLS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
+        String backupFolderString = BaseConstants.CALLS_REMOTE_FOLDER;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
         Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(
                 backupFolder, false);
