@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-11-09 15:57:18
+Date: 2017-11-13 20:12:44
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://core-be.development.americavoice.com:8458/api
@@ -785,6 +785,18 @@ public class dtos
         
         public String getAccountNumber() { return accountNumber; }
         public GetAccountUsage setAccountNumber(String value) { this.accountNumber = value; return this; }
+        private static Object responseType = GetAccountUsageResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Fetch account used storage for logged user of the mobile app.
+    */
+    @Route(Path="/accounts/user/usage", Verbs="GET")
+    @Api(Description="Fetch account used storage for logged user of the mobile app.")
+    public static class GetUserAccountUsage implements IReturn<GetAccountUsageResponse>
+    {
+        
         private static Object responseType = GetAccountUsageResponse.class;
         public Object getResponseType() { return responseType; }
     }

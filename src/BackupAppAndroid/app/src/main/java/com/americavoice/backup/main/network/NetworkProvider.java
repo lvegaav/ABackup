@@ -261,4 +261,8 @@ public class NetworkProvider {
         mClient.getAsync(request, response);
     }
 
+    public void getUserAccountUsage(AsyncResult<dtos.GetAccountUsageResponse> response) {
+        mClient.getAsync(new dtos.GetUserAccountUsage(), response);
+    }
+
 }

@@ -9,6 +9,7 @@ import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.files.utils.FileUtils;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
 import com.americavoice.backup.main.network.NetworkProvider;
+import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.americavoice.backup.settings.ui.SettingsView;
@@ -23,6 +24,8 @@ import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
 import com.owncloud.android.lib.resources.files.RemoteFile;
+
+import net.servicestack.client.AsyncResult;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -46,7 +49,6 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
 
     private Map<String, RemoteFile> mRemotePhotosMap = new HashMap<>();
     private Map<String, RemoteFile> mRemoteVideosMap = new HashMap<>();
-    private ReadRemoteFolderOperation mReadRemoteOperation;
     private ReadRemoteFolderOperation mReadRemotePhotosOperation;
     private ReadRemoteFolderOperation mReadRemoteVideosOperation;
     private List<String> mPendingPhotos;
@@ -93,9 +95,44 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
      */
     public void initialize() {
         mView.showLoading();
-        mReadRemoteOperation = new ReadRemoteFolderOperation("/");
-        OwnCloudClient client = mNetworkProvider.getCloudClient();
-        mReadRemoteOperation.execute(client, this, mHandler);
+        getStorageInfo();
+    }
+
+    private void getStorageInfo() {
+        mView.showLoading();
+
+        mNetworkProvider.getUserAccountUsage(new AsyncResult<dtos.GetAccountUsageResponse>() {
+            @Override
+            public void success(dtos.GetAccountUsageResponse response) {
+                if (response != null) {
+                    HashMap<String, BigDecimal> mSizes = new HashMap<>();
+                    BigDecimal totalQuota = new BigDecimal(response.getTotalQuota());
+                    BigDecimal availableQuota = new BigDecimal(response.getAvailableQuota());
+                    for (dtos.UsedStorage folder : response.getUsedStorage()) {
+                        mSizes.put(folder.getName(), new BigDecimal(folder.getUsedStorageSize()));
+                    }
+                    mView.showPercent(mSizes, totalQuota, availableQuota);
+                }
+
+            }
+
+            @Override
+            public void error(Exception ex) {
+                Crashlytics.logException(ex);
+            }
+
+            @Override
+            public void complete() {
+                mView.hideLoading();
+            }
+        });
+    }
+
+    private float getPercent(BigDecimal value, BigDecimal size) {
+        float x = value != null ? value.floatValue() * 100 : 0;
+        float x1 = x / size.floatValue();
+        BigDecimal x2= new BigDecimal(x1).setScale(1,BigDecimal.ROUND_HALF_UP);
+        return x2.floatValue();
     }
 
     public void logout() {
@@ -130,7 +167,6 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
 
         boolean isPhotos = remoteOperation.equals(mReadRemotePhotosOperation);
         boolean isVideos = remoteOperation.equals(mReadRemoteVideosOperation);
-        boolean isRefresh = remoteOperation.equals(mReadRemoteOperation);
         if (result.getData() == null) {
             mView.hideLoading();
             mView.showDefaultError();
@@ -162,38 +198,6 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
                 mView.hideLoading();
                 mView.showSyncDialog(mPendingPhotos.size(), mPendingVideos.size());
             }
-        } else if (isRefresh) {
-            HashMap<String, BigDecimal> mSizes = new HashMap<>();
-            BigDecimal total = new BigDecimal(0);
-            BigDecimal totalAvailable = new BigDecimal(0);
-            for(Object obj: result.getData()) {
-
-                RemoteFile remoteFile = (RemoteFile) obj;
-
-                if (remoteFile.getRemotePath().equals("/")) {
-                    try {
-                        Field field = RemoteFile.class.getDeclaredField("mQuotaAvailableBytes");
-                        field.setAccessible(true);
-                        total = (BigDecimal) field.get(remoteFile);
-                        totalAvailable = (BigDecimal) field.get(remoteFile);
-                    } catch (NoSuchFieldException | IllegalAccessException e) {
-                        Crashlytics.logException(e);
-                    }
-                }
-                if (remoteFile.getRemotePath().equals(BaseConstants.DOCUMENTS_REMOTE_FOLDER)
-                        || remoteFile.getRemotePath().equals(BaseConstants.PHOTOS_REMOTE_FOLDER)
-                        || remoteFile.getRemotePath().equals(BaseConstants.VIDEOS_REMOTE_FOLDER)
-                        || remoteFile.getRemotePath().equals(BaseConstants.CONTACTS_REMOTE_FOLDER)
-                        || remoteFile.getRemotePath().equals(BaseConstants.CALLS_REMOTE_FOLDER)
-                        || remoteFile.getRemotePath().equals(BaseConstants.SMS_REMOTE_FOLDER)) {
-
-                    BigDecimal size = BigDecimal.valueOf(remoteFile.getSize());
-                    total = total.add(size);
-                    mSizes.put(remoteFile.getRemotePath(), size);
-                }
-            }
-            mView.showPercent(mSizes, total, totalAvailable);
-            mView.hideLoading();
         }
     }
 

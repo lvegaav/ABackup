@@ -391,7 +391,7 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
         float smsPercent = getPercent(sizes.get(BaseConstants.SMS_REMOTE_FOLDER), total);
         float callsPercent = getPercent(sizes.get(BaseConstants.CALLS_REMOTE_FOLDER),total);
         float availablePercent = getPercent(totalAvailable, total);
-        Log.v("Total", total.toString());
+
         float totalPercent = photoPercent + videoPercent + contactPercent + documentPercent + smsPercent + callsPercent;
         tvUsedCapacityPercentage.setText(getString(R.string.settings_storage_percentage, String.format(Locale.US, "%.1f", totalPercent)));
 
@@ -408,6 +408,7 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
                 photoPercent, videoPercent, contactPercent, documentPercent, smsPercent,
                 callsPercent, availablePercent
         );
+
         createRatioBar(colors, ratios);
 
         float sizeGb = total.divide(new BigDecimal(1073741824), 1, BigDecimal.ROUND_HALF_UP).floatValue();
