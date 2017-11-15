@@ -8,6 +8,7 @@ import com.americavoice.backup.datamodel.OCFile;
  */
 
 public class BaseConstants {
+    public static final String APPLICATION_NAME = "Android App";
     public static final String ACCOUNT_TYPE = Const.ACCOUNT_TYPE;
     public static final String AUTHORITY = Const.AUTHORITY;
     public static final String FILE_PROVIDER_AUTHORITY = Const.FILE_PROVIDER_AUTHORITY;

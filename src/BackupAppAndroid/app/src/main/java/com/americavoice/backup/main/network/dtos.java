@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-11-13 20:12:44
+Date: 2017-11-15 07:52:23
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://core-be.development.americavoice.com:8458/api
@@ -104,6 +104,12 @@ public class dtos
         */
         @ApiMember(Description="Password ", IsRequired=true, ParameterType="form")
         public String password = null;
+
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
         
         public Integer getCompanyId() { return companyId; }
         public CustomRegister setCompanyId(Integer value) { this.companyId = value; return this; }
@@ -115,6 +121,8 @@ public class dtos
         public CustomRegister setPhoneNumber(String value) { this.phoneNumber = value; return this; }
         public String getPassword() { return password; }
         public CustomRegister setPassword(String value) { this.password = value; return this; }
+        public String getApplication() { return application; }
+        public CustomRegister setApplication(String value) { this.application = value; return this; }
         private static Object responseType = CustomRegisterResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -143,6 +151,12 @@ public class dtos
         */
         @ApiMember(Description="Phone number.", IsRequired=true, ParameterType="form")
         public String phoneNumber = null;
+
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
         
         public Integer getCompanyId() { return companyId; }
         public SendPasswordResetCode setCompanyId(Integer value) { this.companyId = value; return this; }
@@ -150,6 +164,8 @@ public class dtos
         public SendPasswordResetCode setCountryCallingCode(String value) { this.countryCallingCode = value; return this; }
         public String getPhoneNumber() { return phoneNumber; }
         public SendPasswordResetCode setPhoneNumber(String value) { this.phoneNumber = value; return this; }
+        public String getApplication() { return application; }
+        public SendPasswordResetCode setApplication(String value) { this.application = value; return this; }
         private static Object responseType = SendPasswordResetCodeResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -190,6 +206,12 @@ public class dtos
         */
         @ApiMember(Description="New password.", IsRequired=true, ParameterType="form")
         public String newPassword = null;
+
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
         
         public Integer getCompanyId() { return companyId; }
         public PerformResetPassword setCompanyId(Integer value) { this.companyId = value; return this; }
@@ -201,6 +223,8 @@ public class dtos
         public PerformResetPassword setResetPasswordCode(String value) { this.resetPasswordCode = value; return this; }
         public String getNewPassword() { return newPassword; }
         public PerformResetPassword setNewPassword(String value) { this.newPassword = value; return this; }
+        public String getApplication() { return application; }
+        public PerformResetPassword setApplication(String value) { this.application = value; return this; }
         private static Object responseType = PerformResetPasswordResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -212,7 +236,14 @@ public class dtos
     @Api(Description="Send phone verification code to authenticated user.")
     public static class SendPhoneVerificationCode implements IReturn<SendPhoneVerificationCodeResponse>
     {
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
         
+        public String getApplication() { return application; }
+        public SendPhoneVerificationCode setApplication(String value) { this.application = value; return this; }
         private static Object responseType = SendPhoneVerificationCodeResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -229,9 +260,17 @@ public class dtos
         */
         @ApiMember(Description="Verification Code.", IsRequired=true, ParameterType="form")
         public String verificationCode = null;
+
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
         
         public String getVerificationCode() { return verificationCode; }
         public ValidatePhoneVerificationCode setVerificationCode(String value) { this.verificationCode = value; return this; }
+        public String getApplication() { return application; }
+        public ValidatePhoneVerificationCode setApplication(String value) { this.application = value; return this; }
         private static Object responseType = ValidatePhoneVerificationCodeResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -480,9 +519,16 @@ public class dtos
     public static class CreateSubscription implements IReturn<CreateSubscriptionResponse>
     {
         public String productId = null;
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
         
         public String getProductId() { return productId; }
         public CreateSubscription setProductId(String value) { this.productId = value; return this; }
+        public String getApplication() { return application; }
+        public CreateSubscription setApplication(String value) { this.application = value; return this; }
         private static Object responseType = CreateSubscriptionResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -507,9 +553,15 @@ public class dtos
     public static class RenewSubscription implements IReturn<RenewSubscriptionResponse>
     {
         public String subscriptionId = null;
+        public String application = null;
+        public String performedBy = null;
         
         public String getSubscriptionId() { return subscriptionId; }
         public RenewSubscription setSubscriptionId(String value) { this.subscriptionId = value; return this; }
+        public String getApplication() { return application; }
+        public RenewSubscription setApplication(String value) { this.application = value; return this; }
+        public String getPerformedBy() { return performedBy; }
+        public RenewSubscription setPerformedBy(String value) { this.performedBy = value; return this; }
         private static Object responseType = RenewSubscriptionResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -517,9 +569,16 @@ public class dtos
     public static class ChangeSubscription implements IReturn<ChangeSubscriptionResponse>
     {
         public String productId = null;
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
         
         public String getProductId() { return productId; }
         public ChangeSubscription setProductId(String value) { this.productId = value; return this; }
+        public String getApplication() { return application; }
+        public ChangeSubscription setApplication(String value) { this.application = value; return this; }
         private static Object responseType = ChangeSubscriptionResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -556,9 +615,16 @@ public class dtos
     public static class CreatePayPalPaymentMethod implements IReturn<CreatePayPalPaymentMethodResponse>
     {
         public String nonce = null;
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
         
         public String getNonce() { return nonce; }
         public CreatePayPalPaymentMethod setNonce(String value) { this.nonce = value; return this; }
+        public String getApplication() { return application; }
+        public CreatePayPalPaymentMethod setApplication(String value) { this.application = value; return this; }
         private static Object responseType = CreatePayPalPaymentMethodResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -582,6 +648,12 @@ public class dtos
         public String cardExpiry = null;
         public String ccvCode = null;
         public String accountNumber = null;
+        public String userName = null;
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
         
         public String getFirstName() { return firstName; }
         public CreateCreditCardPaymentMethod setFirstName(String value) { this.firstName = value; return this; }
@@ -607,6 +679,10 @@ public class dtos
         public CreateCreditCardPaymentMethod setCcvCode(String value) { this.ccvCode = value; return this; }
         public String getAccountNumber() { return accountNumber; }
         public CreateCreditCardPaymentMethod setAccountNumber(String value) { this.accountNumber = value; return this; }
+        public String getUserName() { return userName; }
+        public CreateCreditCardPaymentMethod setUserName(String value) { this.userName = value; return this; }
+        public String getApplication() { return application; }
+        public CreateCreditCardPaymentMethod setApplication(String value) { this.application = value; return this; }
         private static Object responseType = CreateCreditCardPaymentMethodResponse.class;
         public Object getResponseType() { return responseType; }
     }

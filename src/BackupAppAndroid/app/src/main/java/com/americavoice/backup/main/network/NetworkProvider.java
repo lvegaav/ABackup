@@ -12,6 +12,7 @@ import android.util.Log;
 import com.americavoice.backup.BuildConfig;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -176,7 +177,6 @@ public class NetworkProvider {
     }
 
     public void login(String username, String password, AsyncResult<dtos.AuthenticateResponse> result) {
-        Log.d("Network", "calling login");
         mClient.postAsync(new dtos.Authenticate()
                 .setProvider("credentials")
                 .setUserName(username)
@@ -189,25 +189,27 @@ public class NetworkProvider {
     }
 
     public void CustomRegister(dtos.CustomRegister request, AsyncResult<dtos.CustomRegisterResponse> result) {
-        Log.d("Network", "calling register");
+        request.setApplication(BaseConstants.APPLICATION_NAME);
         getAppClient().postAsync(request, result);
     }
 
     public void SendPhoneVerificationCode(AsyncResult<dtos.SendPhoneVerificationCodeResponse> result) {
-        mClient.postAsync(new dtos.SendPhoneVerificationCode(), result);
+        dtos.SendPhoneVerificationCode request = new dtos.SendPhoneVerificationCode();
+        request.setApplication(BaseConstants.APPLICATION_NAME);
+        mClient.postAsync(request, result);
     }
 
     public void SendPasswordResetCode(dtos.SendPasswordResetCode request, AsyncResult<dtos.SendPasswordResetCodeResponse> result) {
-        Log.d("Network", "calling reset pass");
+        request.setApplication(BaseConstants.APPLICATION_NAME);
         getAppClient().postAsync(request, result);
     }
 
     public void PerformResetPassword(dtos.PerformResetPassword request, AsyncResult<dtos.PerformResetPasswordResponse> result) {
+        request.setApplication(BaseConstants.APPLICATION_NAME);
         getAppClient().postAsync(request, result);
     }
 
     public void getPaymentMethod(AsyncResult<dtos.GetPaymentMethodResponse> result) {
-        Log.d("Network", "Calling get payment method");
         mClient.getAsync(new dtos.GetPaymentMethod(), result);
     }
 
@@ -218,11 +220,13 @@ public class NetworkProvider {
     public void sendPayPalNonce(String nonce, AsyncResult<dtos.CreatePayPalPaymentMethodResponse> response) {
         dtos.CreatePayPalPaymentMethod request = new dtos.CreatePayPalPaymentMethod();
         request.setNonce(nonce);
+        request.setApplication(BaseConstants.APPLICATION_NAME);
         mClient.postAsync(request, response);
     }
 
     public void createCreditCardPaymentMethod(dtos.CreateCreditCardPaymentMethod request,
                                               AsyncResult<dtos.CreateCreditCardPaymentMethodResponse> response) {
+        request.setApplication(BaseConstants.APPLICATION_NAME);
         mClient.postAsync(request, response);
     }
 
@@ -235,6 +239,7 @@ public class NetworkProvider {
     }
 
     public void ValidatePhoneVerificationCode(dtos.ValidatePhoneVerificationCode request, AsyncResult<dtos.ValidatePhoneVerificationCodeResponse> result) {
+        request.setApplication(BaseConstants.APPLICATION_NAME);
         mClient.postAsync(request, result);
     }
 
@@ -247,10 +252,12 @@ public class NetworkProvider {
     }
 
     public void createSubscription(dtos.CreateSubscription request, AsyncResult<dtos.CreateSubscriptionResponse> response) {
+        request.setApplication(BaseConstants.APPLICATION_NAME);
         mClient.postAsync(request, response);
     }
 
     public void changeSubscription(dtos.ChangeSubscription request, AsyncResult<dtos.ChangeSubscriptionResponse> response) {
+        request.setApplication(BaseConstants.APPLICATION_NAME);
         mClient.postAsync(request, response);
     }
 
