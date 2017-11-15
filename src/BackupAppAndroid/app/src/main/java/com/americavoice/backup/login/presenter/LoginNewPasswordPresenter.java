@@ -92,10 +92,10 @@ public class LoginNewPasswordPresenter extends BasePresenter implements IPresent
         mView.showLoading();
         dtos.PerformResetPassword request = new dtos.PerformResetPassword();
         request.setCompanyId(Const.COMPANY_ID);
-        request.setCountryCallingCode(mCountryCode);
-        request.setPhoneNumber(mPhoneNumber);
-        request.setNewPassword(newPassword);
-        request.setResetPasswordCode(verificationCode);
+        request.setCountryCallingCode(mCountryCode.trim());
+        request.setPhoneNumber(mPhoneNumber.trim());
+        request.setNewPassword(newPassword.trim());
+        request.setResetPasswordCode(verificationCode.trim());
 
         mNetworkProvider.PerformResetPassword(request, new AsyncResult<dtos.PerformResetPasswordResponse>() {
             @Override

@@ -99,17 +99,17 @@ public class PaymentMethodPresenter extends BasePresenter implements IPresenter 
 
         mView.showLoading();
         dtos.CreateCreditCardPaymentMethod request = new dtos.CreateCreditCardPaymentMethod()
-                .setFirstName(firstName)
-                .setLastName(lastName)
-                .setPhoneNumber(phoneNumber)
-                .setAddress(address)
-                .setCity(city)
-                .setStateRegion(stateRegion)
-                .setPostalCode(postalCode)
-                .setCountry(country)
-                .setCardNumber(cardNumber)
-                .setCardExpiry(cardExpiry)
-                .setCcvCode(ccvCode);
+                .setFirstName(firstName.trim())
+                .setLastName(lastName.trim())
+                .setPhoneNumber(phoneNumber.trim())
+                .setAddress(address.trim())
+                .setCity(city.trim())
+                .setStateRegion(stateRegion.trim())
+                .setPostalCode(postalCode.trim())
+                .setCountry(country.trim())
+                .setCardNumber(cardNumber.trim())
+                .setCardExpiry(cardExpiry.trim())
+                .setCcvCode(ccvCode.trim());
 
         mNetworkProvider.createCreditCardPaymentMethod(request,
                 new AsyncResult<dtos.CreateCreditCardPaymentMethodResponse>() {

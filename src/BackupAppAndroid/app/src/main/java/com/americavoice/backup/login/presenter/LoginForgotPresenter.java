@@ -78,8 +78,8 @@ public class LoginForgotPresenter extends BasePresenter implements IPresenter {
         mView.showLoading();
         dtos.SendPasswordResetCode request = new dtos.SendPasswordResetCode();
         request.setCompanyId(Const.COMPANY_ID);
-        request.setCountryCallingCode(countryCode);
-        request.setPhoneNumber(phoneNumber);
+        request.setCountryCallingCode(countryCode.trim());
+        request.setPhoneNumber(phoneNumber.trim());
 
         mNetworkProvider.SendPasswordResetCode(request, new AsyncResult<dtos.SendPasswordResetCodeResponse>() {
             @Override

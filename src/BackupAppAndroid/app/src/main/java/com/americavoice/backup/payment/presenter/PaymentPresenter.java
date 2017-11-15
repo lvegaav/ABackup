@@ -156,7 +156,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
             // it's a create
             mPaymentView.showLoading();
             dtos.CreateSubscription request = new dtos.CreateSubscription()
-                    .setProductId(selectedProduct.productId);
+                    .setProductId(selectedProduct.productId.trim());
             mNetworkProvider.createSubscription(request, new AsyncResult<dtos.CreateSubscriptionResponse>() {
                 @Override
                 public void success(dtos.CreateSubscriptionResponse response) {
@@ -189,7 +189,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
             // it's an update
             mPaymentView.showLoading();
             dtos.ChangeSubscription request = new dtos.ChangeSubscription()
-                    .setProductId(selectedProduct.productId);
+                    .setProductId(selectedProduct.productId.trim());
             mNetworkProvider.changeSubscription(request, new AsyncResult<dtos.ChangeSubscriptionResponse>() {
                 @Override
                 public void success(dtos.ChangeSubscriptionResponse response) {

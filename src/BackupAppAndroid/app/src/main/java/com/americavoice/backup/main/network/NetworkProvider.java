@@ -179,8 +179,8 @@ public class NetworkProvider {
     public void login(String username, String password, AsyncResult<dtos.AuthenticateResponse> result) {
         mClient.postAsync(new dtos.Authenticate()
                 .setProvider("credentials")
-                .setUserName(username)
-                .setPassword(password)
+                .setUserName(username.trim())
+                .setPassword(password.trim())
                 .setMeta(mDeviceInfo), result);
     }
 
@@ -231,7 +231,6 @@ public class NetworkProvider {
     }
 
     public void getNewsFeed(AsyncResult<dtos.GetNewsFeedResponse> response) {
-        Log.d("Network", "calling get news feed");
         dtos.GetNewsFeed request = new dtos.GetNewsFeed();
         request.setLanguage(mContext.getString(R.string.common_language));
         request.setTake(25);

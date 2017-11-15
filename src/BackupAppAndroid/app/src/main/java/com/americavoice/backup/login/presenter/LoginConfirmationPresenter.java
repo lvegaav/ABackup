@@ -71,7 +71,7 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
 
         mView.showLoading();
         dtos.ValidatePhoneVerificationCode request = new dtos.ValidatePhoneVerificationCode();
-        request.setVerificationCode(code);
+        request.setVerificationCode(code.trim());
         mNetworkProvider.ValidatePhoneVerificationCode(request, new AsyncResult<dtos.ValidatePhoneVerificationCodeResponse>() {
             @Override
             public void success(dtos.ValidatePhoneVerificationCodeResponse response) {

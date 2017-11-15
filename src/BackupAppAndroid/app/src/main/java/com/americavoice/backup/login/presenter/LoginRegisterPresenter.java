@@ -107,10 +107,10 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
         mView.showLoading();
         dtos.CustomRegister registerRequest = new dtos.CustomRegister();
         registerRequest.setCompanyId(Const.COMPANY_ID);
-        registerRequest.setCountryCallingCode(countryCode);
-        registerRequest.setPhoneNumber(phoneNumber);
-        registerRequest.setPassword(newPassword);
-        registerRequest.setUsername(username);
+        registerRequest.setCountryCallingCode(countryCode.trim());
+        registerRequest.setPhoneNumber(phoneNumber.trim());
+        registerRequest.setPassword(newPassword.trim());
+        registerRequest.setUsername(username.trim());
 
         mNetworkProvider.CustomRegister(registerRequest, new AsyncResult<dtos.CustomRegisterResponse>() {
             @Override
