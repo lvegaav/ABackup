@@ -99,7 +99,9 @@ public class ContactsBackupJob extends Job {
         }
 
         final Account account = AccountUtils.getOwnCloudAccountByName(context, bundle.getString(ACCOUNT, ""));
-
+        if (account == null) {
+            return Result.FAILURE;
+        }
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
         Long lastExecution = arbitraryDataProvider.getLongValue(account, ContactsBackupFragment.PREFERENCE_CONTACTS_LAST_BACKUP);
 

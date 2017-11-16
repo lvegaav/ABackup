@@ -106,15 +106,14 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         mHandler = new Handler();
         mAccount = account;
         mStorageManager = new FileDataStorageManager(account, context);
-        if (mSharedPrefsUtils.getBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, false)) {
+        if (!mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false)) {
+            mView.showGuidedTour();
+        } else if (mSharedPrefsUtils.getBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, false)) {
             mView.showPersistenceUpgrade(R.string.common_cloud_storage_full);
         } else if (mSharedPrefsUtils.getBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, false)){
             mView.showPersistenceUpgrade(R.string.files_cloud_almost_full);
         }
         readRemoteFiles(path);
-        if (!mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false)) {
-            mView.showGuidedTour();
-        }
     }
 
     public void readRemoteFiles(String path) {

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -67,6 +68,34 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
                 })
                 .show();
     }
+
+    @Override
+    public void showUpdateDialog() {
+        new AlertDialog.Builder(getActivity(), R.style.WhiteDialog)
+                .setTitle(R.string.app_name)
+                .setMessage(R.string.common_update_new_version)
+                .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        final String appPackageName = getContext().getPackageName(); // getPackageName() from Context or Activity object
+                        try {
+                            getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                        }
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.common_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setCancelable(false)
+                .show();
+    }
+
 
     @Override
     public void finish() {

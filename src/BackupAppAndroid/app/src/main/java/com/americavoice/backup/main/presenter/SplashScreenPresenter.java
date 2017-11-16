@@ -107,7 +107,6 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
                         doLogin();
                     } else {
                         checkForUpdates();
-                        mView.finish();
                     }
                 } else {
                     Crashlytics.logException(new Throwable("App configuration is null, please check your configuration"));
@@ -126,12 +125,7 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
     }
 
     private void checkForUpdates() {
-        final String appPackageName = mView.getContext().getPackageName(); // getPackageName() from Context or Activity object
-        try {
-            mView.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-        } catch (android.content.ActivityNotFoundException anfe) {
-            mView.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-        }
+        mView.showUpdateDialog();
     }
 
     private void doLogin() {

@@ -223,7 +223,7 @@
     <string name="storage.used">Used</string>
     <string name="storage.detail">Detail</string>
     <string name="storage.upgrade_plan">Upgrade Plan</string>
-    <string name="files.cloud_almost_full">Cloud Storage is almost full</string>
+    <string name="files.cloud_almost_full">Lock Backup Storage is almost full</string>
     <string name="files.getting_pending_no_access">We are trying to get your pending files. You need to grant access to</string>
     <string name="tour.dashboard">This is your Dashboard, in it you\'ll find access to all your files and logs.</string>
     <string name="tour.got_it">GOT IT</string>
@@ -292,6 +292,7 @@
     <string name="tour_share">Share</string>
     <string name="tour_files">Files</string>
     <string name="tour_uploads">Uploads</string>
+    <string name="common_update_new_version">There\'s a new version available, you need to update to continue.</string>
 
 
 </resources>

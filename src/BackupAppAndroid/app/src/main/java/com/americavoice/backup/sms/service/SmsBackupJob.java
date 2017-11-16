@@ -106,7 +106,9 @@ public class SmsBackupJob extends Job {
         }
 
         final Account account = AccountUtils.getOwnCloudAccountByName(context, bundle.getString(ACCOUNT, ""));
-
+        if (account == null) {
+            return Result.FAILURE;
+        }
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
         Long lastExecution = arbitraryDataProvider.getLongValue(account, SmsBackupFragment.PREFERENCE_SMS_LAST_BACKUP);
 
