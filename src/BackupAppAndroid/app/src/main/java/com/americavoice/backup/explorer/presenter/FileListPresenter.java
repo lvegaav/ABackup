@@ -27,6 +27,7 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
 import com.owncloud.android.lib.common.operations.RemoteOperation;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.resources.files.CreateRemoteFolderOperation;
 import com.owncloud.android.lib.resources.files.FileUtils;
 import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
 import com.owncloud.android.lib.resources.files.RemoteFile;
@@ -141,9 +142,19 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     public void onRemoteOperationFinish(RemoteOperation operation, RemoteOperationResult result) {
         mView.hideLoading();
         if (!result.isSuccess()) {
-            mView.showRetry();
+            if (result.getHttpCode() == 404) {
+                mView.showLoading();
+                CreateRemoteFolderOperation createRemoteFolderOperation = new CreateRemoteFolderOperation(mPath, true);
+                OwnCloudClient client = mNetworkProvider.getCloudClient();
+                createRemoteFolderOperation.execute(client, this, mHandler);
+            } else {
+                mView.showRetry();
+            }
         } else if (operation instanceof ReadRemoteFolderOperation) {
             onSuccessfulRefresh((ReadRemoteFolderOperation) operation, result);
+        } else if (operation instanceof CreateRemoteFolderOperation) {
+            mView.showLoading();
+            readRemoteFiles(mPath);
         }
 
     }

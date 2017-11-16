@@ -25,6 +25,7 @@ import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
+import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.news.ui.NewsActivity;
 import com.americavoice.backup.payment.ui.PaymentActivity;
 import com.americavoice.backup.service.MediaContentJob;
@@ -262,7 +263,9 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
             WifiRetryJob.cancelJob(getContext());
         }
         mPresenter.logout();
-        ActivityCompat.finishAffinity(getActivity());
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     @OnCheckedChanged(R.id.use_mobile_data)
