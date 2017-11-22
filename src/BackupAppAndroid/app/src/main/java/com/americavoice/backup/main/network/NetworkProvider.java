@@ -2,6 +2,8 @@ package com.americavoice.backup.main.network;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -14,10 +16,13 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.DisplayUtils;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
+import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 
 import net.servicestack.android.AndroidServiceClient;
@@ -26,6 +31,7 @@ import net.servicestack.client.ConnectionFilter;
 import net.servicestack.client.JsonSerializers;
 import net.servicestack.client.TimeSpan;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -48,10 +54,8 @@ public class NetworkProvider {
     private final AndroidServiceClient mClient; //Client with User Authentication
     private BearerTokenJsonServiceClient mAppClient; //Client with JWT Authentication
     private final Context mContext;
-    private Gson mGson;
     private AccountManager mAccountMgr;
     private HashMap<String, String> mDeviceInfo;
-    private OwnCloudClient mCloudClient;
 
     private String baseUrl;
     private String baseUrlOwnCloud;
@@ -117,19 +121,8 @@ public class NetworkProvider {
         }
     }
 
-    private GsonBuilder getGsonBuilder() {
-        return (new GsonBuilder()).registerTypeAdapter(Date.class, JsonSerializers.getDateSerializer()).registerTypeAdapter(Date.class, JsonSerializers.getDateDeserializer()).registerTypeAdapter(TimeSpan.class, JsonSerializers.getTimeSpanSerializer()).registerTypeAdapter(TimeSpan.class, JsonSerializers.getTimeSpanDeserializer()).registerTypeAdapter(UUID.class, JsonSerializers.getGuidSerializer()).registerTypeAdapter(UUID.class, JsonSerializers.getGuidDeserializer());
-    }
-
-    private Gson getGson() {
-        if(this.mGson == null) {
-            this.mGson = this.getGsonBuilder().create();
-        }
-
-        return this.mGson;
-    }
-
     public OwnCloudClient getCloudClient() {
+        OwnCloudClient cloudClient = null;
         Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
 
         if (account != null) {
@@ -140,31 +133,10 @@ public class NetworkProvider {
             String username = account.name.substring(0, lastIndex);
             String password = mAccountMgr.getPassword(account);
             Uri serverUri = Uri.parse(baseUrlOwnCloud);
-            mCloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
-            mCloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(username, password ));
+            cloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
+            cloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(username, password ));
         }
-        return mCloudClient;
-    }
-
-    public OwnCloudClient getLoginCloudClient(String username, String password) {
-        if (mCloudClient == null) {
-            Uri serverUri = Uri.parse(baseUrlOwnCloud);
-            mCloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
-            mCloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(username, password));
-        }
-        return mCloudClient;
-    }
-
-    public void setAppToken(String appToken) {
-        mPref.edit().putString("TOKEN", appToken).apply();
-    }
-
-    public String toJson(Object o) {
-        return this.getGson().toJson(o);
-    }
-
-    public Object fromJson(String json, Class c) {
-        return this.getGson().fromJson(json, c);
+        return cloudClient;
     }
 
     public void logout() {

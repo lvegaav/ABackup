@@ -17,6 +17,7 @@ import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.crashlytics.android.Crashlytics;
+import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 
 import net.servicestack.client.AsyncResult;
 import net.servicestack.client.WebServiceException;
@@ -78,6 +79,7 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
         }
         if (hasError) return;
         mView.showLoading();
+
         mNetworkProvider.login(username, password, new AsyncResult<dtos.AuthenticateResponse>() {
             @Override
             public void success(dtos.AuthenticateResponse response) {
@@ -87,31 +89,49 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
                     public void success(dtos.GetFullUserResponse response) {
                         mView.hideLoading();
                         mView.showGettingServerInfo();
-                        mView.loginWithCredentials(mNetworkProvider.getLoginCloudClient(username, password).getCredentials());
+                        int lastIndex = username.indexOf("@");
+                        if (lastIndex == -1) {
+                            lastIndex = username.length();
+                        }
+                        final String user = username.substring(0, lastIndex);
+                        mView.loginWithCredentials(OwnCloudCredentialsFactory.newBasicCredentials(user, password));
                         mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
                     }
 
                     @Override
                     public void error(Exception ex) {
-                        Crashlytics.logException(ex);
-                        //Send Verification Code
-                        mNetworkProvider.SendPhoneVerificationCode(new AsyncResult<dtos.SendPhoneVerificationCodeResponse>() {
-                            @Override
-                            public void success(dtos.SendPhoneVerificationCodeResponse response) {
-                                mView.hideLoading();
-                                mView.viewValidation(username, password);
-                            }
+                        if (ex instanceof WebServiceException) {
+                            WebServiceException wex = (WebServiceException) ex;
+                            if (wex.getErrorCode() != null && wex.getErrorCode().equals("PhoneNotVerified")) {
+                                mNetworkProvider.SendPhoneVerificationCode(new AsyncResult<dtos.SendPhoneVerificationCodeResponse>() {
+                                    @Override
+                                    public void success(dtos.SendPhoneVerificationCodeResponse response) {
+                                        mView.hideLoading();
+                                        int lastIndex = username.indexOf("@");
+                                        if (lastIndex == -1) {
+                                            lastIndex = username.length();
+                                        }
+                                        final String user = username.substring(0, lastIndex);
+                                        mView.viewValidation(user, password);
+                                    }
 
-                            @Override
-                            public void error(Exception ex) {
-                                Crashlytics.logException(ex);
-                                mView.hideLoading();
-                                if (mView.getContext() != null) {
-                                    mView.showError(mView.getContext().getString(R.string.exception_message_generic));
-                                }
+                                    @Override
+                                    public void error(Exception ex) {
+                                        Crashlytics.logException(ex);
+                                        mView.hideLoading();
+                                        if (mView.getContext() != null) {
+                                            mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                                        }
+                                    }
+                                });
                             }
-                        });
-
+                        } else {
+                            Crashlytics.logException(ex);
+                            mView.hideLoading();
+                            if (mView.getContext() != null) {
+                                mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                            }
+                        }
                     }
                 });
             }
