@@ -39,7 +39,8 @@ import butterknife.Unbinder;
 /**
  * Fragment that shows details of a certain political party.
  */
-public class LoginConfirmationFragment extends BaseAuthenticatorFragment implements LoginConfirmationView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
+public class LoginConfirmationFragment extends BaseAuthenticatorFragment
+        implements LoginConfirmationView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
 
     public static final String ARGUMENT_USERNAME = "com.americavoice.backup.ARGUMENT_USERNAME";
     public static final String ARGUMENT_DEVICE = "com.americavoice.backup.ARGUMENT_DEVICE";
@@ -47,6 +48,12 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment impleme
     @Override
     public void viewHome() {
         if (mListener != null) mListener.viewHome();
+    }
+
+    @Override
+    public void showConfirmationCodeExpired() {
+        etConfirmationCode.requestFocus();
+        etConfirmationCode.setError(getString(R.string.confirmation_verification_code_expired));
     }
 
     @Override

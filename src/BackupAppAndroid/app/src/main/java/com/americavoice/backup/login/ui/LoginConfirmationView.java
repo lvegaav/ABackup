@@ -8,6 +8,7 @@ import com.owncloud.android.lib.common.OwnCloudCredentials;
  */
 public interface LoginConfirmationView extends ILoadDataView {
     void viewHome();
+    void showConfirmationCodeExpired();
     void showConfirmationCodeInvalid();
     void showGettingServerInfo();
     void hideGettingServerInfo();

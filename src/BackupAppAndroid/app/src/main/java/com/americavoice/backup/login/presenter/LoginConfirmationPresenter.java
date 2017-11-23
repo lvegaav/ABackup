@@ -4,6 +4,7 @@ package com.americavoice.backup.login.presenter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.login.ui.LoginConfirmationView;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
@@ -17,6 +18,7 @@ import com.crashlytics.android.Crashlytics;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 
 import net.servicestack.client.AsyncResult;
+import net.servicestack.client.WebServiceException;
 
 import javax.inject.Inject;
 
@@ -84,10 +86,39 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
 
             @Override
             public void error(Exception ex) {
-                Crashlytics.setString("ValidatePhoneVerificationCode", mUsername);
+                mView.hideLoading();
+                if (ex instanceof WebServiceException) {
+                    WebServiceException wex = (WebServiceException) ex;
+                    if (wex.getErrorCode() != null && wex.getErrorCode().equals("CodeExpired")) {
+                        mView.showConfirmationCodeExpired();
+                    } else if (wex.getErrorCode() != null && wex.getErrorCode().equals("InvalidCode")) {
+                        mView.showConfirmationCodeInvalid();
+                    } else {
+                        Crashlytics.logException(ex);
+                        mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                    }
+                } else {
+                    Crashlytics.logException(ex);
+                    mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                }
+            }
+        });
+    }
+
+    public void sendCode() {
+        mNetworkProvider.SendPhoneVerificationCode(new AsyncResult<dtos.SendPhoneVerificationCodeResponse>() {
+            @Override
+            public void success(dtos.SendPhoneVerificationCodeResponse response) {
+                mView.hideLoading();
+            }
+
+            @Override
+            public void error(Exception ex) {
                 Crashlytics.logException(ex);
                 mView.hideLoading();
-                mView.showConfirmationCodeInvalid();
+                if (mView.getContext() != null) {
+                    mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                }
             }
         });
     }

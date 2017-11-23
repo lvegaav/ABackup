@@ -24,6 +24,7 @@ import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientFactory;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
 import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
+import com.owncloud.android.lib.common.OwnCloudSamlSsoCredentials;
 
 import net.servicestack.android.AndroidServiceClient;
 import net.servicestack.client.AsyncResult;
@@ -38,6 +39,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -61,6 +64,8 @@ public class NetworkProvider {
     private String baseUrlOwnCloud;
     private String identityUrl;
 
+    private Map<String, List<String>> headers = new HashMap<>();
+    private List<String> cookies = null;
 
     @Inject
     public NetworkProvider(Context context) {
@@ -72,7 +77,13 @@ public class NetworkProvider {
 
         mPref = PreferenceManager.getDefaultSharedPreferences(context);
         mClient = new AndroidServiceClient(baseUrl + "/api");
-
+        mClient.ResponseFilter = new ConnectionFilter() {
+            @Override
+            public void exec(HttpURLConnection httpURLConnection) {
+                headers = httpURLConnection.getHeaderFields();
+                cookies = headers.get("Set-Cookie");
+            }
+        };
         mAccountMgr = AccountManager.get(context);
 
         mDeviceInfo = new HashMap<>();
