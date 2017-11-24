@@ -290,6 +290,6 @@
     <string name="tour_share">Share</string>
     <string name="tour_files">Files</string>
     <string name="tour_uploads">Uploads</string>
-    <string name="confirmation.resend_code"><u>Didn\'t get any code?</u></string>
+    <string name="confirmation.resend_code">Resend code</string>
 
 </resources>

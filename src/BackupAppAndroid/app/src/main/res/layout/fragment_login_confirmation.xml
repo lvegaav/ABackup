@@ -66,6 +66,7 @@
                 android:textColor="@color/white"
                 android:text="@string/confirmation.verification_message"/>
             <TextView
+                android:id="@+id/tv_resend"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAlignment="center"

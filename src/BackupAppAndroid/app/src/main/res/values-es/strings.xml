@@ -289,6 +289,6 @@
     <string name="tour_share">Comprarte</string>
     <string name="tour_files">Archivos</string>
     <string name="tour_uploads">Uploads</string>
-    <string name="confirmation.resend_code">Didn\'t get any code?</string>
+    <string name="confirmation.resend_code">Enviar código de nuevo</string>
 
 </resources>

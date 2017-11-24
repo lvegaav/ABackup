@@ -106,6 +106,7 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
     }
 
     public void sendCode() {
+        mView.showLoading();
         mNetworkProvider.SendPhoneVerificationCode(new AsyncResult<dtos.SendPhoneVerificationCodeResponse>() {
             @Override
             public void success(dtos.SendPhoneVerificationCodeResponse response) {

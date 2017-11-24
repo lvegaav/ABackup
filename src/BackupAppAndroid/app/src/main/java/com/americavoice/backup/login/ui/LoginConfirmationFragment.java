@@ -34,6 +34,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -260,6 +261,11 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment
         AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
         Object[] params = {getResources().getString(R.string.baseUrlOwnCloud), credentials};
         loginAsyncTask.execute(params);
+    }
+
+    @OnClick(R.id.tv_resend)
+    public void resendCode() {
+        mPresenter.sendCode();
     }
 }
 
