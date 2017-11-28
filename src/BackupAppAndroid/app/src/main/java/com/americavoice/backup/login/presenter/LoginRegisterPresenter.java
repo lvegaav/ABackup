@@ -18,6 +18,7 @@ import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 
 import net.servicestack.client.AsyncResult;
 import net.servicestack.client.WebServiceException;
@@ -125,38 +126,40 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
 
                     @Override
                     public void error(Exception ex) {
-                        Crashlytics.logException(ex);
                         mView.hideLoading();
                         mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                        if (ex instanceof WebServiceException) {
+                            Crashlytics.logException(new RuntimeException(((WebServiceException) ex).getErrorMessage()));
+                        } else {
+                            Crashlytics.logException(ex);
+                        }
                     }
                 });
             }
 
             @Override
             public void error(Exception ex) {
-                Crashlytics.logException(ex);
+                mView.hideLoading();
                 if (ex instanceof WebServiceException) {
                     WebServiceException webEx = (WebServiceException) ex;
                     if (webEx.getErrorCode() != null && (webEx.getErrorCode().equals("InvalidPhoneNumber"))) {
-                        mView.hideLoading();
                         mView.showPhoneNumberExists();
                         return;
                     }
 
                     if (webEx.getErrorCode() != null && (webEx.getErrorCode().equals("InvalidUsername"))) {
-                        mView.hideLoading();
                         mView.showUsernameExists();
                         return;
                     }
 
                     if (webEx.getErrorCode() != null && (webEx.getErrorCode().equals("ArgumentException"))) {
-                        mView.hideLoading();
                         mView.showUsernameInvalid();
                         return;
                     }
+                    Crashlytics.logException(new RuntimeException(((WebServiceException) ex).getErrorMessage()));
+                } else {
+                    Crashlytics.logException(ex);
                 }
-
-                mView.hideLoading();
                 if (mView.getContext() != null) {
                     mView.showError(mView.getContext().getString(R.string.exception_message_generic));
                 }

@@ -34,12 +34,14 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
  * Fragment that shows details of a certain political party.
  */
-public class LoginConfirmationFragment extends BaseAuthenticatorFragment implements LoginConfirmationView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
+public class LoginConfirmationFragment extends BaseAuthenticatorFragment
+        implements LoginConfirmationView, AuthenticatorAsyncTask.OnAuthenticatorTaskListener {
 
     public static final String ARGUMENT_USERNAME = "com.americavoice.backup.ARGUMENT_USERNAME";
     public static final String ARGUMENT_DEVICE = "com.americavoice.backup.ARGUMENT_DEVICE";
@@ -47,6 +49,12 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment impleme
     @Override
     public void viewHome() {
         if (mListener != null) mListener.viewHome();
+    }
+
+    @Override
+    public void showConfirmationCodeExpired() {
+        etConfirmationCode.requestFocus();
+        etConfirmationCode.setError(getString(R.string.confirmation_verification_code_expired));
     }
 
     @Override
@@ -253,6 +261,11 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment impleme
         AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
         Object[] params = {getResources().getString(R.string.baseUrlOwnCloud), credentials};
         loginAsyncTask.execute(params);
+    }
+
+    @OnClick(R.id.tv_resend)
+    public void resendCode() {
+        mPresenter.sendCode();
     }
 }
 

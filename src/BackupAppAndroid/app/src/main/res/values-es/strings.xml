@@ -31,6 +31,7 @@
     <string name="common.cloud_storage_full">Espacio de Lock Backup esta lleno</string>
     <string name="common_upgrade_now">Actualizar</string>
     <string name="common.upload_failed">Error en la carga del archivo</string>
+    <string name="common.update_new_version">Hay una nueva versión disponible, necesitas actualizar para continuar.</string>
 
     <string name="network.error_socket_exception">Un error ocurrió en la conexión con el servidor.</string>
     <string name="network.error_socket_timeout_exception">Un error ocurrió mientras esperamos al servidor. No se pudo completar la operación.</string>
@@ -45,29 +46,44 @@
     <string name="login.registerPlaceHolder">&loginRegisterNow;</string>
     <string name="login.forgotPlaceHolder">Olvidaste tu contraseña?</string>
     <string name="login.validationPhoneNumberRequired">Número requerido</string>
-    <string name="login.validationPhoneNumberInvalid">Este número ya esta registrado</string>
+    <string name="login.validationPhoneNumberInvalid">Este número ya es inválido</string>
+    <string name="login.validationPhoneNumberExists">Este número ya esta registrado</string>
     <string name="login.validationUsernameRequired">Usuario requerido.</string>
     <string name="login.validationUsernameInvalid">Este usuario ya existe.</string>
+    <string name="login.validationUsernameExists">Este usuario ya esta registrado</string>
+    <string name="login.validationPasswordRequired">Contraseña requerida</string>
     <string name="login.validationPasswordInvalid">Contraseña inválida.</string>
     <string name="login.validationNewPasswordInvalid">Nueva Contraseña inválida.</string>
     <string name="login.validationConfirmPasswordInvalid">Confirmación inválida.</string>
     <string name="login.validationVerificationCodeInvalid">Código de verificación inválido.</string>
     <string name="login_validationNewPasswordMatches">La contraseña debe tener 8 caracteres y contener al menos número</string>
     <string name="login.dontHaveAnAccount">¿No tienes una cuenta todavía?</string>
+    <string name="login.validationFailed">Inicio se sesión fallido, por favor revisa tus credenciales</string>
 
     <string name="login.register.hello">Registrarse</string>
+    <string name="login.register.usernamePlaceHolder">Usuario/Email</string>
     <string name="login.register.passwordPlaceHolder">Nueva Contraseña</string>
     <string name="login.register.passwordConfirmPlaceHolder">Confirmar Contraseña</string>
     <string name="login.register.now">Registrarse Ahora</string>
     <string name="login.register.already">Tengo una cuenta!</string>
-    <string name="login.register.termsOfService">
-        Al hacer click en \"&loginRegisterNow;\" estás aceptando nuestros &lt;b&gt;Términos de servicio&lt;/b&gt;
-    </string>
+    <string name="login.register.termsOfService">Al hacer click en \"&loginRegisterNow;\" estás aceptando nuestros &lt;b&gt;Términos de servicio&lt;/b&gt;</string>
     <string name="login.register.termsOfServiceUrl">http://secureip.io/lockbackup/terms_and_privacy_es.html</string>
+
+    <string name="login.forgot.hello">Olvidaste tu contraseña?</string>
+    <string name="login.forgot.sendVerificationCode">Enviar código de verificación</string>
+    <string name="login.forgot.label">Para mantener tus archivos protegidos te enviaremos un código de verificación</string>
+
+    <string name="login.password.hello">Crea una contraseña</string>
+    <string name="login.password.code">Codigo de verificación</string>
+    <string name="login.password.create">Crear nueva contraseña</string>
+    <string name="login.password.success.hello">Tienes una nueva contraseña</string>
+    <string name="login.password.success.label">La contraseña que acabas de crear esta lista para usar!</string>
+    <string name="login.password.success.button">Llévame al inicio</string>
 
     <string name="confirmation.codePlaceHolder">Código de Confirmación</string>
     <string name="confirmation.hello">Código de Confirmación</string>
     <string name="confirmation.verification_code_invalid">Código de confirmación inválido</string>
+    <string name="confirmation.verification_code_expired">Código de confirmación ha expirado</string>
     <string name="confirmation.verification_message">Un mensaje con un código de confirmación ha sido enviado a tu teléfono</string>
 
     <string name="main.title">Opciones</string>
@@ -119,6 +135,8 @@
     <string name="files.create_dir_fail">No se pudo crear la carpeta</string>
     <string name="file.list_seconds_ago">hece unos segundos.</string>
     <string name="files.list_empty">Carga contenido o sincroniza tus dispositivos.</string>
+    <string name="files.cloud_almost_full">Espacio de Lock Backup esta casi lleno</string>
+    <string name="files.getting_pending_no_access">Estamos tratando de obtener tus archivos pendientes. TIenes que darnos permisos para</string>
 
     <string name="sync.fail_ticker">Sincronización fallida</string>
     <string name="sync.fail_ticker_unauthorized">Sincronización fallida, necesitas autenticarte de nuevo</string>
@@ -169,7 +187,7 @@
     <string name="auth.unsupported_multiaccount">%1$s no soporta multiples cuentas</string>
     <string name="auth.account_does_not_exist">La cuenta no existe en este dispositivo todavia</string>
 
-    <string name="exception.message_generic">Ups, algo salió mal, por favor intenta de nuevo.</string>
+    <string name="exception.message_generic">Ups, algo salió mal, por favor intenta comunicate con soporte técnico.</string>
 
     <string name="settings.title">Información y opciones</string>
     <string name="settings.subtitle">Presione para configurar</string>
@@ -197,6 +215,7 @@
 
     <string name="news.title">Noticias</string>
     <string name="news_detail.title">Noticias</string>
+    <string name="news.empty_list">No hay noticias que mostrar</string>
 
     <string name="storage_info_title">Almacenamiento &amp; Uso</string>
     <string name="storage.your_plan">Tu plan</string>
@@ -204,25 +223,36 @@
     <string name="storage.used">Usado</string>
     <string name="storage.detail">Detalle</string>
     <string name="storage.upgrade_plan">Actualiza tu plan</string>
-    <string name="files.cloud_almost_full">Espacio de Lock Backup esta casi lleno</string>
-    <string name="files.getting_pending_no_access">Estamos tratando de obtener tus archivos pendientes. TIenes que darnos permisos para</string>
+
     <string name="tour.dashboard">Este es tu menu principal, en el podras encontrar tus archivos y logs.</string>
-    <string name="tour.got_it">ENTIENDO</string>
     <string name="tour.dashboard_icons">Al presiona los iconos en el menu te llevaremos a otra vista, presiona Fotos para ver tus archivos.</string>
     <string name="tour.files_switch">Puedes encender las cargas automáticas con este boton, lo que significa que no tienes que hacer nada para subir tus archivos en la nube</string>
     <string name="tour.files_upload">Agrega mas archivos manualmente a tu almacenamiento en la nube presionando este boton y seleccionando los archivos que quieres subir.</string>
     <string name="tour.dashboard_settings">Puedes manejar la configuración aquí.</string>
     <string name="tour.settings_share">Comparte esta aplicación con tus amigos y familia para que puedan almacenar sus archivos seguros en la nube.</string>
-    <string name="credit_card.error.PGE0042">Ha alcanzado el límite de las tarjetas de crédito y débito almacenadas</string>
-    <string name="credit_card.error.PGE0002">La transacción de la tarjeta ha sido rechazada. Por favor contacte a su banco</string>
-    <string name="credit_card.error.PGE0006">Número de tarjeta inválido</string>
-    <string name="credit_card.error.PGE0007">Fecha de expiración inválida</string>
-    <string name="credit_card.error.PGE0008">Su tarjeta ha expirado. Por favor intente con una nueva tarjeta</string>
-    <string name="credit_card.error.PGE0017">El comercio no acepta este tipo de tarjeta de crédito o débito</string>
-    <string name="credit_card.error.PGE0019">Ha ocurrido un error al procesar su tarjeta. Por favor intente de nuevo</string>
-    <string name="credit_card.error.PGE0044">El código de ccv de seguridad es inválido</string>
-    <string name="credit_card.error.PGE0045">Dirección o código ccv inválidos</string>
-    <string name="credit_card.error.PGE0127">La dirección provista para su tarjeta no coincide con la dirección del titular de la tarjeta</string>
+
+    <string name="choose_plan.no_plan">No tiene un plan</string>
+    <string name="choose_plan.instructions">Guarde su contenido más importante en la nube así puede acceder a él si llega a perder su dispositivo</string>
+
+    <string name="subscription.cancel_subscription">Cancelar suscripción</string>
+    <string name="subscription.change_payment_method">Actualizar método de pago</string>
+    <string name="subscription.change">Cambiar plan</string>
+    <string name="subscription.next_payment_date">Siguiente cobro el %s</string>
+    <string name="subscription.start_date">Iniciado el %s</string>
+    <string name="subscription.current">Plan actual</string>
+    <string name="subscription.select">Seleccionar</string>
+
+    <string name="payment.title">Opciones de pago</string>
+    <string name="payment.error.createCreditCard">Hubo un error al registrar la tarjeta de crédito, por favor intente más tarde</string>
+    <string name="payment.error.createPaypal">La cuenta PayPal no pudo ser registrada, por favor intente nuevamente</string>
+    <string name="payment.error.createSubscription">No se pudo crear una suscripción, por favor intente más tarde</string>
+    <string name="payment.error.loadData">No se pudo cargar la información, por favor intente más tarde</string>
+    <string name="payment_method.credit_card">Tarjeta de crédito</string>
+    <string name="payment_method.paypal">PayPal</string>
+    <string name="payment_method.paypal.create">Mostrar formulario de PayPal</string>
+
+    <string name="paypal.error.token">Hubo un error al iniciar el servicio PayPal, por favor intente más tarde</string>
+
     <string name="credit_card.save">Guardar tarjeta</string>
     <string name="credit_card.your_card">Su tarjeta</string>
     <string name="credit_card.x">XXXX</string>
@@ -241,45 +271,24 @@
     <string name="credit_card.phone_number">Número de teléfono</string>
     <string name="credit_card.credit_card_information">Información de la tarjeta</string>
     <string name="credit_card.contact_information">Información de facturación</string>
-    <string name="paypal.error.token">Hubo un error al iniciar el servicio PayPal, por favor intente más tarde</string>
-    <string name="payment.error.createCreditCard">Hubo un error al registrar la tarjeta de crédito, por favor intente más tarde</string>
-    <string name="payment.error.createPaypal">La cuenta PayPal no pudo ser registrada, por favor intente nuevamente</string>
-    <string name="payment.error.createSubscription">No se pudo crear una suscripción, por favor intente más tarde</string>
-    <string name="payment.error.loadData">No se pudo cargar la información, por favor intente más tarde</string>
-    <string name="payment_method.credit_card">Tarjeta de crédito</string>
-    <string name="payment_method.paypal">PayPal</string>
-    <string name="payment_method.paypal.create">Mostrar formulario de PayPal</string>
-    <string name="subscription.cancel_subscription">Cancelar suscripción</string>
-    <string name="subscription.change_payment_method">Actualizar método de pago</string>
-    <string name="subscription.change">Cambiar plan</string>
-    <string name="subscription.next_payment_date">Siguiente cobro el %s</string>
-    <string name="subscription.start_date">Iniciado el %s</string>
-    <string name="subscription.current">Plan actual</string>
-    <string name="subscription.select">Seleccionar</string>
-    <string name="payment.title">Opciones de pago</string>
+
+    <string name="credit_card.error.PGE0042">Ha alcanzado el límite de las tarjetas de crédito y débito almacenadas</string>
+    <string name="credit_card.error.PGE0002">La transacción de la tarjeta ha sido rechazada. Por favor contacte a su banco</string>
+    <string name="credit_card.error.PGE0006">Número de tarjeta inválido</string>
+    <string name="credit_card.error.PGE0007">Fecha de expiración inválida</string>
+    <string name="credit_card.error.PGE0008">Su tarjeta ha expirado. Por favor intente con una nueva tarjeta</string>
+    <string name="credit_card.error.PGE0017">El comercio no acepta este tipo de tarjeta de crédito o débito</string>
+    <string name="credit_card.error.PGE0019">Ha ocurrido un error al procesar su tarjeta. Por favor intente de nuevo</string>
+    <string name="credit_card.error.PGE0044">El código de ccv de seguridad es inválido</string>
+    <string name="credit_card.error.PGE0045">Dirección o código ccv inválidos</string>
+    <string name="credit_card.error.PGE0127">La dirección provista para su tarjeta no coincide con la dirección del titular de la tarjeta</string>
+    <string name="credit_card.error.PGE0039">Esta tarjeta de débito o crédito ya existe</string>
+
     <string name="tour_settings_options">Tienes varias opciones para configurar, también puedes ver cuánto espacio tienes disponible en tu nube</string>
     <string name="tour_options">Opciones</string>
     <string name="tour_share">Comprarte</string>
     <string name="tour_files">Archivos</string>
     <string name="tour_uploads">Uploads</string>
-    <string name="login.validationPhoneNumberExists">Este número ya esta registrado</string>
-    <string name="login.validationUsernameExists">Este usuario ya esta registrado</string>
-    <string name="login.validationPasswordRequired">Contraseña requerida</string>
-    <string name="login.validationFailed">Inicio fallido, por favor revisa tus credenciales</string>
-    <string name="login.register.usernamePlaceHolder">Usuario/Email</string>
-    <string name="login.forgot.hello">Olvidaste tu contraseña?</string>
-    <string name="login.forgot.sendVerificationCode">Enviar código de verificación</string>
-    <string name="login.forgot.label">Para mantener tus archivos protegidos te enviaremos un código de verificación</string>
-    <string name="login.password.hello">Crea una contraseña</string>
-    <string name="login.password.code">Codigo de verificación</string>
-    <string name="login.password.create">Crear nueva contraseña</string>
-    <string name="login.password.success.hello">Tienes una nueva contraseña</string>
-    <string name="login.password.success.label">La contraseña que acabas de crear esta lista para usar!</string>
-    <string name="login.password.success.button">Llévame al inicio</string>
-    <string name="news.empty_list">No hay noticias que mostrar</string>
-    <string name="credit_card.error.PGE0039">Esta tarjeta de débito o crédito ya existe</string>
-    <string name="choose_plan.no_plan">No tiene un plan</string>
-    <string name="choose_plan.instructions">Guarde su contenido más importante en la nube así puede acceder a él si llega a perder su dispositivo</string>
-    <string name="common_update_new_version">Hay una nueva versión disponible, necesitas actualizar para continuar.</string>
+    <string name="confirmation.resend_code">Enviar código de nuevo</string>
 
 </resources>

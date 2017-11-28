@@ -4,6 +4,7 @@ package com.americavoice.backup.login.presenter;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.americavoice.backup.R;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.login.ui.LoginConfirmationView;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
@@ -14,8 +15,10 @@ import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.crashlytics.android.Crashlytics;
+import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 
 import net.servicestack.client.AsyncResult;
+import net.servicestack.client.WebServiceException;
 
 import javax.inject.Inject;
 
@@ -27,7 +30,7 @@ import javax.inject.Inject;
 @PerActivity
 public class LoginConfirmationPresenter extends BasePresenter implements IPresenter {
     private String mUsername;
-    private String mDevice;
+    private String mPassword;
 
     private LoginConfirmationView mView;
 
@@ -55,9 +58,9 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
     /**
      * Initializes the presenter
      */
-    public void initialize(String username, String device) {
+    public void initialize(String username, String password) {
         mUsername = username;
-        mDevice = device;
+        mPassword = password;
     }
 
     public void submit(final String code) {
@@ -77,16 +80,46 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
             public void success(dtos.ValidatePhoneVerificationCodeResponse response) {
                 mView.hideLoading();
                 mView.showGettingServerInfo();
-                mView.loginWithCredentials(mNetworkProvider.getLoginCloudClient(mUsername, mDevice).getCredentials());
+                mView.loginWithCredentials(OwnCloudCredentialsFactory.newBasicCredentials(mUsername, mPassword));
                 mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
             }
 
             @Override
             public void error(Exception ex) {
-                Crashlytics.setString("ValidatePhoneVerificationCode", mUsername);
+                mView.hideLoading();
+                if (ex instanceof WebServiceException) {
+                    WebServiceException wex = (WebServiceException) ex;
+                    if (wex.getErrorCode() != null && wex.getErrorCode().equals("CodeExpired")) {
+                        mView.showConfirmationCodeExpired();
+                    } else if (wex.getErrorCode() != null && wex.getErrorCode().equals("InvalidCode")) {
+                        mView.showConfirmationCodeInvalid();
+                    } else {
+                        Crashlytics.logException(ex);
+                        mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                    }
+                } else {
+                    Crashlytics.logException(ex);
+                    mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                }
+            }
+        });
+    }
+
+    public void sendCode() {
+        mView.showLoading();
+        mNetworkProvider.SendPhoneVerificationCode(new AsyncResult<dtos.SendPhoneVerificationCodeResponse>() {
+            @Override
+            public void success(dtos.SendPhoneVerificationCodeResponse response) {
+                mView.hideLoading();
+            }
+
+            @Override
+            public void error(Exception ex) {
                 Crashlytics.logException(ex);
                 mView.hideLoading();
-                mView.showConfirmationCodeInvalid();
+                if (mView.getContext() != null) {
+                    mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                }
             }
         });
     }
