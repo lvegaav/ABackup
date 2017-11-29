@@ -11,68 +11,51 @@
         android:layout_gravity="center_vertical"
         android:background="@color/colorPrimary">
 
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            app:srcCompat="@drawable/ic_corner_oval"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"/>
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
-            app:srcCompat="@drawable/ic_lock_backup_logo_c"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"/>
-
-        <TextView
-            android:id="@+id/tv_hello"
+        <include
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="51dp"
-            android:text="@string/confirmation.hello"
-            android:textColor="@color/white"
-            android:textSize="24sp"/>
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            layout="@layout/corner_logo"/>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_vertical"
-            android:layout_below="@id/tv_hello"
-            android:layout_margin="40dp">
+            android:layout_centerInParent="true"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_hello"
+                style="@style/TextView.WindowTitle"
+                android:text="@string/confirmation.hello"
+                android:layout_marginBottom="30dp"/>
 
             <EditText
                 android:id="@+id/et_confirmation_code"
+                style="@style/EditText"
                 android:layout_width="190dp"
-                android:layout_height="57dp"
-                android:textAlignment="center"
                 android:textSize="26sp"
-                android:textColorHint="@color/white"
-                android:textColor="@color/white"
                 android:inputType="number"
                 android:maxLength="8"
                 android:imeOptions="actionDone"
-                android:background="@drawable/button_border"
-                android:paddingLeft="5dp"/>
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"/>
+
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:layout_marginTop="30dp"
-                android:textColor="@color/white"
-                android:text="@string/confirmation.verification_message"/>
+                style="@style/TextView"
+                android:text="@string/confirmation.verification_message"
+                android:labelFor="@id/et_confirmation_code"
+                android:layout_marginTop="30dp"/>
+
             <TextView
                 android:id="@+id/tv_resend"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
+                style="@style/TextView"
+                android:text="@string/confirmation.resend_code"
                 android:layout_marginTop="30dp"
-                android:textColor="@color/white"
-                android:text="@string/confirmation.resend_code"/>
+                android:focusable="true"
+                android:clickable="true"
+                android:layout_marginBottom="100dp"/>
         </LinearLayout>
 
     </RelativeLayout>

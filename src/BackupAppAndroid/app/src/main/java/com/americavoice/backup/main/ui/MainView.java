@@ -10,6 +10,5 @@ public interface MainView extends ILoadDataView, AppCompatFragmentView {
     void setBadgeFiles(int size);
     void setBadgeSms(int size);
     void setBadgeCallLog(int size);
-    void showSync();
     void showStorageFullDialog(boolean doesUploadFail);
 }

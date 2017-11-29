@@ -23,7 +23,6 @@ import com.americavoice.backup.news.ui.NewsFragment;
 import com.americavoice.backup.payment.ui.ChoosePlanFragment;
 import com.americavoice.backup.payment.ui.PaymentMethodFragment;
 import com.americavoice.backup.settings.ui.StorageInfoFragment;
-import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sms.ui.SmsListFragment;
@@ -44,8 +43,6 @@ public interface AppComponent extends ActivityComponent {
     void inject(LoginForgotFragment fragment);
     void inject(LoginNewPasswordFragment fragment);
     void inject(LoginNewPasswordSuccessFragment fragment);
-
-    void inject(SyncFragment fragment);
     void inject(MainFragment fragment);
     void inject(FileListFragment fragment);
     void inject(SettingsFragment fragment);

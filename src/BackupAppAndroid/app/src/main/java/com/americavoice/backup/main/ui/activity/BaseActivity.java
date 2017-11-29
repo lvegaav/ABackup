@@ -2,6 +2,7 @@ package com.americavoice.backup.main.ui.activity;
 
 import android.accounts.Account;
 import android.app.ProgressDialog;
+import android.content.pm.ActivityInfo;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.di.components.ApplicationComponent;
 import com.americavoice.backup.di.modules.ActivityModule;
 import com.americavoice.backup.main.navigation.Navigator;
+import com.americavoice.backup.utils.DisplayUtils;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import javax.inject.Inject;
@@ -35,6 +37,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.getApplicationComponent().inject(this);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        if (!DisplayUtils.isTablet(this)) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 
     /**

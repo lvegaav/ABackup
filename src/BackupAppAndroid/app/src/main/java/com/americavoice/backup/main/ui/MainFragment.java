@@ -78,7 +78,6 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
         void viewCalls();
         void viewSms();
         void viewSettings();
-        void viewSync();
         void onMainBackPressed();
     }
 
@@ -491,10 +490,6 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
         setBadge(tvBadgeCallLog, size);
     }
 
-    @Override
-    public void showSync() {
-        if (mListener != null) mListener.viewSync();
-    }
 
     private void setBadge(TextView tv, int size) {
         if (size < 0) return;

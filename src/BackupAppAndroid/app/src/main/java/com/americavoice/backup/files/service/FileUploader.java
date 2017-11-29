@@ -937,7 +937,7 @@ public class FileUploader extends Service
                             mCurrentAccount,
                             getApplicationContext()
                     );
-                }   // else, reuse storage manager from previous operation
+                }   // else, reuse storage manager from previous operation1
 
                 // always get client from client manager, to get fresh credentials in case of update
                 OwnCloudAccount ocAccount = new OwnCloudAccount(

@@ -53,41 +53,33 @@
 
         <activity
             android:name=".main.ui.activity.SplashScreenActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".main.ui.activity.MainActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".main.ui.activity.LoginActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".main.ui.activity.FileListActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".main.ui.activity.ContactsBackupActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".main.ui.activity.CallsBackupActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".main.ui.activity.SmsBackupActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -103,13 +95,10 @@
         <activity android:name=".settings.ui.ContactUsActivity"
             android:theme="@style/Theme.OptionsDialog" />
         <activity android:name=".news.ui.NewsActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".news.ui.NewsDetailActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".payment.ui.PaymentActivity"
-            android:screenOrientation="portrait"
             android:theme="@style/AppThemeDark.NoActionBar" />
 
         <activity android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity"

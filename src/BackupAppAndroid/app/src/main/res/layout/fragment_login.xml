@@ -12,141 +12,72 @@
         android:layout_gravity="center_vertical"
         android:background="@color/colorPrimary">
 
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            app:srcCompat="@drawable/ic_corner_oval"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"/>
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
-            app:srcCompat="@drawable/ic_lock_backup_logo_c"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"/>
-        <TextView
-            android:id="@+id/tv_hello"
-            android:layout_centerHorizontal="true"
+        <include
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:text="@string/login.hello"
-            android:textSize="24sp"
-            android:layout_marginTop="30dp"
-            android:textColor="@color/white"/>
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            layout="@layout/corner_logo"/>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingRight="25dp"
-                android:paddingLeft="25dp"
-                android:layout_centerHorizontal="true"
-                android:orientation="vertical">
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/et_username"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:layout_height="57dp"
-                    android:background="@drawable/button_border"
-                    android:hint="@string/login.register.usernamePlaceHolder"
-                    android:imeOptions="actionNext"
-                    android:inputType="text"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:textSize="24sp"/>
+            <TextView
+                android:id="@+id/tv_hello"
+                style="@style/TextView.WindowTitle"
+                android:text="@string/login.hello"
+                android:layout_gravity="center"
+                android:layout_marginBottom="30dp"/>
 
-                <EditText
-                    android:id="@+id/et_password"
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:layout_height="57dp"
-                    android:background="@drawable/button_border"
-                    android:hint="@string/login.passwordPlaceHolder"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPassword"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:textSize="24sp"/>
+            <EditText
+                android:id="@+id/et_username"
+                style="@style/EditText"
+                android:hint="@string/login.register.usernamePlaceHolder"
+                android:imeOptions="actionNext"
+                android:inputType="text" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="20dp"
-                    android:gravity="center"
-                    android:layout_weight="2">
-                    <Button
-                        android:id="@+id/btn_login"
-                        android:layout_width="180dp"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5dp"
-                        android:textColor="@android:color/white"
-                        android:background="@color/colorAccent"
-                        android:text="@string/login.loginPlaceHolder"
-                        android:textAllCaps="false"
-                        android:gravity="center"
-                        android:textSize="14sp"
-                        style="?android:attr/buttonBarStyle"
-                        />
+            <EditText
+                android:id="@+id/et_password"
+                style="@style/EditText"
+                android:hint="@string/login.passwordPlaceHolder"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword" />
 
-                </LinearLayout>
+            <Button
+                android:id="@+id/btn_login"
+                style="@style/Button"
+                android:theme="@style/Button.Secondary"
+                android:text="@string/login.loginPlaceHolder"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"/>
 
-                <TextView
-                    android:id="@+id/tv_forgot"
+            <TextView
+                android:id="@+id/tv_forgot"
+                style="@style/TextView"
+                android:text="@string/login.forgotPlaceHolder"
+                android:clickable="true"
+                android:focusable="true" />
 
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:text="@string/login.forgotPlaceHolder"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"/>
+            <TextView
+                android:padding="10dp"
+                style="@style/TextView"
+                android:text="@string/login.dontHaveAnAccount"
+                android:clickable="true"
+                android:focusable="true"
+                android:textSize="16sp"/>
 
-                <TextView
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:text="@string/login.dontHaveAnAccount"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"/>
+            <Button
+                android:id="@+id/btn_register"
+                style="@style/Button"
+                android:text="@string/login.registerPlaceHolder"
+                android:layout_gravity="center"
+                android:theme="@style/Button.Black"
+                android:layout_marginBottom="100dp"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="0dp"
-                    android:gravity="center">
-                    <Button
-                        android:id="@+id/btn_register"
-                        android:layout_width="180dp"
-                        android:layout_margin="5dp"
-                        android:layout_height="match_parent"
-                        android:textColor="@android:color/white"
-                        android:background="@android:color/black"
-                        android:text="@string/login.registerPlaceHolder"
-                        android:textAllCaps="false"
-                        android:gravity="center"
-                        android:textSize="14sp"
-                        style="?android:attr/buttonBarStyle"
-                        />
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </RelativeLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

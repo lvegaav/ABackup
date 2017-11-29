@@ -1,34 +1,19 @@
 package com.americavoice.backup.main.ui.activity;
 
-import android.Manifest;
-import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.americavoice.backup.R;
-import com.americavoice.backup.authentication.AccountUtils;
-import com.americavoice.backup.calls.ui.CallsBackupFragment;
-import com.americavoice.backup.contacts.ui.ContactsBackupFragment;
-import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
-import com.americavoice.backup.explorer.ui.FileListFragment;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.MainFragment;
-import com.americavoice.backup.service.MediaContentJob;
-import com.americavoice.backup.service.WifiRetryJob;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.settings.ui.StorageInfoFragment;
-import com.americavoice.backup.sms.ui.SmsBackupFragment;
-import com.americavoice.backup.sync.ui.SyncFragment;
 import com.americavoice.backup.utils.BaseConstants;
-import com.americavoice.backup.utils.PermissionUtil;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,7 +25,6 @@ import static com.americavoice.backup.utils.FirebaseUtils.createFirebaseEvent;
 
 
 public class MainActivity extends BaseOwncloudActivity implements HasComponent<AppComponent>,
-        SyncFragment.Listener,
         MainFragment.Listener,
         SettingsFragment.Listener,
         StorageInfoFragment.Listener{
@@ -186,18 +170,6 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     }
 
     @Override
-    public void viewSync() {
-        createFirebaseEvent(
-                mFirebaseAnalytics,
-                "Sync",
-                "Sync button",
-                MENU_BUTTON_CONTENT_TYPE,
-                FirebaseAnalytics.Event.SELECT_CONTENT
-        );
-        replaceFragment(R.id.fl_fragment, SyncFragment.newInstance(), true, true);
-    }
-
-    @Override
     public void viewStorageInfo(){
         createFirebaseEvent(
                 mFirebaseAnalytics,
@@ -221,11 +193,6 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
 
     @Override
     public void onBackSettingsClicked() {
-        replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
-    }
-
-    @Override
-    public void onBackSyncClicked() {
         replaceFragment(R.id.fl_fragment, MainFragment.newInstance(), false, false);
     }
 
