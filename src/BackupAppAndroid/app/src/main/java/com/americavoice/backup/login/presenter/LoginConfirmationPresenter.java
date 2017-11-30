@@ -80,7 +80,12 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
             public void success(dtos.ValidatePhoneVerificationCodeResponse response) {
                 mView.hideLoading();
                 mView.showGettingServerInfo();
-                mView.loginWithCredentials(OwnCloudCredentialsFactory.newBasicCredentials(mUsername, mPassword));
+                int lastIndex = mUsername.indexOf("@");
+                if (lastIndex == -1) {
+                    lastIndex = mUsername.length();
+                }
+                final String user = mUsername.substring(0, lastIndex);
+                mView.loginWithCredentials(OwnCloudCredentialsFactory.newBasicCredentials(user, mPassword));
                 mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
             }
 

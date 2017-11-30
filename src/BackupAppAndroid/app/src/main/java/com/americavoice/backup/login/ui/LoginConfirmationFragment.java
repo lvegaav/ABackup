@@ -3,9 +3,11 @@ package com.americavoice.backup.login.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,6 +26,7 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.utils.FirebaseUtils;
+import com.crashlytics.android.Crashlytics;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -245,15 +248,32 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment
                         FirebaseUtils.LOGIN_METHOD_PHONE_NUMBER);
                 getActivity().finish();
             } else {
-                showToastMessage("Couldn't create the account, please try again");
+                Crashlytics.logException(new Throwable("Couldn't create the account, please try again"));
+                showErrorMessage(getString(R.string.exception_message_generic));
             }
 
         } else if (result.isServerFail() || result.isException()) {
-            showToastMessage(result.getLogMessage());
+            Crashlytics.logException(new Throwable(result.getLogMessage()));
+            showErrorMessage(getString(R.string.exception_message_generic));
 
         } else {    // authorization fail due to client side - probably wrong credentials
-            showToastMessage("Check credentials, please try again");
+            showErrorMessage(getString(R.string.exception_message_generic));
         }
+    }
+
+    public void showErrorMessage(String message) {
+        new AlertDialog.Builder(getActivity(), R.style.WhiteDialog)
+                .setTitle(R.string.app_name)
+                .setMessage(message)
+                .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (mListener != null) {
+                            mListener.onBackConfirmationClicked();
+                        }
+                    }
+                })
+                .show();
     }
 
     @Override
