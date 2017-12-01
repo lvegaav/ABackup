@@ -77,7 +77,6 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
                     if (response.versions == null || response.versions.isEmpty()){
                         Crashlytics.logException(new Throwable("App versions are null, please check your configuration"));
                         mView.showError(mView.getContext().getString(R.string.exception_message_generic));
-                        mView.finish();
                     }else if (response.getVersions().contains(BuildConfig.VERSION_NAME)){
                         if (!TextUtils.isEmpty(response.getFacebookUrl())){
                             mSharedPrefsUtils.setStringPreference("facebookUrl", response.getFacebookUrl());
@@ -111,15 +110,19 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
                 } else {
                     Crashlytics.logException(new Throwable("App configuration is null, please check your configuration"));
                     mView.showError(mView.getContext().getString(R.string.exception_message_generic));
-                    mView.finish();
                 }
             }
 
             @Override
             public void error(Exception ex) {
                 Crashlytics.logException(ex);
-                mView.showError(mView.getContext().getString(R.string.exception_message_generic));
-                mView.finish();
+                if (ex instanceof java.net.UnknownHostException) {
+                    mView.showNoInternetDialog();
+                } else if (ex instanceof java.net.SocketTimeoutException) {
+                    mView.showError(mView.getContext().getString(R.string.network_error_socket_timeout_exception));
+                } else {
+                    mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                }
             }
         });
     }

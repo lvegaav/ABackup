@@ -19,8 +19,6 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.presenter.SplashScreenPresenter;
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.security.ProviderInstaller;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -43,16 +41,6 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
     public void viewHome() {
         if (mListener != null) mListener.showHome();
 
-    }
-
-    @Override
-    public void viewValidation() {
-        if (mListener != null) mListener.showValidation();
-    }
-
-    @Override
-    public void viewPhoneNumber() {
-        if (mListener != null) mListener.showPhoneNumber();
     }
 
     @Override
@@ -96,8 +84,6 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
                 .show();
     }
 
-
-    @Override
     public void finish() {
         getActivity().finish();
     }
@@ -207,7 +193,16 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
 
     @Override
     public void showError(String message) {
-        this.showToastMessage(message);
+        new AlertDialog.Builder(getActivity(), R.style.WhiteDialog)
+                .setTitle(R.string.app_name)
+                .setMessage(message)
+                .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .show();
     }
 
     @Override
