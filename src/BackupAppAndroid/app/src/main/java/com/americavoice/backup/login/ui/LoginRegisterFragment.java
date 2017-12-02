@@ -222,6 +222,12 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
     }
 
     @Override
+    public void showPhoneNumberInvalidRange() {
+        etPhoneNumber.requestFocus();
+        etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberInvalidRange));
+    }
+
+    @Override
     public void showUsernameRequired() {
         etUsername.requestFocus();
         etUsername.setError(getString(R.string.login_validationUsernameRequired));

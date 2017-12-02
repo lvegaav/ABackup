@@ -290,5 +290,6 @@
     <string name="tour_files">Archivos</string>
     <string name="tour_uploads">Uploads</string>
     <string name="confirmation.resend_code">Enviar código de nuevo</string>
+    <string name="login_validationPhoneNumberInvalidRange">Phone number has to be between 4 and 20 in lenght.</string>
 
 </resources>

@@ -23,4 +23,5 @@ public interface LoginRegisterView extends ILoadDataView {
     void showNewPasswordInvalid();
     void showUsernameExists();
     void showPhoneNumberExists();
+    void showPhoneNumberInvalidRange();
 }
