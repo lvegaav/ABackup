@@ -54,7 +54,15 @@
                 android:text="@string/confirmation.resend_code"
                 android:layout_marginTop="30dp"
                 android:focusable="true"
-                android:clickable="true"
+                android:clickable="true" />
+
+            <Button
+                android:id="@+id/btn_send"
+                style="@style/Button.Auto"
+                android:theme="@style/Button.Secondary"
+                android:text="@string/confirmation.sendConfirmationCode"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="100dp"/>
         </LinearLayout>
 

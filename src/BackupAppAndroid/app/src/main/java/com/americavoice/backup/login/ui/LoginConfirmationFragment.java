@@ -287,5 +287,10 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment
     public void resendCode() {
         mPresenter.sendCode();
     }
+
+    @OnClick(R.id.btn_send)
+    public void sendConfirmation() {
+        mPresenter.submit(etConfirmationCode.getText().toString());
+    }
 }
 

@@ -76,7 +76,7 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
         if (TextUtils.isEmpty(phoneNumber)) {
             hasError = true;
             mView.showPhoneNumberRequired();
-        } else if (phoneNumber.length() < 4 || phoneNumber.length() > 20) {
+        } else if (phoneNumber.length() < 4 && phoneNumber.length() > 20) {
             hasError = true;
             mView.showPhoneNumberInvalidRange();
         }
