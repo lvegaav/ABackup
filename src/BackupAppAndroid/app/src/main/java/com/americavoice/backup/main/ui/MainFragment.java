@@ -493,7 +493,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     private void setBadge(TextView tv, int size) {
         if (size < 0) return;
-        if (size > 999) size = 999;
+        if (size > 9999) size = 9999;
 
         tv.setVisibility(View.VISIBLE);
         tv.setText(String.valueOf(size));

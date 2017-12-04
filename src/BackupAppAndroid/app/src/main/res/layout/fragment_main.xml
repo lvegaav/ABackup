@@ -74,21 +74,8 @@
 
                         <TextView
                             android:id="@+id/badge_photos"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:padding="8dp"
-                            android:gravity="center"
-                            android:textColor="#FFF"
-                            android:textSize="8sp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/badge_circle"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
-
+                            style="@style/Badge" />
                     </RelativeLayout>
-
 
                     <TextView
                         android:layout_width="match_parent"
@@ -119,18 +106,7 @@
 
                         <TextView
                             android:id="@+id/badge_videos"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:padding="8dp"
-                            android:gravity="center"
-                            android:textColor="#FFF"
-                            android:textSize="8sp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/badge_circle"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
+                            style="@style/Badge" />
 
 
                     </RelativeLayout>
@@ -174,18 +150,7 @@
 
                         <TextView
                             android:id="@+id/badge_contacts"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:padding="8dp"
-                            android:gravity="center"
-                            android:textColor="#FFF"
-                            android:textSize="8sp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/badge_circle"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
+                            style="@style/Badge" />
 
                     </RelativeLayout>
 
@@ -218,19 +183,7 @@
 
                         <TextView
                             android:id="@+id/badge_documents"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:padding="8dp"
-                            android:gravity="center"
-                            android:textColor="#FFF"
-                            android:textSize="8sp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/badge_circle"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
-
+                            style="@style/Badge" />
 
                     </RelativeLayout>
 
@@ -272,19 +225,7 @@
 
                         <TextView
                             android:id="@+id/badge_sms"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:padding="8dp"
-                            android:gravity="center"
-                            android:textColor="#FFF"
-                            android:textSize="8sp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/badge_circle"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
-
+                            style="@style/Badge" />
 
                     </RelativeLayout>
 
@@ -317,18 +258,7 @@
 
                         <TextView
                             android:id="@+id/badge_call_log"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:padding="8dp"
-                            android:gravity="center"
-                            android:textColor="#FFF"
-                            android:textSize="8sp"
-                            android:layout_marginRight="15dp"
-                            android:background="@drawable/badge_circle"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentEnd="true" />
+                            style="@style/Badge" />
 
                     </RelativeLayout>
 
