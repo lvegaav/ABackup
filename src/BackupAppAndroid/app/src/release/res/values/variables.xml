@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="baseUrl" type="string">https://backup.secureip.io</item>
+    <item name="baseUrlOwnCloud" type="string">https://cloud.secureip.io</item>
+    <item name="identityUrl" type="string">https://id.americavoice.com/connect/token</item>
+    <item name="clientId" type="string">my-test-client</item>
+    <item name="clientSecret" type="string">my-test-client</item>
+    <item name="clientScope" type="string">backup-api</item>
+</resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#1F60AB</color>
+    <color name="colorPrimaryDark">#1F60AB</color>
+    <color name="colorAccent">#F37236</color>
+    <color name="red">#d0011b</color>
+    <color name="white">#FFF</color>
+    <color name="darkText">#777</color>
+    <color name="blackOpacity">#0D000000</color>
+    <color name="blackOpacity10">#1A000000</color>
+    <color name="blackOpacity80">#CC000000</color>
+    <color name="filelist_icon_backgorund">#DDDDDD</color>
+    <color name="selected_item_background">#ECECEC</color>
+    <color name="list_divider_background">#eee</color>
+    <color name="splash_background">@color/colorPrimary</color>
+    <color name="black">#000</color>
+
+    <color name="photos_ratio">#f47234</color>
+    <color name="videos_ratio">#c25826</color>
+    <color name="documents_ratio">#80492b</color>
+    <color name="contacts_ratio">#5b2813</color>
+    <color name="sms_ratio">#24120e</color>
+    <color name="calls_ratio">#010000</color>
+    <color name="available_ratio">#ffffff</color>
+    <color name="colorSwitchActivated">#FFFFFF</color>
+    <color name="colorSwitchNormal">#37436D</color>
+    <color name="colorSwitchForeground">#48FFFFFF</color>
+</resources>

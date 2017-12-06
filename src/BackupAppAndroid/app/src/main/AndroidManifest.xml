@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.americavoice.backup">
+
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
+
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_MMS" />
+    <!--
+         USE_CREDENTIALS, MANAGE_ACCOUNTS and AUTHENTICATE_ACCOUNTS are needed for API < 23.
+        In API >= 23 the do not exist anymore
+    -->
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+
+    <!--
+         WRITE_EXTERNAL_STORAGE may be enabled or disabled by the user after installation in
+        API >= 23; the app needs to handle this
+    -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!--
+         Next permissions are always approved in installation time,
+        the apps needs to do nothing special in runtime
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.BROADCAST_STICKY" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+
+    <application
+        android:name=".AndroidApplication"
+        android:fullBackupContent="@xml/backup_config"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".main.ui.activity.SplashScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar.FullScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".main.ui.activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".main.ui.activity.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".main.ui.activity.FileListActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".main.ui.activity.ContactsBackupActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".main.ui.activity.CallsBackupActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
+            android:name=".main.ui.activity.SmsBackupActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SENDTO" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".settings.ui.ContactUsActivity"
+            android:theme="@style/Theme.OptionsDialog" />
+        <activity android:name=".news.ui.NewsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".news.ui.NewsDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".payment.ui.PaymentActivity"
+            android:theme="@style/AppThemeDark.NoActionBar" />
+
+        <activity android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="${applicationId}.braintree" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".files.service.ConnectivityActionReceiver"
+            android:enabled="true"
+            android:label="ConnectivityActionReceiver">
+            <intent-filter>
+                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".files.service.InstantUploadBroadcastReceiver">
+            <intent-filter>
+
+                <!-- unofficially supported by many Android phones but not by HTC devices: -->
+                <action android:name="com.android.camera.NEW_PICTURE" />
+                <!-- officially supported since Android 4.0 (SDK 14, works even for HTC devices): -->
+                <action android:name="android.hardware.action.NEW_PICTURE" />
+
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.hardware.action.NEW_VIDEO" />
+
+                <data android:mimeType="video/*" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name=".providers.FileContentProvider"
+            android:authorities="@string/authority"
+            android:enabled="true"
+            android:exported="true"
+            android:label="@string/sync.string_files"
+            android:syncable="true" />
+
+        <service
+            android:name=".authentication.AccountAuthenticatorService"
+            android:exported="true">
+            <intent-filter android:priority="100">
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+        <service android:name=".service.MediaContentJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service android:name=".service.WifiRetryJob"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service android:name=".service.OperationsService" />
+        <service android:name=".files.service.FileDownloader" />
+        <service android:name=".files.service.FileUploader" />
+
+        <!-- BroadcastReceiver that listens for incoming SMS messages -->
+        <receiver android:name=".sms.service.SmsReceiver"
+            android:permission="android.permission.BROADCAST_SMS">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
+            </intent-filter>
+        </receiver>
+
+        <!-- BroadcastReceiver that listens for incoming MMS messages -->
+        <receiver android:name="sms.service.MmsReceiver"
+            android:permission="android.permission.BROADCAST_WAP_PUSH">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.WAP_PUSH_DELIVER" />
+                <data android:mimeType="application/vnd.wap.mms-message" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Service that delivers messages from the phone "quick response" -->
+        <service android:name=".sms.service.HeadlessSmsSendService"
+            android:permission="android.permission.SEND_RESPOND_VIA_MESSAGE"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.RESPOND_VIA_MESSAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="sms" />
+                <data android:scheme="smsto" />
+                <data android:scheme="mms" />
+                <data android:scheme="mmsto" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="d208c603728e0042d11bfb219b3189b34c74a75b" />
+    </application>
+
+</manifest>

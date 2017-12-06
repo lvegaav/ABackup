@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="list_item_avatar_icon_radius">20dp</dimen>
+    <dimen name="default_padding">16dp</dimen>
+    <dimen name="default_list_item_size">72dp</dimen>
+    <dimen name="file_icon_size_grid">128dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="alternate_padding">10dp</dimen>
+    <dimen name="standard_quarter_margin">4dp</dimen>
+    <dimen name="standard_list_item_size">72dp</dimen>
+    <dimen name="grid_item_text_size">16sp</dimen>
+    <dimen name="file_icon_size">48dp</dimen>
+    <dimen name="two_line_primary_text_size">16sp</dimen>
+    <dimen name="two_line_secondary_text_size">14sp</dimen>
+    <dimen name="spacing">1dp</dimen>
+    <dimen name="dashboard_option">130dp</dimen>
+    <dimen name="dashboard_icon">62dp</dimen>
+</resources>

@@ -1,0 +1,70 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="@color/colorPrimary">
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            layout="@layout/corner_logo"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_hello"
+                style="@style/TextView.WindowTitle"
+                android:text="@string/confirmation.hello"
+                android:layout_marginBottom="30dp"/>
+
+            <EditText
+                android:id="@+id/et_confirmation_code"
+                style="@style/EditText"
+                android:layout_width="190dp"
+                android:textSize="26sp"
+                android:inputType="number"
+                android:maxLength="8"
+                android:imeOptions="actionDone"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"/>
+
+            <TextView
+                style="@style/TextView"
+                android:text="@string/confirmation.verification_message"
+                android:labelFor="@id/et_confirmation_code"
+                android:layout_marginTop="30dp"/>
+
+            <TextView
+                android:id="@+id/tv_resend"
+                style="@style/TextView"
+                android:text="@string/confirmation.resend_code"
+                android:layout_marginTop="30dp"
+                android:focusable="true"
+                android:clickable="true" />
+
+            <Button
+                android:id="@+id/btn_send"
+                style="@style/Button.Auto"
+                android:theme="@style/Button.Secondary"
+                android:text="@string/confirmation.sendConfirmationCode"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="100dp"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

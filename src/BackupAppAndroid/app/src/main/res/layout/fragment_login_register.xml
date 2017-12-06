@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/main_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="@color/colorPrimary">
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            layout="@layout/corner_logo"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_hello"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/login.register.hello"
+                android:textSize="24sp"
+                android:layout_marginBottom="30dp"
+                android:textColor="@color/white"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <Spinner
+                    android:id="@+id/sp_country"
+                    android:layout_width="125dp"
+                    android:layout_height="57dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="2dp"
+                    android:background="@drawable/button_border"
+                    android:gravity="center"
+                    android:textColor="@color/white"/>
+
+                <EditText
+                    android:id="@+id/et_phone_number"
+                    android:layout_width="175dp"
+                    android:layout_height="57dp"
+                    style="@style/EditText"
+                    android:hint="@string/login.phonePlaceHolder"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:layout_toEndOf="@+id/sp_country" />
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_username"
+                style="@style/EditText"
+                android:hint="@string/login.register.usernamePlaceHolder"
+                android:imeOptions="actionNext"
+                android:inputType="text"/>
+
+            <EditText
+                android:id="@+id/et_password"
+                style="@style/EditText"
+                android:hint="@string/login.register.passwordPlaceHolder"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword"/>
+
+            <EditText
+                android:id="@+id/et_confirm_password"
+                style="@style/EditText"
+                android:hint="@string/login.register.passwordConfirmPlaceHolder"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword" />
+
+            <Button
+                android:id="@+id/btn_register"
+                style="@style/Button"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:text="@string/login.registerPlaceHolder"
+                android:theme="@style/Button.Black" />
+
+            <TextView
+                android:id="@+id/terms_of_service"
+                style="@style/TextView"
+                android:layout_marginTop="15dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:lines="2"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/login.register.termsOfService" />
+
+            <TextView
+                android:id="@+id/tv_forgot"
+                style="@style/TextView"
+                android:layout_marginTop="15dp"
+                android:text="@string/login.register.already"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:clickable="true"
+                android:focusable="true"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

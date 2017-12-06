@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY loginRegisterNow "Register">
+    ]>
+<resources>
+    <string name="app_name">Lock Backup</string>
+
+    <string name="common.language">En</string>
+    <string name="common.loading">Loading</string>
+    <string name="common.sending">Sending verification code</string>
+    <string name="common.ok">OK</string>
+    <string name="common.cancel">Cancel</string>
+    <string name="common.retry">Retry</string>
+    <string name="common.getting_server_info">Getting server information</string>
+    <string name="common.uploading">Uploading</string>
+    <string name="common.downloading">Downloading</string>
+    <string name="common.deleting">Deleting</string>
+    <string name="common.download">Download</string>
+    <string name="common.delete">Delete</string>
+    <string name="common.empty">Empty</string>
+    <string name="common.wrong_credentials">Check credentials, please try again</string>
+    <string name="common.account_error">Couldn\'t create the account, please try again</string>
+    <string name="common.logout">Logout</string>
+    <string name="common.select">Select</string>
+    <string name="common.file_will_download">The file will be downloaded, please wait.</string>
+    <string name="common.write_external_storage">Write external storage</string>
+    <string name="common.read_contacts">Read contacts</string>
+    <string name="common.read_sms">Read sms</string>
+    <string name="common.read_call_log">Read call log</string>
+    <string name="common.connectivity_error">There is no network available, please check your connectivity</string>
+    <string name="common.cloud_storage_full">Lock Backup storage is full</string>
+    <string name="common_upgrade_now">Upgrade now</string>
+    <string name="common.upload_failed">File upload failed</string>
+    <string name="common.update_new_version">There\'s a new version available, you need to update to continue.</string>
+
+    <string name="network.error_socket_exception">An error occurred during connection to the server.</string>
+    <string name="network.error_socket_timeout_exception">An error occurred while waiting for the server. Could not complete operation.</string>
+    <string name="network.error_connect_timeout_exception">An error occurred while waiting for the server. Could not complete operation.</string>
+    <string name="network.host_not_available">Could not complete operation. Server unavailable</string>
+    <string name="network.server_maintenance_mode">Server in maintenance mode</string>
+
+    <string name="login.hello">Welcome!</string>
+    <string name="login.phonePlaceHolder">Phone Number</string>
+    <string name="login.passwordPlaceHolder">Password</string>
+    <string name="login.loginPlaceHolder">Login</string>
+    <string name="login.registerPlaceHolder">&loginRegisterNow;</string>
+    <string name="login.forgotPlaceHolder">Forgot your password?</string>
+    <string name="login.validationPhoneNumberRequired">Phone number required.</string>
+    <string name="login.validationPhoneNumberInvalid">Invalid phone number.</string>
+    <string name="login.validationPhoneNumberExists">Phone number already registered.</string>
+    <string name="login.validationUsernameRequired">Username required.</string>
+    <string name="login.validationUsernameInvalid">This username is invalid.</string>
+    <string name="login.validationUsernameExists">This username already exists.</string>
+    <string name="login.validationPasswordRequired">Password required.</string>
+    <string name="login.validationPasswordInvalid">Invalid password.</string>
+    <string name="login.validationNewPasswordInvalid">Invalid new password.</string>
+    <string name="login.validationConfirmPasswordInvalid">Invalid confirm password.</string>
+    <string name="login.validationVerificationCodeInvalid">Invalid verification code.</string>
+    <string name="login_validationNewPasswordMatches">The password must be 8 characters long and have one number</string>
+    <string name="login.dontHaveAnAccount">Don\'t have an account yet?</string>
+    <string name="login.validationFailed">Login failed. Invalid username or password.</string>
+
+    <string name="login.register.hello">Register</string>
+    <string name="login.register.usernamePlaceHolder">Username/Email</string>
+    <string name="login.register.passwordPlaceHolder">New Password</string>
+    <string name="login.register.passwordConfirmPlaceHolder">Confirm Password</string>
+    <string name="login.register.now">Register Now</string>
+    <string name="login.register.already">I have an account already</string>
+    <string name="login.register.termsOfService">By clicking \"&loginRegisterNow;\" you are agreeing to our &lt;b&gt;Terms of Service&lt;/b&gt;</string>
+    <string name="login.register.termsOfServiceUrl">http://secureip.io/lockbackup/terms_and_privacy_en.html</string>
+
+    <string name="login.forgot.hello">Forgot your password?</string>
+    <string name="login.forgot.sendVerificationCode">Send Verification Code</string>
+    <string name="login.forgot.label">To keep safe your files we will send you a verification code.</string>
+
+    <string name="login.password.hello">Create A New Password</string>
+    <string name="login.password.code">Verification Code</string>
+    <string name="login.password.create">Create My New Password</string>
+
+    <string name="login.password.success.hello">You Have A New Password</string>
+    <string name="login.password.success.label">The new password you have just created is ready to use!</string>
+    <string name="login.password.success.button">Take me to Login Screen</string>
+
+    <string name="confirmation.codePlaceHolder">Confirmation Code</string>
+    <string name="confirmation.hello">Confirmation Code</string>
+    <string name="confirmation.verification_code_invalid">Invalid verification code.</string>
+    <string name="confirmation.verification_code_expired">This verification code has expired.</string>
+    <string name="confirmation.verification_message">A text message with a verification code was just sent to your number </string>
+
+    <string name="main.title">Backup Options</string>
+    <string name="main.photos">Photos</string>
+    <string name="main.videos">Videos</string>
+    <string name="main.contacts">Contacts</string>
+    <string name="main.documents">Documents</string>
+    <string name="main.available">Available</string>
+    <string name="main.sms">SMS</string>
+    <string name="main.calls">Calls</string>
+
+    <string name="files.no_files">No files in here. \n Upload some content or sync with your devices!</string>
+    <string name="files.permission_storage_access">Additional permissions required to upload and download files.</string>
+
+    <string name="files.uploader_upload_in_progress_ticker">Uploading…</string>
+    <string name="files.uploader_upload_in_progress_content">%1$d%% Uploading %2$s</string>
+    <string name="files.uploader_upload_succeeded_ticker">Uploaded</string>
+    <string name="files.uploader_upload_succeeded_content_single">%1$s uploaded</string>
+    <string name="files.uploader_upload_failed_ticker">Upload failed</string>
+    <string name="files.uploader_upload_failed_content_single">Could not upload %1$s</string>
+    <string name="files.uploader_upload_failed_credentials_error">Upload failed, you need to log in again</string>
+    <string name="files.uploader_upload_forbidden_permissions">to upload to this folder</string>
+    <string name="files.uploader_upload_failed_storage_full">Your upload didn\'t complete because your Lock Backup storage is full.</string>
+    <string name="files.uploader_upgrade_plan">In order to upload more files please upgrade your storage plan or delete some files.</string>
+    <string name="files.downloader_download_in_progress_ticker">Downloading &#8230;</string>
+    <string name="files.downloader_download_in_progress_content">%1$d%% Downloading %2$s</string>
+    <string name="files.downloader_download_succeeded_ticker">Downloaded</string>
+    <string name="files.downloader_download_succeeded_content">%1$s downloaded</string>
+    <string name="files.downloader_download_failed_ticker">Download failed</string>
+    <string name="files.downloader_download_failed_content">Could not download %1$s</string>
+    <string name="files.downloader_not_downloaded_yet">Not downloaded yet</string>
+    <string name="files.downloader_download_failed_credentials_error">Download failed, you need to log in again</string>
+    <string name="files.downloader_download_file_not_found">The file is no longer available on the server</string>
+
+    <string name="files.error__upload__local_file_not_copied">%1$s could not be copied to %2$s local folder</string>
+
+    <string name="files.forbidden_permissions">You are not permitted %s</string>
+    <string name="files.forbidden_permissions_delete">to delete this file</string>
+    <string name="files.forbidden_permissions_create">to create this file</string>
+
+    <string name="files.filename_empty">File name cannot be empty</string>
+    <string name="files.filename_forbidden_characters">Forbidden characters: / \\ &lt; &gt; : " | ? *</string>
+    <string name="files.filename_forbidden_charaters_from_server">File name contains at least one invalid character</string>
+    <string name="files.filename_forbidden_permissions_rename">to rename this file</string>
+
+    <string name="files.share_link_forbidden_permissions">to share this file</string>
+    <string name="files.unshare_link_forbidden_permissions">to unshare this file</string>
+    <string name="files.update_link_forbidden_permissions">to update this share</string>
+    <string name="files.create_dir_fail">Could not create folder</string>
+    <string name="file.list_seconds_ago">seconds ago.</string>
+    <string name="files.list_empty">Upload some content or sync with your devices.</string>
+    <string name="files.cloud_almost_full">Lock Backup Storage is almost full</string>
+    <string name="files.getting_pending_no_access">We are trying to get your pending files. You need to grant access to</string>
+
+    <string name="sync.fail_ticker">Sync failed</string>
+    <string name="sync.fail_ticker_unauthorized">Sync failed, you need to log in again</string>
+    <string name="sync.fail_content">Could not complete sync of %1$s</string>
+    <string name="sync.fail_content_unauthorized">Wrong password for %1$s</string>
+    <string name="sync.fail_in_favorites_ticker">Kept-in-sync files failed</string>
+    <string name="sync.fail_in_favorites_content">Contents of %1$d files could not be sync\'ed (%2$d conflicts)</string>
+    <string name="sync.conflicts_in_favorites_ticker">Conflicts found</string>
+    <string name="sync.conflicts_in_favorites_content">%1$d kept-in-sync files could not be sync\'ed</string>
+    <string name="sync.preferences_backup_scheduled">Backup scheduled and will start shortly</string>
+    <string name="sync.preferences_backup_scheduled_on_wifi">Backup scheduled and will when wifi is available</string>
+    <string name="sync.no_files_to_backup">No %1$s to backup</string>
+    <string name="sync.warning_mobile_data_on">Warning: You are connected over mobile data, you should consider to connect to a wifi network to backup all your files.</string>
+    <string name="sync.backup_photos_and_videos">There are %1$d Photos and %2$d Videos pending to upload. Contacts, SMS and Call logs will be backed up %3$s</string>
+    <string name="sync.backup_photos_and_videos_as_well">as well.</string>
+    <string name="sync.backup_photos_and_videos_when_permission_granted">when permissions granted.</string>
+    <string name="sync.backup_photos_and_videos_warning">There are %1$d Photos and %2$d Videos pending to upload. Contacts, SMS and Call logs will be backed up %3$s\n\n%4$s</string>
+    <string name="sync.backup_no_files_pending">There are no files pending to upload. Contacts, SMS and Call logs will be backed up %1$s</string>
+    <string name="sync.backup_no_files_pending_warning">There are no files pending to upload. Contacts, SMS and Call logs will be backed up %1$s\n\n%2$s</string>
+    <string name="sync.getting_pending_files">Getting pending files</string>
+    <string name="sync.backup_now">Backup</string>
+
+    <string name="contacts.title">Contacts</string>
+    <string name="contacts.automatic_backup">Automatic Backup</string>
+    <string name="contacts.last_backup">Last Backup</string>
+    <string name="contacts.preference_backup_never">never</string>
+    <string name="contacts.backup_button">Backup Now</string>
+    <string name="contacts.read_permission">Permission to read contact list needed</string>
+    <string name="contacts.list_restore_selected">Restore selected contacts</string>
+    <string name="contacts.list_account_chooser_title">Choose account to import</string>
+    <string name="contacts.list_no_permission">No permission given, nothing imported!</string>
+    <string name="contacts.select_all">Select all</string>
+    <string name="contacts.select_none">Select none</string>
+    <string name="contacts.preferences_backup_scheduled">Backup scheduled and will start shortly</string>
+    <string name="contacts.preferences_import_scheduled">Import scheduled and will start shortly</string>
+    <string name="contacts.preferences_something_strange_happened">We can\'t find your last backup!</string>
+    <string name="contacts.preferences_no_file_found">No file found</string>
+    <string name="contacts.preference_restore_backup">Restore Backup</string>
+
+    <string name="calls.title">Calls</string>
+    <string name="calls.read_permission">Permission to read call log needed</string>
+    <string name="calls.list_restore_selected">Restore calls</string>
+
+    <string name="sms.title">Sms</string>
+    <string name="sms.read_permission">Permission to read sms list needed</string>
+    <string name="sms.list_restore_selected">Restore sms</string>
+
+    <string name="auth.unsupported_multiaccount">%1$s does not support multiple accounts</string>
+    <string name="auth.account_does_not_exist">Account does not exist on the device yet</string>
+
+    <string name="exception.message_generic">Something went wrong, please contact support.</string>
+
+    <string name="settings.title">Info &amp; Settings</string>
+    <string name="settings.subtitle">Tap to configure or info</string>
+    <string name="settings.sync_files">Sync now</string>
+    <string name="settings.use_mobile_data">Use mobile network</string>
+    <string name="settings.version">Version</string>
+    <string name="settings.contact_us">Contact us</string>
+    <string name="settings.payment_options">Payment options</string>
+    <string name="settings.news_info">News &amp; Info</string>
+    <string name="settings.share_this_app">Share this app</string>
+    <string name="settings.storage_percentage">%1$s%% Used</string>
+    <string name="settings.storage_and_usage">Storage &amp; Usage</string>
+
+    <string name="contact_us.title">Contact us</string>
+    <string name="contact_us.customer_service">Customer service</string>
+    <string name="contact_us.facebook">Facebook</string>
+    <string name="contact_us.phone">+123456789</string>
+    <string name="contact_us.facebook_link">https://facebook.com</string>
+
+    <string name="sync.title">Sync Files</string>
+    <string name="sync.sync">Sync</string>
+    <string name="sync.photos">%1$d Photos</string>
+    <string name="sync.videos">%1$d Videos</string>
+    <string name="sync.string_files">Files</string>
+
+    <string name="news.title">News &amp; Info</string>
+    <string name="news_detail.title">News &amp; Info</string>
+    <string name="news.empty_list">No news to show</string>
+
+    <string name="storage_info_title">Storage &amp; Usage</string>
+    <string name="storage.your_plan">Your plan</string>
+    <string name="storage.available">Available</string>
+    <string name="storage.used">Used</string>
+    <string name="storage.detail">Detail</string>
+    <string name="storage.upgrade_plan">Upgrade Plan</string>
+
+    <string name="tour.dashboard">This is your Dashboard, in it you\'ll find access to all your files and logs.</string>
+    <string name="tour.dashboard_icons">Tapping on the icons of your dashboard will take you to another view. Tap on Photos to see your files.</string>
+    <string name="tour.files_switch">You can turn automatic uploads with this toggle, which means that you don\'t need to do anything to upload your files to the cloud</string>
+    <string name="tour.files_upload">Add more files manualy to your cloud storage by tapping on this button and selecting the files you want to upload.</string>
+    <string name="tour.dashboard_settings">You can manage your settings here</string>
+    <string name="tour.settings_share">Share this app with your friends and family so they can store their contents safely in the cloud.</string>
+    <string name="tour_settings_options">You have several options to configure, also you can see how much storage you have available.</string>
+
+    <string name="choose_plan.no_plan">No current plan</string>
+    <string name="choose_plan.instructions">Store your most important content on the cloud so you can have access to it event when you lose your device</string>
+
+    <string name="subscription.select">Select</string>
+    <string name="subscription.current">Current plan</string>
+    <string name="subscription.start_date">Started on %s</string>
+    <string name="subscription.next_payment_date">Next charge on %s</string>
+    <string name="subscription.change">Change plan</string>
+    <string name="subscription.change_payment_method">Update payment method</string>
+    <string name="subscription.cancel_subscription">Cancel subscription</string>
+
+    <string name="payment.title">Payment options</string>
+    <string name="payment_method.paypal">PayPal</string>
+    <string name="payment_method.paypal.create">Show PayPal form</string>
+    <string name="payment_method.credit_card">Credit card</string>
+    <string name="payment.error.loadData">Could not load data, please try again later</string>
+    <string name="payment.error.createSubscription">Could not create a subscription, please try again later</string>
+    <string name="payment.error.createPaypal">The PayPal account could not be registered, please try again</string>
+    <string name="payment.error.createCreditCard">There was an error while creating credit card , please try again later</string>
+
+    <string name="paypal.error.token">There was an error starting PayPal service, please try again later</string>
+
+    <string name="credit_card.contact_information">Billing Information</string>
+    <string name="credit_card.credit_card_information">Credit card Information</string>
+    <string name="credit_card.phone_number">Phone number</string>
+    <string name="credit_card.address">Address</string>
+    <string name="credit_card.city">City</string>
+    <string name="credit_card.state_region">State/Region</string>
+    <string name="credit_card.postal_code">Postal Code</string>
+    <string name="credit_card.country">Country</string>
+    <string name="credit_card.first_name">First name</string>
+    <string name="credit_card.last_name">Last name</string>
+    <string name="credit_card.number">Credit card number</string>
+    <string name="credit_card.expiration_title">Expiration date</string>
+    <string name="credit_card.expiration_month">MM</string>
+    <string name="credit_card.expiration_year">YY</string>
+    <string name="credit_card.ccv">CCV</string>
+    <string name="credit_card.x">XXXX</string>
+    <string name="credit_card.your_card">Your card</string>
+    <string name="credit_card.save">Save credit card</string>
+
+    <string name="credit_card.error.PGE0039">Credit or debit card already exists</string>
+    <string name="credit_card.error.PGE0042">You have reached the limit of stored credit or debit cards</string>
+    <string name="credit_card.error.PGE0002">Credit or debit card transaction has been declined. Please contact your bank</string>
+    <string name="credit_card.error.PGE0006">Invalid credit or debit card number</string>
+    <string name="credit_card.error.PGE0007">Card expiration date invalid</string>
+    <string name="credit_card.error.PGE0008">Your credit card has expired. Please try with a new credit  or debit card</string>
+    <string name="credit_card.error.PGE0017">The merchant does not accept this type of credit or debit card</string>
+    <string name="credit_card.error.PGE0019">An error has occurred processing your credit or debit card. Please try again</string>
+    <string name="credit_card.error.PGE0044">Your card security code ccv is invalid</string>
+    <string name="credit_card.error.PGE0045">Address or security code ccv of your card invalid</string>
+    <string name="credit_card.error.PGE0127">The address provided for your card does not match billing address of cardholder</string>
+
+    <string name="tour_options">Options</string>
+    <string name="tour_share">Share</string>
+    <string name="tour_files">Files</string>
+    <string name="tour_uploads">Uploads</string>
+    <string name="confirmation.resend_code">Resend code</string>
+    <string name="login_validationPhoneNumberInvalidRange">Phone number has to be between 4 and 20 in lenght.</string>
+    <string name="confirmation.sendConfirmationCode">Send Confirmation Code</string>
+
+</resources>

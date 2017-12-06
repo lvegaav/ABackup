@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    android:id="@+id/main_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <RelativeLayout
+        android:id="@+id/rl_main_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:background="@color/colorPrimary">
+
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            layout="@layout/corner_logo"/>
+
+        <TextView
+            android:id="@+id/tv_hello"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/main.title"
+            android:textSize="24sp"
+            android:layout_marginTop="41dp"
+            android:textColor="@color/white"/>
+
+
+        <ImageView
+            android:id="@+id/btn_settings"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            app:srcCompat="@drawable/ic_settings"
+            android:layout_alignParentBottom="true"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_photos"
+                    android:layout_width="@dimen/dashboard_option"
+                    android:layout_height="@dimen/dashboard_option"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_photos" />
+
+                        <TextView
+                            android:id="@+id/badge_photos"
+                            style="@style/Badge" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main.photos"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_videos"
+                    android:layout_width="@dimen/dashboard_option"
+                    android:layout_height="@dimen/dashboard_option"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_videos" />
+
+                        <TextView
+                            android:id="@+id/badge_videos"
+                            style="@style/Badge" />
+
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main.videos"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_contacts"
+                    android:layout_width="@dimen/dashboard_option"
+                    android:layout_height="@dimen/dashboard_option"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_contacts" />
+
+                        <TextView
+                            android:id="@+id/badge_contacts"
+                            style="@style/Badge" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main.contacts"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_documents"
+                    android:layout_width="@dimen/dashboard_option"
+                    android:layout_height="@dimen/dashboard_option"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_documents" />
+
+                        <TextView
+                            android:id="@+id/badge_documents"
+                            style="@style/Badge" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main.documents"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_sms"
+                    android:layout_width="@dimen/dashboard_option"
+                    android:layout_height="@dimen/dashboard_option"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_sms" />
+
+                        <TextView
+                            android:id="@+id/badge_sms"
+                            style="@style/Badge" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main.sms"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_calls"
+                    android:layout_width="@dimen/dashboard_option"
+                    android:layout_height="@dimen/dashboard_option"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_call_log" />
+
+                        <TextView
+                            android:id="@+id/badge_call_log"
+                            style="@style/Badge" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main.calls"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

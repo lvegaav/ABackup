@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="baseUrl" type="string">http://core-be.development.americavoice.com:8458</item>
+    <item name="baseUrlOwnCloud" type="string">http://backapp-eng.development.americavoice.com</item>
+    <item name="identityUrl" type="string">http://172.22.122.40/connect/token</item>
+    <item name="clientId" type="string">my-test-client</item>
+    <item name="clientSecret" type="string">my-test-client</item>
+    <item name="clientScope" type="string">backup-api</item>
+</resources>
