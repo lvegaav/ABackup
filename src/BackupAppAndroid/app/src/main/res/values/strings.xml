@@ -293,5 +293,7 @@
     <string name="confirmation.resend_code">Resend code</string>
     <string name="login_validationPhoneNumberInvalidRange">Phone number has to be between 4 and 20 in lenght.</string>
     <string name="confirmation.sendConfirmationCode">Send Confirmation Code</string>
+    <string name="settings.backup_options">Backup Options</string>
+    <string name="backup_options.title">Backup Options</string>
 
 </resources>

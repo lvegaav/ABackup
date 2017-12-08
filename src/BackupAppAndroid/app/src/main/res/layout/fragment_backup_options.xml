@@ -1,0 +1,196 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="@color/colorPrimary">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/rl_root_header"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <include layout="@layout/view_header" />
+
+
+        </RelativeLayout>
+            <!--Options layout-->
+        <LinearLayout
+            android:id="@+id/ll_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical"
+            android:paddingTop="25dp"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:layout_below="@id/rl_root_header">
+
+            <TextView
+                style="@style/TextView"
+                android:layout_gravity="center"
+                android:text="Select the options you want to have backed up"
+                android:textSize="18sp"
+                android:layout_marginBottom="15dp"/>
+
+            <RelativeLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main.photos"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/white"
+                    android:layout_centerVertical="true"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/backup_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:theme="@style/Switch"
+                    app:switchMinWidth="50sp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main.videos"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/white"
+                    android:layout_centerVertical="true"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/backup_videos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:theme="@style/Switch"
+                    app:switchMinWidth="50sp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main.contacts"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/white"
+                    android:layout_centerVertical="true"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/backup_contacts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:theme="@style/Switch"
+                    app:switchMinWidth="50sp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main.sms"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/white"
+                    android:layout_centerVertical="true"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/backup_sms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:theme="@style/Switch"
+                    app:switchMinWidth="50sp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white" />
+            <RelativeLayout
+                android:id="@+id/ll_automatic_backup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main.calls"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/white"
+                    android:layout_centerVertical="true"/>
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/backup_call_log"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:theme="@style/Switch"
+                    app:switchMinWidth="50sp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            </RelativeLayout>
+
+            </LinearLayout>
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

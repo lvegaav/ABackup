@@ -22,6 +22,7 @@ import com.americavoice.backup.main.ui.SplashScreenFragment;
 import com.americavoice.backup.news.ui.NewsFragment;
 import com.americavoice.backup.payment.ui.ChoosePlanFragment;
 import com.americavoice.backup.payment.ui.PaymentMethodFragment;
+import com.americavoice.backup.settings.ui.BackupOptionsFragment;
 import com.americavoice.backup.settings.ui.StorageInfoFragment;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
@@ -36,7 +37,6 @@ import dagger.Component;
 @Component(dependencies = ApplicationComponent.class, modules = {ActivityModule.class, AppModule.class})
 public interface AppComponent extends ActivityComponent {
     void inject(SplashScreenFragment fragment);
-
     void inject(LoginFragment fragment);
     void inject(LoginConfirmationFragment fragment);
     void inject(LoginRegisterFragment fragment);
@@ -56,4 +56,5 @@ public interface AppComponent extends ActivityComponent {
     void inject(ChoosePlanFragment fragment);
     void inject(PaymentMethodFragment fragment);
     void inject(NewsFragment fragment);
+    void inject(BackupOptionsFragment fragment);
 }
