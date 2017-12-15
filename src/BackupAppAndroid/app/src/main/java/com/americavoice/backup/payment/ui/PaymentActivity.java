@@ -253,4 +253,33 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     public void onBackPressed() {
         EventBus.getDefault().post(new OnBackPress());
     }
+
+    @Override
+    public void showConfirmationDialog(final Subscription subscription) {
+        String message = getString(R.string.payment_confirmation_question);
+        StringBuilder builder = new StringBuilder(message);
+        if (subscription != null) {
+            builder.append("\n")
+                    .append(getString(R.string.payment_remember))
+                    .append(" ")
+                    .append(subscription.description)
+                    .append(" ")
+                    .append(getString(R.string.payment_expires))
+                    .append(" ")
+                    .append(subscription.nextPaymentDate);
+
+        }
+        new AlertDialog.Builder(this, R.style.WhiteDialog)
+                .setTitle(R.string.app_name)
+                .setMessage(builder.toString())
+                .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mPaymentPresenter.createSubscription();
+                    }
+                })
+                .setNegativeButton(R.string.common_cancel, null)
+                .setCancelable(false)
+                .show();
+    }
 }
