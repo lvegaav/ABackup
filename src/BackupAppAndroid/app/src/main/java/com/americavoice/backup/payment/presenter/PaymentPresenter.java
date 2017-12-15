@@ -125,7 +125,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
     public void onProductChoose(dtos.Product product) {
         this.selectedProduct = product;
         if (selectedProduct.getPrice().equals(new BigDecimal(0)) || mPaymentMethod != null) {
-            createSubscription();
+                mPaymentView.showConfirmationDialog(subscription);
         } else {
             showPaymentChoose();
         }
@@ -137,7 +137,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
 
     public void onPaymentChosen() {
         if (subscription == null || !subscription.productId.equals(selectedProduct.getProductId())) {
-            createSubscription();
+            mPaymentView.showConfirmationDialog(subscription);
         } else {
             // same product just show subscription
             checkPaymentMethodAndShow();
@@ -149,7 +149,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
         mPaymentView.showSubscriptionDetails(subscription, mPaymentMethod);
     }
 
-    private void createSubscription() {
+    public void createSubscription() {
         mPaymentView.hideLoading();
         mSharedPrefsUtils.setBooleanPreference(MainActivity.EXTRA_REFRESH_DATA, true);
         if (subscription == null) {

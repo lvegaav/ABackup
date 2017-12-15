@@ -15,6 +15,7 @@ public interface PaymentView extends ILoadDataView {
     void showPaymentChoose(dtos.Product selectedSubscription);
     void showSubscriptionDetails(Subscription subscription, PaymentMethod paymentMethod);
     void showError(String message, boolean finish);
+    void showConfirmationDialog(Subscription subscription);
     void close();
 
 }
