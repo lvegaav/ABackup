@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -14,6 +15,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -33,6 +35,7 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.OCFile;
+import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.explorer.helper.ExplorerHelper;
 import com.americavoice.backup.explorer.presenter.FileListPresenter;
@@ -496,7 +499,16 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
 
     @Override
     public void showUploading() {
-        showToastMessage(getString(R.string.common_uploading));
+        if (!PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+            new AlertDialog.Builder(getActivity(), R.style.WhiteDialog)
+                    .setTitle(R.string.app_name)
+                    .setMessage(R.string.common_file_will_upload_when_wifi_or)
+                    .setPositiveButton(R.string.common_ok, null)
+                    .setCancelable(false)
+                    .show();
+        } else {
+            showToastMessage(getString(R.string.common_uploading));
+        }
     }
 
     @Override

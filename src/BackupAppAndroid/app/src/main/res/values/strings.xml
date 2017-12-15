@@ -291,7 +291,11 @@
     <string name="tour_files">Files</string>
     <string name="tour_uploads">Uploads</string>
     <string name="confirmation.resend_code">Resend code</string>
-    <string name="login_validationPhoneNumberInvalidRange">Phone number has to be between 4 and 20 in lenght.</string>
-    <string name="confirmation.sendConfirmationCode">Send Confirmation Code</string>
+    <string name="login_validationPhoneNumberInvalidRange">Phone number has to be between 4 and 20 in length.</string>
+    <string name="confirmation.sendConfirmationCode">Continue</string>
+    <string name="common.file_will_upload_when_wifi_or">This file will be uploaded when wifi is connected or upload via mobile network is on.</string>
+    <string name="payment_confirmation_question">Are you sure you want to purchase plan right now?</string>
+    <string name="payment_remember">Remember you still have a subscription:</string>
+    <string name="payment_expires">and expires on</string>
 
 </resources>
