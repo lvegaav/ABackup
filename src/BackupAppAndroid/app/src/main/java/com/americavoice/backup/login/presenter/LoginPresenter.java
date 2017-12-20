@@ -84,17 +84,14 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
             @Override
             public void success(dtos.AuthenticateResponse response) {
                 //Try To get Full User Information
+                mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
+
                 mNetworkProvider.getUser(new AsyncResult<dtos.GetFullUserResponse>() {
                     @Override
                     public void success(dtos.GetFullUserResponse response) {
                         mView.hideLoading();
                         mView.showGettingServerInfo();
-                        int lastIndex = username.indexOf("@");
-                        if (lastIndex == -1) {
-                            lastIndex = username.length();
-                        }
-                        final String user = username.substring(0, lastIndex);
-                        mView.loginWithCredentials(OwnCloudCredentialsFactory.newBasicCredentials(user, password));
+                        mView.loginWithCredentials();
                         mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
                     }
 
