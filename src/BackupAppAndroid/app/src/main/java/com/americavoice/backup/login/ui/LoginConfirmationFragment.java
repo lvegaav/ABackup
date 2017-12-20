@@ -17,6 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.americavoice.backup.AndroidApplication;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AuthenticatorAsyncTask;
 import com.americavoice.backup.di.components.AppComponent;
@@ -28,6 +29,7 @@ import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.utils.FirebaseUtils;
 import com.crashlytics.android.Crashlytics;
 import com.owncloud.android.lib.common.OwnCloudCredentials;
+import com.owncloud.android.lib.common.OwnCloudCredentialsFactory;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
@@ -277,7 +279,9 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment
     }
 
     @Override
-    public void loginWithCredentials(OwnCloudCredentials credentials) {
+    public void loginWithCredentials() {
+        AndroidApplication application = (AndroidApplication) getActivity().getApplication();
+        OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(application.getSerialB1(), application.getSerialB2());
         AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
         Object[] params = {getResources().getString(R.string.baseUrlOwnCloud), credentials};
         loginAsyncTask.execute(params);

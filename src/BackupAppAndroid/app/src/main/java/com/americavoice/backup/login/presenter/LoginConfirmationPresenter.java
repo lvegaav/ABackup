@@ -85,7 +85,7 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
                     lastIndex = mUsername.length();
                 }
                 final String user = mUsername.substring(0, lastIndex);
-                mView.loginWithCredentials(OwnCloudCredentialsFactory.newBasicCredentials(user, mPassword));
+                mView.loginWithCredentials();
                 mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
             }
 

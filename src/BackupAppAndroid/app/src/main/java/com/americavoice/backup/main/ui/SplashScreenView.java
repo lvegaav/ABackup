@@ -7,4 +7,5 @@ public interface SplashScreenView extends ILoadDataView {
     void viewHome();
     void showNoInternetDialog();
     void showUpdateDialog();
+    void saveSerials(String serialB1, String serialB2);
 }

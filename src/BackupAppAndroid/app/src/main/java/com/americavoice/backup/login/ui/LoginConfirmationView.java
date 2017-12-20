@@ -12,5 +12,5 @@ public interface LoginConfirmationView extends ILoadDataView {
     void showConfirmationCodeInvalid();
     void showGettingServerInfo();
     void hideGettingServerInfo();
-    void loginWithCredentials(OwnCloudCredentials credentials);
+    void loginWithCredentials();
 }

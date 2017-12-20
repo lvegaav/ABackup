@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.americavoice.backup.AndroidApplication;
 import com.americavoice.backup.BuildConfig;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
@@ -140,6 +141,7 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
             mNetworkProvider.login(name, password, new AsyncResult<dtos.AuthenticateResponse>() {
                 @Override
                 public void success(dtos.AuthenticateResponse response) {
+                    mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
                     mView.viewHome();
                 }
 
