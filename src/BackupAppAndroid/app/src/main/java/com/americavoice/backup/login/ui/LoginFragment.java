@@ -210,7 +210,9 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
             boolean success = false;
 
             if (mAction == LoginActivity.ACTION_CREATE) {
-                success = createAccount(result, etUsername.getText().toString(), etPassword.getText().toString());
+                AndroidApplication application = (AndroidApplication) getActivity().getApplication();
+                success = createAccount(result, application.getSerialB1(), application.getSerialB2(),
+                        etUsername.getText().toString(), etPassword.getText().toString());
 
             } else {
                 try {

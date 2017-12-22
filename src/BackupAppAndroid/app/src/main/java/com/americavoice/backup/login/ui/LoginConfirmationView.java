@@ -13,4 +13,5 @@ public interface LoginConfirmationView extends ILoadDataView {
     void showGettingServerInfo();
     void hideGettingServerInfo();
     void loginWithCredentials();
+    void saveSerials(String serialB1, String serialB2);
 }
