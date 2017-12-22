@@ -231,7 +231,10 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment
             boolean success = false;
 
             if (mAction == LoginActivity.ACTION_CREATE) {
-                success = createAccount(result, getArguments().getString(ARGUMENT_USERNAME), getArguments().getString(ARGUMENT_DEVICE));
+                AndroidApplication application = (AndroidApplication) getActivity().getApplication();
+                success = createAccount(result, application.getSerialB1(), application.getSerialB2(),
+                        getArguments().getString(ARGUMENT_USERNAME), getArguments().getString(ARGUMENT_DEVICE));
+
 
             } else {
                 try {
@@ -285,6 +288,13 @@ public class LoginConfirmationFragment extends BaseAuthenticatorFragment
         AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
         Object[] params = {getResources().getString(R.string.baseUrlOwnCloud), credentials};
         loginAsyncTask.execute(params);
+    }
+
+    @Override
+    public void saveSerials(String serialB1, String serialB2) {
+        AndroidApplication application = (AndroidApplication) getActivity().getApplication();
+        application.setSerialB1(serialB1);
+        application.setSerialB2(serialB2);
     }
 
     @OnClick(R.id.tv_resend)

@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.americavoice.backup.AndroidApplication;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AuthenticatorAsyncTask;
 import com.americavoice.backup.di.components.AppComponent;
