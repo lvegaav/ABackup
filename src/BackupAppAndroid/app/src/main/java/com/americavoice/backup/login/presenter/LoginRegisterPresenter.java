@@ -64,11 +64,35 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
      * Initializes the presenter
      */
     public void initialize() {
-        List<SpinnerItem> items = new ArrayList<>();
-        items.add(new SpinnerItem("1","+1"));
-        items.add(new SpinnerItem("502","+502"));
-        items.add(new SpinnerItem("503","+503"));
-        mView.populateCountries(items);
+        initCountries();
+
+    }
+
+    private void initCountries() {
+        mView.showLoading();
+        mNetworkProvider.getCountries(new AsyncResult<dtos.GetCountriesResponse>() {
+            @Override
+            public void success(dtos.GetCountriesResponse response) {
+                ArrayList<dtos.Country> countries = response.getCountries();
+                List<SpinnerItem> items = new ArrayList<>();
+                if (countries != null) {
+                    for (dtos.Country country : countries) {
+                        items.add(new SpinnerItem(country.getPhoneCode(), "+" + country.getPhoneCode()));
+                    }
+                }
+                mView.populateCountries(items);
+            }
+
+            @Override
+            public void error(Exception ex) {
+                mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+            }
+
+            @Override
+            public void complete() {
+                mView.hideLoading();
+            }
+        });
     }
 
     public void submit(final String countryCode, final String phoneNumber, final String username, final String newPassword, final String confirmPassword) {
