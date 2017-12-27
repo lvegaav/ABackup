@@ -45,7 +45,7 @@ public class AndroidApplication extends MultiDexApplication {
 
     public String getSerialB1() {
         byte[] data = Base64.decode(serialB1, Base64.DEFAULT);
-        String text = null;
+        String text = "";
         try {
             text = new String(data, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -60,7 +60,7 @@ public class AndroidApplication extends MultiDexApplication {
 
     public String getSerialB2() {
         byte[] data = Base64.decode(serialB2, Base64.DEFAULT);
-        String text = null;
+        String text = "";
         try {
             text = new String(data, "UTF-8");
         } catch (UnsupportedEncodingException e) {

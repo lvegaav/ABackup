@@ -146,7 +146,9 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
             mNetworkProvider.login(name, password, new AsyncResult<dtos.AuthenticateResponse>() {
                 @Override
                 public void success(dtos.AuthenticateResponse response) {
-                    mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
+                    if (response.getMeta() != null) {
+                        mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
+                    }
                     mView.viewHome();
                 }
 

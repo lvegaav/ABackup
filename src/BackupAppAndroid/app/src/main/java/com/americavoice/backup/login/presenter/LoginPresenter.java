@@ -84,7 +84,10 @@ public class LoginPresenter extends BasePresenter implements IPresenter {
             @Override
             public void success(dtos.AuthenticateResponse response) {
                 //Try To get Full User Information
-                mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
+
+                if (response.getMeta() != null) {
+                    mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
+                }
 
                 mNetworkProvider.getUser(new AsyncResult<dtos.GetFullUserResponse>() {
                     @Override
