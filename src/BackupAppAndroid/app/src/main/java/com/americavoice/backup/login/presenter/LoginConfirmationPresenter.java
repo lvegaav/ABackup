@@ -83,7 +83,9 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
                 mNetworkProvider.login(mUsername, mPassword, new AsyncResult<dtos.AuthenticateResponse>() {
                     @Override
                     public void success(dtos.AuthenticateResponse response) {
-                        mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
+                        if (response.getMeta() != null) {
+                            mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
+                        }
                         mView.loginWithCredentials();
                         mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
                     }
