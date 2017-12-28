@@ -150,6 +150,7 @@ public class NetworkProvider {
         if (account != null) {
             AccountUtils.removeAccount(mContext, account);
         }
+//        mPref.edit().clear().apply(); // clear data from the user.
         mClient.clearCookies();    //Logout server
     }
 

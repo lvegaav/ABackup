@@ -296,5 +296,6 @@
     <string name="payment_confirmation_question">Are you sure you want to change plan right now?</string>
     <string name="payment_remember">Remember you still have a subscription:</string>
     <string name="payment_expires">and expires on</string>
+    <string name="settings.backup_options">Backup Options</string>
 
 </resources>
