@@ -12,10 +12,10 @@ import java.util.List;
 public interface LoginView extends ILoadDataView {
     void viewValidation(String username, String device);
 
-    void loginWithCredentials(OwnCloudCredentials credentials);
+    void loginWithCredentials();
     void showGettingServerInfo();
     void hideGettingServerInfo();
     void showUsernameRequired();
     void showPasswordRequired();
-
+    void saveSerials(String serialB1, String serialB2);
 }

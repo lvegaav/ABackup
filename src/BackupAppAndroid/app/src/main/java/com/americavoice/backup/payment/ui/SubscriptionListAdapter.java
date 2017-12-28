@@ -11,6 +11,7 @@ import com.americavoice.backup.main.network.dtos;
 
 import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by javier on 10/24/17.
@@ -51,7 +52,7 @@ public class SubscriptionListAdapter extends BaseAdapter {
             view.setTag(R.id.subscription_amount, view.findViewById(R.id.subscription_amount));
             view.setTag(R.id.subscription_detail, view.findViewById(R.id.subscription_detail));
         }
-        NumberFormat nf = NumberFormat.getCurrencyInstance();
+        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.US);
         NumberFormat oneDecimal = NumberFormat.getInstance();
         oneDecimal.setMinimumFractionDigits(0);
         oneDecimal.setMaximumFractionDigits(2);

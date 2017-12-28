@@ -3,7 +3,7 @@
     <!ENTITY loginRegisterNow "Registrarse">
     ]>
 <resources>
-    <string name="app_name">Backup</string>
+    <string name="app_name">Lock Backup</string>
 
     <string name="common.language">Es</string>
     <string name="common.loading">Cargando</string>
@@ -291,7 +291,11 @@
     <string name="tour_uploads">Uploads</string>
     <string name="confirmation.resend_code">Enviar código de nuevo</string>
     <string name="login_validationPhoneNumberInvalidRange">El número de teléfono tiene que ser entre 4 y 20 dígitos.</string>
-    <string name="confirmation.sendConfirmationCode">Enviar código de Verificación</string>
+    <string name="confirmation.sendConfirmationCode">Continuar</string>
+    <string name="common.file_will_upload_when_wifi_or">Este archivo será subido cuando estes conectado vía wifi o actives la subia con plan de datos.</string>
+    <string name="payment_confirmation_question">Are you sure you want to change plan right now?</string>
+    <string name="payment_remember">Remember you still have a subscription:</string>
+    <string name="payment_expires">and expires on</string>
     <string name="settings.backup_options">Backup Options</string>
 
 </resources>

@@ -90,7 +90,7 @@ public class BaseAuthenticatorFragment extends BaseFragment {
      *
      * TODO Decide how to name the OAuth accounts
      */
-    public boolean createAccount(RemoteOperationResult authResult, String username, String deviceId) {
+    public boolean createAccount(RemoteOperationResult authResult, String username, String password, String backupUser, String backupPassword) {
         /// create and save new ownCloud account
 
         String lastPermanentLocation = authResult.getLastPermanentLocation();
@@ -114,8 +114,11 @@ public class BaseAuthenticatorFragment extends BaseFragment {
             mAccount = newAccount;
 
             mAccountMgr.addAccountExplicitly(
-                    mAccount, deviceId, null
+                    mAccount, password, null
             );
+
+            mAccountMgr.setUserData(mAccount, "backupUser", backupUser);
+            mAccountMgr.setUserData(mAccount, "backupPassword", backupPassword);
 
             // include account version with the new account
             mAccountMgr.setUserData(

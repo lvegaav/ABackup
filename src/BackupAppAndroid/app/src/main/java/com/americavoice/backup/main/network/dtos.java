@@ -1,8 +1,8 @@
 /* Options:
-Date: 2017-11-15 07:52:23
+Date: 2017-12-22 15:02:44
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
-BaseUrl: http://core-be.development.americavoice.com:8458/api
+BaseUrl: http://backupapi.secureip.io/api
 
 Package: com.americavoice.backup.main.network
 GlobalNamespace: dtos
@@ -65,6 +65,25 @@ public class dtos
         public String getType() { return type; }
         public GetMobileAppConfig setType(String value) { this.type = value; return this; }
         private static Object responseType = GetMobileAppConfigResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get countries where the service is available.
+    */
+    @Route(Path="/countries", Verbs="GET")
+    @Api(Description="Get countries where the service is available.")
+    public static class GetCountries implements IReturn<GetCountriesResponse>
+    {
+        /**
+        * Language of country names that will be returned
+        */
+        @ApiMember(Description="Language of country names that will be returned", IsRequired=true, ParameterType="query")
+        public String language = null;
+        
+        public String getLanguage() { return language; }
+        public GetCountries setLanguage(String value) { this.language = value; return this; }
+        private static Object responseType = GetCountriesResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -566,6 +585,11 @@ public class dtos
         public Object getResponseType() { return responseType; }
     }
 
+    /**
+    * Change subscription
+    */
+    @Route(Path="/subscription/change", Verbs="POST")
+    @Api(Description="Change subscription")
     public static class ChangeSubscription implements IReturn<ChangeSubscriptionResponse>
     {
         public String productId = null;
@@ -580,6 +604,67 @@ public class dtos
         public String getApplication() { return application; }
         public ChangeSubscription setApplication(String value) { this.application = value; return this; }
         private static Object responseType = ChangeSubscriptionResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Activate deferred subscription
+    */
+    @Route(Path="/subscriptions/deferred/{SubscriptionId}/activate", Verbs="POST")
+    @Api(Description="Activate deferred subscription")
+    public static class ActivateDeferredSubscription implements IReturn<ActivateDeferredSubscriptionResponse>
+    {
+        public Integer subscriptionId = null;
+        public String application = null;
+        
+        public Integer getSubscriptionId() { return subscriptionId; }
+        public ActivateDeferredSubscription setSubscriptionId(Integer value) { this.subscriptionId = value; return this; }
+        public String getApplication() { return application; }
+        public ActivateDeferredSubscription setApplication(String value) { this.application = value; return this; }
+        private static Object responseType = ActivateDeferredSubscriptionResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Share app.
+    */
+    @Route(Path="/share/app", Verbs="POST")
+    @Api(Description="Share app.")
+    public static class ShareApp implements IReturn<ShareAppResponse>
+    {
+        /**
+        * Name of the user that is sharing the app
+        */
+        @ApiMember(Description="Name of the user that is sharing the app", ParameterType="form")
+        public String senderName = null;
+
+        /**
+        * Email of phone number
+        */
+        @ApiMember(Description="Email of phone number", IsRequired=true, ParameterType="form")
+        public ArrayList<String> contacts = null;
+
+        /**
+        * Text to share
+        */
+        @ApiMember(Description="Text to share", IsRequired=true, ParameterType="form")
+        public String text = null;
+
+        /**
+        * Urls of the multiple platforms.
+        */
+        @ApiMember(Description="Urls of the multiple platforms.", IsRequired=true, ParameterType="form")
+        public ArrayList<Platform> platforms = null;
+        
+        public String getSenderName() { return senderName; }
+        public ShareApp setSenderName(String value) { this.senderName = value; return this; }
+        public ArrayList<String> getContacts() { return contacts; }
+        public ShareApp setContacts(ArrayList<String> value) { this.contacts = value; return this; }
+        public String getText() { return text; }
+        public ShareApp setText(String value) { this.text = value; return this; }
+        public ArrayList<Platform> getPlatforms() { return platforms; }
+        public ShareApp setPlatforms(ArrayList<Platform> value) { this.platforms = value; return this; }
+        private static Object responseType = ShareAppResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -832,16 +917,51 @@ public class dtos
     }
 
     /**
+    * Refresh access token
+    */
+    @Route(Path="/auth/token", Verbs="POST")
+    @Api(Description="Refresh access token")
+    public static class GenerateNewAccessToken implements IReturn<GenerateNewAccessTokenResponse>
+    {
+        public String refreshToken = null;
+        
+        public String getRefreshToken() { return refreshToken; }
+        public GenerateNewAccessToken setRefreshToken(String value) { this.refreshToken = value; return this; }
+        private static Object responseType = GenerateNewAccessTokenResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
     * Delete all account files in the cloud.
     */
-    @Route(Path="/accounts/{AccountNumber}/files", Verbs="DELETE")
+    @Route(Path="/accounts/{AccountNumber}/files", Verbs="POST")
     @Api(Description="Delete all account files in the cloud.")
     public static class DeleteFiles implements IReturn<DeleteFilesResponse>
     {
+        /**
+        * AccountNumber 
+        */
+        @ApiMember(Description="AccountNumber ", IsRequired=true, ParameterType="path")
         public String accountNumber = null;
+
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
+
+        /**
+        * PerformedBy 
+        */
+        @ApiMember(Description="PerformedBy ", ParameterType="form")
+        public String performedBy = null;
         
         public String getAccountNumber() { return accountNumber; }
         public DeleteFiles setAccountNumber(String value) { this.accountNumber = value; return this; }
+        public String getApplication() { return application; }
+        public DeleteFiles setApplication(String value) { this.application = value; return this; }
+        public String getPerformedBy() { return performedBy; }
+        public DeleteFiles setPerformedBy(String value) { this.performedBy = value; return this; }
         private static Object responseType = DeleteFilesResponse.class;
         public Object getResponseType() { return responseType; }
     }
@@ -849,7 +969,7 @@ public class dtos
     /**
     * Fetch account used storage.
     */
-    @Route(Path="/accounts/{AccountNumber}", Verbs="GET")
+    @Route(Path="/accounts/{AccountNumber}/usage", Verbs="GET")
     @Api(Description="Fetch account used storage.")
     public static class GetAccountUsage implements IReturn<GetAccountUsageResponse>
     {
@@ -884,14 +1004,51 @@ public class dtos
     @Api(Description="Update remote storage account. Currently the Nexcloud account")
     public static class UpdateRemoteAccount implements IReturn<UpdateRemoteAccountResponse>
     {
+        /**
+        * AccountNumber 
+        */
+        @ApiMember(Description="AccountNumber ", IsRequired=true, ParameterType="form")
         public String accountNumber = null;
+
+        /**
+        * Enabled 
+        */
+        @ApiMember(Description="Enabled ", IsRequired=true, ParameterType="form")
         public Boolean enabled = null;
+
+        /**
+        * Application 
+        */
+        @ApiMember(Description="Application ", IsRequired=true, ParameterType="form")
+        public String application = null;
+
+        /**
+        * PerformedBy 
+        */
+        @ApiMember(Description="PerformedBy ", ParameterType="form")
+        public String performedBy = null;
         
         public String getAccountNumber() { return accountNumber; }
         public UpdateRemoteAccount setAccountNumber(String value) { this.accountNumber = value; return this; }
         public Boolean isEnabled() { return enabled; }
         public UpdateRemoteAccount setEnabled(Boolean value) { this.enabled = value; return this; }
+        public String getApplication() { return application; }
+        public UpdateRemoteAccount setApplication(String value) { this.application = value; return this; }
+        public String getPerformedBy() { return performedBy; }
+        public UpdateRemoteAccount setPerformedBy(String value) { this.performedBy = value; return this; }
         private static Object responseType = UpdateRemoteAccountResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Get crsf token from remote cloud system.
+    */
+    @Route(Path="/accounts/remote-account/csrf-token", Verbs="GET")
+    @Api(Description="Get crsf token from remote cloud system.")
+    public static class GetRemoteAccountCsrfToken implements IReturn<GetRemoteAccountCrsfTokenResponse>
+    {
+        
+        private static Object responseType = GetRemoteAccountCrsfTokenResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -1025,6 +1182,17 @@ public class dtos
         public GetMobileAppConfigResponse setTwitterUrl(String value) { this.twitterUrl = value; return this; }
         public HashMap<String,String> getTermsAndPrivacyUrls() { return termsAndPrivacyUrls; }
         public GetMobileAppConfigResponse setTermsAndPrivacyUrls(HashMap<String,String> value) { this.termsAndPrivacyUrls = value; return this; }
+    }
+
+    public static class GetCountriesResponse
+    {
+        public ArrayList<Country> countries = null;
+        public ResponseStatus responseStatus = null;
+        
+        public ArrayList<Country> getCountries() { return countries; }
+        public GetCountriesResponse setCountries(ArrayList<Country> value) { this.countries = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetCountriesResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class CustomRegisterResponse
@@ -1227,6 +1395,25 @@ public class dtos
         public ChangeSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
+    public static class ActivateDeferredSubscriptionResponse
+    {
+        public Subscription subscription = null;
+        public ResponseStatus responseStatus = null;
+        
+        public Subscription getSubscription() { return subscription; }
+        public ActivateDeferredSubscriptionResponse setSubscription(Subscription value) { this.subscription = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public ActivateDeferredSubscriptionResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class ShareAppResponse
+    {
+        public ResponseStatus responseStatus = null;
+        
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public ShareAppResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
     public static class GetProductsResponse
     {
         public ArrayList<Product> products = null;
@@ -1363,6 +1550,14 @@ public class dtos
         public DeleteCompanyResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
+    public static class GenerateNewAccessTokenResponse
+    {
+        public Token accessToken = null;
+        
+        public Token getAccessToken() { return accessToken; }
+        public GenerateNewAccessTokenResponse setAccessToken(Token value) { this.accessToken = value; return this; }
+    }
+
     public static class DeleteFilesResponse
     {
         public ResponseStatus responseStatus = null;
@@ -1400,6 +1595,14 @@ public class dtos
         
         public ResponseStatus getResponseStatus() { return responseStatus; }
         public UpdateRemoteAccountResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
+    public static class GetRemoteAccountCrsfTokenResponse
+    {
+        public String token = null;
+        
+        public String getToken() { return token; }
+        public GetRemoteAccountCrsfTokenResponse setToken(String value) { this.token = value; return this; }
     }
 
     @DataContract
@@ -1461,6 +1664,23 @@ public class dtos
         public TimeZoneModel setId(String value) { this.id = value; return this; }
         public String getValue() { return value; }
         public TimeZoneModel setValue(String value) { this.value = value; return this; }
+    }
+
+    public static class Country
+    {
+        public String name = null;
+        public String alpha2 = null;
+        public String alpha3 = null;
+        public String phoneCode = null;
+        
+        public String getName() { return name; }
+        public Country setName(String value) { this.name = value; return this; }
+        public String getAlpha2() { return alpha2; }
+        public Country setAlpha2(String value) { this.alpha2 = value; return this; }
+        public String getAlpha3() { return alpha3; }
+        public Country setAlpha3(String value) { this.alpha3 = value; return this; }
+        public String getPhoneCode() { return phoneCode; }
+        public Country setPhoneCode(String value) { this.phoneCode = value; return this; }
     }
 
     public static class FullUser
@@ -1817,6 +2037,17 @@ public class dtos
         public Product setStorageUnit(String value) { this.storageUnit = value; return this; }
     }
 
+    public static class Platform
+    {
+        public String platformName = null;
+        public String url = null;
+        
+        public String getPlatformName() { return platformName; }
+        public Platform setPlatformName(String value) { this.platformName = value; return this; }
+        public String getUrl() { return url; }
+        public Platform setUrl(String value) { this.url = value; return this; }
+    }
+
     public static class NewsFeed
     {
         public Integer id = null;
@@ -1867,6 +2098,26 @@ public class dtos
         public CompanyModel setQuota(String value) { this.quota = value; return this; }
         public Boolean isHasAutoRegister() { return hasAutoRegister; }
         public CompanyModel setHasAutoRegister(Boolean value) { this.hasAutoRegister = value; return this; }
+    }
+
+    public static class Token
+    {
+        public String accessToken = null;
+        public String tokenType = null;
+        public Long expiresIn = null;
+        public String refreshToken = null;
+        public String userId = null;
+        
+        public String getAccessToken() { return accessToken; }
+        public Token setAccessToken(String value) { this.accessToken = value; return this; }
+        public String getTokenType() { return tokenType; }
+        public Token setTokenType(String value) { this.tokenType = value; return this; }
+        public Long getExpiresIn() { return expiresIn; }
+        public Token setExpiresIn(Long value) { this.expiresIn = value; return this; }
+        public String getRefreshToken() { return refreshToken; }
+        public Token setRefreshToken(String value) { this.refreshToken = value; return this; }
+        public String getUserId() { return userId; }
+        public Token setUserId(String value) { this.userId = value; return this; }
     }
 
     public static class UsedStorage

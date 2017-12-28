@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.americavoice.backup.AndroidApplication;
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
@@ -263,6 +264,13 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
             // onPostResume.
             mRetryProviderInstall = true;
         }
+    }
+
+    @Override
+    public void saveSerials(String serialB1, String serialB2) {
+        AndroidApplication application = (AndroidApplication) getActivity().getApplication();
+        application.setSerialB1(serialB1);
+        application.setSerialB2(serialB2);
     }
 }
 

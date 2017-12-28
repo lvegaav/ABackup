@@ -80,13 +80,23 @@ public class LoginConfirmationPresenter extends BasePresenter implements IPresen
             public void success(dtos.ValidatePhoneVerificationCodeResponse response) {
                 mView.hideLoading();
                 mView.showGettingServerInfo();
-                int lastIndex = mUsername.indexOf("@");
-                if (lastIndex == -1) {
-                    lastIndex = mUsername.length();
-                }
-                final String user = mUsername.substring(0, lastIndex);
-                mView.loginWithCredentials(OwnCloudCredentialsFactory.newBasicCredentials(user, mPassword));
-                mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
+                mNetworkProvider.login(mUsername, mPassword, new AsyncResult<dtos.AuthenticateResponse>() {
+                    @Override
+                    public void success(dtos.AuthenticateResponse response) {
+                        if (response.getMeta() != null) {
+                            mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
+                        }
+                        mView.loginWithCredentials();
+                        mSharedPrefsUtils.setBooleanPreference(NetworkProvider.KEY_FIRST_TIME, true);
+                    }
+
+                    @Override
+                    public void error(Exception ex) {
+                        mView.hideGettingServerInfo();
+                        Crashlytics.logException(ex);
+                        mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                    }
+                });
             }
 
             @Override

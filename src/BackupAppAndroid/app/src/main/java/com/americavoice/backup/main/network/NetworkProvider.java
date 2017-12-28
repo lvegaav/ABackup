@@ -11,6 +11,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.americavoice.backup.AndroidApplication;
 import com.americavoice.backup.BuildConfig;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
@@ -134,18 +135,11 @@ public class NetworkProvider {
 
     public OwnCloudClient getCloudClient() {
         OwnCloudClient cloudClient = null;
-        Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
-
-        if (account != null) {
-            int lastIndex = account.name.indexOf("@");
-            if (lastIndex == -1) {
-                lastIndex = account.name.length();
-            }
-            String username = account.name.substring(0, lastIndex);
-            String password = mAccountMgr.getPassword(account);
+        AndroidApplication application = (AndroidApplication) mContext.getApplicationContext();
+        if (application != null) {
             Uri serverUri = Uri.parse(baseUrlOwnCloud);
             cloudClient = OwnCloudClientFactory.createOwnCloudClient(serverUri, mContext, true);
-            cloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(username, password ));
+            cloudClient.setCredentials(OwnCloudCredentialsFactory.newBasicCredentials(application.getSerialB1(), application.getSerialB2()));
         }
         return cloudClient;
     }
@@ -253,6 +247,12 @@ public class NetworkProvider {
 
     public void getUserAccountUsage(AsyncResult<dtos.GetAccountUsageResponse> response) {
         mClient.getAsync(new dtos.GetUserAccountUsage(), response);
+    }
+
+    public void getCountries(AsyncResult<dtos.GetCountriesResponse> response) {
+        dtos.GetCountries request = new dtos.GetCountries();
+        request.setLanguage(mContext.getString(R.string.common_language));
+        getAppClient().getAsync(request, response);
     }
 
 }
