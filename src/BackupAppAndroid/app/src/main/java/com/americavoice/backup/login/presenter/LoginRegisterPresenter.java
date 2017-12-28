@@ -65,7 +65,6 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
      */
     public void initialize() {
         initCountries();
-
     }
 
     private void initCountries() {
