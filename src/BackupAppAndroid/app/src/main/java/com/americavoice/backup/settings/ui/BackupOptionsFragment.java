@@ -1,14 +1,19 @@
 package com.americavoice.backup.settings.ui;
 
+import android.accounts.Account;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.americavoice.backup.R;
+import com.americavoice.backup.authentication.AccountUtils;
+import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
@@ -21,8 +26,15 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+
+import static com.americavoice.backup.calls.ui.CallsBackupFragment.PREFERENCE_CALLS_AUTOMATIC_BACKUP;
+import static com.americavoice.backup.contacts.ui.ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP;
+import static com.americavoice.backup.explorer.ui.FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP;
+import static com.americavoice.backup.explorer.ui.FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP;
+import static com.americavoice.backup.sms.ui.SmsBackupFragment.PREFERENCE_SMS_AUTOMATIC_BACKUP;
 
 /**
  * Created by angelchanquin on 5/12/17.
@@ -43,12 +55,25 @@ public class BackupOptionsFragment extends BaseFragment implements BackupOptions
     private Listener mListener;
     private Unbinder mUnBind;
 
+    private ArbitraryDataProvider arbitraryDataProvider;
+    private Account account;
+
     @Inject
     BackupOptionsPresenter mPresenter;
 
     @BindView(R.id.tv_title)
     TextView tvTitle;
 
+    @BindView(R.id.backup_photos)
+    SwitchCompat backupPhotos;
+    @BindView(R.id.backup_videos)
+    SwitchCompat backupVideos;
+    @BindView(R.id.backup_contacts)
+    SwitchCompat backupContacts;
+    @BindView(R.id.backup_sms)
+    SwitchCompat backupSms;
+    @BindView(R.id.backup_call_log)
+    SwitchCompat backupCalls;
 
     public BackupOptionsFragment() {
         super();
@@ -116,6 +141,15 @@ public class BackupOptionsFragment extends BaseFragment implements BackupOptions
     private void initialize() {
         this.getComponent(AppComponent.class).inject(this);
         this.mPresenter.setView(this);
+
+        this.account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+        this.arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
+
+        backupPhotos.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_PHOTOS_AUTOMATIC_BACKUP));
+        backupVideos.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_VIDEOS_AUTOMATIC_BACKUP));
+        backupContacts.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP));
+        backupSms.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_SMS_AUTOMATIC_BACKUP));
+        backupCalls.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP));
 //        this.mPresenter.initialize();
     }
 
@@ -152,5 +186,35 @@ public class BackupOptionsFragment extends BaseFragment implements BackupOptions
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
         onButtonBack();
+    }
+
+    @OnCheckedChanged(R.id.backup_photos)
+    public void onBackupPhotosChange() {
+        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(backupPhotos.isChecked()));
+//        mPresenter.updateBackupOption(R.id.backup_photos, backupPhotos.isChecked());
+    }
+
+    @OnCheckedChanged(R.id.backup_videos)
+    public void onBackupVideosChange() {
+        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(backupVideos.isChecked()));
+//        mPresenter.updateBackupOption(R.id.backup_videos, backupVideos.isChecked());
+    }
+
+    @OnCheckedChanged(R.id.backup_contacts)
+    public void onBackupContactsChange() {
+        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(backupContacts.isChecked()));
+//        mPresenter.updateBackupOption(R.id.backup_contacts, backupContacts.isChecked());
+    }
+
+    @OnCheckedChanged(R.id.backup_sms)
+    public void onBackupSmsChange() {
+        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_SMS_AUTOMATIC_BACKUP, String.valueOf(backupSms.isChecked()));
+//        mPresenter.updateBackupOption(R.id.backup_sms, backupSms.isChecked());
+    }
+
+    @OnCheckedChanged(R.id.backup_call_log)
+    public void onBackupCallsChange() {
+        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP, String.valueOf(backupCalls.isChecked()));
+//        mPresenter.updateBackupOption(R.id.backup_call_log, backupCalls.isChecked());
     }
 }
