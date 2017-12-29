@@ -69,11 +69,12 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
 
     private void initCountries() {
         mView.showLoading();
+        final List<SpinnerItem> items = new ArrayList<>();
+        items.add(new SpinnerItem("", ""));
         mNetworkProvider.getCountries(new AsyncResult<dtos.GetCountriesResponse>() {
             @Override
             public void success(dtos.GetCountriesResponse response) {
                 ArrayList<dtos.Country> countries = response.getCountries();
-                List<SpinnerItem> items = new ArrayList<>();
                 if (countries != null) {
                     for (dtos.Country country : countries) {
                         items.add(new SpinnerItem(country.getPhoneCode(), "+" + country.getPhoneCode()));
@@ -85,6 +86,7 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
             @Override
             public void error(Exception ex) {
                 mView.showError(mView.getContext().getString(R.string.exception_message_generic));
+                mView.populateCountries(items);
             }
 
             @Override
@@ -96,6 +98,10 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
 
     public void submit(final String countryCode, final String phoneNumber, final String username, final String newPassword, final String confirmPassword) {
         boolean hasError = false;
+        if (TextUtils.isEmpty(countryCode)) {
+            hasError = true;
+            mView.showCountryCodeRequired();
+        }
         if (TextUtils.isEmpty(phoneNumber)) {
             hasError = true;
             mView.showPhoneNumberRequired();

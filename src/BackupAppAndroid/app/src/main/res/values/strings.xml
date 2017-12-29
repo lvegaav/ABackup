@@ -297,5 +297,6 @@
     <string name="payment_confirmation_question">Are you sure you want to purchase this plan right now?</string>
     <string name="payment_remember">Remember you still have a subscription:</string>
     <string name="payment_expires">and expires on</string>
+    <string name="error.country_code_required">Country code is required</string>
 
 </resources>

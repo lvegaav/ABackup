@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
@@ -185,12 +186,19 @@ public class LoginForgotFragment extends BaseAuthenticatorFragment implements Lo
         etPhoneNumber.setError(getString(R.string.login_validationPhoneNumberInvalid));
     }
 
-   @OnClick(R.id.btn_forgot)
-    public void onRegister(View v)
-   {
-       mPresenter.submit(
-               ((SpinnerItem) spCountry.getSelectedItem()).getId(),
-               etPhoneNumber.getText().toString());
+    @Override
+    public void showCountryCodeRequired() {
+        ((TextView) spCountry.getSelectedView()).setError(getString(R.string.error_country_code_required));
+    }
+
+    @OnClick(R.id.btn_forgot)
+    public void onRegister(View v) {
+        String countryCode = "";
+        try {
+            countryCode = ((SpinnerItem) spCountry.getSelectedItem()).getId();
+        } finally {
+            mPresenter.submit(countryCode, etPhoneNumber.getText().toString());
+        }
    }
 }
 
