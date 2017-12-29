@@ -232,7 +232,7 @@
     <string name="tour.settings_share">Comparte esta aplicación con tus amigos y familia para que puedan almacenar sus archivos seguros en la nube.</string>
 
     <string name="choose_plan.no_plan">No tiene un plan</string>
-    <string name="choose_plan.instructions">Guarde su contenido más importante en la nube así puede acceder a él si llega a perder su dispositivo</string>
+    <string name="choose_plan.instructions">Tenga la tranquilidad de saber que todos sus datos importantes se almacenan de forma segura en la nube en caso de que pierda su dispositivo.</string>
 
     <string name="subscription.cancel_subscription">Cancelar suscripción</string>
     <string name="subscription.change_payment_method">Actualizar método de pago</string>
@@ -293,8 +293,8 @@
     <string name="login_validationPhoneNumberInvalidRange">El número de teléfono tiene que ser entre 4 y 20 dígitos.</string>
     <string name="confirmation.sendConfirmationCode">Continuar</string>
     <string name="common.file_will_upload_when_wifi_or">Este archivo será subido cuando estes conectado vía wifi o actives la subia con plan de datos.</string>
-    <string name="payment_confirmation_question">Are you sure you want to change plan right now?</string>
-    <string name="payment_remember">Remember you still have a subscription:</string>
-    <string name="payment_expires">and expires on</string>
+    <string name="payment_confirmation_question">¿Esta seguro de comprar este plan en este momento?</string>
+    <string name="payment_remember">Recuerde que todavia tiene una subscripcion:</string>
+    <string name="payment_expires">y expira el</string>
 
 </resources>
