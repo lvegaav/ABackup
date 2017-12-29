@@ -20,7 +20,7 @@
     <string name="common.empty">Empty</string>
     <string name="common.wrong_credentials">Check credentials, please try again</string>
     <string name="common.account_error">Couldn\'t create the account, please try again</string>
-    <string name="common.logout">Logout</string>
+    <string name="common.logout">Sign Out</string>
     <string name="common.select">Select</string>
     <string name="common.file_will_download">The file will be downloaded, please wait.</string>
     <string name="common.write_external_storage">Write external storage</string>
@@ -42,7 +42,7 @@
     <string name="login.hello">Welcome!</string>
     <string name="login.phonePlaceHolder">Phone Number</string>
     <string name="login.passwordPlaceHolder">Password</string>
-    <string name="login.loginPlaceHolder">Login</string>
+    <string name="login.loginPlaceHolder">Sign in</string>
     <string name="login.registerPlaceHolder">&loginRegisterNow;</string>
     <string name="login.forgotPlaceHolder">Forgot your password?</string>
     <string name="login.validationPhoneNumberRequired">Phone number required.</string>
@@ -234,7 +234,7 @@
     <string name="tour_settings_options">You have several options to configure, also you can see how much storage you have available.</string>
 
     <string name="choose_plan.no_plan">No current plan</string>
-    <string name="choose_plan.instructions">Store your most important content on the cloud so you can have access to it event when you lose your device</string>
+    <string name="choose_plan.instructions">Have peace of mind knowing all your important data is securely stored in the cloud in the event you lose your device.</string>
 
     <string name="subscription.select">Select</string>
     <string name="subscription.current">Current plan</string>
@@ -294,7 +294,7 @@
     <string name="login_validationPhoneNumberInvalidRange">Phone number has to be between 4 and 20 in length.</string>
     <string name="confirmation.sendConfirmationCode">Continue</string>
     <string name="common.file_will_upload_when_wifi_or">This file will be uploaded when wifi is connected or upload via mobile network is on.</string>
-    <string name="payment_confirmation_question">Are you sure you want to purchase plan right now?</string>
+    <string name="payment_confirmation_question">Are you sure you want to purchase this plan right now?</string>
     <string name="payment_remember">Remember you still have a subscription:</string>
     <string name="payment_expires">and expires on</string>
     <string name="settings.backup_options">Backup Options</string>
