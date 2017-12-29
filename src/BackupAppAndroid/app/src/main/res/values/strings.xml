@@ -299,5 +299,6 @@
     <string name="payment_expires">and expires on</string>
     <string name="settings.backup_options">Backup Options</string>
     <string name="backup_options.title">Backup Options</string>
+    <string name="error.country_code_required">Country code is required</string>
 
 </resources>

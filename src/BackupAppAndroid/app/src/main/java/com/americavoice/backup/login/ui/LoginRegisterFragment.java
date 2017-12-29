@@ -229,6 +229,11 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
     }
 
     @Override
+    public void showCountryCodeRequired() {
+        ((TextView) spCountry.getSelectedView()).setError(getString(R.string.error_country_code_required));
+    }
+
+    @Override
     public void showUsernameRequired() {
         etUsername.requestFocus();
         etUsername.setError(getString(R.string.login_validationUsernameRequired));
@@ -277,14 +282,17 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
     }
 
     @OnClick(R.id.btn_register)
-    public void onRegister(View v)
-   {
-       mPresenter.submit(
-               ((SpinnerItem) spCountry.getSelectedItem()).getId(),
-               etPhoneNumber.getText().toString(),
-               etUsername.getText().toString(),
-               etPassword.getText().toString(),
-               etConfirmPassword.getText().toString());
+    public void onRegister(View v) {
+        String countryCode = "";
+        try {
+            countryCode = ((SpinnerItem) spCountry.getSelectedItem()).getId();
+        } finally {
+            mPresenter.submit(countryCode,
+                    etPhoneNumber.getText().toString(),
+                    etUsername.getText().toString(),
+                    etPassword.getText().toString(),
+                    etConfirmPassword.getText().toString());
+        }
    }
 
     @OnClick(R.id.terms_of_service)

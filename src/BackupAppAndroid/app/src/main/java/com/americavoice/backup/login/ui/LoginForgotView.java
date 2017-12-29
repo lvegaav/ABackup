@@ -12,7 +12,7 @@ import java.util.List;
 public interface LoginForgotView extends ILoadDataView {
     void viewLoginNewPassword(String countryCode, String phoneNumber);
     void populateCountries(List<SpinnerItem> items);
-
     void showPhoneNumberRequired();
     void showPhoneNumberInvalid();
+    void showCountryCodeRequired();
 }
