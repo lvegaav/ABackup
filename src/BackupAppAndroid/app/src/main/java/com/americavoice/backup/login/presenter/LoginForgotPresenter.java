@@ -73,7 +73,7 @@ public class LoginForgotPresenter extends BasePresenter implements IPresenter {
                 ArrayList<dtos.Country> countries = response.getCountries();
                 if (countries != null) {
                     for (dtos.Country country : countries) {
-                        items.add(new SpinnerItem(country.getPhoneCode(), "+" + country.getPhoneCode()));
+                        items.add(new SpinnerItem(country.getPhoneCode(), country.getName()));
                     }
                 }
                 mView.populateCountries(items);

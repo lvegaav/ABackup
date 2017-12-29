@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.AppCompatDrawableManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -31,7 +32,7 @@ public class SpinnerItemAdapter extends ArrayAdapter<SpinnerItem> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView view = (TextView) super.getView(position, convertView, parent);
-        view.setText(getItem(position).getValue());
+        view.setText((!TextUtils.isEmpty(getItem(position).getId())? "+":"") + getItem(position).getId());
         view.setTextColor(Color.WHITE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             view.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_glove, 0, R.drawable.ic_arrow_down, 0);
