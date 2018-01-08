@@ -58,7 +58,7 @@
     <string name="login.validationVerificationCodeInvalid">Código de verificación inválido.</string>
     <string name="login_validationNewPasswordMatches">La contraseña debe tener 8 caracteres y contener al menos número</string>
     <string name="login.dontHaveAnAccount">¿No tienes una cuenta todavía?</string>
-    <string name="login.validationFailed">Inicio se sesión fallido, por favor revisa tus credenciales</string>
+    <string name="login.validationFailed">Error de inicio de sesión. usuario o contraseña inválidos</string>
 
     <string name="login.register.hello">Registrarse</string>
     <string name="login.register.usernamePlaceHolder">Usuario/Email</string>
@@ -136,7 +136,7 @@
     <string name="file.list_seconds_ago">hece unos segundos.</string>
     <string name="files.list_empty">Carga contenido o sincroniza tus dispositivos.</string>
     <string name="files.cloud_almost_full">Espacio de Lock Backup esta casi lleno</string>
-    <string name="files.getting_pending_no_access">Estamos tratando de obtener tus archivos pendientes. TIenes que darnos permisos para</string>
+    <string name="files.getting_pending_no_access">Para realizar el respaldo de tus archivos, necesitamos permiso a tu almacenamiento externo.</string>
 
     <string name="sync.fail_ticker">Sincronización fallida</string>
     <string name="sync.fail_ticker_unauthorized">Sincronización fallida, necesitas autenticarte de nuevo</string>
@@ -150,9 +150,9 @@
     <string name="sync.preferences_backup_scheduled_on_wifi">Backup calendarizado empezará cuando estes conectado por wifi</string>
     <string name="sync.no_files_to_backup">No hay %1$s para hacer backup</string>
     <string name="sync.warning_mobile_data_on">Precaución: Estas conectado en plan de datos, deberias considerar conectarte a una red wifi para hacer backup de tus archivos.</string>
-    <string name="sync.backup_photos_and_videos">Hay %1$d fotos y %2$d videos pendientes de subir. Contactos, SMS y registro de llamadas serán respaldados %2$s</string>
+    <string name="sync.backup_photos_and_videos">Hay %1$d fotos y %2$d videos pendientes de subir. Contactos, SMS y registro de llamadas serán respaldados %3$s</string>
     <string name="sync.backup_photos_and_videos_as_well">también.</string>
-    <string name="sync.backup_photos_and_videos_when_permission_granted">cuando la aplicación tenga permisos.</string>
+    <string name="sync.backup_photos_and_videos_when_permission_granted">cuando se otorgue el permiso.</string>
     <string name="sync.backup_photos_and_videos_warning">Hay %1$d fotos y %2$d videos pendientes de subir. Contactos, SMS y registro de llamadas serán respaldados  \n\n%3$s</string>
     <string name="sync.backup_no_files_pending">No hay archivos pendientes de subir. Contactos, SMS y registro de llamadas serán respaldados %1$s</string>
     <string name="sync.backup_no_files_pending_warning">No hay archivos pendientes de subir. Contactos, SMS y registro de llamadas también serán respaldados %1$s \n\n%2$s</string>
@@ -292,7 +292,7 @@
     <string name="confirmation.resend_code">Enviar código de nuevo</string>
     <string name="login_validationPhoneNumberInvalidRange">El número de teléfono tiene que ser entre 4 y 20 dígitos.</string>
     <string name="confirmation.sendConfirmationCode">Continuar</string>
-    <string name="common.file_will_upload_when_wifi_or">Este archivo será subido cuando estes conectado vía wifi o actives la subia con plan de datos.</string>
+    <string name="common.file_will_upload_when_wifi_or">Este archivo será subido cuando estés conectado vía Wi-Fi o actives tu plan de datos móvil.</string>
     <string name="payment_confirmation_question">¿Esta seguro de comprar este plan en este momento?</string>
     <string name="payment_remember">Recuerde que todavia tiene una subscripcion:</string>
     <string name="payment_expires">y expira el</string>

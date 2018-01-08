@@ -209,9 +209,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     @Override
     public void showRequestPermissionDialog() {
-        StringBuilder message = new StringBuilder(getString(R.string.files_getting_pending_no_access))
-                .append(getString(R.string.common_write_external_storage));
-        showMessageOKCancel(message.toString(), new MaterialDialog.SingleButtonCallback() {
+        showMessageOKCancel(getString(R.string.files_getting_pending_no_access), new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},

@@ -251,7 +251,7 @@ public class NetworkProvider {
 
     public void getCountries(AsyncResult<dtos.GetCountriesResponse> response) {
         dtos.GetCountries request = new dtos.GetCountries();
-        request.setLanguage(mContext.getString(R.string.common_language));
+        //request.setLanguage(mContext.getString(R.string.common_language));
         getAppClient().getAsync(request, response);
     }
 

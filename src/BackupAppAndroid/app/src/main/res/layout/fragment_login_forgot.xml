@@ -20,13 +20,16 @@
             layout="@layout/corner_logo"/>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
             android:layout_centerInParent="true"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_hello"
+                android:layout_width="match_parent"
                 style="@style/TextView.WindowTitle"
                 android:text="@string/login.forgot.hello"
                 android:layout_marginBottom="51dp"/>
@@ -38,7 +41,7 @@
 
                 <Spinner
                     android:id="@+id/sp_country"
-                    android:layout_width="125dp"
+                    android:layout_width="140dp"
                     android:layout_height="57dp"
                     android:layout_alignParentStart="true"
                     android:layout_marginEnd="2dp"
@@ -48,7 +51,7 @@
 
                 <EditText
                     android:id="@+id/et_phone_number"
-                    android:layout_width="175dp"
+                    android:layout_width="match_parent"
                     android:layout_height="57dp"
                     style="@style/EditText"
                     android:hint="@string/login.phonePlaceHolder"
@@ -68,9 +71,10 @@
             <TextView
                 android:id="@+id/tv_forgot"
                 style="@style/TextView"
-                android:text="@string/login.forgot.label"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="100dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="100dp"/>
+                android:text="@string/login.forgot.label" />
 
         </LinearLayout>
 
