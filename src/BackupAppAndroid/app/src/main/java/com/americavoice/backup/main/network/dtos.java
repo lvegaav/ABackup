@@ -1,5 +1,5 @@
 /* Options:
-Date: 2017-12-22 15:02:44
+Date: 2018-01-07 20:31:01
 Version: 4.512
 Tip: To override a DTO option, remove "//" prefix before updating
 BaseUrl: http://backupapi.secureip.io/api
@@ -28,6 +28,36 @@ import com.google.gson.reflect.*;
 
 public class dtos
 {
+
+    /**
+    * Query login history
+    */
+    @Route(Path="/login-history", Verbs="GET")
+    @Api(Description="Query login history")
+    public static class FindLoginHistory extends QueryDb<UserLoginHistory> implements IReturn<QueryResponse<UserLoginHistory>>
+    {
+        public String accountNumber = null;
+        
+        public String getAccountNumber() { return accountNumber; }
+        public FindLoginHistory setAccountNumber(String value) { this.accountNumber = value; return this; }
+        private static Object responseType = new TypeToken<QueryResponse<UserLoginHistory>>(){}.getType();
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Query login metadata
+    */
+    @Route(Path="/login-metadata", Verbs="GET")
+    @Api(Description="Query login metadata")
+    public static class FindLoginMeta extends QueryDb<UserLoginMeta> implements IReturn<QueryResponse<UserLoginMeta>>
+    {
+        public String accountNumber = null;
+        
+        public String getAccountNumber() { return accountNumber; }
+        public FindLoginMeta setAccountNumber(String value) { this.accountNumber = value; return this; }
+        private static Object responseType = new TypeToken<QueryResponse<UserLoginMeta>>(){}.getType();
+        public Object getResponseType() { return responseType; }
+    }
 
     /**
     * Time zone information.
@@ -345,6 +375,33 @@ public class dtos
         public String getNewPassword() { return newPassword; }
         public UpdateUserProfile setNewPassword(String value) { this.newPassword = value; return this; }
         private static Object responseType = UpdateUserProfileReponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
+    /**
+    * Change password.
+    */
+    @Route(Path="/user/change-password", Verbs="POST")
+    @Api(Description="Change password.")
+    public static class PerformChangePassword implements IReturn<PerformResetPasswordResponse>
+    {
+        /**
+        * Username.
+        */
+        @ApiMember(Description="Username.", IsRequired=true, ParameterType="form")
+        public String username = null;
+
+        /**
+        * New password.
+        */
+        @ApiMember(Description="New password.", IsRequired=true, ParameterType="form")
+        public String newPassword = null;
+        
+        public String getUsername() { return username; }
+        public PerformChangePassword setUsername(String value) { this.username = value; return this; }
+        public String getNewPassword() { return newPassword; }
+        public PerformChangePassword setNewPassword(String value) { this.newPassword = value; return this; }
+        private static Object responseType = PerformResetPasswordResponse.class;
         public Object getResponseType() { return responseType; }
     }
 
@@ -1052,6 +1109,25 @@ public class dtos
         public Object getResponseType() { return responseType; }
     }
 
+    /**
+    * Get devices used for file sync.
+    */
+    @Route(Path="/accounts/{AccountNumber}/devices", Verbs="GET")
+    @Api(Description="Get devices used for file sync.")
+    public static class GetDevices implements IReturn<GetDevicesResponse>
+    {
+        /**
+        * AccountNumber 
+        */
+        @ApiMember(Description="AccountNumber ", IsRequired=true, ParameterType="path")
+        public String accountNumber = null;
+        
+        public String getAccountNumber() { return accountNumber; }
+        public GetDevices setAccountNumber(String value) { this.accountNumber = value; return this; }
+        private static Object responseType = GetDevicesResponse.class;
+        public Object getResponseType() { return responseType; }
+    }
+
     @Route("/auth")
     // @Route("/auth/{provider}")
     // @Route("/authenticate")
@@ -1151,6 +1227,36 @@ public class dtos
         public Authenticate setMeta(HashMap<String,String> value) { this.meta = value; return this; }
         private static Object responseType = AuthenticateResponse.class;
         public Object getResponseType() { return responseType; }
+    }
+
+    @DataContract
+    public static class QueryResponse<T>
+    {
+        @DataMember(Order=1)
+        public Integer offset = null;
+
+        @DataMember(Order=2)
+        public Integer total = null;
+
+        @DataMember(Order=3)
+        public ArrayList<T> results = null;
+
+        @DataMember(Order=4)
+        public HashMap<String,String> meta = null;
+
+        @DataMember(Order=5)
+        public ResponseStatus responseStatus = null;
+        
+        public Integer getOffset() { return offset; }
+        public QueryResponse<T> setOffset(Integer value) { this.offset = value; return this; }
+        public Integer getTotal() { return total; }
+        public QueryResponse<T> setTotal(Integer value) { this.total = value; return this; }
+        public ArrayList<T> getResults() { return results; }
+        public QueryResponse<T> setResults(ArrayList<T> value) { this.results = value; return this; }
+        public HashMap<String,String> getMeta() { return meta; }
+        public QueryResponse<T> setMeta(HashMap<String,String> value) { this.meta = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public QueryResponse<T> setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
     }
 
     public static class GetTimeZonesResponse
@@ -1605,6 +1711,17 @@ public class dtos
         public GetRemoteAccountCrsfTokenResponse setToken(String value) { this.token = value; return this; }
     }
 
+    public static class GetDevicesResponse
+    {
+        public ArrayList<Device> devices = null;
+        public ResponseStatus responseStatus = null;
+        
+        public ArrayList<Device> getDevices() { return devices; }
+        public GetDevicesResponse setDevices(ArrayList<Device> value) { this.devices = value; return this; }
+        public ResponseStatus getResponseStatus() { return responseStatus; }
+        public GetDevicesResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
+    }
+
     @DataContract
     public static class AuthenticateResponse
     {
@@ -1653,6 +1770,78 @@ public class dtos
         public AuthenticateResponse setResponseStatus(ResponseStatus value) { this.responseStatus = value; return this; }
         public HashMap<String,String> getMeta() { return meta; }
         public AuthenticateResponse setMeta(HashMap<String,String> value) { this.meta = value; return this; }
+    }
+
+    public static class QueryDb<T> extends QueryBase
+    {
+        
+    }
+
+    public static class UserLoginHistory
+    {
+        public Integer id = null;
+        public Integer userId = null;
+        public String browserName = null;
+        public String browserVersion = null;
+        public String operatingSystem = null;
+        public String ip = null;
+        public Date dateTime = null;
+        public String userAgent = null;
+        public String countryCode = null;
+        public String stateRegion = null;
+        public String city = null;
+        public String postalCode = null;
+        
+        public Integer getId() { return id; }
+        public UserLoginHistory setId(Integer value) { this.id = value; return this; }
+        public Integer getUserId() { return userId; }
+        public UserLoginHistory setUserId(Integer value) { this.userId = value; return this; }
+        public String getBrowserName() { return browserName; }
+        public UserLoginHistory setBrowserName(String value) { this.browserName = value; return this; }
+        public String getBrowserVersion() { return browserVersion; }
+        public UserLoginHistory setBrowserVersion(String value) { this.browserVersion = value; return this; }
+        public String getOperatingSystem() { return operatingSystem; }
+        public UserLoginHistory setOperatingSystem(String value) { this.operatingSystem = value; return this; }
+        public String getIp() { return ip; }
+        public UserLoginHistory setIp(String value) { this.ip = value; return this; }
+        public Date getDateTime() { return dateTime; }
+        public UserLoginHistory setDateTime(Date value) { this.dateTime = value; return this; }
+        public String getUserAgent() { return userAgent; }
+        public UserLoginHistory setUserAgent(String value) { this.userAgent = value; return this; }
+        public String getCountryCode() { return countryCode; }
+        public UserLoginHistory setCountryCode(String value) { this.countryCode = value; return this; }
+        public String getStateRegion() { return stateRegion; }
+        public UserLoginHistory setStateRegion(String value) { this.stateRegion = value; return this; }
+        public String getCity() { return city; }
+        public UserLoginHistory setCity(String value) { this.city = value; return this; }
+        public String getPostalCode() { return postalCode; }
+        public UserLoginHistory setPostalCode(String value) { this.postalCode = value; return this; }
+    }
+
+    public static class UserLoginMeta
+    {
+        public Integer id = null;
+        public Integer userId = null;
+        public Long userLoginHistoryId = null;
+        public String metaGroup = null;
+        public String metaKey = null;
+        public String metaValue = null;
+        public Date entryDateTime = null;
+        
+        public Integer getId() { return id; }
+        public UserLoginMeta setId(Integer value) { this.id = value; return this; }
+        public Integer getUserId() { return userId; }
+        public UserLoginMeta setUserId(Integer value) { this.userId = value; return this; }
+        public Long getUserLoginHistoryId() { return userLoginHistoryId; }
+        public UserLoginMeta setUserLoginHistoryId(Long value) { this.userLoginHistoryId = value; return this; }
+        public String getMetaGroup() { return metaGroup; }
+        public UserLoginMeta setMetaGroup(String value) { this.metaGroup = value; return this; }
+        public String getMetaKey() { return metaKey; }
+        public UserLoginMeta setMetaKey(String value) { this.metaKey = value; return this; }
+        public String getMetaValue() { return metaValue; }
+        public UserLoginMeta setMetaValue(String value) { this.metaValue = value; return this; }
+        public Date getEntryDateTime() { return entryDateTime; }
+        public UserLoginMeta setEntryDateTime(Date value) { this.entryDateTime = value; return this; }
     }
 
     public static class TimeZoneModel
@@ -2132,6 +2321,71 @@ public class dtos
         public UsedStorage setUsedStorageSize(Double value) { this.usedStorageSize = value; return this; }
         public String getUsedStorageUnit() { return usedStorageUnit; }
         public UsedStorage setUsedStorageUnit(String value) { this.usedStorageUnit = value; return this; }
+    }
+
+    public static class Device
+    {
+        public String os = null;
+        public String osVersion = null;
+        public String model = null;
+        public String trademark = null;
+        public Date lastLogin = null;
+        public String appVersion = null;
+        public String deviceType = null;
+        
+        public String getOs() { return os; }
+        public Device setOs(String value) { this.os = value; return this; }
+        public String getOsVersion() { return osVersion; }
+        public Device setOsVersion(String value) { this.osVersion = value; return this; }
+        public String getModel() { return model; }
+        public Device setModel(String value) { this.model = value; return this; }
+        public String getTrademark() { return trademark; }
+        public Device setTrademark(String value) { this.trademark = value; return this; }
+        public Date getLastLogin() { return lastLogin; }
+        public Device setLastLogin(Date value) { this.lastLogin = value; return this; }
+        public String getAppVersion() { return appVersion; }
+        public Device setAppVersion(String value) { this.appVersion = value; return this; }
+        public String getDeviceType() { return deviceType; }
+        public Device setDeviceType(String value) { this.deviceType = value; return this; }
+    }
+
+    public static class QueryBase
+    {
+        @DataMember(Order=1)
+        public Integer skip = null;
+
+        @DataMember(Order=2)
+        public Integer take = null;
+
+        @DataMember(Order=3)
+        public String orderBy = null;
+
+        @DataMember(Order=4)
+        public String orderByDesc = null;
+
+        @DataMember(Order=5)
+        public String include = null;
+
+        @DataMember(Order=6)
+        public String fields = null;
+
+        @DataMember(Order=7)
+        public HashMap<String,String> meta = null;
+        
+        public Integer getSkip() { return skip; }
+        public QueryBase setSkip(Integer value) { this.skip = value; return this; }
+        public Integer getTake() { return take; }
+        public QueryBase setTake(Integer value) { this.take = value; return this; }
+        public String getOrderBy() { return orderBy; }
+        public QueryBase setOrderBy(String value) { this.orderBy = value; return this; }
+        public String getOrderByDesc() { return orderByDesc; }
+        public QueryBase setOrderByDesc(String value) { this.orderByDesc = value; return this; }
+        public String getInclude() { return include; }
+        public QueryBase setInclude(String value) { this.include = value; return this; }
+        public String getFields() { return fields; }
+        public QueryBase setFields(String value) { this.fields = value; return this; }
+        public HashMap<String,String> getMeta() { return meta; }
+        public QueryBase setMeta(HashMap<String,String> value) { this.meta = value; return this; }
     }
 
     public static interface IAuthTokens
