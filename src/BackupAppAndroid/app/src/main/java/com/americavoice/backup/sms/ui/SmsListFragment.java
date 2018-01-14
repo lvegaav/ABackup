@@ -178,10 +178,7 @@ public class SmsListFragment extends FileFragment implements SmsListView {
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            mDefaultSmsApp = Telephony.Sms.getDefaultSmsPackage(getContext());
-        }
+        mDefaultSmsApp = Telephony.Sms.getDefaultSmsPackage(getContext());
 
         View fragmentView = inflater.inflate(R.layout.smslist_fragment, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
@@ -212,7 +209,11 @@ public class SmsListFragment extends FileFragment implements SmsListView {
             DownloadFinishReceiver mDownloadFinishReceiver = new DownloadFinishReceiver();
             getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
         } else {
-            loadSmsTask.execute();
+            try {
+                loadSmsTask.execute();
+            } catch (Exception e) {
+                Crashlytics.logException(e);
+            }
         }
 
         restoreContacts.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
@@ -223,13 +224,9 @@ public class SmsListFragment extends FileFragment implements SmsListView {
     @OnClick(R.id.smslist_restore_selected)
     public void onRestoreClicked() {
         Intent intent = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
-            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getContext().getPackageName());
-            startActivityForResult(intent, REQUEST_CODE_SMS_DEFAULT);
-        } else {
-            importSms();
-        }
+        intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+        intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, getContext().getPackageName());
+        startActivityForResult(intent, REQUEST_CODE_SMS_DEFAULT);
     }
 
     @Override
@@ -303,14 +300,12 @@ public class SmsListFragment extends FileFragment implements SmsListView {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
             if (requestCode == REQUEST_CODE_SMS_DEFAULT) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 final String myPackageName = getContext().getPackageName();
                 if (Telephony.Sms.getDefaultSmsPackage(getActivity()).equals(myPackageName)) {
                     //start import job
                     importSms();
                 }
             }
-        }
     }
 
     @Override
@@ -402,15 +397,19 @@ public class SmsListFragment extends FileFragment implements SmsListView {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equalsIgnoreCase(FileDownloader.getDownloadFinishMessage())) {
-                String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
+            try {
+                if (intent.getAction().equalsIgnoreCase(FileDownloader.getDownloadFinishMessage())) {
+                    String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
 
-                FileDataStorageManager storageManager = new FileDataStorageManager(account,
-                        getContext());
-                ocFile = storageManager.getFileByPath(downloadedRemotePath);
-                if (loadSmsTask != null) {
-                    loadSmsTask.execute();
+                    FileDataStorageManager storageManager = new FileDataStorageManager(account,
+                            getContext());
+                    ocFile = storageManager.getFileByPath(downloadedRemotePath);
+                    if (loadSmsTask != null) {
+                        loadSmsTask.execute();
+                    }
                 }
+            } catch (Exception e) {
+                Crashlytics.logException(e);
             }
         }
     }

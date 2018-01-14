@@ -66,6 +66,7 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.event.VCardToggleEvent;
 import com.americavoice.backup.main.ui.FileFragment;
 import com.americavoice.backup.utils.PermissionUtil;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -205,8 +206,10 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
         } else {
             Set<Integer> checkedItems = new HashSet<>();
             int[] itemsArray = savedInstanceState.getIntArray(CHECKED_ITEMS_ARRAY_KEY);
-            for (int i = 0; i < itemsArray.length; i++) {
-                checkedItems.add(itemsArray[i]);
+            if (itemsArray != null) {
+                for (int anItemsArray : itemsArray) {
+                    checkedItems.add(anItemsArray);
+                }
             }
             if (checkedItems.size() > 0) {
                 onMessageEvent(new VCardToggleEvent(true));
@@ -216,8 +219,10 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
         recyclerView.setAdapter(contactListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        ocFile = getArguments().getParcelable(FILE_NAME);
-        setFile(ocFile);
+        if (getArguments() != null && getArguments().containsKey(FILE_NAME)) {
+            ocFile = getArguments().getParcelable(FILE_NAME);
+            setFile(ocFile);
+        }
         account = getArguments().getParcelable(ACCOUNT);
 
         if (!ocFile.isDown()) {
@@ -232,7 +237,11 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
             DownloadFinishReceiver mDownloadFinishReceiver = new DownloadFinishReceiver();
             getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
         } else {
-            loadContactsTask.execute();
+            try {
+                loadContactsTask.execute();
+            } catch (Exception e) {
+                Crashlytics.logException(e);
+            }
         }
 
         restoreContacts.setOnClickListener(new View.OnClickListener() {
@@ -251,7 +260,7 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putIntArray(CHECKED_ITEMS_ARRAY_KEY, contactListAdapter.getCheckedIntArray());
     }
@@ -555,13 +564,17 @@ public class ContactListFragment extends FileFragment implements ContactsListVie
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equalsIgnoreCase(FileDownloader.getDownloadFinishMessage())) {
-                String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
+            try {
+                if (intent.getAction().equalsIgnoreCase(FileDownloader.getDownloadFinishMessage())) {
+                    String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
 
-                FileDataStorageManager storageManager = new FileDataStorageManager(account,
-                        getContext());
-                ocFile = storageManager.getFileByPath(downloadedRemotePath);
-                loadContactsTask.execute();
+                    FileDataStorageManager storageManager = new FileDataStorageManager(account,
+                            getContext());
+                    ocFile = storageManager.getFileByPath(downloadedRemotePath);
+                    loadContactsTask.execute();
+                }
+            } catch (Exception e) {
+                Crashlytics.logException(e);
             }
         }
     }
