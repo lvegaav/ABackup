@@ -67,6 +67,7 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.event.VCardToggleEvent;
 import com.americavoice.backup.main.ui.FileFragment;
 import com.americavoice.backup.utils.PermissionUtil;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.utils.Log_OC;
@@ -215,7 +216,11 @@ public class CallListFragment extends FileFragment implements CallsListView {
             DownloadFinishReceiver mDownloadFinishReceiver = new DownloadFinishReceiver();
             getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
         } else {
-            loadCallsTask.execute();
+            try {
+                loadCallsTask.execute();
+            } catch (Exception e) {
+                Crashlytics.logException(e);
+            }
         }
 
         restoreContacts.setOnClickListener(new View.OnClickListener() {
@@ -426,13 +431,17 @@ public class CallListFragment extends FileFragment implements CallsListView {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equalsIgnoreCase(FileDownloader.getDownloadFinishMessage())) {
-                String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
+            try {
+                if (intent.getAction().equalsIgnoreCase(FileDownloader.getDownloadFinishMessage())) {
+                    String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
 
-                FileDataStorageManager storageManager = new FileDataStorageManager(account,
-                        getContext());
-                ocFile = storageManager.getFileByPath(downloadedRemotePath);
-                loadCallsTask.execute();
+                    FileDataStorageManager storageManager = new FileDataStorageManager(account,
+                            getContext());
+                    ocFile = storageManager.getFileByPath(downloadedRemotePath);
+                    loadCallsTask.execute();
+                }
+            } catch (Exception e) {
+                Crashlytics.logException(e);
             }
         }
     }

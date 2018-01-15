@@ -44,11 +44,11 @@ public class AndroidApplication extends MultiDexApplication {
     private String serialB2;
 
     public String getSerialB1() {
-        byte[] data = Base64.decode(serialB1, Base64.DEFAULT);
         String text = "";
         try {
+            byte[] data = Base64.decode(serialB1, Base64.DEFAULT);
             text = new String(data, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             Crashlytics.logException(e);
         }
         return text;
@@ -59,11 +59,11 @@ public class AndroidApplication extends MultiDexApplication {
     }
 
     public String getSerialB2() {
-        byte[] data = Base64.decode(serialB2, Base64.DEFAULT);
         String text = "";
         try {
+            byte[] data = Base64.decode(serialB2, Base64.DEFAULT);
             text = new String(data, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             Crashlytics.logException(e);
         }
         return text;

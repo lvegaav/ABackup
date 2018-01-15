@@ -346,7 +346,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_centerHorizontal="true"
                 android:layout_below="@+id/ll_information"
-                android:background="@android:color/black"
+                android:background="@color/colorAccent"
                 android:clickable="true"
                 android:focusable="true"
                 style="?android:attr/buttonStyle">
@@ -359,7 +359,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:srcCompat="@drawable/ic_sync"
-                        android:paddingRight="10dp"
+                        android:paddingStart="10dp"
                         android:paddingEnd="10dp"/>
                     <TextView
                         android:layout_width="wrap_content"
