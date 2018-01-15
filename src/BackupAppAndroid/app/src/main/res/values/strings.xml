@@ -164,7 +164,7 @@
     <string name="contacts.automatic_backup">Automatic Backup</string>
     <string name="contacts.last_backup">Last Backup</string>
     <string name="contacts.preference_backup_never">never</string>
-    <string name="contacts.backup_button">Backup Now</string>
+    <string name="contacts.backup_button">Backup\nNow</string>
     <string name="contacts.read_permission">Permission to read contact list needed</string>
     <string name="contacts.list_restore_selected">Restore selected contacts</string>
     <string name="contacts.list_account_chooser_title">Choose account to import</string>
@@ -175,7 +175,7 @@
     <string name="contacts.preferences_import_scheduled">Import scheduled and will start shortly</string>
     <string name="contacts.preferences_something_strange_happened">We can\'t find your last backup!</string>
     <string name="contacts.preferences_no_file_found">No file found</string>
-    <string name="contacts.preference_restore_backup">Restore Backup</string>
+    <string name="contacts.preference_restore_backup">Restore\nBackup</string>
 
     <string name="calls.title">Calls</string>
     <string name="calls.read_permission">Permission to read call log needed</string>
