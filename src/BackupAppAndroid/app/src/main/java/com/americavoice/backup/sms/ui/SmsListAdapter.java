@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.sms.ui.model.Sms;
+import com.crashlytics.android.Crashlytics;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -49,19 +50,23 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListFragment.SmsItem
 
     @Override
     public void onBindViewHolder(final SmsListFragment.SmsItemViewHolder holder, final int position) {
-        final int verifiedPosition = holder.getAdapterPosition();
-        final Sms item = mList.get(verifiedPosition);
+        try {
+            final int verifiedPosition = holder.getAdapterPosition();
+            final Sms item = mList.get(verifiedPosition);
 
-        if (item != null) {
-            holder.getName().setText(getContactDisplayNameByNumber(item.getAddress()));
-            long millis = Long.parseLong(item.getTime()) * 1000;
+            if (item != null) {
+                holder.getName().setText(getContactDisplayNameByNumber(item.getAddress()));
+                long millis = Long.parseLong(item.getTime()) * 1000;
 
-            SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm", Locale.US);
-            sdf.setTimeZone(TimeZone.getDefault());
-            String date = sdf.format(new Date(millis));
+                SimpleDateFormat sdf = new SimpleDateFormat("MM-dd HH:mm", Locale.US);
+                sdf.setTimeZone(TimeZone.getDefault());
+                String date = sdf.format(new Date(millis));
 
-            holder.getMessage().setText(item.getMsg());
-            holder.getDate().setText(date);
+                holder.getMessage().setText(item.getMsg());
+                holder.getDate().setText(date);
+            }
+        } catch (Exception e) {
+            Crashlytics.logException(e);
         }
     }
 
@@ -70,7 +75,7 @@ public class SmsListAdapter extends RecyclerView.Adapter<SmsListFragment.SmsItem
         return mList.size();
     }
 
-    public String getContactDisplayNameByNumber(String number) {
+    private String getContactDisplayNameByNumber(String number) {
         Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
         String name = number;
 

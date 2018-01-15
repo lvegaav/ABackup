@@ -14,6 +14,7 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.main.event.VCardToggleEvent;
 import com.americavoice.backup.main.ui.widget.TextDrawable;
 import com.americavoice.backup.utils.BitmapUtils;
+import com.crashlytics.android.Crashlytics;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -86,83 +87,74 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListFragment
 
     @Override
     public void onBindViewHolder(final ContactListFragment.ContactItemViewHolder holder, final int position) {
-        final int verifiedPosition = holder.getAdapterPosition();
-        final VCard vcard = vCards.get(verifiedPosition);
 
-        if (vcard != null) {
+        try {
+            final int verifiedPosition = holder.getAdapterPosition();
+            final VCard vcard = vCards.get(verifiedPosition);
 
-            if (checkedVCards.contains(position)) {
-                holder.getName().setChecked(true);
+            if (vcard != null) {
 
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                    holder.getName().getCheckMarkDrawable()
-//                            .setColorFilter(ThemeUtils.primaryAccentColor(), PorterDuff.Mode.SRC_ATOP);
-//                }
-            } else {
-                holder.getName().setChecked(false);
+                if (checkedVCards.contains(position)) {
+                    holder.getName().setChecked(true);
+                } else {
+                    holder.getName().setChecked(false);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     holder.getName().getCheckMarkDrawable().clearColorFilter();
                 }
-            }
 
-            holder.getName().setText(getDisplayName(vcard));
+                holder.getName().setText(getDisplayName(vcard));
 
-            // photo
-            if (vcard.getPhotos().size() > 0) {
-                byte[] data = vcard.getPhotos().get(0).getData();
+                // photo
+                if (vcard.getPhotos().size() > 0) {
+                    byte[] data = vcard.getPhotos().get(0).getData();
 
-                Bitmap thumbnail = BitmapFactory.decodeByteArray(data, 0, data.length);
-                RoundedBitmapDrawable drawable = BitmapUtils.bitmapToCircularBitmapDrawable(context.getResources(),
-                        thumbnail);
+                    Bitmap thumbnail = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    RoundedBitmapDrawable drawable = BitmapUtils.bitmapToCircularBitmapDrawable(context.getResources(),
+                            thumbnail);
 
-                holder.getBadge().setImageDrawable(drawable);
-            } else {
-                try {
-                    holder.getBadge().setImageDrawable(
-                            TextDrawable.createNamedAvatar(
-                                    holder.getName().getText().toString(),
-                                    context.getResources().getDimension(R.dimen.list_item_avatar_icon_radius)
-                            )
-                    );
-                } catch (Exception e) {
-                    holder.getBadge().setImageResource(R.mipmap.ic_user);
-                }
-            }
-
-            // Checkbox
-            holder.setVCardListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    holder.getName().setChecked(!holder.getName().isChecked());
-
-                    if (holder.getName().isChecked()) {
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                            holder.getName().getCheckMarkDrawable()
-//                                    .setColorFilter(ThemeUtils.primaryAccentColor(), PorterDuff.Mode.SRC_ATOP);
-//                        }
-
-                        if (!checkedVCards.contains(verifiedPosition)) {
-                            checkedVCards.add(verifiedPosition);
-                        }
-                        if (checkedVCards.size() == 1) {
-                            EventBus.getDefault().post(new VCardToggleEvent(true));
-                        }
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            holder.getName().getCheckMarkDrawable().clearColorFilter();
-                        }
-
-                        if (checkedVCards.contains(verifiedPosition)) {
-                            checkedVCards.remove(verifiedPosition);
-                        }
-
-                        if (checkedVCards.size() == 0) {
-                            EventBus.getDefault().post(new VCardToggleEvent(false));
-                        }
+                    holder.getBadge().setImageDrawable(drawable);
+                } else {
+                    try {
+                        holder.getBadge().setImageDrawable(
+                                TextDrawable.createNamedAvatar(
+                                        holder.getName().getText().toString(),
+                                        context.getResources().getDimension(R.dimen.list_item_avatar_icon_radius)
+                                )
+                        );
+                    } catch (Exception e) {
+                        holder.getBadge().setImageResource(R.mipmap.ic_user);
                     }
                 }
-            });
+
+                // Checkbox
+                holder.setVCardListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        holder.getName().setChecked(!holder.getName().isChecked());
+
+                        if (holder.getName().isChecked()) {
+                            if (!checkedVCards.contains(verifiedPosition)) {
+                                checkedVCards.add(verifiedPosition);
+                            }
+                            if (checkedVCards.size() == 1) {
+                                EventBus.getDefault().post(new VCardToggleEvent(true));
+                            }
+                        } else {
+                            holder.getName().getCheckMarkDrawable().clearColorFilter();
+
+                            if (checkedVCards.contains(verifiedPosition)) {
+                                checkedVCards.remove(verifiedPosition);
+                            }
+
+                            if (checkedVCards.size() == 0) {
+                                EventBus.getDefault().post(new VCardToggleEvent(false));
+                            }
+                        }
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Crashlytics.logException(e);
         }
     }
 

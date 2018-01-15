@@ -163,7 +163,7 @@
     <string name="contacts.automatic_backup">Backup Automático</string>
     <string name="contacts.last_backup">Último Backup</string>
     <string name="contacts.preference_backup_never">nunca</string>
-    <string name="contacts.backup_button">Realizar Backup</string>
+    <string name="contacts.backup_button">Realizar\nBackup</string>
     <string name="contacts.read_permission">Permisos para leer tu lista de contactos son requeridos</string>
     <string name="contacts.list_restore_selected">Restaurar contactos seleccionados</string>
     <string name="contacts.list_account_chooser_title">Escoje una cuenta para importar</string>
@@ -174,7 +174,7 @@
     <string name="contacts.preferences_import_scheduled">Import calendarizado empezará enseguida</string>
     <string name="contacts.preferences_something_strange_happened">No podemos encontrar tu último backup!</string>
     <string name="contacts.preferences_no_file_found">Archivo no encontrado</string>
-    <string name="contacts.preference_restore_backup">Restaurar</string>
+    <string name="contacts.preference_restore_backup">Restaurar\nBackup</string>
 
     <string name="calls.title">Llamadas</string>
     <string name="calls.read_permission">Permisos para leer tu lista de llamadas son requeridos</string>
@@ -296,6 +296,8 @@
     <string name="payment_confirmation_question">¿Esta seguro de comprar este plan en este momento?</string>
     <string name="payment_remember">Recuerde que todavia tiene una subscripcion:</string>
     <string name="payment_expires">y expira el</string>
+    <string name="settings.backup_options">Opciones de Backup</string>
+    <string name="backup_options.title">Opciones de Backup</string>
     <string name="error.country_code_required">Country code is required</string>
 
 </resources>

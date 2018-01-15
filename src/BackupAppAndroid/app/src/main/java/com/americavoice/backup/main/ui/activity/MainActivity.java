@@ -11,6 +11,7 @@ import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.di.components.DaggerAppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.MainFragment;
+import com.americavoice.backup.settings.ui.BackupOptionsFragment;
 import com.americavoice.backup.settings.ui.SettingsFragment;
 import com.americavoice.backup.settings.ui.StorageInfoFragment;
 import com.americavoice.backup.utils.BaseConstants;
@@ -27,7 +28,8 @@ import static com.americavoice.backup.utils.FirebaseUtils.createFirebaseEvent;
 public class MainActivity extends BaseOwncloudActivity implements HasComponent<AppComponent>,
         MainFragment.Listener,
         SettingsFragment.Listener,
-        StorageInfoFragment.Listener{
+        StorageInfoFragment.Listener,
+        BackupOptionsFragment.Listener {
 
     private AppComponent mAppComponent;
 
@@ -182,6 +184,11 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     }
 
     @Override
+    public void viewBackupOptions() {
+        replaceFragment(R.id.fl_fragment, BackupOptionsFragment.newInstance(), true, true);
+    }
+
+    @Override
     public void onMainBackPressed() {
         finish();
     }
@@ -198,6 +205,11 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
 
     @Override
     public void onBackStorageInfoClicked() {
+        viewSettings();
+    }
+
+    @Override
+    public void onBackBackupOptionsClicked() {
         viewSettings();
     }
 }

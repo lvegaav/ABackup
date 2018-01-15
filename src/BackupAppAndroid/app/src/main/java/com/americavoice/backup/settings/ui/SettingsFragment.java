@@ -5,11 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +37,6 @@ import org.greenrobot.eventbus.Subscribe;
 
 import javax.inject.Inject;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -58,16 +54,17 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     public interface Listener {
         void onBackSettingsClicked();
         void viewStorageInfo();
+        void viewBackupOptions();
     }
 
     @Inject
     SettingsPresenter mPresenter;
+
     private Listener mListener;
     private Unbinder mUnBind;
+
     @BindView(R.id.tv_title)
     TextView tvTitle;
-    @BindString(R.string.main_title)
-    String title;
 
     @BindView(R.id.tv_version_name)
     TextView tvVersionName;
@@ -307,6 +304,13 @@ public class SettingsFragment extends BaseFragment implements SettingsView {
     public void onStorageInfo() {
         if (mListener != null) {
             mListener.viewStorageInfo();
+        }
+    }
+
+    @OnClick(R.id.ll_backup_options)
+    public void onBackupOptions() {
+        if (mListener != null){
+            mListener.viewBackupOptions();
         }
     }
 

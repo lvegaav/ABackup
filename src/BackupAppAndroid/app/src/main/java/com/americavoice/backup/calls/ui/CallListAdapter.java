@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.calls.ui.model.Call;
+import com.crashlytics.android.Crashlytics;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,38 +54,42 @@ public class CallListAdapter extends RecyclerView.Adapter<CallListFragment.CallI
 
     @Override
     public void onBindViewHolder(final CallListFragment.CallItemViewHolder holder, final int position) {
-        final int verifiedPosition = holder.getAdapterPosition();
-        final Call item = mList.get(verifiedPosition);
+        try {
+            final int verifiedPosition = holder.getAdapterPosition();
+            final Call item = mList.get(verifiedPosition);
 
-        if (item != null) {
-            holder.getName().setText(getContactDisplayNameByNumber(item.getPhoneNumber()));
-            long millis = (item.getCallDuration() != null? Long.parseLong(item.getCallDuration()):0) * 1000;
+            if (item != null) {
+                holder.getName().setText(getContactDisplayNameByNumber(item.getPhoneNumber()));
+                long millis = (item.getCallDuration() != null? Long.parseLong(item.getCallDuration()):0) * 1000;
 
-            TimeZone tz = TimeZone.getTimeZone("UTC");
-            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-            df.setTimeZone(tz);
-            String time = df.format(new Date(millis));
+                TimeZone tz = TimeZone.getTimeZone("UTC");
+                SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+                df.setTimeZone(tz);
+                String time = df.format(new Date(millis));
 
 
-            millis = item.getCallDate() != null ? Long.parseLong(item.getCallDate()): 0;
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            sdf.setTimeZone(TimeZone.getDefault());
-            String date = sdf.format(new Date(millis));
+                millis = item.getCallDate() != null ? Long.parseLong(item.getCallDate()): 0;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                sdf.setTimeZone(TimeZone.getDefault());
+                String date = sdf.format(new Date(millis));
 
-            holder.getDuration().setText(time);
-            holder.getDate().setText(date);
-            switch (Integer.parseInt(item.getCallType())) {
-                case CallLog.Calls.OUTGOING_TYPE:
-                    holder.getDate().setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call_made, 0, 0, 0);
-                    break;
-                case CallLog.Calls.INCOMING_TYPE:
-                    holder.getDate().setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call_received, 0, 0, 0);
-                    break;
+                holder.getDuration().setText(time);
+                holder.getDate().setText(date);
+                switch (Integer.parseInt(item.getCallType())) {
+                    case CallLog.Calls.OUTGOING_TYPE:
+                        holder.getDate().setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call_made, 0, 0, 0);
+                        break;
+                    case CallLog.Calls.INCOMING_TYPE:
+                        holder.getDate().setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call_received, 0, 0, 0);
+                        break;
 
-                case CallLog.Calls.MISSED_TYPE:
-                    holder.getDate().setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call_missed, 0, 0, 0);
-                    break;
+                    case CallLog.Calls.MISSED_TYPE:
+                        holder.getDate().setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_call_missed, 0, 0, 0);
+                        break;
+                }
             }
+        } catch (Exception e) {
+            Crashlytics.logException(e);
         }
     }
 

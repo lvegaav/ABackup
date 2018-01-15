@@ -281,6 +281,12 @@ public class LoginRegisterFragment extends BaseAuthenticatorFragment implements 
         etPassword.setError(getString(R.string.login_validationNewPasswordMatches));
     }
 
+
+    @OnClick(R.id.tv_forgot)
+    public void onForgot(View v){
+        if (this.mListener != null) this.mListener.onBackLoginRegisterClicked();
+    }
+
     @OnClick(R.id.btn_register)
     public void onRegister(View v) {
         String countryCode = "";
