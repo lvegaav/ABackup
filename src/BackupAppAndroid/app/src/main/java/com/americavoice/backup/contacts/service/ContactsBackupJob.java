@@ -153,7 +153,7 @@ public class ContactsBackupJob extends Job {
         // store total
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
         arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                ContactsBackupFragment.PREFERENCE_CONTACTS_LAST_TOTAL,
+                ContactsBackupFragment.PREFERENCE_CONTACTS_LAST_TOTAL + account.name,
                 String.valueOf(vCard.size()));
 
         String filename = DateFormat.format("yyyy-MM-dd_HH-mm-ss", Calendar.getInstance()).toString() + ".vcf";

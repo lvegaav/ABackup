@@ -192,21 +192,23 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     public void refreshTotal(int size) {
         // store total
         final Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+
+
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(mContext.getContentResolver());
         switch (mPath) {
             case BaseConstants.DOCUMENTS_REMOTE_FOLDER:
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL,
+                        FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL + account.name,
                         String.valueOf(size));
                 break;
             case BaseConstants.PHOTOS_REMOTE_FOLDER:
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL,
+                        FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL + account.name,
                         String.valueOf(size));
                 break;
             case BaseConstants.VIDEOS_REMOTE_FOLDER:
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL,
+                        FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL + account.name,
                         String.valueOf(size));
                 break;
             default:
