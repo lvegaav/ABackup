@@ -180,7 +180,7 @@ public class CallsBackupJob extends Job {
         // store total
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
         arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                CallsBackupFragment.PREFERENCE_CALLS_LAST_TOTAL,
+                CallsBackupFragment.PREFERENCE_CALLS_LAST_TOTAL + account.name,
                 String.valueOf(calls.size()));
 
         if (calls.size() == 0) {

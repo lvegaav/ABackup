@@ -323,14 +323,14 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
         TapTargetSequence sequence = new TapTargetSequence(getActivity())
                 .targets(
-                        TapTarget.forView(llPhotos, "Welcome", getString(R.string.tour_dashboard_icons))
+                        TapTarget.forView(llPhotos, getString(R.string.login_hello), getString(R.string.tour_dashboard_icons))
                                 .dimColor(android.R.color.black)
                                 .outerCircleColor(R.color.blackOpacity80)
                                 .targetCircleColor(R.color.colorAccent)
                                 .transparentTarget(true)
                                 .textColor(android.R.color.white)
                                 .cancelable(false),
-                        TapTarget.forView(btnSettings, "Settings", getString(R.string.tour_dashboard_settings))
+                        TapTarget.forView(btnSettings, getString(R.string.settings_title), getString(R.string.tour_dashboard_settings))
                                 .dimColor(android.R.color.black)
                                 .outerCircleColor(R.color.blackOpacity80)
                                 .targetCircleColor(R.color.colorAccent)

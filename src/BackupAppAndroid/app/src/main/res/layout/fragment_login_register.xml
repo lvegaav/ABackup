@@ -84,7 +84,8 @@
 
             <Button
                 android:id="@+id/btn_register"
-                style="@style/Button"
+                style="@style/Button.Secondary"
+                android:background="@color/colorAccent"
                 android:layout_gravity="center"
                 android:layout_marginTop="15dp"
                 android:text="@string/login.registerPlaceHolder"
