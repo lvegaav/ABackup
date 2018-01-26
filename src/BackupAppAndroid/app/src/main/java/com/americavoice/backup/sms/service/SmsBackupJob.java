@@ -180,7 +180,7 @@ public class SmsBackupJob extends Job {
             // store total
             ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContext().getContentResolver());
             arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                    SmsBackupFragment.PREFERENCE_SMS_LAST_TOTAL,
+                    SmsBackupFragment.PREFERENCE_SMS_LAST_TOTAL + account.name,
                     String.valueOf(smsList.size()));
             if (smsList.size() == 0) {
                 return;

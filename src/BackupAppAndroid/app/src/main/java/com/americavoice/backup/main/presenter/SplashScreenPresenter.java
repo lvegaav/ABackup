@@ -136,8 +136,8 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
         Account account = AccountUtils.getCurrentOwnCloudAccount(mView.getContext());
         if (account != null) {
             AccountManager accountManager = AccountManager.get(mView.getContext());
-            String password = accountManager.getUserData(account, "backupPassword");
             String name = accountManager.getUserData(account, "backupUser");
+            String password = accountManager.getUserData(account, "backupPassword");
             if (name == null || password == null){
                 mNetworkProvider.logout();
                 mView.viewHome();
