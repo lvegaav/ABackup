@@ -536,8 +536,16 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         }
 
         return days;
+      } else {
+        Calendar day = Calendar.getInstance();
+        day.add(Calendar.DAY_OF_MONTH, 0);
+        Calendar[] days = new Calendar[1];
+        days[0] = day;
+
+        return days;
       }
     }
+
     return null;
   }
 
