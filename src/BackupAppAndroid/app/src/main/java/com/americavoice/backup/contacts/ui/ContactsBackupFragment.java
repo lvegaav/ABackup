@@ -276,29 +276,35 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
       selectableDays.add(file.getFileName());
     }
 
-    Collections.sort(selectableDays, new Comparator<String>() {
-      DateFormat f = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
+    if (!selectableDays.isEmpty()) {
+      Collections.sort(selectableDays, new Comparator<String>() {
+        DateFormat f = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
 
-      @Override
-      public int compare(String o1, String o2) {
-        try {
-          return f.parse(o1).compareTo(f.parse(o2));
-        } catch (ParseException e) {
-          throw new IllegalArgumentException(e);
+        @Override
+        public int compare(String o1, String o2) {
+          try {
+            return f.parse(o1).compareTo(f.parse(o2));
+          } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+          }
+        }
+      });
+
+      for (OCFile file : backupFiles) {
+        if (file.getFileName().equals(selectableDays.get(selectableDays.size() - 1))) {
+          ocFile = file;
         }
       }
-    });
 
-    for (OCFile file : backupFiles) {
-      if (file.getFileName().equals(selectableDays.get(selectableDays.size() - 1))) {
-        ocFile = file;
+
+      try {
+        loadLastBackupTask.execute();
+      } catch (Exception e) {
+        Crashlytics.logException(e);
       }
-    }
-
-    try {
-      loadLastBackupTask.execute();
-    } catch (Exception e) {
-      Crashlytics.logException(e);
+    } else {
+      emptyContentHeadline.setVisibility(View.GONE);
+      emptyContentProgressBar.setVisibility(View.GONE);
     }
   }
 
@@ -507,7 +513,9 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
     try {
       Calendar[] selectedDays = getSelectedDay();
-      datePickerDialog.setSelectableDays(selectedDays);
+      if (selectedDays != null) {
+        datePickerDialog.setSelectableDays(selectedDays);
+      }
       datePickerDialog.show(getActivity().getFragmentManager(), "Datepickerdialog");
     } catch (ParseException e) {
       Crashlytics.logException(e);
@@ -515,17 +523,22 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
   }
 
   private Calendar[] getSelectedDay() throws ParseException {
-    Calendar[] days = new Calendar[selectableDays.size()];
-    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+    if (selectableDays != null) {
+      if (!selectableDays.isEmpty()) {
+        Calendar[] days = new Calendar[selectableDays.size()];
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 
-    for (int i = 0; i < selectableDays.size(); i++) {
-      Date date = formatter.parse(selectableDays.get(i).substring(0, 10));
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTime(date);
-      days[i] = calendar;
+        for (int i = 0; i < selectableDays.size(); i++) {
+          Date date = formatter.parse(selectableDays.get(i).substring(0, 10));
+          Calendar calendar = Calendar.getInstance();
+          calendar.setTime(date);
+          days[i] = calendar;
+        }
+
+        return days;
+      }
     }
-
-    return days;
+    return null;
   }
 
   @Override
