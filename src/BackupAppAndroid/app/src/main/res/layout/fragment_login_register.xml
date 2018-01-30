@@ -57,7 +57,7 @@
                     style="@style/EditText"
                     android:hint="@string/login.phonePlaceHolder"
                     android:imeOptions="actionNext"
-                    android:inputType="phone"
+                    android:inputType="number"
                     android:layout_toEndOf="@+id/sp_country" />
             </RelativeLayout>
 
