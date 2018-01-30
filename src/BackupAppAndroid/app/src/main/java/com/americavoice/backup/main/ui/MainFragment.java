@@ -438,8 +438,9 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     @OnClick(R.id.iv_logo)
     public void onLogo() {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Const.ICON_URL));
-        startActivity(browserIntent);
+        //TODO
+        //Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Const.ICON_URL));
+        //startActivity(browserIntent);
     }
 
 
