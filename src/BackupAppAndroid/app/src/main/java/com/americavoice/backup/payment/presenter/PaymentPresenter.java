@@ -1,5 +1,7 @@
 package com.americavoice.backup.payment.presenter;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.americavoice.backup.R;
@@ -160,6 +162,13 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
             mNetworkProvider.createSubscription(request, new AsyncResult<dtos.CreateSubscriptionResponse>() {
                 @Override
                 public void success(dtos.CreateSubscriptionResponse response) {
+                    // place here the dialog.
+                    new AlertDialog.Builder(mPaymentView.getContext(), R.style.WhiteDialog)
+                            .setTitle(R.string.app_name)
+                            .setMessage(R.string.payment_success_message)
+                            .setPositiveButton(R.string.common_ok, null)
+                            .setCancelable(false)
+                            .show();
                     checkSubscriptionAndShow();
                 }
 

@@ -299,5 +299,6 @@
     <string name="settings.backup_options">Opciones de Backup</string>
     <string name="backup_options.title">Opciones de Backup</string>
     <string name="error.country_code_required">Country code is required</string>
+    <string name="payment_success_message">Gracias por tu preferencia, tu compra ha sido exitosa!</string>
 
 </resources>
