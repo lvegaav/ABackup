@@ -4,23 +4,17 @@ package com.americavoice.backup.login.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.americavoice.backup.AndroidApplication;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AuthenticatorAsyncTask;
 import com.americavoice.backup.di.components.AppComponent;
-import com.americavoice.backup.login.model.SpinnerItem;
 import com.americavoice.backup.login.presenter.LoginPresenter;
 import com.americavoice.backup.main.event.OnBackPress;
-import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.utils.ConnectivityUtils;
@@ -32,8 +26,6 @@ import com.owncloud.android.lib.common.operations.RemoteOperationResult;
 import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -52,8 +44,11 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
      */
     public interface Listener {
         void viewValidation(String username, String device);
+
         void viewRegister();
+
         void viewForgot();
+
         void onBackLoginClicked();
     }
 
@@ -66,7 +61,6 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
     public EditText etUsername;
     @BindView(R.id.et_password)
     public EditText etPassword;
-
 
 
     public LoginFragment() {
@@ -160,7 +154,9 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
 
     @Override
     public void showGettingServerInfo() {
-        showDialog(getString(R.string.common_getting_server_info));
+        if (getActivity() != null) {
+            showDialog(getString(R.string.common_getting_server_info));
+        }
     }
 
     @Override
@@ -203,84 +199,87 @@ public class LoginFragment extends BaseAuthenticatorFragment implements LoginVie
 
     @Override
     public void onAuthenticatorTaskCallback(RemoteOperationResult result) {
-        hideGettingServerInfo();
-        if (result.isSuccess()) {
-            Log_OC.d(TAG, "Successful access - time to save the account");
+        if (getActivity() != null) {
+            hideGettingServerInfo();
+            if (result.isSuccess()) {
+                Log_OC.d(TAG, "Successful access - time to save the account");
 
-            boolean success = false;
+                boolean success = false;
 
-            if (mAction == LoginActivity.ACTION_CREATE) {
-                AndroidApplication application = (AndroidApplication) getActivity().getApplication();
-                success = createAccount(result, application.getSerialB1(), application.getSerialB2(),
-                        etUsername.getText().toString(), etPassword.getText().toString());
+                if (mAction == LoginActivity.ACTION_CREATE) {
+                    AndroidApplication application = (AndroidApplication) getActivity().getApplication();
+                    success = createAccount(result, application.getSerialB1(), application.getSerialB2(),
+                      etUsername.getText().toString(), etPassword.getText().toString());
 
-            } else {
-                try {
-                    updateAccountAuthentication(etPassword.getText().toString());
-                    success = true;
+                } else {
+                    try {
+                        updateAccountAuthentication(etPassword.getText().toString());
+                        success = true;
 
-                } catch (com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException e) {
-                    Log_OC.e(TAG, "Account " + mAccount + " was removed!", e);
-                    showToastMessage(getContext().getString(R.string.auth_account_does_not_exist));
-                    getActivity().finish();
+                    } catch (com.owncloud.android.lib.common.accounts.AccountUtils.AccountNotFoundException e) {
+                        Log_OC.e(TAG, "Account " + mAccount + " was removed!", e);
+                        showToastMessage(getContext().getString(R.string.auth_account_does_not_exist));
+                        getActivity().finish();
+                    }
                 }
+
+                if (success) {
+                    FirebaseUtils.createLoginEvent(mFirebaseAnalytics,
+                      FirebaseUtils.LOGIN_METHOD_PHONE_NUMBER);
+                    getActivity().finish();
+                } else {
+                    showToastMessage(getString(R.string.common_account_error));
+                }
+
+            } else if (result.isServerFail() || result.isException()) {
+                Log_OC.e(TAG, "Something went wrong with the server: " + result.getLogMessage());
+                Crashlytics.logException(result.getException());
+                showToastMessage(getString(R.string.exception_message_generic));
+
+            } else {    // authorization fail due to client side - probably wrong credentials
+                showToastMessage(getString(R.string.common_wrong_credentials));
             }
-
-            if (success) {
-                FirebaseUtils.createLoginEvent(mFirebaseAnalytics,
-                        FirebaseUtils.LOGIN_METHOD_PHONE_NUMBER);
-                getActivity().finish();
-            } else {
-                showToastMessage(getString(R.string.common_account_error));
-            }
-
-        } else if (result.isServerFail() || result.isException()) {
-            Log_OC.e(TAG, "Something went wrong with the server: " + result.getLogMessage());
-            Crashlytics.logException(result.getException());
-            showToastMessage(getString(R.string.exception_message_generic));
-
-        } else {    // authorization fail due to client side - probably wrong credentials
-            showToastMessage(getString(R.string.common_wrong_credentials));
         }
     }
 
     @Override
     public void loginWithCredentials() {
-        AndroidApplication application = (AndroidApplication) getActivity().getApplication();
-        OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(application.getSerialB1(), application.getSerialB2());
-        AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
-        Object[] params = {getResources().getString(R.string.baseUrlOwnCloud), credentials};
-        loginAsyncTask.execute(params);
+        if (getActivity() != null) {
+            AndroidApplication application = (AndroidApplication) getActivity().getApplication();
+            OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(application.getSerialB1(), application.getSerialB2());
+            AuthenticatorAsyncTask loginAsyncTask = new AuthenticatorAsyncTask(this);
+            Object[] params = {getResources().getString(R.string.baseUrlOwnCloud), credentials};
+            loginAsyncTask.execute(params);
+        }
     }
 
     @OnClick(R.id.btn_login)
-    public void Login(View v)
-    {
+    public void Login(View v) {
         if (ConnectivityUtils.isAppConnected(getContext()))
             mPresenter.submit(
-                    etUsername.getText().toString(),
-                    etPassword.getText().toString());
+              etUsername.getText().toString(),
+              etPassword.getText().toString());
         else
             showToastMessage(getString(R.string.common_connectivity_error));
     }
 
     @OnClick(R.id.btn_register)
-    public void Register(View v)
-    {
+    public void Register(View v) {
         if (this.mListener != null) this.mListener.viewRegister();
     }
 
     @OnClick(R.id.tv_forgot)
-    public void Forgot(View v)
-    {
+    public void Forgot(View v) {
         if (this.mListener != null) this.mListener.viewForgot();
     }
 
     @Override
     public void saveSerials(String serialB1, String serialB2) {
-        AndroidApplication application = (AndroidApplication) getActivity().getApplication();
-        application.setSerialB1(serialB1);
-        application.setSerialB2(serialB2);
+        if (getActivity() != null) {
+            AndroidApplication application = (AndroidApplication) getActivity().getApplication();
+            application.setSerialB1(serialB1);
+            application.setSerialB2(serialB2);
+        }
     }
 }
 

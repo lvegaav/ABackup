@@ -78,7 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             fragmentTransaction.disallowAddToBackStack();
         }
 
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     /**
@@ -117,4 +117,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mProgress != null) {
+            mProgress.dismiss();
+            mProgress = null;
+        }
+    }
 }

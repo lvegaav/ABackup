@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
@@ -17,10 +16,7 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.SwitchCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,24 +35,19 @@ import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
-import com.americavoice.backup.news.ui.NewsActivity;
 import com.americavoice.backup.payment.ui.PaymentActivity;
 import com.americavoice.backup.service.MediaContentJob;
 import com.americavoice.backup.service.WifiRetryJob;
-import com.americavoice.backup.settings.presenter.SettingsPresenter;
 import com.americavoice.backup.settings.presenter.StorageInfoPresenter;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.sync.service.SyncBackupJob;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.PermissionUtil;
-import com.americavoice.backup.utils.WifiUtils;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
-import com.owncloud.android.lib.common.utils.Log_OC;
 
 import org.greenrobot.eventbus.Subscribe;
-import org.w3c.dom.Text;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -70,7 +61,6 @@ import javax.inject.Inject;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
@@ -175,7 +165,7 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
         final List<Integer> barColors = new ArrayList<>();
         List<Float> barRatios = new ArrayList<>();
         float curRatio = 0;
-        for(int i = 0; i < colors.size(); i++) {
+        for (int i = 0; i < colors.size(); i++) {
             barColors.add(colors.get(i));
             barColors.add(colors.get(i));
             barRatios.add(curRatio);
@@ -193,15 +183,15 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
             @Override
             public Shader resize(int i, int i1) {
                 LinearGradient lg = new LinearGradient(0, 0, mRatios.getWidth(), 0,
-                        barColorsArray,
-                        barRatiosArray,
-                        Shader.TileMode.REPEAT);
+                  barColorsArray,
+                  barRatiosArray,
+                  Shader.TileMode.REPEAT);
 
                 return lg;
             }
         };
         PaintDrawable paintDrawable = new PaintDrawable();
-        paintDrawable.setShape(new RoundRectShape(new float[]{100,100,100,100,100,100,100,100}, null, null));
+        paintDrawable.setShape(new RoundRectShape(new float[]{100, 100, 100, 100, 100, 100, 100, 100}, null, null));
         paintDrawable.setShaderFactory(sf);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             mRatios.setBackgroundDrawable(paintDrawable);
@@ -257,10 +247,10 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
     public void showLoading() {
         hideLoading();
         mProgress = ProgressDialog.show(getActivity(),
-                getResources().getString(R.string.app_name),
-                getResources().getString(R.string.common_loading),
-                true,
-                false);
+          getResources().getString(R.string.app_name),
+          getResources().getString(R.string.common_loading),
+          true,
+          false);
     }
 
     @Override
@@ -276,10 +266,10 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
     public void showGettingPending() {
         hideLoading();
         mProgress = ProgressDialog.show(getActivity(),
-                getResources().getString(R.string.app_name),
-                getResources().getString(R.string.sync_getting_pending_files),
-                true,
-                false);
+          getResources().getString(R.string.app_name),
+          getResources().getString(R.string.sync_getting_pending_files),
+          true,
+          false);
     }
 
     @Override
@@ -308,8 +298,7 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
     }
 
     @OnClick(R.id.btn_back)
-    void onButtonBack()
-    {
+    void onButtonBack() {
         if (this.mListener != null) this.mListener.onBackStorageInfoClicked();
     }
 
@@ -335,95 +324,97 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
         String textToDisplay = "";
         String permissionArgument = getString(R.string.sync_backup_photos_and_videos_as_well);
         if (!PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
-                || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)
-                || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG))
+          || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)
+          || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG))
             permissionArgument = getString(R.string.sync_backup_photos_and_videos_when_permission_granted);
         if (pendingPhotos == 0 && pendingVideos == 0) {
-            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())) {
                 textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
                 textToDisplay = getString(R.string.sync_backup_no_files_pending, permissionArgument);
             }
         } else {
-            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())) {
                 textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
                 textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos, permissionArgument);
             }
         }
         new MaterialDialog.Builder(getActivity())
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if (mPresenter != null) {
-                            mPresenter.scheduleSync();
-                        }
-                    }
-                })
-                .onAny(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        mDialogIsShowing = false;
-                    }
-                })
-                .title(R.string.app_name)
-                .content(textToDisplay)
-                .positiveText(R.string.sync_backup_now)
-                .negativeText(R.string.common_cancel).build().show();
+          .onPositive(new MaterialDialog.SingleButtonCallback() {
+              @Override
+              public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                  if (mPresenter != null) {
+                      mPresenter.scheduleSync();
+                  }
+              }
+          })
+          .onAny(new MaterialDialog.SingleButtonCallback() {
+              @Override
+              public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                  mDialogIsShowing = false;
+              }
+          })
+          .title(R.string.app_name)
+          .content(textToDisplay)
+          .positiveText(R.string.sync_backup_now)
+          .negativeText(R.string.common_cancel).build().show();
         mDialogIsShowing = true;
     }
 
     private float getPercent(BigDecimal value, BigDecimal size) {
         float x = value != null ? value.floatValue() * 100 : 0;
         float x1 = x / size.floatValue();
-        BigDecimal x2= new BigDecimal(x1).setScale(1,BigDecimal.ROUND_HALF_UP);
+        BigDecimal x2 = new BigDecimal(x1).setScale(1, BigDecimal.ROUND_HALF_UP);
         return x2.floatValue();
     }
 
     @Override
     public void showPercent(HashMap<String, BigDecimal> sizes, BigDecimal total, BigDecimal totalAvailable) {
-        llCapacityInfo.setVisibility(View.VISIBLE);
+        if (llCapacityInfo != null) {
+            llCapacityInfo.setVisibility(View.VISIBLE);
 
-        float photoPercent = getPercent(sizes.get(BaseConstants.PHOTOS_FOLDER),total);
-        float videoPercent = getPercent(sizes.get(BaseConstants.VIDEOS_FOLDER),total);
-        float contactPercent = getPercent(sizes.get(BaseConstants.CONTACTS_FOLDER),total);
-        float documentPercent = getPercent(sizes.get(BaseConstants.DOCUMENTS_FOLDER),total);
-        float smsPercent = getPercent(sizes.get(BaseConstants.SMS_FOLDER), total);
-        float callsPercent = getPercent(sizes.get(BaseConstants.CALLS_FOLDER),total);
-        float availablePercent = getPercent(totalAvailable, total);
+            float photoPercent = getPercent(sizes.get(BaseConstants.PHOTOS_FOLDER), total);
+            float videoPercent = getPercent(sizes.get(BaseConstants.VIDEOS_FOLDER), total);
+            float contactPercent = getPercent(sizes.get(BaseConstants.CONTACTS_FOLDER), total);
+            float documentPercent = getPercent(sizes.get(BaseConstants.DOCUMENTS_FOLDER), total);
+            float smsPercent = getPercent(sizes.get(BaseConstants.SMS_FOLDER), total);
+            float callsPercent = getPercent(sizes.get(BaseConstants.CALLS_FOLDER), total);
+            float availablePercent = getPercent(totalAvailable, total);
 
-        float totalPercent = photoPercent + videoPercent + contactPercent + documentPercent + smsPercent + callsPercent;
-        tvUsedCapacityPercentage.setText(getString(R.string.settings_storage_percentage, String.format(Locale.US, "%.1f", totalPercent)));
+            float totalPercent = photoPercent + videoPercent + contactPercent + documentPercent + smsPercent + callsPercent;
+            tvUsedCapacityPercentage.setText(getString(R.string.settings_storage_percentage, String.format(Locale.US, "%.1f", totalPercent)));
 
-        List<Integer> colors = Arrays.asList(
-                ContextCompat.getColor(getContext(), R.color.photos_ratio),
-                ContextCompat.getColor(getContext(), R.color.videos_ratio),
-                ContextCompat.getColor(getContext(), R.color.contacts_ratio),
-                ContextCompat.getColor(getContext(), R.color.documents_ratio),
-                ContextCompat.getColor(getContext(), R.color.sms_ratio),
-                ContextCompat.getColor(getContext(), R.color.calls_ratio),
-                ContextCompat.getColor(getContext(), R.color.available_ratio)
-        );
-        List<Float> ratios = Arrays.asList(
-                photoPercent, videoPercent, contactPercent, documentPercent, smsPercent,
-                callsPercent, availablePercent
-        );
+            List<Integer> colors = Arrays.asList(
+              ContextCompat.getColor(getContext(), R.color.photos_ratio),
+              ContextCompat.getColor(getContext(), R.color.videos_ratio),
+              ContextCompat.getColor(getContext(), R.color.contacts_ratio),
+              ContextCompat.getColor(getContext(), R.color.documents_ratio),
+              ContextCompat.getColor(getContext(), R.color.sms_ratio),
+              ContextCompat.getColor(getContext(), R.color.calls_ratio),
+              ContextCompat.getColor(getContext(), R.color.available_ratio)
+            );
+            List<Float> ratios = Arrays.asList(
+              photoPercent, videoPercent, contactPercent, documentPercent, smsPercent,
+              callsPercent, availablePercent
+            );
 
-        createRatioBar(colors, ratios);
+            createRatioBar(colors, ratios);
 
-        float sizeGb = total.divide(new BigDecimal(1073741824), 1, BigDecimal.ROUND_HALF_UP).floatValue();
-        float availableGb = totalAvailable.divide(new BigDecimal(1073741824), 1, BigDecimal.ROUND_HALF_UP).floatValue();
-        float usedGb = sizeGb - availableGb;
-        tvImages.setText(String.format(Locale.US, "%.1f %%", photoPercent));
-        tvVideos.setText(String.format(Locale.US, "%.1f %%", videoPercent));
-        tvContacts.setText(String.format(Locale.US, "%.1f %%", contactPercent));
-        tvFiles.setText(String.format(Locale.US, "%.1f %%", documentPercent));
-        tvSms.setText(String.format(Locale.US, "%.1f %%", smsPercent));
-        tvCalls.setText(String.format(Locale.US, "%.1f %%", callsPercent));
+            float sizeGb = total.divide(new BigDecimal(1073741824), 1, BigDecimal.ROUND_HALF_UP).floatValue();
+            float availableGb = totalAvailable.divide(new BigDecimal(1073741824), 1, BigDecimal.ROUND_HALF_UP).floatValue();
+            float usedGb = sizeGb - availableGb;
+            tvImages.setText(String.format(Locale.US, "%.1f %%", photoPercent));
+            tvVideos.setText(String.format(Locale.US, "%.1f %%", videoPercent));
+            tvContacts.setText(String.format(Locale.US, "%.1f %%", contactPercent));
+            tvFiles.setText(String.format(Locale.US, "%.1f %%", documentPercent));
+            tvSms.setText(String.format(Locale.US, "%.1f %%", smsPercent));
+            tvCalls.setText(String.format(Locale.US, "%.1f %%", callsPercent));
 
-        mCapacityView.setText(String.format(Locale.US, "%.1f GB", sizeGb));
-        mAvailableView.setText(String.format(Locale.US, "%.1f GB", availableGb));
-        mUsedView.setText(String.format(Locale.US, "%.1f GB", usedGb));
+            mCapacityView.setText(String.format(Locale.US, "%.1f GB", sizeGb));
+            mAvailableView.setText(String.format(Locale.US, "%.1f GB", availableGb));
+            mUsedView.setText(String.format(Locale.US, "%.1f GB", usedGb));
+        }
     }
 
     @Override
@@ -437,20 +428,20 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
             bundle.putBoolean(SyncBackupJob.FORCE, true);
 
             new JobRequest.Builder(SyncBackupJob.TAG)
-                    .setExtras(bundle)
-                    .setExecutionWindow(3_000L, 10_000L)
-                    .setRequiresCharging(false)
-                    .setPersisted(false)
-                    .setUpdateCurrent(false)
-                    .build()
-                    .schedule();
+              .setExtras(bundle)
+              .setExecutionWindow(3_000L, 10_000L)
+              .setRequiresCharging(false)
+              .setPersisted(false)
+              .setUpdateCurrent(false)
+              .build()
+              .schedule();
         }
         ContactsBackupFragment.startForcedContactBackupJob(account);
         SmsBackupFragment.startForcedSmsBackupJob(account);
         CallsBackupFragment.startForcedCallBackupJob(account);
         int messageId = R.string.sync_preferences_backup_scheduled;
 
-        if (!PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+        if (!PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())) {
             messageId = R.string.sync_preferences_backup_scheduled_on_wifi;
         }
 
@@ -463,28 +454,28 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
+                  PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
             }
         });
     }
 
 
     private void showMessageOKCancel(String message, MaterialDialog.SingleButtonCallback okListener) {
-        if (!mDialogIsShowing){
+        if (!mDialogIsShowing) {
             new MaterialDialog.Builder(getActivity())
-                    .onPositive(okListener)
-                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            mDialogIsShowing = false;
-                        }
-                    })
-                    .title(R.string.app_name)
-                    .content(message)
-                    .positiveText(R.string.common_ok)
-                    .negativeText(R.string.common_cancel)
-                    .build()
-                    .show();
+              .onPositive(okListener)
+              .onAny(new MaterialDialog.SingleButtonCallback() {
+                  @Override
+                  public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                      mDialogIsShowing = false;
+                  }
+              })
+              .title(R.string.app_name)
+              .content(message)
+              .positiveText(R.string.common_ok)
+              .negativeText(R.string.common_cancel)
+              .build()
+              .show();
             mDialogIsShowing = true;
         }
     }
@@ -507,8 +498,8 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
         }
     }
 
-    @OnClick (R.id.btn_upgrade)
-    public void onUpgrade(){
+    @OnClick(R.id.btn_upgrade)
+    public void onUpgrade() {
         Intent intent = new Intent(getContext(), PaymentActivity.class);
         startActivity(intent);
     }
