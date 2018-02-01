@@ -58,7 +58,7 @@ public class NewsFragment extends BaseFragment implements INewsView {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_news_feed, container, false);
-        mUnbinder = ButterKnife.bind(this,  view);
+        mUnbinder = ButterKnife.bind(this, view);
         if (getActivity() instanceof Listener) {
             mListener = (Listener) getActivity();
         }
@@ -107,10 +107,10 @@ public class NewsFragment extends BaseFragment implements INewsView {
     @Override
     public void setNews(List<dtos.NewsFeed> newsList) {
         mAdapter.updateList(newsList);
-        mRecyclerView.invalidate();
-
+        if (mRecyclerView != null) {
+            mRecyclerView.invalidate();
+        }
     }
-
 
 
     @Override
@@ -131,6 +131,7 @@ public class NewsFragment extends BaseFragment implements INewsView {
     public void showLoading() {
         showDialog(getString(R.string.common_loading));
     }
+
     @Override
     public void hideLoading() {
         hideDialog();
