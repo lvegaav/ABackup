@@ -9,16 +9,12 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.di.PerActivity;
 import com.americavoice.backup.login.model.SpinnerItem;
 import com.americavoice.backup.login.ui.LoginRegisterView;
-import com.americavoice.backup.login.ui.LoginView;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
-import com.americavoice.backup.main.exception.ErrorBundle;
-import com.americavoice.backup.main.exception.ErrorMessageFactory;
 import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
 import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
 
 import net.servicestack.client.AsyncResult;
 import net.servicestack.client.WebServiceException;
@@ -105,7 +101,7 @@ public class LoginRegisterPresenter extends BasePresenter implements IPresenter 
         if (TextUtils.isEmpty(phoneNumber)) {
             hasError = true;
             mView.showPhoneNumberRequired();
-        } else if (phoneNumber.length() < 4 && phoneNumber.length() > 20) {
+        } else if (!Pattern.matches("[0-9]{4,20}",phoneNumber)) {
             hasError = true;
             mView.showPhoneNumberInvalidRange();
         }

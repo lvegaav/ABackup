@@ -133,34 +133,36 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
     }
 
     private void doLogin() {
-        Account account = AccountUtils.getCurrentOwnCloudAccount(mView.getContext());
-        if (account != null) {
-            AccountManager accountManager = AccountManager.get(mView.getContext());
-            String name = accountManager.getUserData(account, "backupUser");
+        if (mView.getContext() != null) {
+            Account account = AccountUtils.getCurrentOwnCloudAccount(mView.getContext());
+            if (account != null) {
+                AccountManager accountManager = AccountManager.get(mView.getContext());
+                String name = accountManager.getUserData(account, "backupUser");
             String password = accountManager.getUserData(account, "backupPassword");
-            if (name == null || password == null){
-                mNetworkProvider.logout();
-                mView.viewHome();
-                return;
-            }
-            mNetworkProvider.login(name, password, new AsyncResult<dtos.AuthenticateResponse>() {
-                @Override
-                public void success(dtos.AuthenticateResponse response) {
-                    if (response.getMeta() != null) {
-                        mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
-                    }
-                    mView.viewHome();
-                }
-
-                @Override
-                public void error(Exception ex) {
-                    Crashlytics.logException(ex);
+                if (name == null || password == null) {
                     mNetworkProvider.logout();
                     mView.viewHome();
+                    return;
                 }
-            });
-        } else{
-            mView.viewHome();
+                mNetworkProvider.login(name, password, new AsyncResult<dtos.AuthenticateResponse>() {
+                    @Override
+                    public void success(dtos.AuthenticateResponse response) {
+                        if (response.getMeta() != null) {
+                            mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
+                        }
+                        mView.viewHome();
+                    }
+
+                    @Override
+                    public void error(Exception ex) {
+                        Crashlytics.logException(ex);
+                        mNetworkProvider.logout();
+                        mView.viewHome();
+                    }
+                });
+            } else {
+                mView.viewHome();
+            }
         }
     }
 }
