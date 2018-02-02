@@ -1,24 +1,22 @@
 
 package com.americavoice.backup.main.ui;
 
-import android.support.v4.app.Fragment;
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.HasComponent;
 import com.americavoice.backup.main.ui.dialog.DialogError;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.greenrobot.eventbus.EventBus;
-
 
 
 /**
@@ -100,6 +98,15 @@ public abstract class BaseFragment extends Fragment {
     protected void hideDialog() {
         if (mProgress != null) {
             mProgress.hide();
+            mProgress.dismiss();
+            mProgress = null;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mProgress != null) {
             mProgress.dismiss();
             mProgress = null;
         }

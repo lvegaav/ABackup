@@ -300,5 +300,6 @@
     <string name="backup_options.title">Opciones de Backup</string>
     <string name="backup_options.description">Seleccione las opciones de las que desea tener una copia de seguridad</string>
     <string name="error.country_code_required">Country code is required</string>
+    <string name="payment_success_message">Gracias por tu preferencia, tu compra ha sido exitosa!</string>
 
 </resources>

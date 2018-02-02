@@ -301,5 +301,6 @@
     <string name="backup_options.title">Backup Options</string>
     <string name="backup_options.description">Select the options you want to have backed up</string>
     <string name="error.country_code_required">Country code is required</string>
+    <string name="payment_success_message">Thank you for your preference, your purchase has been successful!</string>
 
 </resources>

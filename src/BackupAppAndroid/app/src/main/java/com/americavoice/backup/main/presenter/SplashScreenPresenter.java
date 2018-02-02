@@ -133,10 +133,11 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
     }
 
     private void doLogin() {
-        Account account = AccountUtils.getCurrentOwnCloudAccount(mView.getContext());
-        if (account != null) {
-            AccountManager accountManager = AccountManager.get(mView.getContext());
-            String name = accountManager.getUserData(account, "backupUser");
+        if (mView.getContext() != null) {
+            Account account = AccountUtils.getCurrentOwnCloudAccount(mView.getContext());
+            if (account != null) {
+                AccountManager accountManager = AccountManager.get(mView.getContext());
+                String name = accountManager.getUserData(account, "backupUser");
             String password = accountManager.getUserData(account, "backupPassword");
             if (name == null || password == null){
                 mNetworkProvider.logout();
@@ -152,15 +153,16 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
                     mView.viewHome();
                 }
 
-                @Override
-                public void error(Exception ex) {
-                    Crashlytics.logException(ex);
-                    mNetworkProvider.logout();
-                    mView.viewHome();
-                }
-            });
-        } else{
-            mView.viewHome();
+                    @Override
+                    public void error(Exception ex) {
+                        Crashlytics.logException(ex);
+                        mNetworkProvider.logout();
+                        mView.viewHome();
+                    }
+                });
+            } else {
+                mView.viewHome();
+            }
         }
     }
 }

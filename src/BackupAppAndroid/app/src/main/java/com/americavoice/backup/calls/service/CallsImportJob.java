@@ -80,13 +80,11 @@ public class CallsImportJob extends Job {
             String strOrder = android.provider.CallLog.Calls.DATE + " DESC";
             Cursor managedCursor = getContext().getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, strOrder);
 
-
             int number = managedCursor.getColumnIndex(CallLog.Calls.NUMBER);
             int type = managedCursor.getColumnIndex(CallLog.Calls.TYPE);
             int date = managedCursor.getColumnIndex(CallLog.Calls.DATE);
             int duration = managedCursor.getColumnIndex(CallLog.Calls.DURATION);
-            while (managedCursor.moveToNext())
-            {
+            while (managedCursor.moveToNext()) {
                 String phoneNumber = managedCursor.getString(number);
                 String callType = managedCursor.getString(type);
                 String callDate = managedCursor.getString(date);
@@ -99,6 +97,7 @@ public class CallsImportJob extends Job {
             while (br.hasNext()) {
                 String strLine = br.nextLine();
                 JSONArray jsonArr = new JSONArray(strLine);
+                int counter = currentHistory.size();
                 for (int i = 0; i < jsonArr.length(); i++) {
                     String callString = jsonArr.getString(i);
                     //Check if call exists in current history
@@ -114,10 +113,11 @@ public class CallsImportJob extends Job {
                         values.put(CallLog.Calls.CACHED_NUMBER_TYPE, 0);
                         values.put(CallLog.Calls.CACHED_NUMBER_LABEL, "");
                         context.getContentResolver().insert(CallLog.Calls.CONTENT_URI, values);
+                        counter++;
+                        if (counter >= 500) {
+                            break;
+                        }
                     }
-
-
-
                 }
             }
         } catch (Exception e) {

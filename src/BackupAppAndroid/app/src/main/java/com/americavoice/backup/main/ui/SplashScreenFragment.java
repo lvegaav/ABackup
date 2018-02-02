@@ -268,9 +268,11 @@ public class SplashScreenFragment extends BaseFragment implements SplashScreenVi
 
     @Override
     public void saveSerials(String serialB1, String serialB2) {
-        AndroidApplication application = (AndroidApplication) getActivity().getApplication();
-        application.setSerialB1(serialB1);
-        application.setSerialB2(serialB2);
+        if (getActivity() != null) {
+            AndroidApplication application = (AndroidApplication) getActivity().getApplication();
+            application.setSerialB1(serialB1);
+            application.setSerialB2(serialB2);
+        }
     }
 }
 
