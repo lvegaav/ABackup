@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 
@@ -588,6 +589,23 @@ public class FileStorageUtils {
 
         storageManager.deleteFileInMediaScan(file.getAbsolutePath());
         file.delete();
+    }
+
+    public static boolean checkIfFileFinishedSaving(OCFile file) {
+        long lastModified = 0;
+        long lastSize = 0;
+        File realFile = new File(file.getStoragePath());
+        while ((realFile.lastModified() != lastModified) && (realFile.length() != lastSize)) {
+            lastModified = realFile.lastModified();
+            lastSize = realFile.length();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Log.d(TAG, "Failed to sleep for a bit");
+            }
+        }
+
+        return true;
     }
 
 }

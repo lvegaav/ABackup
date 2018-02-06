@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [
-    <!ENTITY loginRegisterNow "Register">
-    ]>
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE resources [<!ENTITY loginRegisterNow "Register">]>
 <resources>
     <string name="app_name">Lock Backup</string>
 
@@ -302,5 +299,8 @@
     <string name="backup_options.description">Select the options you want to have backed up</string>
     <string name="error.country_code_required">Country code is required</string>
     <string name="payment_success_message">Thank you for your preference, your purchase has been successful!</string>
+    <string name="uploads_view_group_current_uploads">Current</string>
+    <string name="uploads_view_group_failed_uploads">Failed/pending restart</string>
+    <string name="uploads_view_group_finished_uploads">Uploaded</string>
 
 </resources>

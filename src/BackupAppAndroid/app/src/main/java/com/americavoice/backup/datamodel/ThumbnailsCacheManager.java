@@ -461,6 +461,24 @@ public class ThumbnailsCacheManager {
 
     }
 
+    public static class ThumbnailGenerationTaskObject {
+        private Object file;
+        private String imageKey;
+
+        public ThumbnailGenerationTaskObject(Object file, String imageKey) {
+            this.file = file;
+            this.imageKey = imageKey;
+        }
+
+        private Object getFile() {
+            return file;
+        }
+
+        private String getImageKey() {
+            return imageKey;
+        }
+    }
+
     public static class MediaThumbnailGenerationTask extends AsyncTask<Object, Void, Bitmap> {
         private final WeakReference<ImageView> mImageViewReference;
         private File mFile;
