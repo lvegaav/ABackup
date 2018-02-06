@@ -12,4 +12,6 @@ public class Const {
     public static final String FILE_PROVIDER_AUTHORITY = "com.americavoice.backup.files";
     public static final String DATA_FOLDER = "americavoice";
     public static final String ICON_URL = "http://www.secureip.io";
+
+    public static final String PREFERENCE_EXPERT_MODE = "expert_mode";
 }
