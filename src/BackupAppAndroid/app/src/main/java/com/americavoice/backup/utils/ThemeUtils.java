@@ -6,8 +6,10 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.widget.ImageButton;
@@ -67,6 +69,20 @@ public class ThemeUtils {
         }
     }
 
+    public static int primaryDarkColor(Account account) {
+        OCCapability capability = getCapability(account);
+
+        try {
+            return adjustLightness(-0.2f, Color.parseColor(capability.getServerColor()), -1f);
+        } catch (Exception e) {
+            return AndroidApplication.getAppContext().getResources().getColor(R.color.colorPrimaryDark);
+        }
+    }
+
+    public static int primaryDarkColor() {
+        return primaryDarkColor(null);
+    }
+
     /**
     * sets the tinting of the given ImageButton's icon to color_accent.
     *
@@ -112,6 +128,12 @@ public class ThemeUtils {
 
     public static String colorToHexString(int color) {
         return String.format("#%06X", 0xFFFFFF & color);
+    }
+
+    public static Drawable tintDrawable(@DrawableRes int id, int color) {
+        Drawable drawable = ResourcesCompat.getDrawable(AndroidApplication.getAppContext().getResources(), id, null);
+
+        return tintDrawable(drawable, color);
     }
 
     public static Drawable tintDrawable(Drawable drawable, int color) {

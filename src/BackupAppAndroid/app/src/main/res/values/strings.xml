@@ -299,11 +299,11 @@
     <string name="backup_options.description">Select the options you want to have backed up</string>
     <string name="error.country_code_required">Country code is required</string>
     <string name="payment_success_message">Thank you for your preference, your purchase has been successful!</string>
-    s
+
     <string name="sync_in_progress">Fetching most recent version of the file.</string>
     <string name="file_not_synced">File could not be synced. Showing latest available version.</string>
     <string name="actionbar_open_with">Open with</string>
-    <string name="file_list_no_app_for_file_type">No app set up to handle this file type.</string>
+
     <string name="wait_a_moment">Wait a moment &#8230;</string>
     <string name="share_link_no_support_share_api">Sharing is not enabled on your server. Please contact your admin</string>
     <string name="image_cache_provider_authority">com.americavoice.backup.imageCache.provider</string>
@@ -313,11 +313,11 @@
     <string name="picture_set_as_no_app">No app found to set a picture with</string>
     <string name="wait_checking_credentials">Checking stored credentials</string>
     <string name="local_file_not_found_toast">File not found in local file system</string>
+    <string name="maintenance_mode">Server in maintenance mode</string>
 
     <string name="uploader_upload_in_progress_ticker">Uploading &#8230;</string>
     <string name="uploads_view_upload_status_failed_ssl_certificate_not_trusted">Untrusted server certificate</string>
     <string name="uploads_view_title">Uploads</string>
-
     <string name="uploads_view_upload_status_succeeded">Completed</string>
     <string name="uploads_view_upload_status_cancelled">Cancelled</string>
     <string name="uploads_view_upload_status_failed_connection_error">Connection error</string>
@@ -338,6 +338,33 @@
     <string name="uploads_view_group_failed_uploads">Failed/pending restart</string>
     <string name="uploads_view_group_finished_uploads">Uploaded</string>
 
-    <string name="maintenance_mode">Server in maintenance mode</string>
+    <string name="file_list_empty_headline">No files here</string>
+    <string name="folder_list_empty_headline">No folders here</string>
+    <string name="file_list_empty">Upload some content or sync with your devices.</string>
+    <string name="file_list_empty_favorites_filter_list">Files and folders you mark as favorites will show up here</string>
+    <string name="file_list_empty_favorites_filter">Your search returned no favorited files.</string>
+    <string name="file_list_loading">Loading &#8230;</string>
+    <string name="file_list_no_app_for_file_type">No app set up to handle this file type.</string>
+    <string name="local_file_list_empty">There are no files in this folder.</string>
+    <string name="local_folder_list_empty">There are no further folders.</string>
+    <string name="file_list_empty_headline_search">No results in this folder</string>
+    <string name="file_list_empty_headline_server_search">No results</string>
+    <string name="file_list_empty_favorite_headline">Nothing favorited yet</string>
+    <string name="file_list_empty_shared_headline">Nothing shared yet</string>
+    <string name="file_list_empty_shared">Files and folders you share will show up here</string>
+    <string name="file_list_empty_headline_server_search_videos">No videos</string>
+    <string name="file_list_empty_headline_server_search_photos">No photos</string>
+    <string name="file_list_empty_search">Maybe it is in a different folder?</string>
+    <string name="file_list_empty_recently_modified">Found no files modified within the last 7 days</string>
+    <string name="file_list_empty_recently_modified_filter">No files modified the last 7 days.</string>
+    <string name="file_list_empty_recently_added">Found no recently added files</string>
+    <string name="file_list_empty_recently_added_filter">No recently added files.</string>
+    <string name="file_list_empty_text_photos">Upload some photos or activate auto upload.</string>
+    <string name="file_list_empty_text_photos_filter">No photos.</string>
+    <string name="file_list_empty_text_videos">Upload some videos or activate auto upload.</string>
+    <string name="file_list_empty_text_videos_filter">No videos.</string>
+    <string name="upload_list_empty_headline">No uploads available</string>
+    <string name="upload_list_empty_text_auto_upload">Upload some content or activate auto upload.</string>
+    <string name="file_list_folder">folder</string>
 
 </resources>

@@ -22,4 +22,8 @@
     <dimen name="min_list_item_size">56dp</dimen>
     <dimen name="zero">0dp</dimen>
     <dimen name="upload_list_item_image_size">23dp</dimen>
+    <dimen name="list_fragment_column_width">100dp</dimen>
+    <dimen name="list_fragment_spacing">2dp</dimen>
+    <dimen name="standard_padding">16dp</dimen>
+    <dimen name="standard_half_margin">8dp</dimen>
 </resources>
