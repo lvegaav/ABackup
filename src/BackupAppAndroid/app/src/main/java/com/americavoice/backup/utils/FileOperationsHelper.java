@@ -44,6 +44,7 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
+import com.americavoice.backup.events.SyncEventFinished;
 import com.americavoice.backup.files.service.FileDownloader;
 import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.main.ui.activity.FileActivity;
@@ -190,7 +191,7 @@ public class FileOperationsHelper {
         if (file != null) {
             String storagePath = file.getStoragePath();
 
-            String[] officeExtensions = MainApp.getAppContext().getResources().getStringArray(R.array
+            String[] officeExtensions = AndroidApplication.getAppContext().getResources().getStringArray(R.array
                     .ms_office_extensions);
 
             Uri fileUri;
@@ -198,7 +199,7 @@ public class FileOperationsHelper {
             if (file.getFileName().contains(".") &&
                     Arrays.asList(officeExtensions).contains(file.getFileName().substring(file.getFileName().
                             lastIndexOf(".") + 1, file.getFileName().length())) &&
-                    !file.getStoragePath().startsWith(MainApp.getAppContext().getFilesDir().getAbsolutePath())) {
+                    !file.getStoragePath().startsWith(AndroidApplication.getAppContext().getFilesDir().getAbsolutePath())) {
                 fileUri = file.getLegacyExposedFileUri(mFileActivity);
             } else {
                 fileUri = file.getExposedFileUri(mFileActivity);

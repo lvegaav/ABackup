@@ -299,8 +299,45 @@
     <string name="backup_options.description">Select the options you want to have backed up</string>
     <string name="error.country_code_required">Country code is required</string>
     <string name="payment_success_message">Thank you for your preference, your purchase has been successful!</string>
+    s
+    <string name="sync_in_progress">Fetching most recent version of the file.</string>
+    <string name="file_not_synced">File could not be synced. Showing latest available version.</string>
+    <string name="actionbar_open_with">Open with</string>
+    <string name="file_list_no_app_for_file_type">No app set up to handle this file type.</string>
+    <string name="wait_a_moment">Wait a moment &#8230;</string>
+    <string name="share_link_no_support_share_api">Sharing is not enabled on your server. Please contact your admin</string>
+    <string name="image_cache_provider_authority">com.americavoice.backup.imageCache.provider</string>
+    <string name="actionbar_send_file">Send</string>
+    <string name="file_provider_authority">com.americavoice.backup.files</string>
+    <string name="set_as">Set As</string>
+    <string name="picture_set_as_no_app">No app found to set a picture with</string>
+    <string name="wait_checking_credentials">Checking stored credentials</string>
+    <string name="local_file_not_found_toast">File not found in local file system</string>
+
+    <string name="uploader_upload_in_progress_ticker">Uploading &#8230;</string>
+    <string name="uploads_view_upload_status_failed_ssl_certificate_not_trusted">Untrusted server certificate</string>
+    <string name="uploads_view_title">Uploads</string>
+
+    <string name="uploads_view_upload_status_succeeded">Completed</string>
+    <string name="uploads_view_upload_status_cancelled">Cancelled</string>
+    <string name="uploads_view_upload_status_failed_connection_error">Connection error</string>
+    <string name="uploads_view_upload_status_failed_credentials_error">Credentials error</string>
+    <string name="uploads_view_upload_status_failed_folder_error">Folder error</string>
+    <string name="uploads_view_upload_status_failed_file_error">File error</string>
+    <string name="uploads_view_upload_status_failed_localfile_error">Local file not found</string>
+    <string name="uploads_view_upload_status_failed_permission_error">Permission error</string>
+    <string name="uploads_view_upload_status_conflict">Conflict</string>
+    <string name="uploads_view_upload_status_service_interrupted">App terminated</string>
+    <string name="uploads_view_upload_status_unknown_fail">Unknown error</string>
+    <string name="uploads_view_upload_status_waiting_for_wifi">Waiting for Wi-Fi</string>
+    <string name="uploads_view_upload_status_waiting_exit_power_save_mode">Waiting to exit power save mode</string>
+    <string name="uploads_view_later_waiting_to_upload">Waiting to upload</string>
+    <string name="uploads_view_group_header" translatable="false">%1$s (%2$d)</string>
+    <string name="uploads_view_upload_status_waiting_for_charging">Awaiting charge</string>
     <string name="uploads_view_group_current_uploads">Current</string>
     <string name="uploads_view_group_failed_uploads">Failed/pending restart</string>
     <string name="uploads_view_group_finished_uploads">Uploaded</string>
+
+    <string name="maintenance_mode">Server in maintenance mode</string>
 
 </resources>

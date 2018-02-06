@@ -454,7 +454,7 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
 
                 if ("image/png".equals(upload.getMimeType())) {
                     fileIcon.setBackgroundColor(mParentActivity.getResources()
-                            .getColor(R.color.background_color));
+                            .getColor(R.color.white));
                 }
 
 
@@ -491,7 +491,7 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
 
                 if ("image/png".equalsIgnoreCase(upload.getMimeType())) {
                     fileIcon.setBackgroundColor(mParentActivity.getResources()
-                            .getColor(R.color.background_color));
+                            .getColor(R.color.white));
                 }
             } else {
                 fileIcon.setImageDrawable(MimeTypeUtil.getFileTypeIcon(upload.getMimeType(), fileName, account));
