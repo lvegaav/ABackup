@@ -55,10 +55,13 @@ import com.americavoice.backup.datamodel.UploadsStorageManager.UploadStatus;
 import com.americavoice.backup.db.OCUpload;
 import com.americavoice.backup.db.UploadResult;
 import com.americavoice.backup.main.data.SharedPrefsUtils;
+import com.americavoice.backup.main.ui.activity.FileActivity;
+import com.americavoice.backup.main.ui.activity.FileListActivity;
 import com.americavoice.backup.main.ui.activity.LoginActivity;
 import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.operations.UploadFileOperation;
 import com.americavoice.backup.service.WifiRetryJob;
+import com.americavoice.backup.uploads.UploadListActivity;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ConnectivityUtils;
 import com.americavoice.backup.utils.ErrorMessageAdapter;
@@ -1023,12 +1026,12 @@ public class FileUploader extends Service
                 );
 
         /// includes a pending intent in the notification showing the details
-//        Intent showUploadListIntent = new Intent(this, FileListActivity.class);
+        Intent showUploadListIntent = new Intent(this, UploadListActivity.class);
 //        showUploadListIntent.putExtra(FileActivity.EXTRA_FILE, upload.getFile());
 //        showUploadListIntent.putExtra(FileActivity.EXTRA_ACCOUNT, upload.getAccount());
-//        showUploadListIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        mNotificationBuilder.setContentIntent(PendingIntent.getActivity(this, (int) System.currentTimeMillis(),
-//            showUploadListIntent, 0));
+        showUploadListIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        mNotificationBuilder.setContentIntent(PendingIntent.getActivity(this, (int) System.currentTimeMillis(),
+            showUploadListIntent, 0));
 
         if (!upload.isInstantPicture() && !upload.isInstantVideo()) {
             mNotificationManager.notify(R.string.files_uploader_upload_in_progress_ticker, mNotificationBuilder.build());

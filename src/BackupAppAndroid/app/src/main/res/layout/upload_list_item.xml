@@ -88,8 +88,9 @@
             android:layout_height="wrap_content"
             android:textColor="@color/list_item_lastmod_and_filesize_text"
             android:maxLines="1"
-            android:text="Username"
-            android:textSize="@dimen/upload_list_item_text_size"/>
+            android:text=""
+            android:textSize="@dimen/upload_list_item_text_size"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/upload_remote_path"
@@ -118,6 +119,7 @@
             android:layout_width="@dimen/upload_list_item_image_size"
             android:layout_height="@dimen/upload_list_item_image_size"
             android:layout_gravity="center"
+            android:scaleType="fitXY"
             android:background="@android:color/transparent"/>
 
 	</FrameLayout>

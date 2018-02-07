@@ -243,17 +243,7 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
                     0
             );
             uploadDateTextView.setText(dateString);
-
-            TextView accountNameTextView = (TextView) view.findViewById(R.id.upload_account);
             Account account = AccountUtils.getOwnCloudAccountByName(mParentActivity, upload.getAccountName());
-            if (account != null) {
-                accountNameTextView.setText(
-                        DisplayUtils.getAccountNameDisplayText(
-                                mParentActivity, account, account.name, upload.getAccountName())
-                );
-            } else {
-                accountNameTextView.setText(upload.getAccountName());
-            }
 
             TextView statusTextView = (TextView) view.findViewById(R.id.upload_status);
 
@@ -264,7 +254,6 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
             pathTextView.setVisibility(View.VISIBLE);
 
             fileSizeTextView.setVisibility(View.VISIBLE);
-            accountNameTextView.setVisibility(View.VISIBLE);
             statusTextView.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
 
