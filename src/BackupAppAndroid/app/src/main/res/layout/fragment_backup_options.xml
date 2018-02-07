@@ -37,7 +37,7 @@
             <TextView
                 style="@style/TextView"
                 android:layout_gravity="center"
-                android:text="Select the options you want to have backed up"
+                android:text="@string/backup_options.description"
                 android:textSize="18sp"
                 android:layout_marginBottom="15dp"/>
 
