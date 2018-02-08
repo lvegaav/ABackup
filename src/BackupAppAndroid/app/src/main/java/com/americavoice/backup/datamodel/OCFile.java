@@ -279,6 +279,19 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
         return mLocalUri;
     }
 
+    public Uri getLegacyExposedFileUri(Context context) {
+        if (mLocalPath == null || mLocalPath.length() == 0) {
+            return null;
+        }
+
+        if (mExposedFileUri == null) {
+            return Uri.parse(ContentResolver.SCHEME_FILE + "://" + WebdavUtils.encodePath(mLocalPath));
+        }
+
+        return mExposedFileUri;
+
+    }
+
     public Uri getExposedFileUri(Context context) {
         if (mLocalPath == null || mLocalPath.length() == 0) {
             return null;

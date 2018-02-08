@@ -25,4 +25,7 @@
     <color name="colorSwitchActivated">#FFFFFF</color>
     <color name="colorSwitchNormal">#37436D</color>
     <color name="colorSwitchForeground">#48FFFFFF</color>
+
+    <color name="list_item_lastmod_and_filesize_text">#a0a0a0</color>
+
 </resources>

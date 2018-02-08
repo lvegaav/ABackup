@@ -31,6 +31,9 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
 import com.americavoice.backup.R;
@@ -44,6 +47,7 @@ import com.americavoice.backup.service.OperationsService;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.ComponentsGetter;
 import com.americavoice.backup.utils.ErrorMessageAdapter;
+import com.americavoice.backup.utils.FileOperationsHelper;
 import com.owncloud.android.lib.common.OwnCloudAccount;
 import com.owncloud.android.lib.common.OwnCloudClient;
 import com.owncloud.android.lib.common.OwnCloudClientManagerFactory;
@@ -86,6 +90,8 @@ public abstract class FileActivity extends BaseOwncloudActivity
 
     /** Messages handler associated to the main thread and the life cycle of the activity */
     private Handler mHandler;
+
+    private FileOperationsHelper mFileOperationsHelper;
 
     private ServiceConnection mOperationsServiceConnection = null;
 
@@ -248,6 +254,9 @@ public abstract class FileActivity extends BaseOwncloudActivity
         return mHandler;
     }
 
+    public FileOperationsHelper getFileOperationsHelper() {
+        return mFileOperationsHelper;
+    }
 
     /**
      *
@@ -380,6 +389,18 @@ public abstract class FileActivity extends BaseOwncloudActivity
             file = getStorageManager().getFileByPath(file.getRemotePath());
             setFile(file);
         }
+    }
+
+    public void showLoadingDialog(String message) {
+        // grant that only one waiting dialog is shown
+        dismissLoadingDialog();
+        // Construct dialog
+        //TODO: SHOW LOADING
+    }
+
+    public void dismissLoadingDialog() {
+        //TODO: DISMISS LOADING
+
     }
 
 
