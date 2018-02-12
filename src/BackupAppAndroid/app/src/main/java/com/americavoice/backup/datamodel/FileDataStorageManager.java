@@ -86,6 +86,12 @@ public class FileDataStorageManager {
         mContext = context;
     }
 
+    public FileDataStorageManager(Account account, ContentResolver cr) {
+        mContentProviderClient = null;
+        mContentResolver = cr;
+        mAccount = account;
+    }
+
     public FileDataStorageManager(Account account, ContentProviderClient cp) {
         mContentProviderClient = cp;
         mContentResolver = null;

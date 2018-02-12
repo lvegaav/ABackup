@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.db.OCUpload;
 import com.americavoice.backup.db.ProviderMeta.ProviderTableMeta;
 import com.americavoice.backup.db.UploadResult;
@@ -397,6 +398,28 @@ public class UploadsStorageManager extends Observable {
         }
     }
 
+    public OCUpload[] getCurrentAndPendingUploadsForCurrentAccount() {
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+
+        if (account != null) {
+            return getUploads(
+                    ProviderTableMeta.UPLOADS_STATUS + "==" + UploadStatus.UPLOAD_IN_PROGRESS.value +
+                            " OR " + ProviderTableMeta.UPLOADS_LAST_RESULT +
+                            "==" + UploadResult.DELAYED_FOR_WIFI.getValue() +
+                            " OR " + ProviderTableMeta.UPLOADS_LAST_RESULT +
+                            "==" + UploadResult.LOCK_FAILED.getValue() +
+                            " OR " + ProviderTableMeta.UPLOADS_LAST_RESULT +
+                            "==" + UploadResult.DELAYED_FOR_CHARGING.getValue() +
+                            " OR " + ProviderTableMeta.UPLOADS_LAST_RESULT +
+                            "==" + UploadResult.DELAYED_IN_POWER_SAVE_MODE.getValue() +
+                            " AND " + ProviderTableMeta.UPLOADS_ACCOUNT_NAME + "== ?",
+                    new String[]{account.name}
+            );
+        } else {
+            return new OCUpload[0];
+        }
+    }
+
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private List<OCUpload> getPendingJobs() {
         Set<JobRequest> jobRequests = JobManager.create(mContext).getAllJobRequestsForTag(AutoUploadJob.TAG);
@@ -448,6 +471,17 @@ public class UploadsStorageManager extends Observable {
                 ProviderTableMeta.UPLOADS_STATUS + "==" + UploadStatus.UPLOAD_FAILED.value, null);
     }
 
+    public OCUpload[] getFinishedUploadsForCurrentAccount() {
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+
+        if (account != null) {
+            return getUploads(ProviderTableMeta.UPLOADS_STATUS + "==" + UploadStatus.UPLOAD_SUCCEEDED.value + AND +
+                    ProviderTableMeta.UPLOADS_ACCOUNT_NAME + "== ?", new String[]{account.name});
+        } else {
+            return new OCUpload[0];
+        }
+    }
+
     /**
      * Get all uploads which where successfully completed.
      */
@@ -467,6 +501,27 @@ public class UploadsStorageManager extends Observable {
                 ProviderTableMeta.UPLOADS_LAST_RESULT + "<>" + UploadResult.DELAYED_FOR_CHARGING.getValue(),
             null
         );
+    }
+
+    public OCUpload[] getFailedButNotDelayedUploadsForCurrentAccount() {
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+
+        if (account != null) {
+            return getUploads(ProviderTableMeta.UPLOADS_STATUS + "==" + UploadStatus.UPLOAD_FAILED.value +
+                            AND + ProviderTableMeta.UPLOADS_LAST_RESULT +
+                            "<>" + UploadResult.DELAYED_FOR_WIFI.getValue() +
+                            AND + ProviderTableMeta.UPLOADS_LAST_RESULT +
+                            "<>" + UploadResult.LOCK_FAILED.getValue() +
+                            AND + ProviderTableMeta.UPLOADS_LAST_RESULT +
+                            "<>" + UploadResult.DELAYED_FOR_CHARGING.getValue() +
+                            AND + ProviderTableMeta.UPLOADS_LAST_RESULT +
+                            "<>" + UploadResult.DELAYED_IN_POWER_SAVE_MODE.getValue() +
+                            AND + ProviderTableMeta.UPLOADS_ACCOUNT_NAME + "== ?",
+                    new String[]{account.name}
+            );
+        } else {
+            return new OCUpload[0];
+        }
     }
 
     private ContentResolver getDB() {

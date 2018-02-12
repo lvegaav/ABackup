@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
+import com.americavoice.backup.AndroidApplication;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.operations.GetCapabilitiesOperarion;
@@ -346,6 +347,25 @@ public class AccountUtils {
             }
         }
         return url;
+    }
+
+    /**
+     * Access the version of the OC server corresponding to an account SAVED IN THE ACCOUNTMANAGER
+     *
+     * @param   account     ownCloud account
+     * @return              Version of the OC server corresponding to account, according to the data saved
+     *                      in the system AccountManager
+     */
+    public static OwnCloudVersion getServerVersion(Account account) {
+        OwnCloudVersion serverVersion = null;
+        if (account != null) {
+            AccountManager accountMgr = AccountManager.get(AndroidApplication.getAppContext());
+            String serverVersionStr = accountMgr.getUserData(account, Constants.KEY_OC_VERSION);
+            if (serverVersionStr != null) {
+                serverVersion = new OwnCloudVersion(serverVersionStr);
+            }
+        }
+        return serverVersion;
     }
 
     /**
