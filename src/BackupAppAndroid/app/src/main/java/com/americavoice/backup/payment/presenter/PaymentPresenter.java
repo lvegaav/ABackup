@@ -162,13 +162,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
             mNetworkProvider.createSubscription(request, new AsyncResult<dtos.CreateSubscriptionResponse>() {
                 @Override
                 public void success(dtos.CreateSubscriptionResponse response) {
-                    // place here the dialog.
-                    new AlertDialog.Builder(mPaymentView.getContext(), R.style.WhiteDialog)
-                            .setTitle(R.string.app_name)
-                            .setMessage(R.string.payment_success_message)
-                            .setPositiveButton(R.string.common_ok, null)
-                            .setCancelable(false)
-                            .show();
+                    showSuccessDialog();
                     checkSubscriptionAndShow();
                 }
 
@@ -202,6 +196,7 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
             mNetworkProvider.changeSubscription(request, new AsyncResult<dtos.ChangeSubscriptionResponse>() {
                 @Override
                 public void success(dtos.ChangeSubscriptionResponse response) {
+                    showSuccessDialog();
                     checkSubscriptionAndShow();
                 }
 
@@ -231,6 +226,15 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
             // they're the same, showing current subscription
             checkSubscriptionAndShow();
         }
+    }
+
+    private void showSuccessDialog() {
+        new AlertDialog.Builder(mPaymentView.getContext(), R.style.WhiteDialog)
+                .setTitle(R.string.app_name)
+                .setMessage(R.string.payment_success_message)
+                .setPositiveButton(R.string.common_ok, null)
+                .setCancelable(false)
+                .show();
     }
 
     public void onChoosePlanBackButton() {

@@ -3,6 +3,7 @@ package com.americavoice.backup.main.presenter;
 
 import android.accounts.Account;
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.americavoice.backup.authentication.AccountUtils;
@@ -19,10 +20,16 @@ import com.americavoice.backup.main.ui.activity.MainActivity;
 import com.americavoice.backup.sms.ui.SmsBackupFragment;
 import com.americavoice.backup.utils.BaseConstants;
 import com.crashlytics.android.Crashlytics;
+import com.owncloud.android.lib.common.OwnCloudClient;
+import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
+import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.resources.files.ReadRemoteFolderOperation;
 
 import net.servicestack.client.AsyncResult;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -32,12 +39,18 @@ import javax.inject.Inject;
  * layer.
  */
 @PerActivity
-public class MainPresenter extends BasePresenter implements IPresenter {
+public class MainPresenter extends BasePresenter implements IPresenter, OnRemoteOperationListener {
 
     private static final String SHOW_CASE_ALREADY = "MAIN_SHOW_CASE_ALREADY";
 
     private MainView mView;
     private Context mContext;
+
+    private Handler mHandler;
+
+    private ReadRemoteFolderOperation mReadRemotePhotosOperation;
+    private ReadRemoteFolderOperation mReadRemoteVideosOperation;
+    private ReadRemoteFolderOperation mReadRemoteDocumentsOperation;
 
     @Inject
     MainPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
@@ -72,7 +85,15 @@ public class MainPresenter extends BasePresenter implements IPresenter {
             mView.setTitle(title);
             mContext = mView.getContext();
         }
+        mHandler = new Handler();
         synchronizeRootFolder();
+        getFilesCount();
+    }
+
+    public void getFilesCount() {
+        readRemoteFiles(BaseConstants.PHOTOS_REMOTE_FOLDER);
+        readRemoteFiles(BaseConstants.VIDEOS_REMOTE_FOLDER);
+        readRemoteFiles(BaseConstants.DOCUMENTS_REMOTE_FOLDER);
     }
 
     private void synchronizeRootFolder() {
@@ -146,5 +167,63 @@ public class MainPresenter extends BasePresenter implements IPresenter {
 
     public boolean getShowCaseFinished() {
         return mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false);
+    }
+
+    public void readRemoteFiles(String path) {
+        OwnCloudClient client = mNetworkProvider.getCloudClient();
+        if (client != null) {
+            if (mReadRemotePhotosOperation == null){
+                mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
+            }
+            if (mReadRemoteVideosOperation == null) {
+                mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
+            }
+            if (mReadRemoteDocumentsOperation == null) {
+                mReadRemoteDocumentsOperation = new ReadRemoteFolderOperation(BaseConstants.DOCUMENTS_REMOTE_FOLDER);
+            }
+            switch (path) {
+                case BaseConstants.PHOTOS_REMOTE_FOLDER:
+                    mReadRemotePhotosOperation.execute(client, this, mHandler);
+                    break;
+                case BaseConstants.VIDEOS_REMOTE_FOLDER:
+                    mReadRemoteVideosOperation.execute(client, this, mHandler);
+                    break;
+                case BaseConstants.DOCUMENTS_REMOTE_FOLDER:
+                    mReadRemoteDocumentsOperation.execute(client, this, mHandler);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onRemoteOperationFinish(RemoteOperation remoteOperation, RemoteOperationResult remoteOperationResult) {
+        final Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+        if (account == null) {
+             return;
+        }
+        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(mContext.getContentResolver());
+        if (remoteOperationResult.isSuccess() && remoteOperation instanceof ReadRemoteFolderOperation) {
+            List<Object> data = remoteOperationResult.getData();
+            int count = 0;
+            if (data != null) {
+                count = data.size() - 1;
+            }
+            if (remoteOperation.equals(mReadRemotePhotosOperation)){
+                mView.setBadgePhotos(count);
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL + account.name,
+                        String.valueOf(count));
+            } else if (remoteOperation.equals(mReadRemoteVideosOperation)) {
+                mView.setBadgeVideos(count);
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL + account.name,
+                        String.valueOf(count));
+            } else if (remoteOperation.equals(mReadRemoteDocumentsOperation)) {
+                mView.setBadgeFiles(count);
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL + account.name,
+                        String.valueOf(count));
+            }
+        }
     }
 }

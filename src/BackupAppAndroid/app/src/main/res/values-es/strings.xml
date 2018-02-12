@@ -302,4 +302,73 @@
     <string name="error.country_code_required">Country code is required</string>
     <string name="payment_success_message">Gracias por tu preferencia, tu compra ha sido exitosa!</string>
 
+    <string name="sync_in_progress">Obteniendo la versión más reciente del archivo.</string>
+    <string name="file_not_synced">No se pudo sincronizar el archivo.</string>
+    <string name="actionbar_open_with">Abrir con</string>
+
+    <string name="wait_a_moment">Espere un momento &#8230;</string>
+    <string name="share_link_no_support_share_api">Compartir archivos no esta disponible.</string>
+    <string name="image_cache_provider_authority">com.americavoice.backup.imageCache.provider</string>
+    <string name="actionbar_send_file">Enviar</string>
+    <string name="file_provider_authority">com.americavoice.backup.files</string>
+    <string name="set_as">Establecer Como</string>
+    <string name="picture_set_as_no_app">No se detecto ninguna aplicación.</string>
+    <string name="wait_checking_credentials">Verificando credenciales almacenadas</string>
+    <string name="local_file_not_found_toast">No se encontró el archivo en sistema de archivos local</string>
+    <string name="maintenance_mode">El servidor está en modo mantenimiento</string>
+
+    <string name="uploader_upload_in_progress_ticker">Cargando &#8230;</string>
+    <string name="uploads_view_upload_status_failed_ssl_certificate_not_trusted">Servidor no tiene un certificado valido.</string>
+    <string name="uploads_view_title">Cargas</string>
+    <string name="uploads_view_upload_status_succeeded">Completado</string>
+    <string name="uploads_view_upload_status_cancelled">Cancelado</string>
+    <string name="uploads_view_upload_status_failed_connection_error">Error de conexión</string>
+    <string name="uploads_view_upload_status_failed_credentials_error">Error de credenciales</string>
+    <string name="uploads_view_upload_status_failed_folder_error">Error de carpeta</string>
+    <string name="uploads_view_upload_status_failed_file_error">Error de archivo</string>
+    <string name="uploads_view_upload_status_failed_localfile_error">No se encontró el archivo local</string>
+    <string name="uploads_view_upload_status_failed_permission_error">Error de permisos</string>
+    <string name="uploads_view_upload_status_conflict">Conflicto</string>
+    <string name="uploads_view_upload_status_service_interrupted">La aplicación ha sido terminada</string>
+    <string name="uploads_view_upload_status_unknown_fail">Error desconocido</string>
+    <string name="uploads_view_group_current_uploads">Actual</string>
+    <string name="uploads_view_group_finished_uploads">Cargado</string>
+    <string name="uploads_view_upload_status_waiting_exit_power_save_mode">Esperando a salir de modo de conservación de energía</string>
+    <string name="uploads_view_later_waiting_to_upload">Esperando para cargar</string>
+    <string name="uploads_view_upload_status_waiting_for_charging">Aguardando la regarga del dispositivo </string>
+    <string name="uploads_view_upload_status_waiting_for_wifi">Esperando Wi-Fi</string>
+    <string name="uploads_view_group_failed_uploads">Fallido/pendiente reinciar</string>
+
+    <string name="file_list_empty_headline">No hay archivos aquí</string>
+    <string name="folder_list_empty_headline">No hay carpetas aquí</string>
+    <string name="file_list_empty">Carga algún contenido o sincroniza con tus dispositivos.</string>
+    <string name="file_list_empty_favorites_filter_list">Los archivos y carpetas que marques como favoritos se mostrarán aquí</string>
+    <string name="file_list_empty_favorites_filter">Tu búsqueda no regresó archivos marcados como favoritos. </string>
+    <string name="file_list_no_app_for_file_type">No se cuenta con una aplicación que maneje este tipo de achivo. </string>
+    <string name="local_file_list_empty">No hay archivos en esta carpeta</string>
+    <string name="local_folder_list_empty">No hay más carpetas.</string>
+    <string name="file_list_empty_headline_search">No hay resultados en esta carpeta</string>
+    <string name="file_list_empty_headline_server_search">No hay resultados</string>
+    <string name="file_list_empty_favorite_headline">Aún no hay nada marcado como favorito</string>
+    <string name="file_list_empty_shared_headline">Aún no hay nada compartido</string>
+    <string name="file_list_empty_shared">Los archivos y carpetas que compartas se mostrarán aquí. </string>
+    <string name="file_list_empty_headline_server_search_videos">No hay videos</string>
+    <string name="file_list_empty_headline_server_search_photos">No hay fotos</string>
+    <string name="file_list_empty_search">¿Tal vez está dentro de una carpeta diferente?</string>
+    <string name="file_list_empty_recently_added">No se encontraron archivos agregados recientemente</string>
+    <string name="file_list_empty_text_photos">Carga algunas fotos o activa la carga automática.</string>
+    <string name="file_list_empty_text_videos">Carga algunos videos o activa la carga automática.</string>
+    <string name="upload_list_empty_headline">No hay cargas disponibles</string>
+    <string name="upload_list_empty_text_auto_upload">Carga algún contenido o activa la carga automática</string>
+    <string name="file_list_folder">carpeta</string>
+    <string name="file_list_loading">Cargando &#8230;</string>
+    <string name="file_list_empty_recently_modified">No se han modificado archivos</string>
+    <string name="file_list_empty_recently_modified_filter">No se han modificado archivos.</string>
+    <string name="file_list_empty_recently_added_filter">No se han agregado archivos recientemente.</string>
+    <string name="file_list_empty_text_photos_filter">No hay fotos.</string>
+    <string name="file_list_empty_text_videos_filter">No hay videos.</string>
+
+    <string name="action_retry_uploads">Reintentar cargas fallidas</string>
+    <string name="action_clear_failed_uploads">Borrar cargas fallidas</string>
+    <string name="action_clear_successful_uploads">Borrar cargas exitosas</string>
 </resources>

@@ -554,6 +554,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     @Override
     public void showSyncDialog(int pendingPhotos, int pendingVideos) {
+        mPresenter.getFilesCount();
         if (mDialogIsShowing)
             return;
 
