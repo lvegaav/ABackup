@@ -21,45 +21,14 @@
 
 package com.americavoice.backup.sync.service;
 
-import android.Manifest;
 import android.accounts.Account;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.os.IBinder;
-import android.provider.CallLog;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.text.format.DateFormat;
 
 import com.americavoice.backup.authentication.AccountUtils;
-import com.americavoice.backup.calls.ui.CallsBackupFragment;
-import com.americavoice.backup.calls.ui.model.Call;
-import com.americavoice.backup.datamodel.ArbitraryDataProvider;
-import com.americavoice.backup.datamodel.FileDataStorageManager;
-import com.americavoice.backup.datamodel.OCFile;
-import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.files.utils.FileUtils;
-import com.americavoice.backup.operations.UploadFileOperation;
-import com.americavoice.backup.service.OperationsService;
-import com.americavoice.backup.utils.BaseConstants;
-import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.Job;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
-import com.owncloud.android.lib.common.utils.Log_OC;
-
-import org.json.JSONArray;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Vector;
 
 /**
  * Job that backup contacts to /Contacts-Backup and deletes files older than x days
@@ -71,6 +40,7 @@ public class SyncBackupJob extends Job {
     public static final String ACCOUNT = "account";
     public static final String PENDING_VIDEOS = "PENDING_VIDEOS";
     public static final String PENDING_PHOTOS = "PENDING_PHOTOS";
+    public static final String PENDING_MUSIC = "PENDING_MUSIC";
     public static final String FORCE = "force";
 
     @NonNull
@@ -87,7 +57,9 @@ public class SyncBackupJob extends Job {
 
         final String[] pendingVideos = bundle.getStringArray(PENDING_VIDEOS);
 
-        FileUtils.backupPendingFiles(getContext(), account, pendingPhotos, pendingVideos);
+        final String[] pendingSongs = bundle.getStringArray(PENDING_MUSIC);
+
+        FileUtils.backupPendingFiles(getContext(), account, pendingPhotos, pendingVideos, pendingSongs);
 
         return Result.SUCCESS;
     }

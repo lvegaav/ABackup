@@ -119,6 +119,39 @@
                         android:textSize="18sp"
                         android:textColor="@color/white"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_music"
+                    android:layout_width="@dimen/dashboard_option"
+                    android:layout_height="@dimen/dashboard_option"
+                    android:layout_margin="2.5dp"
+                    android:background="@color/blackOpacity"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dashboard_icon"
+                            app:srcCompat="@drawable/ic_photos" />
+
+                        <TextView
+                            android:id="@+id/badge_music"
+                            style="@style/Badge" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/main.music"
+                        android:gravity="center"
+                        android:textSize="18sp"
+                        android:textColor="@color/white"/>
+                </LinearLayout>
+
 
             </LinearLayout>
 

@@ -90,6 +90,7 @@
     <string name="main.title">Backup Options</string>
     <string name="main.photos">Photos</string>
     <string name="main.videos">Videos</string>
+    <string name="main.music">Music</string>
     <string name="main.contacts">Contacts</string>
     <string name="main.documents">Documents</string>
     <string name="main.available">Available</string>

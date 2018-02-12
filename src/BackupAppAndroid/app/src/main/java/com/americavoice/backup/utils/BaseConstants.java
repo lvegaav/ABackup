@@ -16,6 +16,7 @@ public class BaseConstants {
 
     public static final String PHOTOS_FOLDER = "Photos";
     public static final String VIDEOS_FOLDER = "Videos";
+    public static final String MUSIC_FOLDER = "Music";
     public static final String DOCUMENTS_FOLDER = "Documents";
     public static final String CONTACTS_FOLDER = "Contacts";
     public static final String SMS_FOLDER = "Sms";
@@ -23,14 +24,15 @@ public class BaseConstants {
 
     public static final String PHOTOS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + PHOTOS_FOLDER + OCFile.PATH_SEPARATOR;
     public static final String VIDEOS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + VIDEOS_FOLDER + OCFile.PATH_SEPARATOR;
+    public static final String MUSIC_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + MUSIC_FOLDER + OCFile.PATH_SEPARATOR;
     public static final String DOCUMENTS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + DOCUMENTS_FOLDER + OCFile.PATH_SEPARATOR;
     public static final String CONTACTS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + CONTACTS_FOLDER + OCFile.PATH_SEPARATOR;
     public static final String SMS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + SMS_FOLDER + OCFile.PATH_SEPARATOR;
     public static final String CALLS_REMOTE_FOLDER = OCFile.PATH_SEPARATOR + CALLS_FOLDER + OCFile.PATH_SEPARATOR;
 
-    public static final Integer CONTACTS_BACKUP_EXPLIRE = -1;
-    public static final Integer CALLS_BACKUP_EXPLIRE = -1;
-    public static final Integer SMS_BACKUP_EXPIRE = -1;
+    public static final Integer CONTACTS_BACKUP_EXPLIRE = - 1;
+    public static final Integer CALLS_BACKUP_EXPLIRE = - 1;
+    public static final Integer SMS_BACKUP_EXPIRE = - 1;
 
     public static final String EXTRA_ACCOUNT = "EXTRA_ACCOUNT";
     public static final String EXTRA_ACTION = "EXTRA_ACTION";

@@ -8,7 +8,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.americavoice.backup.Const;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.calls.ui.CallsBackupFragment;
@@ -72,12 +70,21 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     public interface Listener {
         void viewPhotos();
+
         void viewVideos();
+
+        void viewMusic();
+
         void viewContacts();
+
         void viewDocuments();
+
         void viewCalls();
+
         void viewSms();
+
         void viewSettings();
+
         void onMainBackPressed();
     }
 
@@ -91,6 +98,8 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
     TextView tvBadgePhotos;
     @BindView(R.id.badge_videos)
     TextView tvBadgeVideos;
+    @BindView(R.id.badge_music)
+    TextView tvBadgeMusic;
     @BindView(R.id.badge_contacts)
     TextView tvBadgeContacts;
     @BindView(R.id.badge_documents)
@@ -152,53 +161,53 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
     public void requestMultiplePermissions() {
         List<String> permissionsNeeded = new ArrayList<>();
         final List<String> permissionsList = new ArrayList<>();
-        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        if (! addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
             permissionsNeeded.add(getString(R.string.common_write_external_storage));
-        if (!addPermission(permissionsList, Manifest.permission.READ_CONTACTS))
+        if (! addPermission(permissionsList, Manifest.permission.READ_CONTACTS))
             permissionsNeeded.add(getString(R.string.common_read_contacts));
-        if (!addPermission(permissionsList, Manifest.permission.READ_SMS))
+        if (! addPermission(permissionsList, Manifest.permission.READ_SMS))
             permissionsNeeded.add(getString(R.string.common_read_sms));
-        if (!addPermission(permissionsList, Manifest.permission.READ_CALL_LOG))
+        if (! addPermission(permissionsList, Manifest.permission.READ_CALL_LOG))
             permissionsNeeded.add(getString(R.string.common_read_call_log));
 
         if (permissionsList.size() > 0) {
             if (permissionsNeeded.size() > 0) {
                 return;
             }
-            requestPermissions(permissionsList.toArray(new String[permissionsList.size()]), PermissionUtil.PERMISSIONS_MULTIPLE);
+            requestPermissions(permissionsList.toArray(new String[ permissionsList.size() ]), PermissionUtil.PERMISSIONS_MULTIPLE);
         }
     }
 
     private void showMessageOKCancel(String message, MaterialDialog.SingleButtonCallback okListener) {
-        if (!mDialogIsShowing){
+        if (! mDialogIsShowing) {
             new MaterialDialog.Builder(getActivity())
-                    .onPositive(okListener)
-                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            mDialogIsShowing = false;
-                        }
-                    })
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            if (!mShowingTour){
-                                showGuidedTour();
-                            }
-                        }
-                    })
-                    .title(R.string.app_name)
-                    .content(message)
-                    .positiveText(R.string.common_ok)
-                    .negativeText(R.string.common_cancel)
-                    .build()
-                    .show();
+              .onPositive(okListener)
+              .onAny(new MaterialDialog.SingleButtonCallback() {
+                  @Override
+                  public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                      mDialogIsShowing = false;
+                  }
+              })
+              .onNegative(new MaterialDialog.SingleButtonCallback() {
+                  @Override
+                  public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                      if (! mShowingTour) {
+                          showGuidedTour();
+                      }
+                  }
+              })
+              .title(R.string.app_name)
+              .content(message)
+              .positiveText(R.string.common_ok)
+              .negativeText(R.string.common_cancel)
+              .build()
+              .show();
             mDialogIsShowing = true;
         }
     }
 
     private boolean addPermission(List<String> permissionsList, String permission) {
-        if (!PermissionUtil.checkSelfPermission(getActivity(), permission)) {
+        if (! PermissionUtil.checkSelfPermission(getActivity(), permission)) {
             permissionsList.add(permission);
             // Check for Rationale Option
             if (PermissionUtil.shouldShowRequestPermissionRationale(getActivity(), permission))
@@ -212,8 +221,8 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
         showMessageOKCancel(getString(R.string.files_getting_pending_no_access), new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
+                requestPermissions(new String[] { Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                  PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE);
             }
         });
     }
@@ -227,8 +236,8 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
             if (permissions.length > 0 && grantResults.length > 0 && currentAccount != null) {
                 for (int i = 0; i < permissions.length; i++) {
                     // permission was granted
-                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        switch (permissions[i]) {
+                    if (grantResults[ i ] == PackageManager.PERMISSION_GRANTED) {
+                        switch (permissions[ i ]) {
                             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                     MediaContentJob.scheduleJob(getContext());
@@ -256,7 +265,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
             }
         } else if (requestCode == PermissionUtil.PERMISSIONS_WRITE_EXTERNAL_STORAGE) {
             if (grantResults.length > 0) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults[ 0 ] == PackageManager.PERMISSION_GRANTED) {
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                         MediaContentJob.scheduleJob(getContext());
@@ -267,7 +276,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
                     arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
                     mSettingsPresenter.showSyncAtFirst();
                 } else {
-                    if (!mShowingTour){
+                    if (! mShowingTour) {
                         showGuidedTour();
                     }
                 }
@@ -280,7 +289,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
     @Override
     public void onResume() {
         super.onResume();
-        if (AccountUtils.getCurrentOwnCloudAccount(getContext()) != null){
+        if (AccountUtils.getCurrentOwnCloudAccount(getContext()) != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestMultiplePermissions();
             } else {
@@ -322,43 +331,43 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
         }
 
         TapTargetSequence sequence = new TapTargetSequence(getActivity())
-                .targets(
-                        TapTarget.forView(llPhotos, getString(R.string.login_hello), getString(R.string.tour_dashboard_icons))
-                                .dimColor(android.R.color.black)
-                                .outerCircleColor(R.color.blackOpacity80)
-                                .targetCircleColor(R.color.colorAccent)
-                                .transparentTarget(true)
-                                .textColor(android.R.color.white)
-                                .cancelable(false),
-                        TapTarget.forView(btnSettings, getString(R.string.settings_title), getString(R.string.tour_dashboard_settings))
-                                .dimColor(android.R.color.black)
-                                .outerCircleColor(R.color.blackOpacity80)
-                                .targetCircleColor(R.color.colorAccent)
-                                .transparentTarget(true)
-                                .textColor(android.R.color.white)
-                                .cancelable(false))
-                .listener(new TapTargetSequence.Listener() {
-                    // This listener will tell us when interesting(tm) events happen in regards
-                    // to the sequence
-                    @Override
-                    public void onSequenceFinish() {
-                        // Yay
-                        mShowingTour = false;
-                        mPresenter.showCaseFinished();
-                    }
+          .targets(
+            TapTarget.forView(llPhotos, getString(R.string.login_hello), getString(R.string.tour_dashboard_icons))
+              .dimColor(android.R.color.black)
+              .outerCircleColor(R.color.blackOpacity80)
+              .targetCircleColor(R.color.colorAccent)
+              .transparentTarget(true)
+              .textColor(android.R.color.white)
+              .cancelable(false),
+            TapTarget.forView(btnSettings, getString(R.string.settings_title), getString(R.string.tour_dashboard_settings))
+              .dimColor(android.R.color.black)
+              .outerCircleColor(R.color.blackOpacity80)
+              .targetCircleColor(R.color.colorAccent)
+              .transparentTarget(true)
+              .textColor(android.R.color.white)
+              .cancelable(false))
+          .listener(new TapTargetSequence.Listener() {
+              // This listener will tell us when interesting(tm) events happen in regards
+              // to the sequence
+              @Override
+              public void onSequenceFinish() {
+                  // Yay
+                  mShowingTour = false;
+                  mPresenter.showCaseFinished();
+              }
 
-                    @Override
-                    public void onSequenceStep(TapTarget tapTarget, boolean b) {
+              @Override
+              public void onSequenceStep(TapTarget tapTarget, boolean b) {
 
-                    }
+              }
 
-                    @Override
-                    public void onSequenceCanceled(TapTarget lastTarget) {
-                        // Boo
-                        mShowingTour = false;
-                        mPresenter.showCaseFinished();  
-                    }
-                });
+              @Override
+              public void onSequenceCanceled(TapTarget lastTarget) {
+                  // Boo
+                  mShowingTour = false;
+                  mPresenter.showCaseFinished();
+              }
+          });
         mShowingTour = true;
         sequence.start();
 
@@ -372,10 +381,10 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
             mProgress = null;
         }
         mProgress = ProgressDialog.show(getActivity(),
-                getResources().getString(R.string.app_name),
-                getResources().getString(R.string.common_loading),
-                true,
-                false);
+          getResources().getString(R.string.app_name),
+          getResources().getString(R.string.common_loading),
+          true,
+          false);
     }
 
     @Override
@@ -413,26 +422,27 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
     }
 
     @OnClick(R.id.ll_documents)
-    public void onDocuments(View view)
-    {
+    public void onDocuments(View view) {
         if (mListener != null) mListener.viewDocuments();
     }
 
     @OnClick(R.id.ll_photos)
-    public void onPhotos(View view)
-    {
+    public void onPhotos(View view) {
         if (mListener != null) mListener.viewPhotos();
     }
 
     @OnClick(R.id.ll_videos)
-    public void onVideos(View view)
-    {
+    public void onVideos(View view) {
         if (mListener != null) mListener.viewVideos();
     }
 
+    @OnClick(R.id.ll_music)
+    public void onMusic(View view) {
+        if (mListener != null) mListener.viewMusic();
+    }
+
     @OnClick(R.id.btn_settings)
-    public void onSettings(View view)
-    {
+    public void onSettings(View view) {
         if (mListener != null) mListener.viewSettings();
     }
 
@@ -456,7 +466,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
     @Subscribe
     public void onEvent(OnBackPress onBackPress) {
-        if (mListener != null && !mShowingTour) mListener.onMainBackPressed();
+        if (mListener != null && ! mShowingTour) mListener.onMainBackPressed();
     }
 
     @Override
@@ -467,6 +477,11 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
     @Override
     public void setBadgeVideos(int size) {
         setBadge(tvBadgeVideos, size);
+    }
+
+    @Override
+    public void setBadgeMusic(int size) {
+        setBadge(tvBadgeMusic, size);
     }
 
     @Override
@@ -506,7 +521,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
     @Override
     public void showDefaultError() {
         showToastMessage(getString(R.string.exception_message_generic));
-        if (!mShowingTour){
+        if (! mShowingTour) {
             showGuidedTour();
         }
     }
@@ -515,15 +530,15 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
     public void showGettingPending() {
         hideLoading();
         mProgress = ProgressDialog.show(getActivity(),
-                getResources().getString(R.string.app_name),
-                getResources().getString(R.string.sync_getting_pending_files),
-                true,
-                false);
+          getResources().getString(R.string.app_name),
+          getResources().getString(R.string.sync_getting_pending_files),
+          true,
+          false);
     }
 
     @Override
     public void showStorageFullDialog(boolean doesUploadFail) {
-        if (!mDialogIsShowing){
+        if (! mDialogIsShowing) {
             String title = getString(R.string.common_cloud_storage_full);
             String content = getString(R.string.files_uploader_upgrade_plan);
             if (doesUploadFail) {
@@ -531,104 +546,105 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
                 content = getString(R.string.files_uploader_upload_failed_storage_full) + "\n\n" + content;
             }
             new MaterialDialog.Builder(getActivity())
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            Intent intent = new Intent(getContext(), PaymentActivity.class);
-                            startActivity(intent);
-                        }
-                    })
-                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            mDialogIsShowing = false;
-                        }
-                    })
-                    .title(title)
-                    .content(content)
-                    .positiveText(R.string.common_upgrade_now)
-                    .negativeText(R.string.common_cancel).build().show();
+              .onPositive(new MaterialDialog.SingleButtonCallback() {
+                  @Override
+                  public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                      Intent intent = new Intent(getContext(), PaymentActivity.class);
+                      startActivity(intent);
+                  }
+              })
+              .onAny(new MaterialDialog.SingleButtonCallback() {
+                  @Override
+                  public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                      mDialogIsShowing = false;
+                  }
+              })
+              .title(title)
+              .content(content)
+              .positiveText(R.string.common_upgrade_now)
+              .negativeText(R.string.common_cancel).build().show();
             mDialogIsShowing = true;
         }
     }
 
     @Override
-    public void showSyncDialog(int pendingPhotos, int pendingVideos) {
+    public void showSyncDialog(int pendingPhotos, int pendingVideos, int pendingMusic) {
         if (mDialogIsShowing)
             return;
 
         String textToDisplay = "";
         String permissionArgument = getString(R.string.sync_backup_photos_and_videos_as_well);
-        if (!PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
-                || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)
-                || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG))
+        if (! PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS)
+          || ! PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)
+          || ! PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG))
             permissionArgument = getString(R.string.sync_backup_photos_and_videos_when_permission_granted);
-        if (pendingPhotos == 0 && pendingVideos == 0) {
-            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+        if (pendingPhotos == 0 && pendingVideos == 0 && pendingMusic == 0) {
+            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && ! ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())) {
                 textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
-                    textToDisplay = getString(R.string.sync_backup_no_files_pending, permissionArgument);
+                textToDisplay = getString(R.string.sync_backup_no_files_pending, permissionArgument);
             }
         } else {
-            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
-                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
+            if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && ! ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())) {
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, pendingMusic, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
-                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos, permissionArgument);
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos, pendingMusic, permissionArgument);
             }
         }
         new MaterialDialog.Builder(getActivity())
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if (mSettingsPresenter != null) {
-                            mSettingsPresenter.scheduleSync();
-                        }
-                    }
-                })
-                .onAny(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if (mSettingsPresenter != null) {
-                            mSettingsPresenter.setFirstTimeFalse();
-                        }
-                        mDialogIsShowing = false;
-                        if (!mShowingTour){
-                            showGuidedTour();
-                        }
-                    }
-                })
-                .title(R.string.app_name)
-                .content(textToDisplay)
-                .positiveText(R.string.sync_backup_now)
-                .negativeText(R.string.common_cancel).build().show();
+          .onPositive(new MaterialDialog.SingleButtonCallback() {
+              @Override
+              public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                  if (mSettingsPresenter != null) {
+                      mSettingsPresenter.scheduleSync();
+                  }
+              }
+          })
+          .onAny(new MaterialDialog.SingleButtonCallback() {
+              @Override
+              public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                  if (mSettingsPresenter != null) {
+                      mSettingsPresenter.setFirstTimeFalse();
+                  }
+                  mDialogIsShowing = false;
+                  if (! mShowingTour) {
+                      showGuidedTour();
+                  }
+              }
+          })
+          .title(R.string.app_name)
+          .content(textToDisplay)
+          .positiveText(R.string.sync_backup_now)
+          .negativeText(R.string.common_cancel).build().show();
         mDialogIsShowing = true;
     }
 
     @Override
-    public void scheduleSyncJob(List<String> pendingPhotos, List<String> pendingVideos) {
+    public void scheduleSyncJob(List<String> pendingPhotos, List<String> pendingVideos, List<String> pendingMusic) {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        if (pendingPhotos.size() > 0 || pendingVideos.size() > 0) {
+        if (!pendingPhotos.isEmpty() || !pendingVideos.isEmpty() || !pendingMusic.isEmpty()) {
             PersistableBundleCompat bundle = new PersistableBundleCompat();
             bundle.putString(SyncBackupJob.ACCOUNT, account.name);
-            bundle.putStringArray(SyncBackupJob.PENDING_PHOTOS, pendingPhotos.toArray(new String[pendingPhotos.size()]));
-            bundle.putStringArray(SyncBackupJob.PENDING_VIDEOS, pendingVideos.toArray(new String[pendingVideos.size()]));
+            bundle.putStringArray(SyncBackupJob.PENDING_PHOTOS, pendingPhotos.toArray(new String[ pendingPhotos.size() ]));
+            bundle.putStringArray(SyncBackupJob.PENDING_VIDEOS, pendingVideos.toArray(new String[ pendingVideos.size() ]));
+            bundle.putStringArray(SyncBackupJob.PENDING_MUSIC, pendingMusic.toArray(new String[ pendingMusic.size() ]));
             bundle.putBoolean(SyncBackupJob.FORCE, true);
 
             new JobRequest.Builder(SyncBackupJob.TAG)
-                    .setExtras(bundle)
-                    .setExecutionWindow(3_000L, 10_000L)
-                    .setRequiresCharging(false)
-                    .setPersisted(false)
-                    .setUpdateCurrent(false)
-                    .build()
-                    .schedule();
+              .setExtras(bundle)
+              .setExecutionWindow(3_000L, 10_000L)
+              .setRequiresCharging(false)
+              .setPersisted(false)
+              .setUpdateCurrent(false)
+              .build()
+              .schedule();
         }
         ContactsBackupFragment.startForcedContactBackupJob(account);
         SmsBackupFragment.startForcedSmsBackupJob(account);
         CallsBackupFragment.startForcedCallBackupJob(account);
         int messageId = R.string.sync_preferences_backup_scheduled;
 
-        if (!PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())){
+        if (! PreferenceManager.getInstantUploadUsingMobileData(getContext()) && ! ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())) {
             messageId = R.string.sync_preferences_backup_scheduled_on_wifi;
         }
 
