@@ -66,7 +66,6 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
         initBadges();
         if (mSharedPrefsUtils.getBooleanPreference(MainActivity.EXTRA_REFRESH_DATA, false)) {
             synchronizeRootFolder();
-            getFilesCount();
         }
     }
 
@@ -198,6 +197,11 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
 
     @Override
     public void onRemoteOperationFinish(RemoteOperation remoteOperation, RemoteOperationResult remoteOperationResult) {
+        final Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+        if (account == null) {
+             return;
+        }
+        ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(mContext.getContentResolver());
         if (remoteOperationResult.isSuccess() && remoteOperation instanceof ReadRemoteFolderOperation) {
             List<Object> data = remoteOperationResult.getData();
             int count = 0;
@@ -206,10 +210,19 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
             }
             if (remoteOperation.equals(mReadRemotePhotosOperation)){
                 mView.setBadgePhotos(count);
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL + account.name,
+                        String.valueOf(count));
             } else if (remoteOperation.equals(mReadRemoteVideosOperation)) {
                 mView.setBadgeVideos(count);
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL + account.name,
+                        String.valueOf(count));
             } else if (remoteOperation.equals(mReadRemoteDocumentsOperation)) {
                 mView.setBadgeFiles(count);
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                        FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL + account.name,
+                        String.valueOf(count));
             }
         }
     }
