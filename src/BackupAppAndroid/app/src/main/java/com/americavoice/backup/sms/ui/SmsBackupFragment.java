@@ -3,15 +3,12 @@ package com.americavoice.backup.sms.ui;
 
 import android.Manifest;
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.SwitchCompat;
@@ -19,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,20 +31,23 @@ import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.operations.RefreshFolderOperation;
 import com.americavoice.backup.sms.presenter.SmsBackupPresenter;
 import com.americavoice.backup.sms.service.SmsBackupJob;
+import com.americavoice.backup.utils.BackupCalendarUtils;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.ThemeUtils;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Set;
 import java.util.Vector;
@@ -72,6 +71,7 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     private static final String KEY_CALENDAR_DAY = "CALENDAR_DAY";
     private static final String KEY_CALENDAR_MONTH = "CALENDAR_MONTH";
     private static final String KEY_CALENDAR_YEAR = "CALENDAR_YEAR";
+    private ArrayList<String> selectableDays;
 
     /**
      * Interface for listening file list events.
@@ -147,11 +147,7 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
 
         this.mPresenter.resume();
         if (calendarPickerOpen) {
-            if (selectedDate != null) {
-                openDate(selectedDate);
-            } else {
-                openDate(null);
-            }
+            openDate();
         }
         String backupFolderPath = BaseConstants.SMS_REMOTE_FOLDER;
         refreshBackupFolder(backupFolderPath);
@@ -161,15 +157,6 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (datePickerDialog != null) {
-            outState.putBoolean(KEY_CALENDAR_PICKER_OPEN, datePickerDialog.isShowing());
-
-            if (datePickerDialog.isShowing()) {
-                outState.putInt(KEY_CALENDAR_DAY, datePickerDialog.getDatePicker().getDayOfMonth());
-                outState.putInt(KEY_CALENDAR_MONTH, datePickerDialog.getDatePicker().getMonth());
-                outState.putInt(KEY_CALENDAR_YEAR, datePickerDialog.getDatePicker().getYear());
-            }
-        }
     }
 
     @Override
@@ -433,67 +420,34 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     }
     @OnClick(R.id.sms_datepicker)
     public void openCleanDate() {
-        openDate(null);
+        openDate();
     }
 
-    public void openDate(@Nullable Date savedDate) {
+    public void openDate() {
 
-//        String backupFolderString = BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
-//        OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
-//
-//        Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(backupFolder, false);
-//
-//        Collections.sort(backupFiles, new Comparator<OCFile>() {
-//            @Override
-//            public int compare(OCFile o1, OCFile o2) {
-//                if (o1.getModificationTimestamp() == o2.getModificationTimestamp()) {
-//                    return 0;
-//                }
-//
-//                if (o1.getModificationTimestamp() > o2.getModificationTimestamp()) {
-//                    return 1;
-//                } else {
-//                    return -1;
-//                }
-//            }
-//        });
-//
         Calendar cal = Calendar.getInstance();
-        int year;
-        int month;
-        int day;
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                this,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+        );
 
-        if (savedDate == null) {
-            year = cal.get(Calendar.YEAR);
-            month = cal.get(Calendar.MONTH);
-            day = cal.get(Calendar.DAY_OF_MONTH);
-        } else {
-            year = savedDate.getYear();
-            month = savedDate.getMonth();
-            day = savedDate.getDay();
+        try {
+            Calendar[] selectedDays = BackupCalendarUtils.getSelectableDaysArray(selectableDays);
+            if (selectedDays != null) {
+                datePickerDialog.setSelectableDays(selectedDays);
+            }
+            datePickerDialog.show(getActivity().getFragmentManager(), "Datepickerdialog");
+        } catch (ParseException e) {
+            Crashlytics.logException(e);
         }
-
-//        if (backupFiles.size() > 0 && backupFiles.lastElement() != null) {
-            datePickerDialog = new DatePickerDialog(getContext(), this, year, month, day);
-//            datePickerDialog.getDatePicker().setMaxDate(backupFiles.lastElement().getModificationTimestamp());
-//            datePickerDialog.getDatePicker().setMinDate(backupFiles.firstElement().getModificationTimestamp());
-
-            datePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    selectedDate = null;
-                }
-            });
-
-            datePickerDialog.show();
-//        } else {
-//            Toast.makeText(getActivity(), R.string.contacts_preferences_something_strange_happened,
-//                    Toast.LENGTH_SHORT).show();
-//        }
     }
+
+
 
     @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+    public void onDateSet(DatePickerDialog view, int year, int month, int dayOfMonth) {
 
         selectedDate = new Date(year, month, dayOfMonth);
 
@@ -552,6 +506,8 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
 
     private void refreshBackupFolder(final String backupFolderPath) {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+
+        @SuppressLint("StaticFieldLeak")
         AsyncTask<String, Integer, Boolean> task = new AsyncTask<String, Integer, Boolean>() {
             @Override
             protected Boolean doInBackground(String... path) {
@@ -580,6 +536,12 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
 
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
                             .getFolderContent(backupFolder, false);
+
+                    selectableDays = new ArrayList<>();
+
+                    for (OCFile file : backupFiles) {
+                        selectableDays.add(file.getFileName());
+                    }
                 }
             }
         };
