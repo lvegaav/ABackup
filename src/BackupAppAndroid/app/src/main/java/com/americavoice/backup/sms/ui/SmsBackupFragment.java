@@ -21,10 +21,8 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -68,7 +66,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
@@ -142,6 +139,8 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     private ArrayList<Sms> mSmses = new ArrayList<>();
     private OCFile ocFile;
 
+    private DownloadFinishReceiver mDownloadFinishReceiver;
+
     private BaseOwncloudActivity mContainerActivity;
 
     private boolean calendarPickerOpen;
@@ -208,6 +207,8 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     @Override
     public void onPause() {
         super.onPause();
+        if (mDownloadFinishReceiver != null)
+            getContext().unregisterReceiver(mDownloadFinishReceiver);
         this.mPresenter.pause();
     }
 
@@ -571,7 +572,9 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
                             .getFolderContent(backupFolder, false);
 
-                    setFile(backupFiles.lastElement());
+                    if (backupFiles != null && backupFiles.size() > 0) {
+                        setFile(backupFiles.lastElement());
+                    }
 
                     selectableDays = new ArrayList<>();
 
@@ -608,7 +611,7 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
             // Listen for download messages
             IntentFilter downloadIntentFilter = new IntentFilter(FileDownloader.getDownloadAddedMessage());
             downloadIntentFilter.addAction(FileDownloader.getDownloadFinishMessage());
-            DownloadFinishReceiver mDownloadFinishReceiver = new DownloadFinishReceiver();
+            mDownloadFinishReceiver = new DownloadFinishReceiver();
             getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
         } else {
             try {

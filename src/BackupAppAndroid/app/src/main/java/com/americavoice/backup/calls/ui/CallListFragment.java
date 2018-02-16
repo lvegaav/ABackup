@@ -23,6 +23,7 @@ package com.americavoice.backup.calls.ui;
 
 import android.Manifest;
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -446,6 +447,7 @@ public class CallListFragment extends FileFragment implements CallsListView {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private AsyncTask loadCallsTask = new AsyncTask() {
 
         @Override
@@ -456,7 +458,6 @@ public class CallListFragment extends FileFragment implements CallsListView {
         @Override
         protected Object doInBackground(Object[] params) {
             if (!isCancelled()) {
-                //File file = new File(ocFile.getStoragePath());
                 try {
                     FileInputStream in = new FileInputStream(ocFile.getStoragePath());
                     Scanner br = new Scanner(new InputStreamReader(in));
