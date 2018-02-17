@@ -133,7 +133,7 @@
     <string name="files.unshare_link_forbidden_permissions">de dejar de compartir este archivo</string>
     <string name="files.update_link_forbidden_permissions">de actualizar este archivo compartido</string>
     <string name="files.create_dir_fail">No se pudo crear la carpeta</string>
-    <string name="file.list_seconds_ago">hece unos segundos.</string>
+    <string name="file.list_seconds_ago">hace unos segundos.</string>
     <string name="files.list_empty">Carga contenido o sincroniza tus dispositivos.</string>
     <string name="files.cloud_almost_full">Espacio de Lock Backup esta casi lleno</string>
     <string name="files.getting_pending_no_access">Para realizar el respaldo de tus archivos, necesitamos permiso a tu almacenamiento externo.</string>
