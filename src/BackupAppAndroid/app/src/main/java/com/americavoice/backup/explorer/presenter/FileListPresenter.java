@@ -98,6 +98,34 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         );
     }
 
+    public void onFileListUpload(ArrayList<String> pathsList, ArrayList<String> namesList) {
+        mView.hideRetry();
+        mView.showUploading();
+
+        String[] paths = pathsList.toArray(new String[pathsList.size()]);
+        String[] names = new String[namesList.size()];
+
+        int i = 0;
+        for (String name : namesList) {
+            names[i] = mPath + FileUtils.PATH_SEPARATOR + name;
+            i++;
+        }
+
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+
+        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+        requester.uploadNewFile(
+          mContext,
+          account,
+          paths,
+          names,
+          null,
+          FileUploader.LOCAL_BEHAVIOUR_FORGET,
+          true,
+          UploadFileOperation.CREATED_BY_USER
+        );
+    }
+
     /**
      * Initializes the presenter
      */

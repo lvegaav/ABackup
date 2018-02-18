@@ -57,9 +57,9 @@ public class SyncBackupJob extends Job {
 
         final String[] pendingVideos = bundle.getStringArray(PENDING_VIDEOS);
 
-        final String[] pendingSongs = bundle.getStringArray(PENDING_MUSIC);
+        final String[] pendingMusic = bundle.getStringArray(PENDING_MUSIC);
 
-        FileUtils.backupPendingFiles(getContext(), account, pendingPhotos, pendingVideos, pendingSongs);
+        FileUtils.backupPendingFiles(getContext(), account, pendingPhotos, pendingVideos, pendingMusic);
 
         return Result.SUCCESS;
     }

@@ -79,6 +79,10 @@
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
+            android:name=".main.ui.activity.MusicBackupActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity
             android:name=".main.ui.activity.SmsBackupActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

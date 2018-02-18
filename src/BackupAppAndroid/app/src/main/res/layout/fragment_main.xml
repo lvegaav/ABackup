@@ -136,7 +136,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/dashboard_icon"
-                            app:srcCompat="@drawable/ic_photos" />
+                            app:srcCompat="@drawable/ic_music" />
 
                         <TextView
                             android:id="@+id/badge_music"

@@ -1,6 +1,8 @@
 
 package com.americavoice.backup.explorer.ui;
 
+import static com.americavoice.backup.main.ui.activity.MusicBackupActivity.SELECT_MUSIC;
+
 import android.accounts.Account;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -47,6 +49,7 @@ import com.americavoice.backup.files.service.FileUploader;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
+import com.americavoice.backup.main.ui.activity.MusicBackupActivity;
 import com.americavoice.backup.operations.RemoveFileOperation;
 import com.americavoice.backup.payment.ui.PaymentActivity;
 import com.americavoice.backup.service.OperationsService;
@@ -86,7 +89,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     private static final String ARGUMENT_KEY_PATH = "com.americavoice.backup.ARGUMENT_KEY_PATH";
     private static final int SELECT_VIDEO = 1000;
     private static final int SELECT_PHOTO = 1001;
-    private static final int SELECT_MUSIC = 1003;
     private static final int SELECT_DOCUMENT = 1002;
 
 
@@ -302,15 +304,22 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
                 break;
             case BaseConstants.MUSIC_REMOTE_FOLDER:
                 if (bool) {
-                    startPhotosBackupJob(account);
+                    startMusicBackupJob(account);
                 } else {
-                    cancelPhotosBackupJobForAccount(getContext(), account);
+                    cancelMusicBackupJobForAccount(getContext(), account);
                 }
                 arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_MUSIC_AUTOMATIC_BACKUP, String.valueOf(bool));
                 break;
             default:
                 break;
         }
+    }
+
+
+    private void startMusicBackupJob(Account account) {
+    }
+
+    private void cancelMusicBackupJobForAccount(Context context, Account account) {
     }
 
     private void startPhotosBackupJob(Account account) {
@@ -455,7 +464,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
           .textColor(android.R.color.white)
           .cancelable(false));
         TapTargetSequence sequence = new TapTargetSequence(getActivity())
-          .targets((tapTargets.toArray(new TapTarget[ 0 ])))
+          .targets((tapTargets.toArray(new TapTarget[0])))
           .listener(new TapTargetSequence.Listener() {
               // This listener will tell us when interesting(tm) events happen in regards
               // to the sequence
@@ -589,7 +598,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
         String subPath = mPath.substring(1, mPath.length() - 1);
         String[] splits = subPath.split("/");
         if (splits.length > 1) {
-            path = splits[ splits.length - 2 ];
+            path = splits[splits.length - 2];
         }
 
         if (this.mListener != null) this.mListener.onFolderClicked(path);
@@ -609,9 +618,7 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
             i.setAction(Intent.ACTION_PICK);
             startActivityForResult(i, SELECT_VIDEO);
         } else if (mPath.startsWith(BaseConstants.MUSIC_REMOTE_FOLDER)) {
-            Intent i = new Intent();
-            i.setType("music/*");
-            i.setAction(Intent.ACTION_PICK);
+            Intent i = new Intent(getActivity(), MusicBackupActivity.class);
             startActivityForResult(i, SELECT_MUSIC);
         } else if (mPath.startsWith(BaseConstants.DOCUMENTS_REMOTE_FOLDER)) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -624,12 +631,19 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String selectedPath = null;
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_PHOTO || requestCode == SELECT_VIDEO ||
-              requestCode == SELECT_MUSIC || requestCode == SELECT_DOCUMENT)
+            if (requestCode == SELECT_PHOTO || requestCode == SELECT_VIDEO || requestCode == SELECT_DOCUMENT)
                 selectedPath = ExplorerHelper.getPath(getContext(), data.getData());
             if (selectedPath != null && mPresenter != null) {
                 mPresenter.onFileUpload(selectedPath);
             }
+            if (requestCode == SELECT_MUSIC) {
+                ArrayList<String> selectedPaths = data.getStringArrayListExtra("songPaths");
+                ArrayList<String> selectedNames = data.getStringArrayListExtra("songNames");
+                if (selectedNames != null && selectedPaths != null) {
+                    mPresenter.onFileListUpload(selectedPaths, selectedNames);
+                }
+            }
+
         }
     }
 
@@ -699,7 +713,6 @@ public class FileListFragment extends BaseFragment implements FileListView, OnRe
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.menu_multi_select, menu);
-            //context_menu = menu;
             return true;
         }
 

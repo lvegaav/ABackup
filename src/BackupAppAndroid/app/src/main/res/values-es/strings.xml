@@ -180,6 +180,7 @@
     <string name="calls.title">Llamadas</string>
     <string name="calls.read_permission">Permisos para leer tu lista de llamadas son requeridos</string>
     <string name="calls.list_restore_selected">Restaurar llamadas</string>
+    <string name="music.list_restore_selected">Seleccionar canciones</string>
 
     <string name="sms.title">Mensajes</string>
     <string name="sms.read_permission">Permisos para leer tu lista de mensajes son requeridos</string>
@@ -302,5 +303,6 @@
     <string name="backup_options.description">Seleccione las opciones de las que desea tener una copia de seguridad</string>
     <string name="error.country_code_required">Country code is required</string>
     <string name="payment_success_message">Gracias por tu preferencia, tu compra ha sido exitosa!</string>
+    <string name="album">Album</string>
 
 </resources>
