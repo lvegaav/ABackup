@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
@@ -299,14 +300,18 @@ public class MusicBackupFragment extends BaseFragment implements MusicBackupView
                 @Override
                 protected void onPostExecute(Object o) {
                     if (! isCancelled()) {
-                        songBackupAdapter.replaceSongList(songs);
-                        emptyListContainer.setVisibility(GONE);
-                        restoreContacts.setVisibility(View.VISIBLE);
-                        restoreContacts.setEnabled(true);
-                        if (mMenu != null) {
-                            mMenu.getItem(0).setVisible(true);
-                            onOptionsItemSelected(mMenu.findItem(R.id.action_select_all));
+                        if (! songs.isEmpty()) {
+                            songBackupAdapter.replaceSongList(songs);
+                            restoreContacts.setVisibility(View.VISIBLE);
+                            restoreContacts.setEnabled(true);
+                            if (mMenu != null) {
+                                mMenu.getItem(0).setVisible(true);
+                                onOptionsItemSelected(mMenu.findItem(R.id.action_select_all));
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.contacts_preferences_no_file_found), Toast.LENGTH_SHORT).show();
                         }
+                        emptyListContainer.setVisibility(GONE);
                     }
                 }
             };

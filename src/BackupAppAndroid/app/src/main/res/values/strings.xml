@@ -181,6 +181,7 @@
     <string name="calls.title">Calls</string>
     <string name="calls.read_permission">Permission to read call log needed</string>
     <string name="calls.list_restore_selected">Restore calls</string>
+    <string name="music.list_restore_selected">Select Songs</string>
 
     <string name="sms.title">Sms</string>
     <string name="sms.read_permission">Permission to read sms list needed</string>
