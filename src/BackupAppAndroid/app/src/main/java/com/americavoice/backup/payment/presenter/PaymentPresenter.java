@@ -154,6 +154,8 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
     public void createSubscription() {
         mPaymentView.hideLoading();
         mSharedPrefsUtils.setBooleanPreference(MainActivity.EXTRA_REFRESH_DATA, true);
+
+
         if (subscription == null) {
             // it's a create
             mPaymentView.showLoading();
@@ -163,7 +165,6 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                 @Override
                 public void success(dtos.CreateSubscriptionResponse response) {
                     showSuccessDialog();
-                    checkSubscriptionAndShow();
                 }
 
                 @Override
@@ -197,7 +198,6 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
                 @Override
                 public void success(dtos.ChangeSubscriptionResponse response) {
                     showSuccessDialog();
-                    checkSubscriptionAndShow();
                 }
 
                 @Override
@@ -229,10 +229,15 @@ public class PaymentPresenter extends BasePresenter implements IPresenter{
     }
 
     private void showSuccessDialog() {
-        new AlertDialog.Builder(mPaymentView.getContext(), R.style.WhiteDialog)
+        new AlertDialog.Builder(mPaymentView.getActivity(), R.style.WhiteDialog)
                 .setTitle(R.string.app_name)
                 .setMessage(R.string.payment_success_message)
-                .setPositiveButton(R.string.common_ok, null)
+                .setPositiveButton(R.string.common_ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        checkSubscriptionAndShow();
+                    }
+                })
                 .setCancelable(false)
                 .show();
     }

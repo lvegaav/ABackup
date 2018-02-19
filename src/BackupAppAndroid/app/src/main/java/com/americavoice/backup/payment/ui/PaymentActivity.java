@@ -250,6 +250,11 @@ public class PaymentActivity extends BaseActivity implements PaymentView,
     }
 
     @Override
+    public BaseActivity getActivity() {
+        return this;
+    }
+
+    @Override
     public void onBackPressed() {
         EventBus.getDefault().post(new OnBackPress());
     }
