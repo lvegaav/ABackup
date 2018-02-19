@@ -48,7 +48,6 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
     private static final String SHOW_CASE_ALREADY = "FILES_SHOW_CASE_ALREADY";
     private FileDataStorageManager mStorageManager;
-    private Account mAccount;
     private FileListView mView;
     private Handler mHandler;
     private String mPath;
@@ -57,7 +56,6 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     @Inject
     public FileListPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
-
     }
 
     public void setView(@NonNull FileListView view) {
@@ -66,18 +64,20 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
     @Override
     public void resume() {
+        // no-op
     }
 
     @Override
     public void pause() {
+        // no-op
     }
 
     @Override
     public void destroy() {
+        // no-op
     }
 
     public void onFileUpload(String path) {
-
         mView.hideRetry();
         mView.showUploading();
 
@@ -87,16 +87,45 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
         FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
         requester.uploadNewFile(
-                mContext,
-                account,
-                upFile.getAbsolutePath(),
-                mPath + FileUtils.PATH_SEPARATOR + upFile.getName(),
-                FileUploader.LOCAL_BEHAVIOUR_FORGET,
-                null,
-                true,
-                UploadFileOperation.CREATED_BY_USER
+          mContext,
+          account,
+          upFile.getAbsolutePath(),
+          mPath + FileUtils.PATH_SEPARATOR + upFile.getName(),
+          FileUploader.LOCAL_BEHAVIOUR_FORGET,
+          null,
+          true,
+          UploadFileOperation.CREATED_BY_USER
         );
     }
+
+    public void onFileListUpload(ArrayList<String> pathsList, ArrayList<String> namesList) {
+        mView.hideRetry();
+        mView.showUploading();
+
+        String[] paths = pathsList.toArray(new String[pathsList.size()]);
+        String[] names = new String[namesList.size()];
+
+        int i = 0;
+        for (String name : namesList) {
+            names[i] = mPath + FileUtils.PATH_SEPARATOR + name;
+            i++;
+        }
+
+        Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
+
+        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+        requester.uploadNewFile(
+          mContext,
+          account,
+          paths,
+          names,
+          null,
+          FileUploader.LOCAL_BEHAVIOUR_FORGET,
+          true,
+          UploadFileOperation.CREATED_BY_USER
+        );
+    }
+
     /**
      * Initializes the presenter
      */
@@ -104,13 +133,12 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         mContext = context;
         mPath = path;
         mHandler = new Handler();
-        mAccount = account;
         mStorageManager = new FileDataStorageManager(account, context);
-        if (!mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false)) {
+        if (! mSharedPrefsUtils.getBooleanPreference(SHOW_CASE_ALREADY, false)) {
             mView.showGuidedTour();
         } else if (mSharedPrefsUtils.getBooleanPreference(BaseConstants.PreferenceKeys.STORAGE_FULL, false)) {
             mView.showPersistenceUpgrade(R.string.common_cloud_storage_full);
-        } else if (mSharedPrefsUtils.getBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, false)){
+        } else if (mSharedPrefsUtils.getBooleanPreference(FileListFragment.PREFERENCE_STORAGE_ALMOST_FULL, false)) {
             mView.showPersistenceUpgrade(R.string.files_cloud_almost_full);
         }
         readRemoteFiles(path);
@@ -124,7 +152,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         }
     }
 
-    public void onFileClicked(Context context, OCFile remoteFile) {
+    public void onFileClicked(OCFile remoteFile) {
         if (remoteFile.isFolder()) {
             mView.viewFolder(remoteFile.getRemotePath());
         } else {
@@ -140,7 +168,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
     @Override
     public void onRemoteOperationFinish(RemoteOperation operation, RemoteOperationResult result) {
         mView.hideLoading();
-        if (!result.isSuccess()) {
+        if (! result.isSuccess()) {
             if (result.getHttpCode() == 404) {
                 mView.showLoading();
                 CreateRemoteFolderOperation createRemoteFolderOperation = new CreateRemoteFolderOperation(mPath, true);
@@ -150,7 +178,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
                 mView.showRetry();
             }
         } else if (operation instanceof ReadRemoteFolderOperation) {
-            onSuccessfulRefresh((ReadRemoteFolderOperation) operation, result);
+            onSuccessfulRefresh(result);
         } else if (operation instanceof CreateRemoteFolderOperation) {
             mView.showLoading();
             readRemoteFiles(mPath);
@@ -164,10 +192,10 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
 
     }
 
-    private void onSuccessfulRefresh(ReadRemoteFolderOperation operation, RemoteOperationResult result) {
+    private void onSuccessfulRefresh(RemoteOperationResult result) {
         if (result.isSuccess()) {
             List<OCFile> files = new ArrayList<>();
-            for(Object obj: result.getData()) {
+            for (Object obj : result.getData()) {
                 RemoteFile remoteFile = (RemoteFile) obj;
                 OCFile file = mStorageManager.getFileByPath(remoteFile.getRemotePath());
                 if (file == null) {
@@ -179,7 +207,7 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
                 files.add(file);
             }
             refreshTotal(files.size());
-            if (files.size() > 0) {
+            if (! files.isEmpty()) {
                 mView.renderList(files);
             } else {
                 mView.renderEmpty();
@@ -198,18 +226,23 @@ public class FileListPresenter extends BasePresenter implements IPresenter, OnRe
         switch (mPath) {
             case BaseConstants.DOCUMENTS_REMOTE_FOLDER:
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL + account.name,
-                        String.valueOf(size));
+                  FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL + account.name,
+                  String.valueOf(size));
                 break;
             case BaseConstants.PHOTOS_REMOTE_FOLDER:
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL + account.name,
-                        String.valueOf(size));
+                  FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL + account.name,
+                  String.valueOf(size));
                 break;
             case BaseConstants.VIDEOS_REMOTE_FOLDER:
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL + account.name,
-                        String.valueOf(size));
+                  FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL + account.name,
+                  String.valueOf(size));
+                break;
+            case BaseConstants.MUSIC_REMOTE_FOLDER:
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                  FileListFragment.PREFERENCE_MUSIC_LAST_TOTAL + account.name,
+                  String.valueOf(size));
                 break;
             default:
                 break;

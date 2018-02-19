@@ -98,6 +98,9 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
 
             mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
             mReadRemoteVideosOperation.execute(client, this, mHandler);
+
+            mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.MUSIC_REMOTE_FOLDER);
+            mReadRemoteVideosOperation.execute(client, this, mHandler);
         }
 
     }

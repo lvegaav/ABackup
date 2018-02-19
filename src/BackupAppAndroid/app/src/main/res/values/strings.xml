@@ -87,6 +87,7 @@
     <string name="main.title">Backup Options</string>
     <string name="main.photos">Photos</string>
     <string name="main.videos">Videos</string>
+    <string name="main.music">Music</string>
     <string name="main.contacts">Contacts</string>
     <string name="main.documents">Documents</string>
     <string name="main.available">Available</string>
@@ -177,6 +178,7 @@
     <string name="calls.title">Calls</string>
     <string name="calls.read_permission">Permission to read call log needed</string>
     <string name="calls.list_restore_selected">Restore calls</string>
+    <string name="music.list_restore_selected">Select Songs</string>
 
     <string name="sms.title">Sms</string>
     <string name="sms.read_permission">Permission to read sms list needed</string>
@@ -299,6 +301,7 @@
     <string name="backup_options.description">Select the options you want to have backed up</string>
     <string name="error.country_code_required">Country code is required</string>
     <string name="payment_success_message">Thank you for your preference, your purchase has been successful!</string>
+    <string name="album">Album</string>
 
     <string name="sync_in_progress">Fetching most recent version of the file.</string>
     <string name="file_not_synced">File could not be synced. Showing latest available version.</string>

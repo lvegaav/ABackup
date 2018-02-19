@@ -148,6 +148,7 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
 
         mView.setBadgePhotos(arbitraryDataProvider.getIntegerValue(account, FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL + account.name));
         mView.setBadgeVideos(arbitraryDataProvider.getIntegerValue(account, FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL + account.name));
+        mView.setBadgeMusic(arbitraryDataProvider.getIntegerValue(account, FileListFragment.PREFERENCE_MUSIC_LAST_TOTAL + account.name));
         mView.setBadgeFiles(arbitraryDataProvider.getIntegerValue(account, FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL + account.name));
         mView.setBadgeContacts(arbitraryDataProvider.getIntegerValue(account, ContactsBackupFragment.PREFERENCE_CONTACTS_LAST_TOTAL + account.name));
         mView.setBadgeSms(arbitraryDataProvider.getIntegerValue(account, SmsBackupFragment.PREFERENCE_SMS_LAST_TOTAL + account.name));
