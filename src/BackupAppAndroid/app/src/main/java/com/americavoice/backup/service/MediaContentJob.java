@@ -223,23 +223,35 @@ public class MediaContentJob extends JobService {
             ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContentResolver());
             final boolean photosBackupEnabled = arbitraryDataProvider.getBooleanValue(account, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP);
             final boolean videosBackupEnabled = arbitraryDataProvider.getBooleanValue(account, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP);
+            final boolean musicBackupEnabled = arbitraryDataProvider.getBooleanValue(account, FileListFragment.PREFERENCE_MUSIC_AUTOMATIC_BACKUP);
+
             String data, displayName, mimeType, size;
-            if (!isVideoContentUri(fileUri.toString())) {
-                data = MediaStore.Images.Media.DATA;
-                displayName = MediaStore.Images.Media.DISPLAY_NAME;
-                mimeType = MediaStore.Images.Media.MIME_TYPE;
-                size = MediaStore.Images.Media.SIZE;
-                if (!photosBackupEnabled){
-                    Log_OC.w(TAG, "No automatic backup for photos, aborting");
-                    return;
-                }
-            } else {
+            if (isVideoContentUri(fileUri.toString())) {
                 data = MediaStore.Video.Media.DATA;
                 displayName = MediaStore.Video.Media.DISPLAY_NAME;
                 mimeType = MediaStore.Video.Media.MIME_TYPE;
                 size = MediaStore.Video.Media.SIZE;
                 if (!videosBackupEnabled){
                     Log_OC.w(TAG, "No automatic backup for videos, aborting");
+                    return;
+                }
+
+            } else if (isMusicContentUri(fileUri.toString())) {
+                data = MediaStore.Audio.Media.DATA;
+                displayName = MediaStore.Audio.Media.DISPLAY_NAME;
+                mimeType = MediaStore.Audio.Media.MIME_TYPE;
+                size = MediaStore.Audio.Media.SIZE;
+                if (!musicBackupEnabled){
+                    Log_OC.w(TAG, "No automatic backup for music, aborting");
+                    return;
+                }
+            } else {
+                data = MediaStore.Images.Media.DATA;
+                displayName = MediaStore.Images.Media.DISPLAY_NAME;
+                mimeType = MediaStore.Images.Media.MIME_TYPE;
+                size = MediaStore.Images.Media.SIZE;
+                if (!photosBackupEnabled){
+                    Log_OC.w(TAG, "No automatic backup for photos, aborting");
                     return;
                 }
             }
@@ -285,6 +297,9 @@ public class MediaContentJob extends JobService {
             if (isVideoContentUri(fileUri.toString())) {
                 uploadPath = BaseConstants.VIDEOS_REMOTE_FOLDER;
                 createdBy = UploadFileOperation.CREATED_AS_INSTANT_VIDEO;
+            } else if (isMusicContentUri(fileUri.toString())){
+                uploadPath = BaseConstants.MUSIC_REMOTE_FOLDER;
+                createdBy = UploadFileOperation.CREATED_AS_INSTANT_MUSIC;
             } else {
                 uploadPath = BaseConstants.PHOTOS_REMOTE_FOLDER;
                 createdBy = UploadFileOperation.CREATED_AS_INSTANT_PICTURE;
@@ -310,5 +325,10 @@ public class MediaContentJob extends JobService {
     private boolean isVideoContentUri(String mimeType) {
         return mimeType.startsWith(MediaStore.Video.Media.EXTERNAL_CONTENT_URI.toString());
     }
+
+    private boolean isMusicContentUri(String mimeType) {
+        return mimeType.startsWith(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI.toString());
+    }
+
 
 }

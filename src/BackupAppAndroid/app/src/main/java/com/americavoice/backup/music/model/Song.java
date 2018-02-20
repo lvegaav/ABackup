@@ -25,9 +25,15 @@ public class Song {
     }
 
     public String getDuration() {
-        return String.format(Locale.US, "%d : %d",
-          TimeUnit.MILLISECONDS.toMinutes(duration),
-          TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+        if (TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)) < 10) {
+            return String.format(Locale.US, "%d : 0%d",
+              TimeUnit.MILLISECONDS.toMinutes(duration),
+              TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+        } else {
+            return String.format(Locale.US, "%d : %d",
+              TimeUnit.MILLISECONDS.toMinutes(duration),
+              TimeUnit.MILLISECONDS.toSeconds(duration) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(duration)));
+        }
     }
 
     public String getArtist() {

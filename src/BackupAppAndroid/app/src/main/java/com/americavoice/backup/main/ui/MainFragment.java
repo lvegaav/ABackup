@@ -244,6 +244,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
                                     WifiRetryJob.scheduleJob(getContext());
                                     arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(true));
                                     arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_MUSIC_AUTOMATIC_BACKUP, String.valueOf(true));
                                 }
                                 break;
                             case Manifest.permission.READ_CONTACTS:
@@ -274,6 +275,7 @@ public class MainFragment extends BaseFragment implements MainView, StorageInfoV
 
                     arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(true));
                     arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                    arbitraryDataProvider.storeOrUpdateKeyValue(currentAccount, FileListFragment.PREFERENCE_MUSIC_AUTOMATIC_BACKUP, String.valueOf(true));
                     mSettingsPresenter.showSyncAtFirst();
                 } else {
                     if (! mShowingTour) {
