@@ -1,8 +1,14 @@
 package com.americavoice.backup.settings.ui;
 
+import static com.americavoice.backup.calls.ui.CallsBackupFragment.PREFERENCE_CALLS_AUTOMATIC_BACKUP;
+import static com.americavoice.backup.contacts.ui.ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP;
+import static com.americavoice.backup.explorer.ui.FileListFragment.PREFERENCE_MUSIC_AUTOMATIC_BACKUP;
+import static com.americavoice.backup.explorer.ui.FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP;
+import static com.americavoice.backup.explorer.ui.FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP;
+import static com.americavoice.backup.sms.ui.SmsBackupFragment.PREFERENCE_SMS_AUTOMATIC_BACKUP;
+
 import android.accounts.Account;
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
@@ -14,7 +20,6 @@ import android.widget.TextView;
 import com.americavoice.backup.R;
 import com.americavoice.backup.authentication.AccountUtils;
 import com.americavoice.backup.datamodel.ArbitraryDataProvider;
-import com.americavoice.backup.db.PreferenceManager;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
@@ -30,12 +35,6 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
-import static com.americavoice.backup.calls.ui.CallsBackupFragment.PREFERENCE_CALLS_AUTOMATIC_BACKUP;
-import static com.americavoice.backup.contacts.ui.ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP;
-import static com.americavoice.backup.explorer.ui.FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP;
-import static com.americavoice.backup.explorer.ui.FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP;
-import static com.americavoice.backup.sms.ui.SmsBackupFragment.PREFERENCE_SMS_AUTOMATIC_BACKUP;
-
 /**
  * Created by angelchanquin on 5/12/17.
  */
@@ -44,6 +43,7 @@ public class BackupOptionsFragment extends BaseFragment implements BackupOptions
 
     public static final String PHOTOS_BACKUP_ENABLED_PREFERENCE = "PHOTOS_BACKUP_ENABLED_PREFERENCE";
     public static final String VIDEOS_BACKUP_ENABLED_PREFERENCE = "VIDEOS_BACKUP_ENABLED_PREFERENCE";
+    public static final String MUSIC_BACKUP_ENABLED_PREFERENCE = "MUSIC_BACKUP_ENABLED_PREFERENCE";
     public static final String CONTACTS_BACKUP_ENABLED_PREFERENCE = "CONTACTS_BACKUP_ENABLED_PREFERENCE";
     public static final String SMS_BACKUP_ENABLED_PREFERENCE = "SMS_BACKUP_ENABLED_PREFERENCE";
     public static final String CALLS_BACKUP_ENABLED_PREFERENCE = "CALLS_BACKUP_ENABLED_PREFERENCE";
@@ -68,6 +68,8 @@ public class BackupOptionsFragment extends BaseFragment implements BackupOptions
     SwitchCompat backupPhotos;
     @BindView(R.id.backup_videos)
     SwitchCompat backupVideos;
+    @BindView(R.id.backup_music)
+    SwitchCompat backupMusic;
     @BindView(R.id.backup_contacts)
     SwitchCompat backupContacts;
     @BindView(R.id.backup_sms)
@@ -148,6 +150,7 @@ public class BackupOptionsFragment extends BaseFragment implements BackupOptions
         backupPhotos.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_PHOTOS_AUTOMATIC_BACKUP));
         backupVideos.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_VIDEOS_AUTOMATIC_BACKUP));
         backupContacts.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP));
+        backupMusic.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_MUSIC_AUTOMATIC_BACKUP));
         backupSms.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_SMS_AUTOMATIC_BACKUP));
         backupCalls.setChecked(arbitraryDataProvider.getBooleanValue(account, PREFERENCE_CALLS_AUTOMATIC_BACKUP));
 //        this.mPresenter.initialize();
@@ -197,6 +200,12 @@ public class BackupOptionsFragment extends BaseFragment implements BackupOptions
     @OnCheckedChanged(R.id.backup_videos)
     public void onBackupVideosChange() {
         arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(backupVideos.isChecked()));
+//        mPresenter.updateBackupOption(R.id.backup_videos, backupVideos.isChecked());
+    }
+
+    @OnCheckedChanged(R.id.backup_music)
+    public void onBackupMusicChange() {
+        arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_MUSIC_AUTOMATIC_BACKUP, String.valueOf(backupMusic.isChecked()));
 //        mPresenter.updateBackupOption(R.id.backup_videos, backupVideos.isChecked());
     }
 

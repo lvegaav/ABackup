@@ -94,6 +94,10 @@ public abstract class PreferenceManager {
         return false;
     }
 
+    public static boolean instantMusicUploadWhenChargingOnly(Context context) {
+        return false;
+    }
+
     public static boolean showHiddenFilesEnabled(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean("show_hidden_files_pref", false);
     }

@@ -56,10 +56,12 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
     private Handler mHandler;
 
     private List<String> mPendingPhotos;
+    private List<String> mPendingMusic;
     private List<String> mPendingVideos;
 
     private ReadRemoteFolderOperation mReadRemotePhotosOperation;
     private ReadRemoteFolderOperation mReadRemoteVideosOperation;
+    private ReadRemoteFolderOperation mReadRemoteMusicOperation;
     @Inject
     SyncPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
         super(sharedPrefsUtils, networkProvider);
@@ -106,7 +108,7 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
     }
 
     public void sync() {
-        mView.syncJob(mPendingPhotos,mPendingVideos);
+        mView.syncJob(mPendingPhotos,mPendingVideos, mPendingMusic);
     }
 
     @Override
@@ -118,6 +120,8 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
         List<String> localFiles;
 
         boolean isPhotos = mReadRemotePhotosOperation.equals(operation);
+        boolean isMusic = mReadRemoteMusicOperation.equals(operation);
+        boolean isVideos = mReadRemoteVideosOperation.equals(operation);
 
         if (remoteOperationResult.isSuccess()) {
             for(Object obj: remoteOperationResult.getData()) {
@@ -137,9 +141,11 @@ public class SyncPresenter extends BasePresenter implements IPresenter, OnRemote
             if (isPhotos) {
                 mPendingPhotos = pendingFiles;
                 mView.totalImages(pendingFiles.size());
-            } else {
+            } else if(isVideos) {
                 mPendingVideos = pendingFiles;
                 mView.totalVideos(pendingFiles.size());
+            } else if (isMusic) {
+                mView.totalMusic(pendingFiles.size());
             }
         } else {
             mView.showNoFiles();

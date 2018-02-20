@@ -56,6 +56,9 @@ public class BackupOptionsPresenter extends BasePresenter implements IPresenter{
             case R.id.backup_videos:
                 keyToUpdate = BackupOptionsFragment.VIDEOS_BACKUP_ENABLED_PREFERENCE;
                 break;
+            case R.id.backup_music:
+                keyToUpdate = BackupOptionsFragment.MUSIC_BACKUP_ENABLED_PREFERENCE;
+                break;
             case R.id.backup_contacts:
                 keyToUpdate = BackupOptionsFragment.CONTACTS_BACKUP_ENABLED_PREFERENCE;
                 break;
