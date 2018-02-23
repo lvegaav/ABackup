@@ -23,6 +23,7 @@ package com.americavoice.backup.sms.ui;
 
 import android.Manifest;
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -414,6 +415,7 @@ public class SmsListFragment extends FileFragment implements SmsListView {
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
     private AsyncTask loadSmsTask = new AsyncTask() {
 
         @Override
