@@ -5,7 +5,10 @@ import android.Manifest;
 import android.accounts.Account;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -32,6 +35,7 @@ import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.components.AppComponent;
+import com.americavoice.backup.files.service.FileDownloader;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
@@ -148,6 +152,10 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         View fragmentView = inflater.inflate(R.layout.fragment_contacts_backup, container, false);
         mUnBind = ButterKnife.bind(this, fragmentView);
 
+        contactsBackupAdapter = new ContactsBackupAdapter(getContext(), vCards);
+        recyclerView.setAdapter(contactsBackupAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         return fragmentView;
     }
 
@@ -223,15 +231,11 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         // display last backup
         Long lastBackupTimestamp = arbitraryDataProvider.getLongValue(account, PREFERENCE_CONTACTS_LAST_BACKUP);
 
-        if (lastBackupTimestamp == -1) {
+        if (lastBackupTimestamp == - 1) {
             lastBackup.setText(R.string.contacts_preference_backup_never);
         } else {
             lastBackup.setText(DisplayUtils.getRelativeTimestamp(getActivity(), lastBackupTimestamp));
         }
-
-        contactsBackupAdapter = new ContactsBackupAdapter(getContext(), vCards);
-        recyclerView.setAdapter(contactsBackupAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
     }
 
@@ -269,8 +273,8 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
     private void showLastBackup() {
         String backupFolderString = BaseConstants.CONTACTS_REMOTE_FOLDER;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
-        final Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
-                .getFolderContent(backupFolder, false);
+        final Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(
+          backupFolder, false);
 
         selectableDays = new ArrayList<>();
 
@@ -278,7 +282,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
             selectableDays.add(file.getFileName());
         }
 
-        if (!selectableDays.isEmpty()) {
+        if (! selectableDays.isEmpty()) {
             Collections.sort(selectableDays, new Comparator<String>() {
                 DateFormat f = new SimpleDateFormat("yyyy-MM-dd_hh-mm-ss");
 
@@ -292,24 +296,52 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
                 }
             });
 
-            for (OCFile file : backupFiles) {
-                if (file.getFileName().equals(selectableDays.get(selectableDays.size() - 1))) {
-                    ocFile = file;
+            ocFile = backupFiles.lastElement();
+
+            if (! ocFile.isDown()) {
+                Intent i = new Intent(getContext(), FileDownloader.class);
+                i.putExtra(FileDownloader.EXTRA_ACCOUNT, mContainerActivity.getAccount());
+                i.putExtra(FileDownloader.EXTRA_FILE, ocFile);
+                getContext().startService(i);
+
+                // Listen for download messages
+                IntentFilter downloadIntentFilter = new IntentFilter(FileDownloader.getDownloadAddedMessage());
+                downloadIntentFilter.addAction(FileDownloader.getDownloadFinishMessage());
+                DownloadFinishReceiver mDownloadFinishReceiver = new DownloadFinishReceiver();
+                getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
+            } else {
+                try {
+                    loadLastBackupTask.execute();
+                } catch (Exception e) {
+                    Crashlytics.logException(e);
                 }
             }
 
-
-            try {
-                loadLastBackupTask.execute();
-            } catch (Exception e) {
-                Crashlytics.logException(e);
-            }
         } else {
             emptyContentHeadline.setVisibility(View.GONE);
             emptyContentProgressBar.setVisibility(View.GONE);
         }
     }
 
+
+    private class DownloadFinishReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (intent.getAction().equalsIgnoreCase(FileDownloader.getDownloadFinishMessage())) {
+                    String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
+
+                    FileDataStorageManager storageManager = new FileDataStorageManager(mContainerActivity.getAccount(),
+                      getContext());
+                    ocFile = storageManager.getFileByPath(downloadedRemotePath);
+                    loadLastBackupTask.execute();
+                }
+            } catch (Exception e) {
+                Crashlytics.logException(e);
+            }
+        }
+    }
 
     private void setLoadingMessage() {
         emptyContentHeadline.setText(R.string.common_loading);
@@ -326,11 +358,17 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
     public static class ContactItemViewHolder extends RecyclerView.ViewHolder {
         private TextView name;
+        private ImageView badge;
 
         ContactItemViewHolder(View itemView) {
             super(itemView);
 
             name = (TextView) itemView.findViewById(R.id.contact_name);
+            badge = (ImageView) itemView.findViewById(R.id.contactlist_item_icon);
+        }
+
+        public ImageView getBadge() {
+            return badge;
         }
 
         public TextView getName() {
@@ -352,18 +390,18 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         } else {
             // Check if we should show an explanation
             if (PermissionUtil.shouldShowRequestPermissionRationale(getActivity(),
-                    android.Manifest.permission.READ_CONTACTS)) {
+              android.Manifest.permission.READ_CONTACTS)) {
                 // Show explanation to the user and then request permission
                 Snackbar snackbar = Snackbar.make(getView().findViewById(R.id.contacts_linear_layout),
-                        R.string.contacts_read_permission,
-                        Snackbar.LENGTH_INDEFINITE)
-                        .setAction(R.string.common_ok, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                                        PermissionUtil.PERMISSIONS_READ_CONTACTS_AUTOMATIC);
-                            }
-                        });
+                  R.string.contacts_read_permission,
+                  Snackbar.LENGTH_INDEFINITE)
+                  .setAction(R.string.common_ok, new View.OnClickListener() {
+                      @Override
+                      public void onClick(View v) {
+                          requestPermissions(new String[] {Manifest.permission.READ_CONTACTS},
+                            PermissionUtil.PERMISSIONS_READ_CONTACTS_AUTOMATIC);
+                      }
+                  });
 
                 ThemeUtils.colorSnackbar(getActivity(), snackbar);
 
@@ -372,8 +410,8 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
                 return false;
             } else {
                 // No explanation needed, request the permission.
-                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS},
-                        PermissionUtil.PERMISSIONS_READ_CONTACTS_AUTOMATIC);
+                requestPermissions(new String[] {Manifest.permission.READ_CONTACTS},
+                  PermissionUtil.PERMISSIONS_READ_CONTACTS_AUTOMATIC);
                 return false;
             }
         }
@@ -390,13 +428,13 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         bundle.putBoolean(ContactsBackupJob.IS_FROM_SWITCH, isFromSwitch);
 
         new JobRequest.Builder(ContactsBackupJob.TAG)
-                .setExtras(bundle)
-                .setRequiresCharging(false)
-                .setPersisted(true)
-                .setUpdateCurrent(true)
-                .setPeriodic(24 * 60 * 60 * 1000)
-                .build()
-                .schedule();
+          .setExtras(bundle)
+          .setRequiresCharging(false)
+          .setPersisted(true)
+          .setUpdateCurrent(true)
+          .setPeriodic(24 * 60 * 60 * 1000)
+          .build()
+          .schedule();
     }
 
     public static void startForcedContactBackupJob(Account account) {
@@ -406,13 +444,13 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         bundle.putBoolean(ContactsBackupJob.FORCE, true);
 
         new JobRequest.Builder(ContactsBackupJob.TAG)
-                .setExtras(bundle)
-                .setRequiresCharging(false)
-                .setPersisted(true)
-                .setUpdateCurrent(true)
-                .setPeriodic(24 * 60 * 60 * 1000)
-                .build()
-                .schedule();
+          .setExtras(bundle)
+          .setRequiresCharging(false)
+          .setPersisted(true)
+          .setUpdateCurrent(true)
+          .setPeriodic(24 * 60 * 60 * 1000)
+          .build()
+          .schedule();
     }
 
     private void startContactsBackupJob() {
@@ -423,17 +461,17 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         bundle.putBoolean(ContactsBackupJob.FORCE, true);
 
         new JobRequest.Builder(ContactsBackupJob.TAG)
-                .setExtras(bundle)
-                .setExecutionWindow(3_000L, 10_000L)
-                .setRequiresCharging(false)
-                .setPersisted(false)
-                .setUpdateCurrent(false)
-                .build()
-                .schedule();
+          .setExtras(bundle)
+          .setExecutionWindow(3_000L, 10_000L)
+          .setRequiresCharging(false)
+          .setPersisted(false)
+          .setUpdateCurrent(false)
+          .build()
+          .schedule();
 
         Snackbar.make(getView().findViewById(R.id.contacts_linear_layout),
-                R.string.contacts_preferences_backup_scheduled,
-                Snackbar.LENGTH_LONG).show();
+          R.string.contacts_preferences_backup_scheduled,
+          Snackbar.LENGTH_LONG).show();
     }
 
     public static void cancelContactBackupJobForAccount(Context context, Account account) {
@@ -460,7 +498,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         }
 
         arbitraryDataProvider.storeOrUpdateKeyValue(account, PREFERENCE_CONTACTS_AUTOMATIC_BACKUP,
-                String.valueOf(bool));
+          String.valueOf(bool));
     }
 
     @Override
@@ -511,15 +549,10 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
     public void openDate() {
         Calendar cal = Calendar.getInstance();
-        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
-                ContactsBackupFragment.this,
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)
-        );
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(ContactsBackupFragment.this, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 
         try {
-            Calendar[] selectedDays = BackupCalendarUtils.getSelectableDaysArray(selectableDays);
+            Calendar[] selectedDays = getSelectedDay();
             if (selectedDays != null) {
                 datePickerDialog.setSelectableDays(selectedDays);
             }
@@ -529,12 +562,39 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         }
     }
 
+    private Calendar[] getSelectedDay() throws ParseException {
+        if (selectableDays != null) {
+            if (! selectableDays.isEmpty()) {
+                Calendar[] days = new Calendar[selectableDays.size()];
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+                for (int i = 0; i < selectableDays.size(); i++) {
+                    Date date = formatter.parse(selectableDays.get(i).substring(0, 10));
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(date);
+                    days[i] = calendar;
+                }
+
+                return days;
+            } else {
+                Calendar day = Calendar.getInstance();
+                day.add(Calendar.DAY_OF_MONTH, 0);
+                Calendar[] days = new Calendar[1];
+                days[0] = day;
+
+                return days;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         String backupFolderString = BaseConstants.CONTACTS_REMOTE_FOLDER;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
         Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(
-                backupFolder, false);
+          backupFolder, false);
 
         // find file with modification with date and time between 00:00 and 23:59
         // if more than one file exists, take oldest
@@ -569,16 +629,15 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
         if (backupToRestore != null) {
             mContainerActivity.replaceFragment(R.id.fl_fragment,
-                    ContactListFragment.newInstance(backupToRestore, mContainerActivity.getAccount()), true, true);
+              ContactListFragment.newInstance(backupToRestore, mContainerActivity.getAccount()), true, true);
         } else {
             Toast.makeText(getContext(), R.string.contacts_preferences_no_file_found,
-                    Toast.LENGTH_SHORT).show();
+              Toast.LENGTH_SHORT).show();
         }
     }
 
     private void refreshBackupFolder(final String backupFolderPath) {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        @SuppressLint("StaticFieldLeak")
         AsyncTask<String, Integer, Boolean> task = new AsyncTask<String, Integer, Boolean>() {
             @Override
             protected Boolean doInBackground(String... path) {
@@ -591,7 +650,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
                 if (folder != null) {
                     RefreshFolderOperation operation = new RefreshFolderOperation(folder, System.currentTimeMillis(),
-                            false, false, false, storageManager, account, getContext());
+                      false, false, false, storageManager, account, getContext());
 
                     RemoteOperationResult result = operation.execute(account, getContext());
                     return result.isSuccess();
@@ -606,7 +665,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
                     OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderPath);
 
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
-                            .getFolderContent(backupFolder, false);
+                      .getFolderContent(backupFolder, false);
                     showLastBackup();
                 }
             }
@@ -615,7 +674,6 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
         task.execute(backupFolderPath);
     }
 
-    @SuppressLint("StaticFieldLeak")
     private AsyncTask loadLastBackupTask = new AsyncTask() {
 
         @Override
@@ -625,7 +683,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
         @Override
         protected Object doInBackground(Object[] params) {
-            if (!isCancelled()) {
+            if (! isCancelled()) {
                 if (ocFile != null) {
                     File file = new File(ocFile.getStoragePath());
                     try {
@@ -643,7 +701,7 @@ public class ContactsBackupFragment extends BaseFragment implements ContactsBack
 
         @Override
         protected void onPostExecute(Object o) {
-            if (!isCancelled()) {
+            if (! isCancelled()) {
                 if (emptyListContainer != null) {
                     emptyListContainer.setVisibility(View.GONE);
                 }

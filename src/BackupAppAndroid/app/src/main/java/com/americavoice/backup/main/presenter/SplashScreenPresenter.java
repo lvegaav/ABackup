@@ -139,19 +139,19 @@ public class SplashScreenPresenter extends BasePresenter implements IPresenter {
                 AccountManager accountManager = AccountManager.get(mView.getContext());
                 String name = accountManager.getUserData(account, "backupUser");
             String password = accountManager.getUserData(account, "backupPassword");
-                if (name == null || password == null) {
-                    mNetworkProvider.logout();
-                    mView.viewHome();
-                    return;
-                }
-                mNetworkProvider.login(name, password, new AsyncResult<dtos.AuthenticateResponse>() {
-                    @Override
-                    public void success(dtos.AuthenticateResponse response) {
-                        if (response.getMeta() != null) {
-                            mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
-                        }
-                        mView.viewHome();
+            if (name == null || password == null){
+                mNetworkProvider.logout();
+                mView.viewHome();
+                return;
+            }
+            mNetworkProvider.login(name, password, new AsyncResult<dtos.AuthenticateResponse>() {
+                @Override
+                public void success(dtos.AuthenticateResponse response) {
+                    if (response.getMeta() != null) {
+                        mView.saveSerials(response.getMeta().get("SerialB1"), response.getMeta().get("SerialB2"));
                     }
+                    mView.viewHome();
+                }
 
                     @Override
                     public void error(Exception ex) {

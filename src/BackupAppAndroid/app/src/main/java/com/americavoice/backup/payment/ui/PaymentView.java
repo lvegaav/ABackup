@@ -2,6 +2,7 @@ package com.americavoice.backup.payment.ui;
 
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.ui.ILoadDataView;
+import com.americavoice.backup.main.ui.activity.BaseActivity;
 import com.americavoice.backup.payment.data.PaymentMethod;
 import com.americavoice.backup.payment.data.Subscription;
 
@@ -17,5 +18,6 @@ public interface PaymentView extends ILoadDataView {
     void showError(String message, boolean finish);
     void showConfirmationDialog(Subscription subscription);
     void close();
+    BaseActivity getActivity();
 
 }
