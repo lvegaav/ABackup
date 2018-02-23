@@ -15,7 +15,6 @@ import com.americavoice.backup.R;
 import com.americavoice.backup.di.components.AppComponent;
 import com.americavoice.backup.login.model.SpinnerItem;
 import com.americavoice.backup.login.presenter.LoginForgotPresenter;
-import com.americavoice.backup.login.presenter.LoginRegisterPresenter;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseAuthenticatorFragment;
 
@@ -40,6 +39,7 @@ public class LoginForgotFragment extends BaseAuthenticatorFragment implements Lo
      */
     public interface Listener {
         void viewLoginNewPasswordView(String countryCode, String phoneNumber);
+
         void onBackLoginForgotClicked();
     }
 
@@ -168,10 +168,10 @@ public class LoginForgotFragment extends BaseAuthenticatorFragment implements Lo
         if (spCountry == null) return;
 
         spCountry.setAdapter(
-                new SpinnerItemAdapter(
-                        getActivity(),
-                        R.layout.spinner_item,
-                        items));
+          new SpinnerItemAdapter(
+            getActivity(),
+            R.layout.spinner_item,
+            items));
     }
 
     @Override
@@ -199,6 +199,6 @@ public class LoginForgotFragment extends BaseAuthenticatorFragment implements Lo
         } finally {
             mPresenter.submit(countryCode, etPhoneNumber.getText().toString());
         }
-   }
+    }
 }
 

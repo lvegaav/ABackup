@@ -50,6 +50,7 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
 
     private ReadRemoteFolderOperation mReadRemotePhotosOperation;
     private ReadRemoteFolderOperation mReadRemoteVideosOperation;
+    private ReadRemoteFolderOperation mReadRemoteMusicOperation;
     private ReadRemoteFolderOperation mReadRemoteDocumentsOperation;
 
     @Inject
@@ -148,6 +149,7 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
 
         mView.setBadgePhotos(arbitraryDataProvider.getIntegerValue(account, FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL + account.name));
         mView.setBadgeVideos(arbitraryDataProvider.getIntegerValue(account, FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL + account.name));
+        mView.setBadgeMusic(arbitraryDataProvider.getIntegerValue(account, FileListFragment.PREFERENCE_MUSIC_LAST_TOTAL + account.name));
         mView.setBadgeFiles(arbitraryDataProvider.getIntegerValue(account, FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL + account.name));
         mView.setBadgeContacts(arbitraryDataProvider.getIntegerValue(account, ContactsBackupFragment.PREFERENCE_CONTACTS_LAST_TOTAL + account.name));
         mView.setBadgeSms(arbitraryDataProvider.getIntegerValue(account, SmsBackupFragment.PREFERENCE_SMS_LAST_TOTAL + account.name));
@@ -157,7 +159,7 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
     private float getPercent(BigDecimal value, BigDecimal size) {
         float x = value != null ? value.floatValue() * 100 : 0;
         float x1 = x / size.floatValue();
-        BigDecimal x2= new BigDecimal(x1).setScale(1, BigDecimal.ROUND_HALF_UP);
+        BigDecimal x2 = new BigDecimal(x1).setScale(1, BigDecimal.ROUND_HALF_UP);
         return x2.floatValue();
     }
 
@@ -172,7 +174,7 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
     public void readRemoteFiles(String path) {
         OwnCloudClient client = mNetworkProvider.getCloudClient();
         if (client != null) {
-            if (mReadRemotePhotosOperation == null){
+            if (mReadRemotePhotosOperation == null) {
                 mReadRemotePhotosOperation = new ReadRemoteFolderOperation(BaseConstants.PHOTOS_REMOTE_FOLDER);
             }
             if (mReadRemoteVideosOperation == null) {
@@ -181,6 +183,10 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
             if (mReadRemoteDocumentsOperation == null) {
                 mReadRemoteDocumentsOperation = new ReadRemoteFolderOperation(BaseConstants.DOCUMENTS_REMOTE_FOLDER);
             }
+            if (mReadRemoteMusicOperation == null) {
+                mReadRemoteMusicOperation = new ReadRemoteFolderOperation(BaseConstants.MUSIC_REMOTE_FOLDER);
+            }
+
             switch (path) {
                 case BaseConstants.PHOTOS_REMOTE_FOLDER:
                     mReadRemotePhotosOperation.execute(client, this, mHandler);
@@ -191,6 +197,9 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
                 case BaseConstants.DOCUMENTS_REMOTE_FOLDER:
                     mReadRemoteDocumentsOperation.execute(client, this, mHandler);
                     break;
+                case BaseConstants.MUSIC_REMOTE_FOLDER:
+                    mReadRemoteMusicOperation.execute(client, this, mHandler);
+                    break;
             }
         }
     }
@@ -199,7 +208,7 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
     public void onRemoteOperationFinish(RemoteOperation remoteOperation, RemoteOperationResult remoteOperationResult) {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(mContext);
         if (account == null) {
-             return;
+            return;
         }
         ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(mContext.getContentResolver());
         if (remoteOperationResult.isSuccess() && remoteOperation instanceof ReadRemoteFolderOperation) {
@@ -208,21 +217,26 @@ public class MainPresenter extends BasePresenter implements IPresenter, OnRemote
             if (data != null) {
                 count = data.size() - 1;
             }
-            if (remoteOperation.equals(mReadRemotePhotosOperation)){
+            if (remoteOperation.equals(mReadRemotePhotosOperation)) {
                 mView.setBadgePhotos(count);
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL + account.name,
-                        String.valueOf(count));
+                  FileListFragment.PREFERENCE_PHOTOS_LAST_TOTAL + account.name,
+                  String.valueOf(count));
             } else if (remoteOperation.equals(mReadRemoteVideosOperation)) {
                 mView.setBadgeVideos(count);
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL + account.name,
-                        String.valueOf(count));
+                  FileListFragment.PREFERENCE_VIDEOS_LAST_TOTAL + account.name,
+                  String.valueOf(count));
             } else if (remoteOperation.equals(mReadRemoteDocumentsOperation)) {
                 mView.setBadgeFiles(count);
                 arbitraryDataProvider.storeOrUpdateKeyValue(account,
-                        FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL + account.name,
-                        String.valueOf(count));
+                  FileListFragment.PREFERENCE_DOCUMENTS_LAST_TOTAL + account.name,
+                  String.valueOf(count));
+            } else if (remoteOperation.equals(mReadRemoteMusicOperation)) {
+                mView.setBadgeMusic(count);
+                arbitraryDataProvider.storeOrUpdateKeyValue(account,
+                  FileListFragment.PREFERENCE_MUSIC_LAST_TOTAL + account.name,
+                  String.valueOf(count));
             }
         }
     }

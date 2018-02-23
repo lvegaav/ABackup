@@ -1,5 +1,9 @@
 package com.americavoice.backup.files.utils;
 
+import static com.americavoice.backup.files.utils.FileUtils.TypeFiles.MUSIC;
+import static com.americavoice.backup.files.utils.FileUtils.TypeFiles.PHOTO;
+import static com.americavoice.backup.files.utils.FileUtils.TypeFiles.VIDEO;
+
 import android.accounts.Account;
 import android.content.Context;
 import android.database.Cursor;
@@ -21,6 +25,10 @@ import java.util.ArrayList;
  */
 
 public class FileUtils {
+
+    public enum TypeFiles {
+        PHOTO, VIDEO, MUSIC
+    }
 
     public static final String EXTERNAL_STORAGE_PATH = Environment.getExternalStorageDirectory().toString();
 
@@ -80,21 +88,34 @@ public class FileUtils {
         return path.substring(path.lastIndexOf('/') + 1);
     }
 
-    public static void backupPendingFiles(Context context, Account account, String[] pendingPhotos, String[] pendingVideos) {
+    public static void backupPendingFiles(Context context, Account account, String[] pendingPhotos, String[] pendingVideos, String[] pendingSongs) {
 
         if (pendingPhotos != null) {
-            uploadFiles(context, account, pendingPhotos, true);
+            uploadFiles(context, account, pendingPhotos, PHOTO);
         }
 
         if (pendingVideos != null) {
-            uploadFiles(context, account, pendingVideos, false);
+            uploadFiles(context, account, pendingVideos, VIDEO);
+        }
+
+        if (pendingSongs != null) {
+            uploadFiles(context, account, pendingVideos, TypeFiles.MUSIC);
         }
     }
 
-    private static void uploadFiles(Context context, Account account, String[] pendingFiles, boolean isPhoto){
+    private static void uploadFiles(Context context, Account account, String[] pendingFiles, TypeFiles typeFiles) {
         ArrayList<String> localPaths = new ArrayList<>();
         ArrayList<String> remotePaths = new ArrayList<>();
-        String remoteFolder = isPhoto ? BaseConstants.PHOTOS_REMOTE_FOLDER : BaseConstants.VIDEOS_REMOTE_FOLDER;
+        String remoteFolder = null;
+        if (typeFiles == PHOTO) {
+            remoteFolder = BaseConstants.PHOTOS_REMOTE_FOLDER;
+        }
+        if (typeFiles == MUSIC) {
+            remoteFolder = BaseConstants.MUSIC_REMOTE_FOLDER;
+        }
+        if (typeFiles == VIDEO) {
+            remoteFolder = BaseConstants.VIDEOS_REMOTE_FOLDER;
+        }
         try {
             for (String item : pendingFiles) {
                 File file = new File(item);
@@ -104,16 +125,17 @@ public class FileUtils {
 
             FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
             requester.uploadNewFile(
-                    context,
-                    account,
-                    localPaths.toArray(new String[localPaths.size()]),
-                    remotePaths.toArray(new String[localPaths.size()]),
-                    null,
-                    FileUploader.LOCAL_BEHAVIOUR_FORGET,
-                    true,
-                    UploadFileOperation.CREATED_BY_USER
+              context,
+              account,
+              localPaths.toArray(new String[ localPaths.size() ]),
+              remotePaths.toArray(new String[ localPaths.size() ]),
+              null,
+              FileUploader.LOCAL_BEHAVIOUR_FORGET,
+              true,
+              UploadFileOperation.CREATED_BY_USER
             );
-        } catch (Exception e){
+        } catch (
+          Exception e) {
             Crashlytics.logException(e);
         }
     }

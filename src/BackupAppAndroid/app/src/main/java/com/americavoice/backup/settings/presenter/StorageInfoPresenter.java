@@ -12,7 +12,6 @@ import com.americavoice.backup.main.network.NetworkProvider;
 import com.americavoice.backup.main.network.dtos;
 import com.americavoice.backup.main.presenter.BasePresenter;
 import com.americavoice.backup.main.presenter.IPresenter;
-import com.americavoice.backup.settings.ui.SettingsView;
 import com.americavoice.backup.settings.ui.StorageInfoView;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.MimeType;
@@ -27,7 +26,6 @@ import com.owncloud.android.lib.resources.files.RemoteFile;
 
 import net.servicestack.client.AsyncResult;
 
-import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,13 +47,17 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
 
     private Map<String, RemoteFile> mRemotePhotosMap = new HashMap<>();
     private Map<String, RemoteFile> mRemoteVideosMap = new HashMap<>();
+    private Map<String, RemoteFile> mRemoteMusicMap = new HashMap<>();
     private ReadRemoteFolderOperation mReadRemotePhotosOperation;
     private ReadRemoteFolderOperation mReadRemoteVideosOperation;
+    private ReadRemoteFolderOperation mReadRemoteMusicOperation;
     private List<String> mPendingPhotos;
     private List<String> mPendingVideos;
+    private List<String> mPendingMusic;
 
     private boolean mPhotosRemoteDone;
     private boolean mVideosRemoteDone;
+    private boolean mMusicRemoteDone;
 
     @Inject
     StorageInfoPresenter(SharedPrefsUtils sharedPrefsUtils, NetworkProvider networkProvider) {
@@ -90,6 +92,7 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
             }
         }
     }
+
     /**
      * Initializes the presenter
      */
@@ -133,7 +136,7 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
     }
 
     public void scheduleSync() {
-        mView.scheduleSyncJob(mPendingPhotos, mPendingVideos);
+        mView.scheduleSyncJob(mPendingPhotos, mPendingVideos, mPendingMusic);
     }
 
     public void getPendingFiles() {
@@ -141,9 +144,11 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
 
         mPendingPhotos = new ArrayList<>();
         mPendingVideos = new ArrayList<>();
+        mPendingMusic = new ArrayList<>();
 
         mPhotosRemoteDone = false;
         mVideosRemoteDone = false;
+        mMusicRemoteDone = false;
 
         OwnCloudClient client = mNetworkProvider.getCloudClient();
         if (client != null) {
@@ -152,6 +157,9 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
 
             mReadRemoteVideosOperation = new ReadRemoteFolderOperation(BaseConstants.VIDEOS_REMOTE_FOLDER);
             mReadRemoteVideosOperation.execute(client, this, mHandler);
+
+            mReadRemoteMusicOperation = new ReadRemoteFolderOperation(BaseConstants.MUSIC_REMOTE_FOLDER);
+            mReadRemoteMusicOperation.execute(client, this, mHandler);
         }
     }
 
@@ -160,48 +168,57 @@ public class StorageInfoPresenter extends BasePresenter implements IPresenter, O
 
         boolean isPhotos = remoteOperation.equals(mReadRemotePhotosOperation);
         boolean isVideos = remoteOperation.equals(mReadRemoteVideosOperation);
+        boolean isMusic = remoteOperation.equals(mReadRemoteMusicOperation);
+
         if (result.getData() == null) {
             mView.hideLoading();
             mView.showDefaultError();
             if (isPhotos) mPhotosRemoteDone = true;
             if (isVideos) mVideosRemoteDone = true;
+            if (isMusic) mMusicRemoteDone = true;
             return;
         }
         List<String> localFiles;
-        if ( isPhotos || isVideos ) {
-            processRemoteFiles(result.getData(), isPhotos, isVideos);
+        if (isPhotos || isVideos) {
+            processRemoteFiles(result.getData(), isPhotos, isVideos, isMusic);
 
             localFiles = isPhotos ? FileUtils.getListOfCameraImages(mView.getContext()) : FileUtils.getListOfCameraVideos(mView.getContext());
 
             for (String item : localFiles) {
-                if (isPhotos) {
-                    if (!mRemotePhotosMap.containsKey(FileUtils.getFileName(item))) {
-                        mPendingPhotos.add(item);
-                    }
-                } else {
-                    if (!mRemoteVideosMap.containsKey(FileUtils.getFileName(item))) {
-                        mPendingVideos.add(item);
-                    }
+                if (isPhotos && ! mRemotePhotosMap.containsKey(FileUtils.getFileName(item))) {
+                    mPendingPhotos.add(item);
+                }
+                if (isVideos && ! mRemoteVideosMap.containsKey(FileUtils.getFileName(item))) {
+                    mPendingVideos.add(item);
+                }
+                if (isMusic && ! mRemoteMusicMap.containsKey(FileUtils.getFileName(item))) {
+                    mPendingMusic.add(item);
                 }
             }
             if (isPhotos) mPhotosRemoteDone = true;
             if (isVideos) mVideosRemoteDone = true;
+            if (isMusic) mMusicRemoteDone = true;
 
-            if (mVideosRemoteDone && mPhotosRemoteDone) {
+            if (mVideosRemoteDone && mPhotosRemoteDone && mMusicRemoteDone) {
                 mView.hideLoading();
-                mView.showSyncDialog(mPendingPhotos.size(), mPendingVideos.size());
+                mView.showSyncDialog(mPendingPhotos.size(), mPendingVideos.size(), mPendingMusic.size());
             }
         }
     }
 
-    private void processRemoteFiles(ArrayList<Object> resultData, boolean isPhoto, boolean isVideo) {
-        for(Object obj: resultData) {
+    private void processRemoteFiles(ArrayList<Object> resultData, boolean isPhoto, boolean isVideo, boolean isMusic) {
+        for (Object obj : resultData) {
             RemoteFile remoteFile = (RemoteFile) obj;
-            if (remoteFile.getMimeType() != null && !remoteFile.getMimeType().equals(MimeType.DIRECTORY)){
+            if (remoteFile.getMimeType() != null && ! remoteFile.getMimeType().equals(MimeType.DIRECTORY)) {
                 if (isPhoto) {
                     mRemotePhotosMap.put(FileUtils.getFileName(remoteFile.getRemotePath()), remoteFile);
-                } else if (isVideo){
+                }
+                if (isVideo) {
                     mRemoteVideosMap.put(FileUtils.getFileName(remoteFile.getRemotePath()), remoteFile);
+                }
+
+                if (isMusic) {
+                    mRemoteMusicMap.put(FileUtils.getFileName(remoteFile.getRemotePath()), remoteFile);
                 }
             }
         }

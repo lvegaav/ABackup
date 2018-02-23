@@ -317,7 +317,7 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
     }
 
     @Override
-    public void showSyncDialog(int pendingPhotos, int pendingVideos) {
+    public void showSyncDialog(int pendingPhotos, int pendingVideos, int pendingMusic) {
         if (mDialogIsShowing)
             return;
 
@@ -327,7 +327,7 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
           || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_SMS)
           || !PermissionUtil.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG))
             permissionArgument = getString(R.string.sync_backup_photos_and_videos_when_permission_granted);
-        if (pendingPhotos == 0 && pendingVideos == 0) {
+        if (pendingPhotos == 0 && pendingVideos == 0 && pendingMusic == 0) {
             if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())) {
                 textToDisplay = getString(R.string.sync_backup_no_files_pending_warning, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
@@ -335,9 +335,9 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
             }
         } else {
             if (PreferenceManager.getInstantUploadUsingMobileData(getContext()) && !ConnectivityUtils.isAppConnectedViaUnmeteredWiFi(getContext())) {
-                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos_warning, pendingPhotos, pendingVideos, pendingMusic, permissionArgument, getString(R.string.sync_warning_mobile_data_on));
             } else {
-                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos, permissionArgument);
+                textToDisplay = getString(R.string.sync_backup_photos_and_videos, pendingPhotos, pendingVideos, pendingMusic, permissionArgument);
             }
         }
         new MaterialDialog.Builder(getActivity())
@@ -418,13 +418,14 @@ public class StorageInfoFragment extends BaseFragment implements StorageInfoView
     }
 
     @Override
-    public void scheduleSyncJob(List<String> pendingPhotos, List<String> pendingVideos) {
+    public void scheduleSyncJob(List<String> pendingPhotos, List<String> pendingVideos, List<String> pendingMusic) {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
-        if (pendingPhotos.size() > 0 || pendingVideos.size() > 0) {
+        if (!pendingPhotos.isEmpty() || !pendingVideos.isEmpty() || !pendingMusic.isEmpty()) {
             PersistableBundleCompat bundle = new PersistableBundleCompat();
             bundle.putString(SyncBackupJob.ACCOUNT, account.name);
             bundle.putStringArray(SyncBackupJob.PENDING_PHOTOS, pendingPhotos.toArray(new String[pendingPhotos.size()]));
             bundle.putStringArray(SyncBackupJob.PENDING_VIDEOS, pendingVideos.toArray(new String[pendingVideos.size()]));
+            bundle.putStringArray(SyncBackupJob.PENDING_MUSIC, pendingMusic.toArray(new String[pendingMusic.size()]));
             bundle.putBoolean(SyncBackupJob.FORCE, true);
 
             new JobRequest.Builder(SyncBackupJob.TAG)

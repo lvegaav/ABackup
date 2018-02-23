@@ -6,6 +6,7 @@ package com.americavoice.backup.main.ui;
 public interface MainView extends ILoadDataView, AppCompatFragmentView {
     void setBadgePhotos(int size);
     void setBadgeVideos(int size);
+    void setBadgeMusic(int size);
     void setBadgeContacts(int size);
     void setBadgeFiles(int size);
     void setBadgeSms(int size);

@@ -3,23 +3,28 @@ package com.americavoice.backup.sms.ui;
 
 import android.Manifest;
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DatePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.PorterDuff;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,27 +34,39 @@ import com.americavoice.backup.datamodel.ArbitraryDataProvider;
 import com.americavoice.backup.datamodel.FileDataStorageManager;
 import com.americavoice.backup.datamodel.OCFile;
 import com.americavoice.backup.di.components.AppComponent;
+import com.americavoice.backup.files.service.FileDownloader;
 import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.operations.RefreshFolderOperation;
 import com.americavoice.backup.sms.presenter.SmsBackupPresenter;
 import com.americavoice.backup.sms.service.SmsBackupJob;
+import com.americavoice.backup.sms.ui.model.Sms;
+import com.americavoice.backup.utils.BackupCalendarUtils;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.americavoice.backup.utils.PermissionUtil;
 import com.americavoice.backup.utils.ThemeUtils;
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobManager;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import org.greenrobot.eventbus.Subscribe;
+import org.json.JSONArray;
+import org.json.JSONException;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.Vector;
 
@@ -72,6 +89,8 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     private static final String KEY_CALENDAR_DAY = "CALENDAR_DAY";
     private static final String KEY_CALENDAR_MONTH = "CALENDAR_MONTH";
     private static final String KEY_CALENDAR_YEAR = "CALENDAR_YEAR";
+    private static final String TAG = SmsBackupFragment.class.getSimpleName();
+    private ArrayList<String> selectableDays;
 
     /**
      * Interface for listening file list events.
@@ -95,9 +114,35 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     @BindView(R.id.sms_backup_now)
     public AppCompatButton smsBackupNow;
 
+    // Show List
+
+    @BindView(R.id.smslist_recyclerview)
+    public RecyclerView recyclerView;
+
+    @BindView(R.id.empty_list_view_text)
+    public TextView emptyContentMessage;
+
+    @BindView(R.id.empty_list_view_headline)
+    public TextView emptyContentHeadline;
+
+    @BindView(R.id.empty_list_icon)
+    public ImageView emptyContentIcon;
+
+    @BindView(R.id.empty_list_progress)
+    public ProgressBar emptyContentProgressBar;
+
+    @BindView(R.id.empty_list_container)
+    public RelativeLayout emptyListContainer;
+
+    private SmsListAdapter smsListAdapter;
+    private Account account;
+    private ArrayList<Sms> mSmses = new ArrayList<>();
+    private OCFile ocFile;
+
+    private DownloadFinishReceiver mDownloadFinishReceiver;
+
     private BaseOwncloudActivity mContainerActivity;
 
-    private Date selectedDate = null;
     private boolean calendarPickerOpen;
 
     private DatePickerDialog datePickerDialog;
@@ -147,11 +192,7 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
 
         this.mPresenter.resume();
         if (calendarPickerOpen) {
-            if (selectedDate != null) {
-                openDate(selectedDate);
-            } else {
-                openDate(null);
-            }
+            openDate();
         }
         String backupFolderPath = BaseConstants.SMS_REMOTE_FOLDER;
         refreshBackupFolder(backupFolderPath);
@@ -161,20 +202,13 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (datePickerDialog != null) {
-            outState.putBoolean(KEY_CALENDAR_PICKER_OPEN, datePickerDialog.isShowing());
-
-            if (datePickerDialog.isShowing()) {
-                outState.putInt(KEY_CALENDAR_DAY, datePickerDialog.getDatePicker().getDayOfMonth());
-                outState.putInt(KEY_CALENDAR_MONTH, datePickerDialog.getDatePicker().getMonth());
-                outState.putInt(KEY_CALENDAR_YEAR, datePickerDialog.getDatePicker().getYear());
-            }
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        if (mDownloadFinishReceiver != null)
+            getContext().unregisterReceiver(mDownloadFinishReceiver);
         this.mPresenter.pause();
     }
 
@@ -223,16 +257,6 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
             lastBackup.setText(R.string.contacts_preference_backup_never);
         } else {
             lastBackup.setText(DisplayUtils.getRelativeTimestamp(getActivity(), lastBackupTimestamp));
-        }
-
-        if (savedInstanceState != null && savedInstanceState.getBoolean(KEY_CALENDAR_PICKER_OPEN, false)) {
-            if (savedInstanceState.getInt(KEY_CALENDAR_YEAR, -1) != -1 &&
-                    savedInstanceState.getInt(KEY_CALENDAR_MONTH, -1) != -1 &&
-                    savedInstanceState.getInt(KEY_CALENDAR_DAY, -1) != -1) {
-                selectedDate = new Date(savedInstanceState.getInt(KEY_CALENDAR_YEAR),
-                        savedInstanceState.getInt(KEY_CALENDAR_MONTH), savedInstanceState.getInt(KEY_CALENDAR_DAY));
-            }
-            calendarPickerOpen = true;
         }
 
     }
@@ -433,69 +457,34 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
     }
     @OnClick(R.id.sms_datepicker)
     public void openCleanDate() {
-        openDate(null);
+        openDate();
     }
 
-    public void openDate(@Nullable Date savedDate) {
+    public void openDate() {
 
-//        String backupFolderString = BaseConstants.SMS_BACKUP_FOLDER + OCFile.PATH_SEPARATOR;
-//        OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
-//
-//        Vector<OCFile> backupFiles = mContainerActivity.getStorageManager().getFolderContent(backupFolder, false);
-//
-//        Collections.sort(backupFiles, new Comparator<OCFile>() {
-//            @Override
-//            public int compare(OCFile o1, OCFile o2) {
-//                if (o1.getModificationTimestamp() == o2.getModificationTimestamp()) {
-//                    return 0;
-//                }
-//
-//                if (o1.getModificationTimestamp() > o2.getModificationTimestamp()) {
-//                    return 1;
-//                } else {
-//                    return -1;
-//                }
-//            }
-//        });
-//
         Calendar cal = Calendar.getInstance();
-        int year;
-        int month;
-        int day;
+        DatePickerDialog datePickerDialog = DatePickerDialog.newInstance(
+                this,
+                cal.get(Calendar.YEAR),
+                cal.get(Calendar.MONTH),
+                cal.get(Calendar.DAY_OF_MONTH)
+        );
 
-        if (savedDate == null) {
-            year = cal.get(Calendar.YEAR);
-            month = cal.get(Calendar.MONTH);
-            day = cal.get(Calendar.DAY_OF_MONTH);
-        } else {
-            year = savedDate.getYear();
-            month = savedDate.getMonth();
-            day = savedDate.getDay();
+        try {
+            Calendar[] selectedDays = BackupCalendarUtils.getSelectableDaysArray(selectableDays);
+            if (selectedDays != null) {
+                datePickerDialog.setSelectableDays(selectedDays);
+            }
+            datePickerDialog.show(getActivity().getFragmentManager(), "Datepickerdialog");
+        } catch (ParseException e) {
+            Crashlytics.logException(e);
         }
-
-//        if (backupFiles.size() > 0 && backupFiles.lastElement() != null) {
-            datePickerDialog = new DatePickerDialog(getContext(), this, year, month, day);
-//            datePickerDialog.getDatePicker().setMaxDate(backupFiles.lastElement().getModificationTimestamp());
-//            datePickerDialog.getDatePicker().setMinDate(backupFiles.firstElement().getModificationTimestamp());
-
-            datePickerDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialog) {
-                    selectedDate = null;
-                }
-            });
-
-            datePickerDialog.show();
-//        } else {
-//            Toast.makeText(getActivity(), R.string.contacts_preferences_something_strange_happened,
-//                    Toast.LENGTH_SHORT).show();
-//        }
     }
+
+
 
     @Override
-    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-        selectedDate = new Date(year, month, dayOfMonth);
+    public void onDateSet(DatePickerDialog view, int year, int month, int dayOfMonth) {
 
         String backupFolderString = BaseConstants.SMS_REMOTE_FOLDER;
         OCFile backupFolder = mContainerActivity.getStorageManager().getFileByPath(backupFolderString);
@@ -552,6 +541,8 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
 
     private void refreshBackupFolder(final String backupFolderPath) {
         final Account account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+
+        @SuppressLint("StaticFieldLeak")
         AsyncTask<String, Integer, Boolean> task = new AsyncTask<String, Integer, Boolean>() {
             @Override
             protected Boolean doInBackground(String... path) {
@@ -580,6 +571,16 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
 
                     Vector<OCFile> backupFiles = mContainerActivity.getStorageManager()
                             .getFolderContent(backupFolder, false);
+
+                    if (backupFiles != null && backupFiles.size() > 0) {
+                        setFile(backupFiles.lastElement());
+                    }
+
+                    selectableDays = new ArrayList<>();
+
+                    for (OCFile file : backupFiles) {
+                        selectableDays.add(file.getFileName());
+                    }
                 }
             }
         };
@@ -587,4 +588,111 @@ public class SmsBackupFragment extends BaseFragment implements SmsBackupView, Da
         task.execute(backupFolderPath);
     }
 
+    private void setFile(OCFile file) {
+        smsListAdapter = new SmsListAdapter(getContext(), mSmses);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),
+                layoutManager.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
+        recyclerView.setAdapter(smsListAdapter);
+        recyclerView.setLayoutManager(layoutManager);
+
+        ocFile = file;
+        account = AccountUtils.getCurrentOwnCloudAccount(getContext());
+
+        if (!ocFile.isDown()) {
+            Intent i = new Intent(getContext(), FileDownloader.class);
+            i.putExtra(FileDownloader.EXTRA_ACCOUNT, account);
+            i.putExtra(FileDownloader.EXTRA_FILE, ocFile);
+            getContext().startService(i);
+
+            // Listen for download messages
+            IntentFilter downloadIntentFilter = new IntentFilter(FileDownloader.getDownloadAddedMessage());
+            downloadIntentFilter.addAction(FileDownloader.getDownloadFinishMessage());
+            mDownloadFinishReceiver = new DownloadFinishReceiver();
+            getContext().registerReceiver(mDownloadFinishReceiver, downloadIntentFilter);
+        } else {
+            try {
+                loadSmsTask.execute();
+            } catch (Exception e) {
+                Crashlytics.logException(e);
+            }
+        }
+    }
+
+    private class DownloadFinishReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                if (intent.getAction().equalsIgnoreCase(FileDownloader.getDownloadFinishMessage())) {
+                    String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
+
+                    FileDataStorageManager storageManager = new FileDataStorageManager(account,
+                            getContext());
+                    ocFile = storageManager.getFileByPath(downloadedRemotePath);
+                    if (loadSmsTask != null) {
+                        loadSmsTask.execute();
+                    }
+                }
+            } catch (Exception e) {
+                Crashlytics.logException(e);
+            }
+        }
+    }
+
+    private void setLoadingMessage() {
+        emptyContentHeadline.setText(R.string.common_loading);
+        emptyContentMessage.setText("");
+
+        emptyContentIcon.setVisibility(View.GONE);
+        emptyContentProgressBar.setVisibility(View.VISIBLE);
+    }
+
+
+    @SuppressLint("StaticFieldLeak")
+    private AsyncTask loadSmsTask = new AsyncTask() {
+
+        @Override
+        protected void onPreExecute() {
+            setLoadingMessage();
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            if (!isCancelled()) {
+                try {
+                    FileInputStream in = new FileInputStream(ocFile.getStoragePath());
+                    Scanner br = new Scanner(new InputStreamReader(in));
+                    while (br.hasNext()) {
+                        String strLine = br.nextLine();
+                        JSONArray jsonArr = new JSONArray(strLine);
+                        for (int i = 0; i < jsonArr.length(); i++) {
+                            mSmses.add(Sms.fromJson(jsonArr.getString(i)));
+                        }
+                    }
+                } catch (IOException e) {
+                    Log_OC.e(TAG, "IO Exception: " + ocFile.getStoragePath());
+                    Crashlytics.logException(e);
+                    return false;
+                } catch (JSONException e) {
+                    Crashlytics.logException(e);
+                    Log_OC.e(TAG, "Json Exception: " + Arrays.toString(e.getStackTrace()));
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            if (!isCancelled()) {
+                emptyListContainer.setVisibility(View.GONE);
+                smsListAdapter.replaceList(mSmses);
+            }
+        }
+    };
 }

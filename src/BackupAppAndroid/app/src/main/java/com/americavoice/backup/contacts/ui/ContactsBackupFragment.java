@@ -3,6 +3,7 @@ package com.americavoice.backup.contacts.ui;
 
 import android.Manifest;
 import android.accounts.Account;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -39,6 +40,7 @@ import com.americavoice.backup.main.event.OnBackPress;
 import com.americavoice.backup.main.ui.BaseFragment;
 import com.americavoice.backup.main.ui.activity.BaseOwncloudActivity;
 import com.americavoice.backup.operations.RefreshFolderOperation;
+import com.americavoice.backup.utils.BackupCalendarUtils;
 import com.americavoice.backup.utils.BaseConstants;
 import com.americavoice.backup.utils.DisplayUtils;
 import com.americavoice.backup.utils.PermissionUtil;

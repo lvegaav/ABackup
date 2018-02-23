@@ -136,6 +136,7 @@ public abstract class BaseOwncloudActivity extends BaseActivity {
                 ArbitraryDataProvider arbitraryDataProvider = new ArbitraryDataProvider(getContentResolver());
                 arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, FileListFragment.PREFERENCE_PHOTOS_AUTOMATIC_BACKUP, String.valueOf(true));
                 arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, FileListFragment.PREFERENCE_VIDEOS_AUTOMATIC_BACKUP, String.valueOf(true));
+                arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, FileListFragment.PREFERENCE_MUSIC_AUTOMATIC_BACKUP, String.valueOf(true));
                 arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, ContactsBackupFragment.PREFERENCE_CONTACTS_AUTOMATIC_BACKUP, String.valueOf(true));
                 ContactsBackupFragment.startContactBackupJob(mCurrentAccount);
                 arbitraryDataProvider.storeOrUpdateKeyValue(mCurrentAccount, SmsBackupFragment.PREFERENCE_SMS_AUTOMATIC_BACKUP, String.valueOf(true));

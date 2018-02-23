@@ -112,6 +112,19 @@ public class MainActivity extends BaseOwncloudActivity implements HasComponent<A
     }
 
     @Override
+    public void viewMusic() {
+        createFirebaseEvent(
+          mFirebaseAnalytics,
+          "Music",
+          "Music button",
+          MENU_BUTTON_CONTENT_TYPE,
+          FirebaseAnalytics.Event.SELECT_CONTENT
+        );
+
+        navigator.navigateToFileListActivity(this, BaseConstants.MUSIC_REMOTE_FOLDER);
+    }
+
+    @Override
     public void viewContacts() {
         createFirebaseEvent(
                 mFirebaseAnalytics,
